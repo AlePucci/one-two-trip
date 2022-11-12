@@ -1,8 +1,10 @@
-package it.unimib.sal.one_two_trip;
+package it.unimib.sal.one_two_trip.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import it.unimib.sal.one_two_trip.R;
 
 public class MainActivity extends AppCompatActivity {
 
