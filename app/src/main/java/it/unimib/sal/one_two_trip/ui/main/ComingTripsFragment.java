@@ -2,13 +2,20 @@ package it.unimib.sal.one_two_trip.ui.main;
 
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import it.unimib.sal.one_two_trip.R;
+import it.unimib.sal.one_two_trip.model.Trip;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,50 +24,56 @@ import it.unimib.sal.one_two_trip.R;
  */
 public class ComingTripsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = ComingTripsFragment.class.getSimpleName();
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Set<Trip> comingTrips = new HashSet<>();
 
     public ComingTripsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ComingTripsFragment.
-     */
     // TODO: Rename and change types and number of parameters
-    public static ComingTripsFragment newInstance(String param1, String param2) {
-        ComingTripsFragment fragment = new ComingTripsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static ComingTripsFragment newInstance() {
+        return new ComingTripsFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_coming_trips, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_coming_trips, container, false);
+
+        ConstraintLayout layout = rootView.findViewById(R.id.fragment_coming_trips_layout);
+
+        for(Trip trip : HomeActivity.trips ){
+            if(!trip.isCompleted()){
+                comingTrips.add(trip);
+            }
+        }
+
+        if(comingTrips.size() != 0){
+            int comingTripsCount = comingTrips.size();
+            TextView comingTripsTitle = new TextView(getContext());
+            if(comingTripsCount == 1){
+                comingTripsTitle.setText(R.string.coming_trips_title_single);
+                Log.d(TAG, "onCreate: " + comingTripsTitle.getText());
+            }
+            else{
+                comingTripsTitle.setText(String.format(getString(R.string.coming_trips_title_multiple), comingTripsCount));
+                Log.d(TAG, "onCreate: " + comingTripsTitle.getText());
+            }
+
+            comingTripsTitle.setTextSize(22);
+            layout.addView(comingTripsTitle, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
+
+        return rootView;
     }
+
+
 }

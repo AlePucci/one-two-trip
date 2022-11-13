@@ -4,4 +4,6 @@
     <string name="past_trips">RISCOPRI</string>
     <string name="new_trip_fab_text">Nuovo Viaggio</string>
     <string name="new_trip_fab_desc">Crea un nuovo viaggio</string>
+    <string name="coming_trips_title_multiple">Hai %1$d itinerari a breve 🛫</string>
+    <string name="coming_trips_title_single">Hai un itinerario a breve 🛫</string>
 </resources>
