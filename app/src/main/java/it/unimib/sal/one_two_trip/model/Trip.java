@@ -11,16 +11,13 @@ public class Trip {
     private String description;
     private Activity[] activity;
     private Person[] participant;
-    private boolean completed;
+    private boolean completed = false;
 
-    public Trip(String id, String tripOwner, String title, String description, Activity[] activity, Person[] participant, boolean completed) {
+    public Trip(String id, String tripOwner, String title, String description) {
         this.id = id;
         this.tripOwner = tripOwner;
         this.title = title;
         this.description = description;
-        this.activity = activity;
-        this.participant = participant;
-        this.completed = completed;
     }
 
     public String getId() {
@@ -77,6 +74,16 @@ public class Trip {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public void checkCompleted(){
+        for(Activity a : activity){
+            if(!a.isCompleted()){
+                setCompleted(false);
+                return;
+            }
+        }
+        setCompleted(true);
     }
 
     @Override

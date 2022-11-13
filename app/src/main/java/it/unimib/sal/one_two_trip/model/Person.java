@@ -16,7 +16,7 @@ public class Person {
     private Trip[] owned_trips;
     private Trip[] joined_trips;
 
-    public Person(String id, String name, String surname, String email_address, String password, String phone_number, String profile_picture, Trip[] owned_trips, Trip[] joined_trips) {
+    public Person(String id, String name, String surname, String email_address, String password, String phone_number, String profile_picture) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -24,8 +24,6 @@ public class Person {
         this.password = password;
         this.phone_number = phone_number;
         this.profile_picture = profile_picture;
-        this.owned_trips = owned_trips;
-        this.joined_trips = joined_trips;
     }
 
     public String getId() {

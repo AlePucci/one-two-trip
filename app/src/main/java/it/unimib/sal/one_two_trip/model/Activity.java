@@ -12,10 +12,10 @@ public class Activity {
     private String location;
     private Date start_date;
     private Person[] participant;
-    private boolean completed;
     private String trip_id;
     private Object[] attachment;
     private String[] link;
+    private boolean completed;
 
     public Activity(String id, String title, String description, String location, Date start_date, Person[] participant, boolean completed, String trip_id, Object[] attachment, String[] link) {
         this.id = id;
@@ -55,6 +55,7 @@ public class Activity {
     }
 
     public boolean isCompleted() {
+        checkCompleted();
         return completed;
     }
 
@@ -108,6 +109,12 @@ public class Activity {
 
     public void setLink(String[] link) {
         this.link = link;
+    }
+
+    public void checkCompleted(){
+       if(start_date.before(new Date())){
+           setCompleted(true);
+       }
     }
 
     @Override
