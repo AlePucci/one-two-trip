@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">1, 2, Trip!</string>
+    <string name="app_name" translatable="false">1, 2, Trip!</string>
+    <string name="coming_trips">COMING TRIPS</string>
+    <string name="past_trips">PAST TRIPS</string>
+    <string name="new_trip_fab_text">New Trip</string>
+    <string name="new_trip_fab_desc">Create a new trip</string>
 </resources>

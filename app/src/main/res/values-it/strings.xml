@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="coming_trips">ITINERARI A BREVE</string>
+    <string name="past_trips">RISCOPRI</string>
+    <string name="new_trip_fab_text">Nuovo Viaggio</string>
+    <string name="new_trip_fab_desc">Crea un nuovo viaggio</string>
+</resources>
