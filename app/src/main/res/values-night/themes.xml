@@ -13,4 +13,8 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="CardView" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/cardview_dark_background</item>
+    </style>
 </resources>

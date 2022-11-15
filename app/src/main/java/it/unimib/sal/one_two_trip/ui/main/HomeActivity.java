@@ -24,7 +24,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final String TAG = HomeActivity.class.getSimpleName();
 
     public static final Person admin = new Person("0","Admin", "Test", "admin@test.com", "password", "1234567890", "none");
-    private static final Trip trip = new Trip("1", "admin@test.com", "TRIP 1", "");
+    private static final Trip trip = new Trip("1", "admin@test.com", "Paris", "");
 
     private static final Person[] participants = {admin};
     private static final Activity activity_1 = new Activity("1", "LOUVRE", "A", "PARIS", new Date(2022,11,14, 10, 0, 0), participants, false, "1", null, null);
