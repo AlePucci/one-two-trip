@@ -6,4 +6,5 @@
     <string name="new_trip_fab_desc">Create a new trip</string>
     <string name="coming_trips_title_multiple">You have %1$d coming trips 🛫</string>
     <string name="coming_trips_title_single">You have one coming trip 🛫</string>
+    <string name="no_trips_added">You haven\'t added a trip yet!</string>
 </resources>

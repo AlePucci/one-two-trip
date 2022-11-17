@@ -6,4 +6,5 @@
     <string name="new_trip_fab_desc">Crea un nuovo viaggio</string>
     <string name="coming_trips_title_multiple">Hai %1$d itinerari a breve 🛫</string>
     <string name="coming_trips_title_single">Hai un itinerario a breve 🛫</string>
+    <string name="no_trips_added">Non hai ancora aggiunto nessun viaggio!</string>
 </resources>
