@@ -14,6 +14,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import com.google.android.material.button.MaterialButton;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import it.unimib.sal.one_two_trip.R;
@@ -120,7 +121,11 @@ public class TripsListUtil {
             activityName.setTextSize(19);
 
             cardViewLayout.addView(activityName);
-            if(!activity.getStart_date().equals(lastDate)){
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");  //utility
+
+            if(lastDate == null ||
+                    !sdf.format(activity.getStart_date()).equals(sdf.format(lastDate))){
 
                set.connect(activityName.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID,
                        ConstraintSet.START, 70);
@@ -140,7 +145,7 @@ public class TripsListUtil {
                set.connect(dateView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID,
                        ConstraintSet.START, 50);
                set.connect(dateView.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
-                       ConstraintSet.TOP, 160 + activitiesCount * 180);
+                       ConstraintSet.TOP, 175 + activitiesCount * 180);
 
                set.constrainWidth(dateView.getId(), ConstraintSet.WRAP_CONTENT);
                set.constrainHeight(dateView.getId(), ConstraintSet.WRAP_CONTENT);
@@ -152,7 +157,7 @@ public class TripsListUtil {
                set.connect(activityName.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID,
                        ConstraintSet.START, 70);
                set.connect(activityName.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
-                       ConstraintSet.TOP, 250 + activitiesCount * 150);
+                       ConstraintSet.TOP, 250 + activitiesCount * 135);
 
                set.constrainWidth(activityName.getId(), ConstraintSet.WRAP_CONTENT);
                set.constrainHeight(activityName.getId(), ConstraintSet.WRAP_CONTENT);
@@ -165,7 +170,7 @@ public class TripsListUtil {
 
       MaterialButton moreButton = new MaterialButton(context,null, com.google.android.material.R.attr.materialButtonOutlinedStyle);
       moreButton.setId(View.generateViewId());
-      moreButton.setText(context.getString(R.string.more_button_text));
+      moreButton.setText(R.string.more_button_text);
       moreButton.setTextSize(14);
 
       cardViewLayout.addView(moreButton);

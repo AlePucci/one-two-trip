@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -45,7 +46,8 @@ import it.unimib.sal.one_two_trip.util.TripsListUtil;
         View rootView = inflater.inflate(R.layout.fragment_past_trips, container, false);
         LinearLayout layout = rootView.findViewById(R.id.fragment_past_trips_layout);
 
-        for(Trip trip : HomeActivity.trips ){
+        for(Trip trip : HomeActivity.trips){
+            trip.checkCompleted();
             if(trip.isCompleted()){
                 pastTrips.add(trip);
             }
@@ -58,7 +60,20 @@ import it.unimib.sal.one_two_trip.util.TripsListUtil;
             TripsListUtil.showEmptyState(getContext(), layout, NO_PAST_TRIPS);
         }
         else{
-           for(Trip trip : pastTrips){
+            TextView pastTripsTitle = new TextView(getContext());
+            pastTripsTitle.setId(View.generateViewId());
+            pastTripsTitle.setTextSize(25);
+
+            pastTripsTitle.setText(R.string.past_trips_title);
+
+            LinearLayout.LayoutParams pastTripsTitleParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+
+            pastTripsTitleParams.setMargins(50, 50, 0, 50);
+            layout.addView(pastTripsTitle, pastTripsTitleParams);
+            for(Trip trip : pastTrips){
                CardView tripCard = TripsListUtil.createTripCard(getContext(), trip);
 
                LinearLayout.LayoutParams tripCardParams = new LinearLayout.LayoutParams(
@@ -67,7 +82,7 @@ import it.unimib.sal.one_two_trip.util.TripsListUtil;
                );
                tripCardParams.setMargins(0,0,0,80);
                layout.addView(tripCard, tripCardParams);
-           }
+            }
         }
         return rootView;
     }
