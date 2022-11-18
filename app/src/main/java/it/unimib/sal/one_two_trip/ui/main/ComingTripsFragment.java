@@ -50,16 +50,19 @@ public class ComingTripsFragment extends Fragment {
             }
         }
 
+        int comingTripsCount = comingTrips.size();
+
         if(HomeActivity.trips.length == 0){
             TripsListUtil.showEmptyState(getContext(), layout, NO_TRIPS_ADDED);
         }
-        else if(comingTrips.size() == 0){
+        else if(comingTripsCount == 0){
             TripsListUtil.showEmptyState(getContext(), layout, NO_COMING_TRIPS);
         }
         else{
-            int comingTripsCount = comingTrips.size();
-
             TextView comingTripsTitle = new TextView(getContext());
+            comingTripsTitle.setId(View.generateViewId());
+            comingTripsTitle.setTextSize(25);
+
             if(comingTripsCount == 1){
                 comingTripsTitle.setText(R.string.coming_trips_title_single);
             }
@@ -68,8 +71,6 @@ public class ComingTripsFragment extends Fragment {
                         getString(R.string.coming_trips_title_multiple),
                         comingTripsCount));
             }
-
-            comingTripsTitle.setTextSize(25);
 
             LinearLayout.LayoutParams comingTripsTitleParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,

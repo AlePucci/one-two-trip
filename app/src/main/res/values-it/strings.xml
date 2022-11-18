@@ -9,4 +9,5 @@
     <string name="no_trips_added">Non hai ancora aggiunto nessun viaggio!</string>
     <string name="no_coming_trips">Non hai nessun itinerario a breve!</string>
     <string name="no_past_trips">Non hai nessun itinerario passato!</string>
+    <string name="more_button_text">...altro</string>
 </resources>

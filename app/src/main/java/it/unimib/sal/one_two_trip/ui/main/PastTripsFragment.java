@@ -36,8 +36,6 @@ import it.unimib.sal.one_two_trip.util.TripsListUtil;
         return new PastTripsFragment();
     }
 
-    private CardView createTripCard(Trip trip) { return new CardView(getContext()); }
-
     @Override
     public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
 
@@ -61,7 +59,7 @@ import it.unimib.sal.one_two_trip.util.TripsListUtil;
         }
         else{
            for(Trip trip : pastTrips){
-               CardView tripCard = createTripCard(trip);
+               CardView tripCard = TripsListUtil.createTripCard(getContext(), trip);
 
                LinearLayout.LayoutParams tripCardParams = new LinearLayout.LayoutParams(
                        LinearLayout.LayoutParams.MATCH_PARENT,
@@ -69,7 +67,7 @@ import it.unimib.sal.one_two_trip.util.TripsListUtil;
                );
                tripCardParams.setMargins(0,0,0,80);
                layout.addView(tripCard, tripCardParams);
-            }
+           }
         }
         return rootView;
     }
