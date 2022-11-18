@@ -7,4 +7,6 @@
     <string name="coming_trips_title_multiple">Hai %1$d itinerari a breve 🛫</string>
     <string name="coming_trips_title_single">Hai un itinerario a breve 🛫</string>
     <string name="no_trips_added">Non hai ancora aggiunto nessun viaggio!</string>
+    <string name="no_coming_trips">Non hai nessun itinerario a breve!</string>
+    <string name="no_past_trips">Non hai nessun itinerario passato!</string>
 </resources>
