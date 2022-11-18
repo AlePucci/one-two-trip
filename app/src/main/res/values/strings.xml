@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">1, 2, Trip!</string>
+    <string name="app_name" translatable="false">1, 2, Trip!</string>
+    <string name="Trip_Map_Description">Map of the trip</string>
+    <string name="Trip_Default_Title">Trip</string>
+    <string name="Delete">Delete</string>
+    <string name="Trip_Fab_Description">Add Activity</string>
+    <string name="Trip_Fab_Label">Add Activity</string>
 </resources>

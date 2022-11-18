@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Trip_Map_Description">Mappa del viaggio</string>
+    <string name="Trip_Default_Title">Viaggio</string>
+    <string name="Delete">Elimina</string>
+    <string name="Trip_Fab_Description">Aggiungi Attività</string>
+    <string name="Trip_Fab_Label">Aggiungi Attività</string>
+</resources>
