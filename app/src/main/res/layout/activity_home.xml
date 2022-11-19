@@ -41,8 +41,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:contentDescription="@string/new_trip_fab_desc"
-        android:text="@string/new_trip_fab_text"
-        android:textAllCaps="true"
         app:icon="@drawable/ic_plus_24px"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"

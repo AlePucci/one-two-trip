@@ -45,7 +45,6 @@ public class ComingTripsFragment extends Fragment {
         LinearLayout layout = rootView.findViewById(R.id.fragment_coming_trips_layout);
 
         for(Trip trip : HomeActivity.trips){
-            trip.checkCompleted();
             if(!trip.isCompleted()){
                 comingTrips.add(trip);
             }

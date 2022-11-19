@@ -47,7 +47,6 @@ import it.unimib.sal.one_two_trip.util.TripsListUtil;
         LinearLayout layout = rootView.findViewById(R.id.fragment_past_trips_layout);
 
         for(Trip trip : HomeActivity.trips){
-            trip.checkCompleted();
             if(trip.isCompleted()){
                 pastTrips.add(trip);
             }

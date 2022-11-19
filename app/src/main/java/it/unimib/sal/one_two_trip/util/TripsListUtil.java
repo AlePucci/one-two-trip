@@ -1,12 +1,15 @@
 package it.unimib.sal.one_two_trip.util;
 
 import android.content.Context;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -19,6 +22,7 @@ import java.util.Date;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Activity;
+import it.unimib.sal.one_two_trip.model.MovingActivity;
 import it.unimib.sal.one_two_trip.model.Trip;
 
 public class TripsListUtil {
@@ -83,7 +87,7 @@ public class TripsListUtil {
    public static CardView createTripCard(Context context, Trip trip) {
       CardView cardView = new CardView(context, null, R.style.Widget_App_CardView);
       cardView.setId(View.generateViewId());
-      cardView.setRadius(15);
+      cardView.setRadius(20);
       cardView.setCardElevation(4);
 
       ConstraintLayout cardViewLayout = new ConstraintLayout(context);
@@ -111,64 +115,136 @@ public class TripsListUtil {
       set.constrainHeight(tripName.getId(), ConstraintSet.WRAP_CONTENT);
       set.applyTo(cardViewLayout);
 
+      MaterialButton shareTripButton = new MaterialButton(context, null,
+              com.google.android.material.R.attr.materialIconButtonStyle);
+      shareTripButton.setId(View.generateViewId());
+      shareTripButton.setIcon(AppCompatResources.getDrawable(context,
+              R.drawable.ic_baseline_share_32));
+      TypedValue typedValue = new TypedValue();
+      context.getTheme().resolveAttribute(com.google.android.material.R.attr.colorOnSecondary,
+              typedValue, true);
+     shareTripButton.setIconTint(AppCompatResources.getColorStateList(context, typedValue.resourceId));
+
+      cardViewLayout.addView(shareTripButton);
+
+      set.connect(shareTripButton.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID,
+              ConstraintSet.END, 30);
+      set.connect(shareTripButton.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
+              ConstraintSet.TOP, 10);
+
+      set.constrainWidth(shareTripButton.getId(), ConstraintSet.WRAP_CONTENT);
+      set.constrainHeight(shareTripButton.getId(), ConstraintSet.WRAP_CONTENT);
+      set.applyTo(cardViewLayout);
+
       int activitiesCount = 0;
       Date lastDate = null;
+      TextView lastDateView;
+      LinearLayout lastActivity = null;
+
       for(Activity activity : trip.getActivity()){
          if(activitiesCount < 3) {
+            LinearLayout activityLayout = new LinearLayout(context);
+            activityLayout.setId(View.generateViewId());
+            activityLayout.setOrientation(LinearLayout.HORIZONTAL);
+            activityLayout.setBackground(AppCompatResources.getDrawable(
+                    context, R.drawable.trip_container_home));
+            activityLayout.setPadding(20, 30, 20, 30);
+            cardViewLayout.addView(activityLayout);
+            set.constrainPercentWidth(activityLayout.getId(), 0.92f);
+            set.applyTo(cardViewLayout);
+
+
             TextView activityName = new TextView(context);
+
             activityName.setId(View.generateViewId());
             activityName.setText(activity.getTitle());
             activityName.setTextSize(19);
-
-            cardViewLayout.addView(activityName);
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");  //utility
 
             if(lastDate == null ||
                     !sdf.format(activity.getStart_date()).equals(sdf.format(lastDate))){
-
-               set.connect(activityName.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID,
-                       ConstraintSet.START, 70);
-               set.connect(activityName.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
-                       ConstraintSet.TOP, 250 + activitiesCount * 180);
-
-               set.constrainWidth(activityName.getId(), ConstraintSet.WRAP_CONTENT);
-               set.constrainHeight(activityName.getId(), ConstraintSet.WRAP_CONTENT);
-               set.applyTo(cardViewLayout);
-
                TextView dateView = new TextView(context);
                dateView.setId(View.generateViewId());
-               dateView.setText(DateFormat.getDateInstance(DateFormat.LONG).format(activity.getStart_date()));
+               dateView.setText(DateFormat
+                       .getDateInstance(DateFormat.LONG)
+                       .format(activity.getStart_date()));
                dateView.setTextSize(14);
 
                cardViewLayout.addView(dateView);
                set.connect(dateView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID,
                        ConstraintSet.START, 50);
-               set.connect(dateView.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
-                       ConstraintSet.TOP, 175 + activitiesCount * 180);
+
+               if(lastDate == null){
+                  set.connect(dateView.getId(), ConstraintSet.TOP, tripName.getId(),
+                          ConstraintSet.BOTTOM, 20);
+               }
+               else {
+                  set.connect(dateView.getId(), ConstraintSet.TOP, lastActivity.getId(),
+                          ConstraintSet.BOTTOM, 20);
+               }
 
                set.constrainWidth(dateView.getId(), ConstraintSet.WRAP_CONTENT);
                set.constrainHeight(dateView.getId(), ConstraintSet.WRAP_CONTENT);
                set.applyTo(cardViewLayout);
 
+               lastDateView = dateView;
+
+               set.connect(activityLayout.getId(), ConstraintSet.TOP, lastDateView.getId(),
+                            ConstraintSet.BOTTOM, 20);
+
+               set.connect(activityLayout.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID,
+                       ConstraintSet.START, 50);
+
+               set.constrainHeight(activityLayout.getId(), ConstraintSet.WRAP_CONTENT);
+               set.applyTo(cardViewLayout);
+
+
+               LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                       LinearLayout.LayoutParams.WRAP_CONTENT,
+                       LinearLayout.LayoutParams.WRAP_CONTENT
+               );
+               params.setMargins(25, 0, 0, 0);
+               activityLayout.addView(activityName, params);
+
                lastDate = activity.getStart_date();
+               lastActivity = activityLayout;
             }
             else{
-               set.connect(activityName.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID,
-                       ConstraintSet.START, 70);
-               set.connect(activityName.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
-                       ConstraintSet.TOP, 250 + activitiesCount * 135);
+               set.connect(activityLayout.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID,
+                       ConstraintSet.START, 50);
+               set.connect(activityLayout.getId(), ConstraintSet.TOP, lastActivity.getId(),
+                       ConstraintSet.BOTTOM, 20);
 
-               set.constrainWidth(activityName.getId(), ConstraintSet.WRAP_CONTENT);
-               set.constrainHeight(activityName.getId(), ConstraintSet.WRAP_CONTENT);
+               set.constrainHeight(activityLayout.getId(), ConstraintSet.WRAP_CONTENT);
                set.applyTo(cardViewLayout);
+
+               LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                       LinearLayout.LayoutParams.WRAP_CONTENT,
+                       LinearLayout.LayoutParams.WRAP_CONTENT
+               );
+               params.setMargins(25, 0, 0, 0);
+               activityLayout.addView(activityName, params);
+               lastActivity = activityLayout;
             }
+
+            TextView activityStartTime = new TextView(context);
+
+            if(activity instanceof MovingActivity){
+
+            }
+            else{
+
+            }
+
+
+
             activitiesCount++;
          }
       }
 
-
-      MaterialButton moreButton = new MaterialButton(context,null, com.google.android.material.R.attr.materialButtonOutlinedStyle);
+      MaterialButton moreButton = new MaterialButton(context,null,
+              com.google.android.material.R.attr.materialButtonOutlinedStyle);
       moreButton.setId(View.generateViewId());
       moreButton.setText(R.string.more_button_text);
       moreButton.setTextSize(14);
@@ -178,16 +254,25 @@ public class TripsListUtil {
               ConstraintSet.START, 0);
       set.connect(moreButton.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID,
               ConstraintSet.END, 0);
-      set.connect(moreButton.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
-              ConstraintSet.TOP, 220 + activitiesCount * 180);
+      set.connect(moreButton.getId(), ConstraintSet.TOP, lastActivity.getId(),
+              ConstraintSet.BOTTOM, 25);
 
       set.constrainWidth(moreButton.getId(), ConstraintSet.WRAP_CONTENT);
       set.constrainHeight(moreButton.getId(), ConstraintSet.WRAP_CONTENT);
       set.applyTo(cardViewLayout);
 
-      cardView.addView(cardViewLayout, new CardView.LayoutParams(
+      moreButton.setOnClickListener(v -> {
+         /* TO DO : open trip details activity */
+         Log.d("TripCard", "More button clicked:" + trip.getTitle());
+      });
+
+      CardView.LayoutParams cardViewLayoutParams = new CardView.LayoutParams(
               CardView.LayoutParams.MATCH_PARENT,
-              CardView.LayoutParams.WRAP_CONTENT));
+              CardView.LayoutParams.WRAP_CONTENT);
+
+      cardViewLayoutParams.setMargins(0,0,0,30);
+
+      cardView.addView(cardViewLayout, cardViewLayoutParams);
 
       return cardView;
    }

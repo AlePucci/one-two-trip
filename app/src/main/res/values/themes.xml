@@ -19,4 +19,8 @@
         <item name="cardBackgroundColor">@color/cardview_light_background</item>
     </style>
 
+    <style name="Widget.App.ShareButton" parent="Widget.Material3.Button.IconButton">
+        <item name="iconTint">?attr/colorOnSecondary</item>
+    </style>
+
 </resources>

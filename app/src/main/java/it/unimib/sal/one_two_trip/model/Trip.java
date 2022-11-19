@@ -45,6 +45,7 @@ public class Trip {
     }
 
     public boolean isCompleted() {
+        checkCompleted();
         return completed;
     }
 

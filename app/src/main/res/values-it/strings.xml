@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="coming_trips">ITINERARI A BREVE</string>
-    <string name="past_trips">RISCOPRI</string>
+    <string name="coming_trips">Viaggi a breve</string>
+    <string name="past_trips">Riscopri</string>
     <string name="new_trip_fab_text">Nuovo Viaggio</string>
     <string name="new_trip_fab_desc">Crea un nuovo viaggio</string>
     <string name="coming_trips_title_multiple">Hai %1$d itinerari a breve 🛫</string>
@@ -9,6 +9,6 @@
     <string name="no_trips_added">Non hai ancora aggiunto nessun viaggio!</string>
     <string name="no_coming_trips">Non hai nessun itinerario a breve!</string>
     <string name="no_past_trips">Non hai nessun itinerario passato!</string>
-    <string name="more_button_text">...altro</string>
+    <string name="more_button_text">…altro</string>
     <string name="past_trips_title">Riscopri ⌛</string>
 </resources>

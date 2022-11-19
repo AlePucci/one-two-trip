@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">1, 2, Trip!</string>
-    <string name="coming_trips">COMING TRIPS</string>
-    <string name="past_trips">PAST TRIPS</string>
+    <string name="coming_trips">Coming trips</string>
+    <string name="past_trips">Past trips</string>
     <string name="new_trip_fab_text">New Trip</string>
     <string name="new_trip_fab_desc">Create a new trip</string>
     <string name="coming_trips_title_multiple">You have %1$d coming trips 🛫</string>
@@ -9,6 +9,6 @@
     <string name="no_trips_added">You haven\'t added a trip yet!</string>
     <string name="no_coming_trips">You haven\'t coming trips!</string>
     <string name="no_past_trips">You haven\'t past trips!</string>
-    <string name="more_button_text">...more</string>
+    <string name="more_button_text">…more</string>
     <string name="past_trips_title">Past trips ⌛</string>
 </resources>
