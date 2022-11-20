@@ -23,4 +23,10 @@
         <item name="iconTint">?attr/colorOnSecondary</item>
     </style>
 
+    <style name="Widget.App.TripTimeAppearance" parent="">
+        <item name="fontFamily">sans-serif-light</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
 </resources>
