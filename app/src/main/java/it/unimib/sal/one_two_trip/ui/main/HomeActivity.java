@@ -46,7 +46,7 @@ public class HomeActivity extends AppCompatActivity {
 
         trip_1.setActivity(new Activity[]{activity_1, activity_2, activity_3});
         trip_2.setActivity(new Activity[]{activity_4, activity_5, activity_6});
-        trip_3.setActivity(new Activity[]{activity_7, activity_8});
+        trip_3.setActivity(new Activity[]{});
 
         MaterialToolbar toolbar = findViewById(R.id.top_appbar);
         setSupportActionBar(toolbar);
@@ -62,7 +62,8 @@ public class HomeActivity extends AppCompatActivity {
                 R.id.fragment_coming_trips, R.id.fragment_past_trips).build();
 
         // For the Toolbar
-        if(navController != null) NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        if(navController != null) NavigationUI.setupActionBarWithNavController(this,
+                navController, appBarConfiguration);
 
         // For the BottomNavigationView
         if(navController != null) NavigationUI.setupWithNavController(bottomNav, navController);

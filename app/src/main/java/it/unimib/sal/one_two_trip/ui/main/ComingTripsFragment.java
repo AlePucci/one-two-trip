@@ -53,9 +53,11 @@ public class ComingTripsFragment extends Fragment {
         int comingTripsCount = comingTrips.size();
 
         if(HomeActivity.trips.length == 0){
+            // There are no trips at all
             TripsListUtil.showEmptyState(getContext(), layout, NO_TRIPS_ADDED);
         }
         else if(comingTripsCount == 0){
+            // There are no coming trips but there are past trips
             TripsListUtil.showEmptyState(getContext(), layout, NO_COMING_TRIPS);
         }
         else{

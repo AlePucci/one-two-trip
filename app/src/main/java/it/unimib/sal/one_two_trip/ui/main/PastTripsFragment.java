@@ -26,16 +26,14 @@ import it.unimib.sal.one_two_trip.util.TripsListUtil;
  * Use the {@link PastTripsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-    public class PastTripsFragment extends Fragment {
+public class PastTripsFragment extends Fragment {
 
     private static final String TAG = PastTripsFragment.class.getSimpleName();
     private final Set<Trip> pastTrips = new HashSet<>();
 
     public PastTripsFragment() { }
 
-    public static PastTripsFragment newInstance() {
-        return new PastTripsFragment();
-    }
+    public static PastTripsFragment newInstance() { return new PastTripsFragment(); }
 
     @Override
     public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
@@ -53,9 +51,11 @@ import it.unimib.sal.one_two_trip.util.TripsListUtil;
         }
 
         if(HomeActivity.trips.length == 0){
+            // There are no trips at all
             TripsListUtil.showEmptyState(getContext(), layout, NO_TRIPS_ADDED);
         }
         else if(pastTrips.size() == 0){
+            // There are no past trips but there are coming trips
             TripsListUtil.showEmptyState(getContext(), layout, NO_PAST_TRIPS);
         }
         else{

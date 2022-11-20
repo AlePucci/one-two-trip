@@ -18,9 +18,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        style="@style/Widget.Material3.Toolbar"
         app:title="@string/app_name"
-        app:titleCentered="true" />
+        app:titleCentered="true"
+        style="@style/Widget.Material3.Toolbar" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"

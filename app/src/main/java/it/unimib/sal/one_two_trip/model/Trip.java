@@ -78,13 +78,21 @@ public class Trip {
     }
 
     public void checkCompleted(){
+        boolean isThereAtLeastOneActivity = false;
+        if (this.getActivity() == null) {
+            setCompleted(false);
+            return;
+        }
+
         for(Activity a : activity){
-            if(!a.isCompleted()){
+            isThereAtLeastOneActivity = true;
+            if(a == null || !a.isCompleted()){
                 setCompleted(false);
                 return;
             }
         }
-        setCompleted(true);
+
+        setCompleted(isThereAtLeastOneActivity);
     }
 
     @Override
