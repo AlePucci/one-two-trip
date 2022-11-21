@@ -19,7 +19,7 @@
         tools:layout="@layout/fragment_past_trips" />
     <activity
         android:id="@+id/trip"
-        android:name="it.unimib.sal.one_two_trip.Trip"
+        android:name="it.unimib.sal.one_two_trip.ui.Trip"
         android:label="activity_trip"
         tools:layout="@layout/activity_trip" />
 </navigation>

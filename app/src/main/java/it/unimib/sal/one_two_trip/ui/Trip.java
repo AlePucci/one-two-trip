@@ -1,23 +1,25 @@
-package it.unimib.sal.one_two_trip;
+package it.unimib.sal.one_two_trip.ui;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.View;
-
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import android.util.Log;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+
+import it.unimib.sal.one_two_trip.BuildConfig;
+import it.unimib.sal.one_two_trip.R;
 
 public class Trip extends AppCompatActivity {
     private ActivityResultLauncher<String[]> multiplePermissionLauncher;
@@ -45,6 +47,12 @@ public class Trip extends AppCompatActivity {
         });
 
         setContentView(R.layout.activity_trip);
+
+        //Toolbar
+        Toolbar toolbar = findViewById(R.id.trip_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
         //Map setup
         loadMap();
