@@ -19,6 +19,7 @@ import java.util.Set;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.model.Utils;
 import it.unimib.sal.one_two_trip.util.TripsListUtil;
 
 /**
@@ -44,7 +45,7 @@ public class ComingTripsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_coming_trips, container, false);
         LinearLayout layout = rootView.findViewById(R.id.fragment_coming_trips_layout);
 
-        for(Trip trip : HomeActivity.trips){
+        for(Trip trip : Utils.trips){
             if(!trip.isCompleted()){
                 comingTrips.add(trip);
             }
@@ -52,7 +53,7 @@ public class ComingTripsFragment extends Fragment {
 
         int comingTripsCount = comingTrips.size();
 
-        if(HomeActivity.trips.length == 0){
+        if(Utils.trips.length == 0){
             // There are no trips at all
             TripsListUtil.showEmptyState(getContext(), layout, NO_TRIPS_ADDED);
         }
