@@ -13,4 +13,6 @@
     <string name="past_trips_title">Riscopri ⌛</string>
     <string name="no_activities_added">Al momento non sono presenti attività.</string>
     <string name="start_adding_button_text">Inizia ad aggiungerne!</string>
+    <string name="default_trip_title">Un fantastico nuovo viaggio</string>
+    <string name="default_activity_name">Attività</string>
 </resources>

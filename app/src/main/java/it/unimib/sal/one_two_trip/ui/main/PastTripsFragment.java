@@ -80,6 +80,7 @@ public class PastTripsFragment extends Fragment {
                        LinearLayout.LayoutParams.WRAP_CONTENT
                );
                tripCardParams.setMargins(0,0,0,80);
+
                layout.addView(tripCard, tripCardParams);
             }
         }

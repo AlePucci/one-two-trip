@@ -22,6 +22,7 @@ import it.unimib.sal.one_two_trip.model.Trip;
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = HomeActivity.class.getSimpleName();
 
+    /* TEST DATA */
     public static final Person admin = new Person("0","Admin", "Test", "admin@test.com", "password", "1234567890", "none");
     private static final Trip trip_1 = new Trip("1", "admin@test.com", "Parigi", "");
     private static final Trip trip_2 = new Trip("2", "admin@test.com", "Londra", "");
@@ -39,14 +40,30 @@ public class HomeActivity extends AppCompatActivity {
 
     public static final Trip[] trips = {trip_1, trip_2, trip_3};
 
+    /* TEST DATA */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        /* ----TEST---- */
+
+        Person[] trip1participants = new Person[]{admin,
+                new Person("1", "Mario", "Rossi", "", "", "", ""),
+                new Person("2", "Luigi", "Bianchi", "", "", "", "")};
+
+        activity_1.setParticipant(trip1participants);
+        activity_2.setParticipant(new Person[]{admin,
+                new Person("1", "Mario", "Rossi", "", "", "", "")});
+        activity_3.setParticipant(trip1participants);
+
+        trip_1.setParticipant(trip1participants);
         trip_1.setActivity(new Activity[]{activity_1, activity_2, activity_3});
         trip_2.setActivity(new Activity[]{activity_4, activity_5, activity_6});
         trip_3.setActivity(new Activity[]{});
+
+        /* ----TEST---- */
 
         MaterialToolbar toolbar = findViewById(R.id.top_appbar);
         setSupportActionBar(toolbar);

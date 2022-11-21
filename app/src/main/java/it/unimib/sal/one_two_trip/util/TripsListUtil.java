@@ -113,7 +113,11 @@ public class TripsListUtil {
         // Trip name (title)
         TextView tripName = new TextView(context);
         tripName.setId(View.generateViewId());
-        tripName.setText(trip.getTitle());
+        if(trip.getTitle() != null){
+            tripName.setText(trip.getTitle());
+        } else {
+            tripName.setText(R.string.default_trip_title);
+        }
         tripName.setTextSize(23);
 
         cardViewLayout.addView(tripName);
@@ -149,12 +153,20 @@ public class TripsListUtil {
         set.constrainHeight(shareTripButton.getId(), ConstraintSet.WRAP_CONTENT);
         set.applyTo(cardViewLayout);
 
+        shareTripButton.setOnClickListener(v -> {
+           /* TO DO: share trip */
+        });
+
         //----------------
         // Activities
         //----------------
         int activitiesCount = 0;
         Date lastDate = null;
         ConstraintLayout lastActivity = null;
+
+        if(trip.getActivity() == null){
+            throw new IllegalArgumentException("Trip has null activities");
+        }
 
         for (Activity activity : trip.getActivity()) {
             if (activitiesCount < MAX_ACTIVITIES_IN_A_TRIP) {
@@ -171,13 +183,17 @@ public class TripsListUtil {
                 // Activity name
                 TextView activityName = new TextView(context);
                 activityName.setId(View.generateViewId());
-                activityName.setText(activity.getTitle());
+                if(activity.getTitle() != null){
+                    activityName.setText(activity.getTitle());
+                } else {
+                    activityName.setText(R.string.default_activity_name);
+                }
                 activityName.setTextSize(19);
 
                 // If the activity is the first one or if the date of the activity is different
                 // from the last one, add the date to the new one.
-                if (lastDate == null ||
-                        !compareDate(lastDate, activity.getStart_date())) {
+                if (lastDate == null || (activity.getStart_date() != null &&
+                        !compareDate(lastDate, activity.getStart_date()))) {
                     // DateView
                     TextView dateView = new TextView(context);
                     dateView.setId(View.generateViewId());
@@ -259,9 +275,14 @@ public class TripsListUtil {
                 // Start time TextView
                 TextView activityStartTime = new TextView(context);
                 activityStartTime.setId(View.generateViewId());
-                activityStartTime.setText(DateFormat
-                        .getTimeInstance(DateFormat.SHORT)
-                        .format(activity.getStart_date()));
+
+                if(activity.getStart_date() != null){
+                    activityStartTime.setText(DateFormat
+                            .getTimeInstance(DateFormat.SHORT)
+                            .format(activity.getStart_date()));
+                } else {
+                    throw new IllegalArgumentException("Activity has no start date");
+                }
 
                 // Start time text appearance
                 activityStartTime.setTextAppearance(context, R.style.Widget_App_TripTimeAppearance);
@@ -269,39 +290,89 @@ public class TripsListUtil {
                 // Activity info layout
                 ConstraintLayout activityInfo = new ConstraintLayout(context);
                 activityInfo.setId(View.generateViewId());
-                activityInfo.addView(activityStartTime);
 
                 if (activity instanceof MovingActivity) {
+                    // layout of start time and start location
+                    LinearLayout startLayout = new LinearLayout(context);
+                    startLayout.setId(View.generateViewId());
+                    startLayout.setOrientation(LinearLayout.VERTICAL);
+                    startLayout.setGravity(Gravity.CENTER);
+                    activityInfo.addView(startLayout);
+
+                    // layout of end time and end location
+                    LinearLayout endLayout = new LinearLayout(context);
+                    endLayout.setId(View.generateViewId());
+                    endLayout.setOrientation(LinearLayout.VERTICAL);
+                    endLayout.setGravity(Gravity.CENTER);
+                    activityInfo.addView(endLayout);
+
                     activityStartTime.setTextSize(15);
+
+                    // Start location TextView
+                    TextView activityStartLocation = new TextView(context);
+                    activityStartLocation.setId(View.generateViewId());
+                    if (activity.getLocation() != null) {
+                        activityStartLocation.setText(activity.getLocation());
+                    }
+                    else {
+                        throw new IllegalArgumentException("Activity has no start location");
+                    }
+                    activityStartLocation.setTextSize(15);
+                    activityStartLocation.setGravity(Gravity.CENTER);
+                    activityStartLocation.setTextAppearance(context, R.style.Widget_App_TripLocationAppearance);
+
+                    startLayout.addView(activityStartTime);
+                    startLayout.addView(activityStartLocation);
 
                     // End time TextView
                     TextView activityEndTime = new TextView(context);
                     activityEndTime.setId(View.generateViewId());
-                    activityEndTime.setText(DateFormat
-                            .getTimeInstance(DateFormat.SHORT)
-                            .format(((MovingActivity) (activity)).getEnd_date()));
+                    if (((MovingActivity) (activity)).getEnd_date() != null) {
+                        activityEndTime.setText(DateFormat
+                                .getTimeInstance(DateFormat.SHORT)
+                                .format(((MovingActivity) (activity)).getEnd_date()));
+                    }
+                    else {
+                        throw new IllegalArgumentException("Moving activity has no end date");
+                    }
                     activityEndTime.setTextSize(15);
                     activityEndTime.setTextAppearance(context, R.style.Widget_App_TripTimeAppearance);
 
-                    activityInfo.addView(activityEndTime);
+                    // End location TextView
+                    TextView activityEndLocation = new TextView(context);
+                    activityEndLocation.setId(View.generateViewId());
 
-                    set.connect(activityEndTime.getId(), ConstraintSet.START, activityStartTime.getId(),
+                    if (((MovingActivity) (activity)).getEnd_location() != null) {
+                        activityEndLocation.setText(((MovingActivity) (activity)).getEnd_location());
+                    }
+                    else {
+                        throw new IllegalArgumentException("Moving activity has no end location");
+                    }
+                    activityEndLocation.setTextSize(15);
+                    activityEndLocation.setGravity(Gravity.CENTER);
+                    activityEndLocation.setTextAppearance(context, R.style.Widget_App_TripLocationAppearance);
+
+                    endLayout.addView(activityEndTime);
+                    endLayout.addView(activityEndLocation);
+
+                    set.connect(endLayout.getId(), ConstraintSet.START, startLayout.getId(),
                             ConstraintSet.END, 20);
-                    set.connect(activityEndTime.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
+                    set.connect(endLayout.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
                             ConstraintSet.TOP, 0);
-                    set.connect(activityEndTime.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID,
+                    set.connect(endLayout.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID,
                             ConstraintSet.BOTTOM, 0);
-                    set.constrainWidth(activityEndTime.getId(), ConstraintSet.WRAP_CONTENT);
-                    set.constrainHeight(activityEndTime.getId(), ConstraintSet.WRAP_CONTENT);
+                    set.constrainWidth(endLayout.getId(), ConstraintSet.WRAP_CONTENT);
+                    set.constrainHeight(endLayout.getId(), ConstraintSet.WRAP_CONTENT);
                     set.applyTo(activityInfo);
                 } else {
+                    activityInfo.addView(activityStartTime);
                     activityStartTime.setTextSize(20);
                 }
 
                 activityLayout.addView(activityInfo);
 
                 set.connect(activityInfo.getId(), ConstraintSet.START, activityName.getId(),
-                        ConstraintSet.END, 40);
+                        ConstraintSet.END, 60);
                 set.connect(activityInfo.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
                         ConstraintSet.TOP, 0);
                 set.connect(activityInfo.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID,
@@ -311,6 +382,48 @@ public class TripsListUtil {
 
                 set.applyTo(activityLayout);
 
+                // Participants
+
+                // only shows participants if the number of them is different from the number of
+                // participants of the entire trip
+                if (activity.getParticipant() != null && trip.getParticipant() != null &&
+                        activity.getParticipant().length != trip.getParticipant().length) {
+                    // Participants layout
+                    LinearLayout participantsLayout = new LinearLayout(context);
+                    participantsLayout.setId(View.generateViewId());
+                    participantsLayout.setOrientation(LinearLayout.HORIZONTAL);
+                    participantsLayout.setGravity(Gravity.CENTER);
+                    activityLayout.addView(participantsLayout);
+
+                    // Participants ImageView
+                    ImageView participantsImage = new ImageView(context);
+                    participantsImage.setId(View.generateViewId());
+                    participantsImage.setImageResource(R.drawable.ic_baseline_group_24);
+                    participantsImage.setImageTintList(AppCompatResources.getColorStateList(context,
+                            typedValue.resourceId));
+
+                    participantsLayout.addView(participantsImage);
+
+                    // Participants TextView (count)
+                    TextView participantsCount = new TextView(context);
+                    participantsCount.setId(View.generateViewId());
+                    participantsCount.setText(String.valueOf(activity.getParticipant().length));
+                    participantsCount.setTextSize(20);
+                    participantsCount.setTextAppearance(context, R.style.Widget_App_TripTimeAppearance);
+
+                    participantsLayout.addView(participantsCount);
+
+                    set.connect(participantsLayout.getId(), ConstraintSet.START, activityInfo.getId(),
+                            ConstraintSet.END, 50);
+                    set.connect(participantsLayout.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
+                            ConstraintSet.TOP, 0);
+                    set.connect(participantsLayout.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID,
+                            ConstraintSet.BOTTOM, 0);
+                    set.constrainWidth(participantsLayout.getId(), ConstraintSet.WRAP_CONTENT);
+                    set.constrainHeight(participantsLayout.getId(), ConstraintSet.WRAP_CONTENT);
+                    set.applyTo(activityLayout);
+                }
+
                 // Attachments
 
                 if (activity.getAttachment() != null) {
@@ -319,8 +432,6 @@ public class TripsListUtil {
                     attachmentsButton.setId(View.generateViewId());
                     attachmentsButton.setIcon(AppCompatResources.getDrawable(context,
                             R.drawable.ic_baseline_file_present_24));
-                    context.getTheme().resolveAttribute(com.google.android.material.R.attr.colorOnSecondary,
-                            typedValue, true);
                     attachmentsButton.setIconTint(AppCompatResources.getColorStateList(context,
                             typedValue.resourceId));
                     activityLayout.addView(attachmentsButton);
