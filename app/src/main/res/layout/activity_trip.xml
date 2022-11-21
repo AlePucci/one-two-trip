@@ -11,12 +11,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:title="@string/Trip_Default_Title"
-        app:titleTextAppearance="?textAppearanceTitleLarge"
+        app:title="Trip"
         app:titleCentered="true"
         app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
-        app:navigationIconTint="?colorOnBackground"
-        app:menu="@menu/trip_menu"
         />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -34,7 +31,7 @@
                 android:id="@+id/mapView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/Trip_Map_Description" />
+                android:contentDescription="@string/trip_map_description" />
         </FrameLayout>
 
         <LinearLayout
@@ -267,8 +264,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:layout_gravity="bottom|end"
-            android:contentDescription="@string/Trip_Fab_Description"
-            android:text="@string/Trip_Fab_Label"
+            android:text="@string/trip_fab_label"
             app:icon="@drawable/ic_baseline_add_24"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
