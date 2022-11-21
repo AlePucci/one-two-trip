@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_past_trips_scrollview"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:paddingBottom="80dp"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.main.PastTripsFragment"
+        android:id="@+id/fragment_past_trips_layout"
+        android:orientation="vertical" />
+
+</androidx.core.widget.NestedScrollView>
+

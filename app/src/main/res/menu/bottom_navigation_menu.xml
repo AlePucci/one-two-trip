@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/fragment_coming_trips"
+        android:enabled="true"
+        android:title="@string/coming_trips"
+        android:icon="@drawable/ic_baseline_luggage_24" />
+
+    <item
+        android:id="@+id/fragment_past_trips"
+        android:enabled="true"
+        android:title="@string/past_trips"
+        android:icon="@drawable/ic_baseline_history_24"/>
+</menu>
