@@ -13,4 +13,6 @@
     <string name="past_trips_title">Riscopri ⌛</string>
     <string name="no_activities_added">Al momento non sono presenti attività.</string>
     <string name="start_adding_button_text">Inizia ad aggiungerne!</string>
+    <string name="trip_map_description">Mappa del viaggio</string>
+    <string name="trip_fab_label">Aggiungi Attività</string>
 </resources>
