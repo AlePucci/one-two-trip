@@ -1,8 +1,13 @@
-package it.unimib.sal.one_two_trip.model;
+package it.unimib.sal.one_two_trip.util;
 
 import java.util.Date;
 
-public class Utils {
+import it.unimib.sal.one_two_trip.model.Activity;
+import it.unimib.sal.one_two_trip.model.MovingActivity;
+import it.unimib.sal.one_two_trip.model.Person;
+import it.unimib.sal.one_two_trip.model.Trip;
+
+public class TemporaryTrips {
     public static final Person admin = new Person("0","Admin", "Test", "admin@test.com", "password", "1234567890", "none");
     public static final Trip trip_1 = new Trip("1", "admin@test.com", "Parigi", "");
     public static final Trip trip_2 = new Trip("2", "admin@test.com", "Londra", "");

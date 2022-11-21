@@ -19,7 +19,7 @@ import java.util.Set;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.model.Utils;
+import it.unimib.sal.one_two_trip.util.TemporaryTrips;
 import it.unimib.sal.one_two_trip.util.TripsListUtil;
 
 /**
@@ -45,13 +45,13 @@ public class PastTripsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_past_trips, container, false);
         LinearLayout layout = rootView.findViewById(R.id.fragment_past_trips_layout);
 
-        for(Trip trip : Utils.trips){
+        for(Trip trip : TemporaryTrips.trips){
             if(trip.isCompleted()){
                 pastTrips.add(trip);
             }
         }
 
-        if(Utils.trips.length == 0){
+        if(TemporaryTrips.trips.length == 0){
             // There are no trips at all
             TripsListUtil.showEmptyState(getContext(), layout, NO_TRIPS_ADDED);
         }

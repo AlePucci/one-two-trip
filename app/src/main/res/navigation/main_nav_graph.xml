@@ -8,9 +8,18 @@
     <fragment
         android:id="@+id/fragment_coming_trips"
         android:name="it.unimib.sal.one_two_trip.ui.main.ComingTripsFragment"
-        tools:layout="@layout/fragment_coming_trips" />
+        tools:layout="@layout/fragment_coming_trips" >
+        <action
+            android:id="@+id/action_fragment_coming_trips_to_trip"
+            app:destination="@id/trip" />
+    </fragment>
     <fragment
         android:id="@+id/fragment_past_trips"
         android:name="it.unimib.sal.one_two_trip.ui.main.PastTripsFragment"
         tools:layout="@layout/fragment_past_trips" />
+    <activity
+        android:id="@+id/trip"
+        android:name="it.unimib.sal.one_two_trip.Trip"
+        android:label="activity_trip"
+        tools:layout="@layout/activity_trip" />
 </navigation>

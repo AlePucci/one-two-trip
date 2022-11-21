@@ -13,7 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.Utils;
+import it.unimib.sal.one_two_trip.util.TemporaryTrips;
 
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = HomeActivity.class.getSimpleName();
@@ -23,9 +23,9 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        Utils.trip_1.setActivity(new Activity[]{Utils.activity_1, Utils.activity_2, Utils.activity_3});
-        Utils.trip_2.setActivity(new Activity[]{Utils.activity_4, Utils.activity_5, Utils.activity_6});
-        Utils.trip_3.setActivity(new Activity[]{});
+        TemporaryTrips.trip_1.setActivity(new Activity[]{TemporaryTrips.activity_1, TemporaryTrips.activity_2, TemporaryTrips.activity_3});
+        TemporaryTrips.trip_2.setActivity(new Activity[]{TemporaryTrips.activity_4, TemporaryTrips.activity_5, TemporaryTrips.activity_6});
+        TemporaryTrips.trip_3.setActivity(new Activity[]{});
 
         MaterialToolbar toolbar = findViewById(R.id.top_appbar);
         setSupportActionBar(toolbar);
