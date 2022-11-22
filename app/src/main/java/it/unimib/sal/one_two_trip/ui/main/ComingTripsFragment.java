@@ -3,8 +3,11 @@ package it.unimib.sal.one_two_trip.ui.main;
 import static it.unimib.sal.one_two_trip.util.Constants.NO_COMING_TRIPS;
 import static it.unimib.sal.one_two_trip.util.Constants.NO_TRIPS_ADDED;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
@@ -41,8 +44,14 @@ public class ComingTripsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_coming_trips, container, false);
-        LinearLayout layout = rootView.findViewById(R.id.fragment_coming_trips_layout);
+        return inflater.inflate(R.layout.fragment_coming_trips, container, false);
+    }
+
+    @Override
+    public void onViewCreated (@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        LinearLayout layout = view.findViewById(R.id.fragment_coming_trips_layout);
+        Context context = requireContext();
 
         for(Trip trip : HomeActivity.trips){
             if(!trip.isCompleted()){
@@ -54,14 +63,14 @@ public class ComingTripsFragment extends Fragment {
 
         if(HomeActivity.trips.length == 0){
             // There are no trips at all
-            TripsListUtil.showEmptyState(getContext(), layout, NO_TRIPS_ADDED);
+            TripsListUtil.showEmptyState(context, layout, NO_TRIPS_ADDED);
         }
         else if(comingTripsCount == 0){
             // There are no coming trips but there are past trips
-            TripsListUtil.showEmptyState(getContext(), layout, NO_COMING_TRIPS);
+            TripsListUtil.showEmptyState(context, layout, NO_COMING_TRIPS);
         }
         else{
-            TextView comingTripsTitle = new TextView(getContext());
+            TextView comingTripsTitle = new TextView(context);
             comingTripsTitle.setId(View.generateViewId());
             comingTripsTitle.setTextSize(25);
 
@@ -83,7 +92,7 @@ public class ComingTripsFragment extends Fragment {
             layout.addView(comingTripsTitle, comingTripsTitleParams);
 
             for(Trip trip : comingTrips){
-                CardView tripCard = TripsListUtil.createTripCard(getContext(), trip);
+                CardView tripCard = TripsListUtil.createTripCard(context, trip);
 
                 LinearLayout.LayoutParams tripCardParams = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -94,6 +103,5 @@ public class ComingTripsFragment extends Fragment {
                 layout.addView(tripCard, tripCardParams);
             }
         }
-        return rootView;
     }
 }
