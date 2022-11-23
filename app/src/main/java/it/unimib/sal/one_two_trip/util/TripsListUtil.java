@@ -272,6 +272,36 @@ public class TripsListUtil {
                 }
                 lastActivity = activityLayout;
 
+                // Attachments
+                MaterialButton attachmentsButton = null;
+                if (activity.getAttachment() != null) {
+                    attachmentsButton = new MaterialButton(context, null,
+                            com.google.android.material.R.attr.materialIconButtonStyle);
+                    attachmentsButton.setId(View.generateViewId());
+                    attachmentsButton.setIcon(AppCompatResources.getDrawable(context,
+                            R.drawable.ic_baseline_file_present_24));
+                    attachmentsButton.setIconTint(AppCompatResources.getColorStateList(context,
+                            typedValue.resourceId));
+                    activityLayout.addView(attachmentsButton);
+
+                    set.connect(attachmentsButton.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID,
+                            ConstraintSet.END, 0);
+                    set.connect(attachmentsButton.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
+                            ConstraintSet.TOP, 0);
+                    set.connect(attachmentsButton.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID,
+                            ConstraintSet.BOTTOM, 0);
+
+                    set.constrainWidth(attachmentsButton.getId(), ConstraintSet.WRAP_CONTENT);
+                    set.constrainHeight(attachmentsButton.getId(), ConstraintSet.WRAP_CONTENT);
+                    set.applyTo(activityLayout);
+
+                    attachmentsButton.setOnClickListener(v -> {
+                        /* TODO: Open attachments list */
+                    });
+                }
+
+
+
                 // Start time TextView
                 TextView activityStartTime = new TextView(context);
                 activityStartTime.setId(View.generateViewId());
@@ -372,7 +402,14 @@ public class TripsListUtil {
                 activityLayout.addView(activityInfo);
 
                 set.connect(activityInfo.getId(), ConstraintSet.START, activityName.getId(),
-                        ConstraintSet.END, 60);
+                        ConstraintSet.END, 0);
+                if(attachmentsButton != null){
+                    set.connect(activityInfo.getId(), ConstraintSet.END, attachmentsButton.getId(),
+                            ConstraintSet.START, 0);
+                } else {
+                    set.connect(activityInfo.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID,
+                            ConstraintSet.END, 0);
+                }
                 set.connect(activityInfo.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
                         ConstraintSet.TOP, 0);
                 set.connect(activityInfo.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID,
@@ -385,15 +422,16 @@ public class TripsListUtil {
                 // Participants
 
                 // only shows participants if the number of them is different from the number of
-                // participants of the entire trip
+                // participants of the entire trip (and it's not a moving activity)
                 if (activity.getParticipant() != null && trip.getParticipant() != null &&
-                        activity.getParticipant().length != trip.getParticipant().length) {
+                        activity.getParticipant().length != trip.getParticipant().length
+                        && !(activity instanceof MovingActivity)) {
                     // Participants layout
                     LinearLayout participantsLayout = new LinearLayout(context);
                     participantsLayout.setId(View.generateViewId());
                     participantsLayout.setOrientation(LinearLayout.HORIZONTAL);
                     participantsLayout.setGravity(Gravity.CENTER);
-                    activityLayout.addView(participantsLayout);
+                    activityInfo.addView(participantsLayout);
 
                     // Participants ImageView
                     ImageView participantsImage = new ImageView(context);
@@ -413,44 +451,21 @@ public class TripsListUtil {
 
                     participantsLayout.addView(participantsCount);
 
-                    set.connect(participantsLayout.getId(), ConstraintSet.START, activityInfo.getId(),
-                            ConstraintSet.END, 50);
+                    //can never be moving activity
+                    set.connect(participantsLayout.getId(), ConstraintSet.START, activityStartTime.getId(),
+                            ConstraintSet.END, 40);
                     set.connect(participantsLayout.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
                             ConstraintSet.TOP, 0);
                     set.connect(participantsLayout.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID,
                             ConstraintSet.BOTTOM, 0);
                     set.constrainWidth(participantsLayout.getId(), ConstraintSet.WRAP_CONTENT);
                     set.constrainHeight(participantsLayout.getId(), ConstraintSet.WRAP_CONTENT);
-                    set.applyTo(activityLayout);
+                    set.applyTo(activityInfo);
                 }
 
-                // Attachments
-
-                if (activity.getAttachment() != null) {
-                    MaterialButton attachmentsButton = new MaterialButton(context, null,
-                            com.google.android.material.R.attr.materialIconButtonStyle);
-                    attachmentsButton.setId(View.generateViewId());
-                    attachmentsButton.setIcon(AppCompatResources.getDrawable(context,
-                            R.drawable.ic_baseline_file_present_24));
-                    attachmentsButton.setIconTint(AppCompatResources.getColorStateList(context,
-                            typedValue.resourceId));
-                    activityLayout.addView(attachmentsButton);
-
-                    set.connect(attachmentsButton.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID,
-                            ConstraintSet.END, 30);
-                    set.connect(attachmentsButton.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
-                            ConstraintSet.TOP, 0);
-                    set.connect(attachmentsButton.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID,
-                            ConstraintSet.BOTTOM, 0);
-
-                    set.constrainWidth(attachmentsButton.getId(), ConstraintSet.WRAP_CONTENT);
-                    set.constrainHeight(attachmentsButton.getId(), ConstraintSet.WRAP_CONTENT);
-                    set.applyTo(activityLayout);
-
-                    attachmentsButton.setOnClickListener(v -> {
-                        /* TODO: Open attachments list */
-                    });
-                }
+                activityLayout.setOnClickListener(v -> {
+                    /* TODO: open activity details */
+                });
 
                 // Update activities counter
                 activitiesCount++;
@@ -478,7 +493,7 @@ public class TripsListUtil {
             set.applyTo(cardViewLayout);
 
             moreButton.setOnClickListener(v -> {
-                /* TODO : Open trip details activity */
+                /* TODO : Open trip details */
             });
         }
         else{
@@ -529,6 +544,10 @@ public class TripsListUtil {
 
         cardViewLayoutParams.setMargins(0,0,0,30);
         cardView.addView(cardViewLayout, cardViewLayoutParams);
+
+        cardView.setOnClickListener(v -> {
+            /* TODO : Open trip details */
+        });
 
         return cardView;
     }
