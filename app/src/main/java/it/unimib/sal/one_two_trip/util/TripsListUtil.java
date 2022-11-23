@@ -70,11 +70,11 @@ public class TripsListUtil {
         // ImageView
         ImageView emptyStateIllustration = new ImageView(context);
         emptyStateIllustration.setId(View.generateViewId());
-        emptyStateIllustration.setImageResource(R.mipmap.no_trips);
+        emptyStateIllustration.setImageResource(R.drawable.no_trips);
         emptyStateIllustration.setAdjustViewBounds(true);
-        emptyStateIllustration.setMaxHeight(1000);
-        emptyStateIllustration.setMaxWidth(1000);
-        emptyStateIllustration.setImageAlpha(200);
+        emptyStateIllustration.setMaxHeight(1500);
+        emptyStateIllustration.setMaxWidth(1500);
+        emptyStateIllustration.setImageAlpha(220);
 
         constraintLayout.addView(emptyStateIllustration);
 
