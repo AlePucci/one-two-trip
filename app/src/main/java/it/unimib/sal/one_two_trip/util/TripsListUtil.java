@@ -106,6 +106,7 @@ public class TripsListUtil {
 
         ConstraintLayout cardViewLayout = new ConstraintLayout(context);
         cardViewLayout.setId(View.generateViewId());
+        cardViewLayout.setPadding(50,30,30,50);
 
         ConstraintSet set = new ConstraintSet();
         set.clone(cardViewLayout);
@@ -122,9 +123,9 @@ public class TripsListUtil {
 
         cardViewLayout.addView(tripName);
         set.connect(tripName.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID,
-                ConstraintSet.START, 50);
+                ConstraintSet.START, 0);
         set.connect(tripName.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
-                ConstraintSet.TOP, 30);
+                ConstraintSet.TOP, 0);
 
         set.constrainWidth(tripName.getId(), ConstraintSet.WRAP_CONTENT);
         set.constrainHeight(tripName.getId(), ConstraintSet.WRAP_CONTENT);
@@ -145,9 +146,9 @@ public class TripsListUtil {
         cardViewLayout.addView(shareTripButton);
 
         set.connect(shareTripButton.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID,
-                ConstraintSet.END, 30);
+                ConstraintSet.END, 0);
         set.connect(shareTripButton.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
-                ConstraintSet.TOP, 10);
+                ConstraintSet.TOP, 0);
 
         set.constrainWidth(shareTripButton.getId(), ConstraintSet.WRAP_CONTENT);
         set.constrainHeight(shareTripButton.getId(), ConstraintSet.WRAP_CONTENT);
@@ -177,7 +178,7 @@ public class TripsListUtil {
                         context, R.drawable.trip_container_home));
                 activityLayout.setPadding(20, 40, 20, 40);
                 cardViewLayout.addView(activityLayout);
-                set.constrainPercentWidth(activityLayout.getId(), 0.92f);
+
                 set.applyTo(cardViewLayout);
 
                 // Activity name
@@ -205,7 +206,7 @@ public class TripsListUtil {
                     cardViewLayout.addView(dateView);
 
                     set.connect(dateView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID,
-                            ConstraintSet.START, 50);
+                            ConstraintSet.START, 0);
 
                     // If it's the first activity, connect it to the trip name
                     if (lastDate == null) {
@@ -226,8 +227,11 @@ public class TripsListUtil {
                     set.connect(activityLayout.getId(), ConstraintSet.TOP, dateView.getId(),
                             ConstraintSet.BOTTOM, 20);
                     set.connect(activityLayout.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID,
-                            ConstraintSet.START, 50);
+                            ConstraintSet.START, 0);
+                    set.connect(activityLayout.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID,
+                            ConstraintSet.END, 0);
 
+                    set.constrainWidth(activityLayout.getId(), ConstraintSet.MATCH_CONSTRAINT);
                     set.constrainHeight(activityLayout.getId(), ConstraintSet.WRAP_CONTENT);
                     set.applyTo(cardViewLayout);
 
@@ -249,11 +253,14 @@ public class TripsListUtil {
                     // the activity is not the first one and the date is the same as the last one
 
                     set.connect(activityLayout.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID,
-                            ConstraintSet.START, 50);
+                            ConstraintSet.START, 0);
+                    set.connect(activityLayout.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID,
+                            ConstraintSet.END, 0);
                     // connect the activityLayout top to the bottom of lastActivity layout
                     set.connect(activityLayout.getId(), ConstraintSet.TOP, lastActivity.getId(),
                             ConstraintSet.BOTTOM, 20);
 
+                    set.constrainWidth(activityLayout.getId(), ConstraintSet.MATCH_CONSTRAINT);
                     set.constrainHeight(activityLayout.getId(), ConstraintSet.WRAP_CONTENT);
                     set.applyTo(cardViewLayout);
 
@@ -542,7 +549,6 @@ public class TripsListUtil {
                 CardView.LayoutParams.MATCH_PARENT,
                 CardView.LayoutParams.WRAP_CONTENT);
 
-        cardViewLayoutParams.setMargins(0,0,0,30);
         cardView.addView(cardViewLayout, cardViewLayoutParams);
 
         cardView.setOnClickListener(v -> {
