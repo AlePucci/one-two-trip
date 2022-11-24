@@ -1,4 +1,6 @@
-package it.unimib.sal.one_two_trip.ui;
+package it.unimib.sal.one_two_trip.ui.trip;
+
+import static it.unimib.sal.one_two_trip.util.TemporaryTrips.trips;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -50,6 +52,7 @@ public class Trip extends AppCompatActivity {
 
         //Toolbar
         Toolbar toolbar = findViewById(R.id.trip_toolbar);
+        toolbar.setTitle(trips[0].getTitle());
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(view -> onBackPressed());

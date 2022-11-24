@@ -14,7 +14,6 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.button.MaterialButton;
 
@@ -369,7 +368,11 @@ public class TripsListUtil {
             set.applyTo(cardViewLayout);
 
             moreButton.setOnClickListener(v -> {
-                Navigation.findNavController(cardView).navigate(R.id.action_fragment_coming_trips_to_trip);
+                if(trip.isCompleted()) {
+                    Navigation.findNavController(cardView).navigate(R.id.action_fragment_past_trips_to_trip);
+                } else {
+                    Navigation.findNavController(cardView).navigate(R.id.action_fragment_coming_trips_to_trip);
+                }
             });
         }
         else{

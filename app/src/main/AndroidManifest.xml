@@ -32,7 +32,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.Trip"
+            android:name=".ui.trip.Trip"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

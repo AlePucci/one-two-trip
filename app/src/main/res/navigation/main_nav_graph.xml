@@ -16,10 +16,18 @@
     <fragment
         android:id="@+id/fragment_past_trips"
         android:name="it.unimib.sal.one_two_trip.ui.main.PastTripsFragment"
-        tools:layout="@layout/fragment_past_trips" />
+        tools:layout="@layout/fragment_past_trips" >
+        <action
+            android:id="@+id/action_fragment_past_trips_to_trip"
+            app:destination="@id/trip" />
+    </fragment>
     <activity
         android:id="@+id/trip"
-        android:name="it.unimib.sal.one_two_trip.ui.Trip"
+        android:name="it.unimib.sal.one_two_trip.ui.trip.Trip"
         android:label="activity_trip"
-        tools:layout="@layout/activity_trip" />
+        tools:layout="@layout/activity_trip" >
+        <argument
+            android:name="tripIndex"
+            app:argType="reference" />
+    </activity>
 </navigation>
