@@ -2,9 +2,6 @@ package it.unimib.sal.one_two_trip.ui.trip;
 
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_DRAGGING;
-import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
-import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HALF_EXPANDED;
-import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_SETTLING;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -14,19 +11,16 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.LinearLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -37,7 +31,6 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
-import it.unimib.sal.one_two_trip.BuildConfig;
 import it.unimib.sal.one_two_trip.R;
 
 public class TripFragment extends Fragment {
@@ -47,13 +40,12 @@ public class TripFragment extends Fragment {
     private final String[] PERMISSIONS = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.INTERNET,
-            Manifest.permission.ACCESS_NETWORK_STATE,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_NETWORK_STATE
     };
 
     private MapView mapView;
 
-    private int fabDeltaDp = 0;
+    private int bottomSheetLastDelta = 0;
 
     public TripFragment() {
         // Required empty public constructor
@@ -97,26 +89,27 @@ public class TripFragment extends Fragment {
         mapController.setCenter(startPoint);
 
         //Bottom Sheet
-        BottomSheetBehavior.from(view.findViewById(R.id.trip_sheet)).addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+        BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.trip_sheet));
+        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 ExtendedFloatingActionButton fab = view.findViewById(R.id.trip_extended_fab);
+                final int delta = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics());
 
                 if(newState == STATE_COLLAPSED) {
-                    final Animation animation = new TranslateAnimation(0,0, fabDeltaDp, 0);
+                    final Animation animation = new TranslateAnimation(0,0, delta, 0);
                     animation.setDuration(500);
                     animation.setFillAfter(true);
                     fab.startAnimation(animation);
 
-                    fabDeltaDp = 0;
-                } else if(newState == STATE_SETTLING) {
-                    final int toDelta = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics());
-                    final Animation animation = new TranslateAnimation(0,0,fabDeltaDp, toDelta);
+                    bottomSheetLastDelta = 0;
+                } else if(newState == STATE_DRAGGING) {
+                    final Animation animation = new TranslateAnimation(0,0,bottomSheetLastDelta, delta);
                     animation.setDuration(500);
                     animation.setFillAfter(true);
                     fab.startAnimation(animation);
 
-                    fabDeltaDp = toDelta;
+                    bottomSheetLastDelta = delta;
                 }
             }
 
@@ -142,13 +135,12 @@ public class TripFragment extends Fragment {
         boolean permissionsStatus = true;
 
         for(String p: PERMISSIONS) {
-            permissionsStatus &= ActivityCompat.checkSelfPermission(getContext(), p) == PackageManager.PERMISSION_GRANTED;
+            permissionsStatus &= ActivityCompat.checkSelfPermission(requireContext(), p) == PackageManager.PERMISSION_GRANTED;
         }
 
         if(permissionsStatus) {
             //Get the Map
-            Configuration.getInstance().load(getContext(), PreferenceManager.getDefaultSharedPreferences(getContext()));
-            Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
+            Configuration.getInstance().load(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()));
         } else {
             multiplePermissionLauncher.launch(PERMISSIONS);
         }
