@@ -1,271 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/trip_activity_constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ui.trip.Trip">
+    tools:context=".ui.trip.TripActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/trip_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:titleCentered="true"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
-        />
+        app:titleCentered="true" />
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/coordinator"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/trip_nav_host"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/transparent">
-
-        <FrameLayout
-            android:id="@+id/frame"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <org.osmdroid.views.MapView
-                android:id="@+id/mapView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@string/trip_map_description" />
-        </FrameLayout>
-
-        <LinearLayout
-            android:id="@+id/trip_sheet"
-            style="@style/Widget.Material3.BottomSheet"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-            app:behavior_peekHeight="48dp"
-            app:behavior_hideable="false"
-            app:behavior_fitToContents="false">
-
-            <com.google.android.material.bottomsheet.BottomSheetDragHandleView
-                android:id="@+id/drag_handle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <LinearLayout
-                android:id="@+id/activities_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <com.google.android.material.card.MaterialCardView
-                    style="?materialCardViewElevatedStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="8dp">
-
-                        <TextView
-                            android:id="@+id/textView6"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Lunedì 14 nov 2022"
-                            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-                            android:textStyle="bold"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ImageButton
-                            android:id="@+id/imageButton33"
-                            style="@style/Widget.Material3.Button.IconButton"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            app:layout_constraintBottom_toBottomOf="@+id/materialCardView2"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/materialCardView2"
-                            app:srcCompat="@drawable/ic_baseline_drag_indicator_24" />
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/materialCardView2"
-                            style="?materialCardViewOutlinedStyle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/imageButton33"
-                            app:layout_constraintTop_toBottomOf="@+id/textView6">
-
-                            <RelativeLayout
-                                android:id="@+id/linearLayout"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:padding="8dp">
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trip_toolbar"
+        app:navGraph="@navigation/trip_nav_graph" />
 
 
-                                <TextView
-                                    android:id="@+id/textView3"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_below="@+id/textView2"
-                                    android:layout_alignStart="@+id/textView2"
-                                    android:layout_marginStart="0dp"
-                                    android:layout_marginTop="0dp"
-                                    android:layout_marginEnd="8dp"
-                                    android:layout_toStartOf="@+id/textView4"
-                                    android:gravity="center"
-                                    android:text="9.30"
-                                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
-
-                                <TextView
-                                    android:id="@+id/textView32"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_below="@id/textView22"
-                                    android:layout_alignParentEnd="true"
-                                    android:layout_marginTop="0dp"
-                                    android:layout_marginEnd="0dp"
-                                    android:gravity="center"
-                                    android:text="11.30"
-                                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
-
-                                <TextView
-                                    android:id="@+id/textView2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginEnd="8dp"
-                                    android:layout_toStartOf="@+id/textView4"
-                                    android:gravity="center"
-                                    android:text="MXP"
-                                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
-
-                                <TextView
-                                    android:id="@+id/textView4"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginEnd="8dp"
-                                    android:layout_toStartOf="@+id/textView32"
-                                    android:gravity="center"
-                                    android:text="-"
-                                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
-
-                                <TextView
-                                    android:id="@+id/textView22"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_alignParentTop="true"
-                                    android:layout_alignParentEnd="true"
-                                    android:layout_marginStart="0dp"
-                                    android:layout_marginTop="0dp"
-                                    android:layout_marginEnd="0dp"
-                                    android:layout_toEndOf="@+id/textView4"
-                                    android:gravity="center"
-                                    android:text="CDG"
-                                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
-
-                                <TextView
-                                    android:id="@+id/textView33"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="0dp"
-                                    android:layout_alignBottom="@id/textView32"
-                                    android:layout_alignParentStart="true"
-                                    android:layout_alignParentTop="true"
-                                    android:layout_marginStart="0dp"
-                                    android:layout_marginBottom="0dp"
-                                    android:gravity="center_vertical"
-                                    android:text="Volo #EZY3932"
-                                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
-
-
-                                <TextView
-                                    android:id="@+id/textView5"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_below="@id/textView32"
-                                    android:layout_alignParentStart="true"
-                                    android:layout_alignParentEnd="true"
-                                    android:layout_marginStart="0dp"
-                                    android:layout_marginTop="8dp"
-                                    android:layout_marginEnd="0dp"
-                                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-                                    android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
-
-                                <Button
-                                    android:id="@+id/button"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_below="@+id/textView5"
-                                    android:layout_alignParentStart="true"
-                                    android:layout_marginStart="0dp"
-                                    android:layout_marginTop="8dp"
-                                    android:text="biglietti.pdf"
-                                    app:icon="@drawable/ic_baseline_file_present_24" />
-
-                            </RelativeLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                        <ImageButton
-                            android:id="@+id/imageButton"
-                            style="@style/Widget.Material3.Button.IconButton"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            app:layout_constraintBottom_toBottomOf="@+id/materialCardView3"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/materialCardView3"
-                            app:srcCompat="@drawable/ic_baseline_drag_indicator_24" />
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/materialCardView3"
-                            style="?materialCardViewOutlinedStyle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/imageButton"
-                            app:layout_constraintTop_toBottomOf="@+id/materialCardView2">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:padding="8dp">
-
-                                <TextView
-                                    android:id="@+id/textView"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Champs Elisées"
-                                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
-
-                                <TextView
-                                    android:id="@+id/textView7"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="end"
-                                    android:text="15.00"
-                                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
-
-                            </LinearLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/extended_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:layout_gravity="bottom|end"
-            android:text="@string/trip_fab_label"
-            app:icon="@drawable/ic_baseline_add_24"/>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

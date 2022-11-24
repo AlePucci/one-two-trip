@@ -23,7 +23,7 @@
     </fragment>
     <activity
         android:id="@+id/trip"
-        android:name="it.unimib.sal.one_two_trip.ui.trip.Trip"
+        android:name="it.unimib.sal.one_two_trip.ui.trip.TripActivity"
         android:label="activity_trip"
         tools:layout="@layout/activity_trip" >
         <argument

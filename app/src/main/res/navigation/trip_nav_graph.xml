@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/trip_nav_graph"
+    app:startDestination="@id/tripFragment">
+
+    <fragment
+        android:id="@+id/tripFragment"
+        android:name="it.unimib.sal.one_two_trip.ui.trip.TripFragment"
+        android:label="fragment_trip"
+        tools:layout="@layout/fragment_trip" />
+</navigation>
