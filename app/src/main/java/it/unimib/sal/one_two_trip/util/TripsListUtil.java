@@ -446,7 +446,7 @@ public class TripsListUtil {
                 cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
     }
 
-    /** Utility method to get a time dependant date
+    /** Utility method to get a time independent date
      *
      * @param date the date
      * @return a new date with the same year, month, day
