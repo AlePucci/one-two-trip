@@ -18,6 +18,8 @@ import androidx.navigation.Navigation;
 import com.google.android.material.button.MaterialButton;
 
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -442,5 +444,21 @@ public class TripsListUtil {
         return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                 cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
                 cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
+    }
+
+    /** Utility method to get a time dependant date
+     *
+     * @param date the date
+     * @return a new date with the same year, month, day
+     */
+    public static Date getDateDay(Date date) {
+        DateFormat df = SimpleDateFormat.getDateInstance();
+        try {
+            return df.parse(df.format(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return new Date();
     }
 }
