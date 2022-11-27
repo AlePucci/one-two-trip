@@ -1,47 +1,94 @@
 package it.unimib.sal.one_two_trip.model;
 
-import androidx.annotation.NonNull;
+import android.os.Parcel;
+import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
-public class Trip {
-    private String id;
+import it.unimib.sal.one_two_trip.util.ActivityListHolder;
+import it.unimib.sal.one_two_trip.util.PersonListHolder;
+
+@Entity
+public class Trip  {
+    @PrimaryKey(autoGenerate = true)
+    private long id;
+
     private String tripOwner; // email address of the owner
     private String title;
     private String description;
-    private Activity[] activity;
-    private Person[] participant;
-    private boolean completed = false;
+    @Embedded private ActivityListHolder activity;
+    @Embedded private PersonListHolder participant;
+    private boolean completed;
 
-    public Trip(String id, String tripOwner, String title, String description) {
+    public Trip() {}
+
+    public Trip(long id, String tripOwner, String title, String description, ActivityListHolder activity, PersonListHolder participant, boolean completed) {
         this.id = id;
         this.tripOwner = tripOwner;
         this.title = title;
         this.description = description;
+        this.activity = activity;
+        this.participant = participant;
+        this.completed = completed;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public String getTitle() {
-        return title;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getTripOwner() {
         return tripOwner;
     }
 
+    public void setTripOwner(String tripOwner) {
+        this.tripOwner = tripOwner;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getDescription() {
         return description;
     }
 
-    public Activity[] getActivity() {
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public ActivityListHolder getActivity() {
         return activity;
     }
 
-    public Person[] getParticipant() {
+    public void setActivity(ActivityListHolder activity) {
+        this.activity = activity;
+    }
+
+    public PersonListHolder getParticipant() {
         return participant;
+    }
+
+    public void setParticipant(PersonListHolder participant) {
+        this.participant = participant;
     }
 
     public boolean isCompleted() {
@@ -49,44 +96,20 @@ public class Trip {
         return completed;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setTripOwner(String tripOwner) {
-        this.tripOwner = tripOwner;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setActivity(Activity[] activity) {
-        this.activity = activity;
-    }
-
-    public void setParticipant(Person[] participant) {
-        this.participant = participant;
-    }
-
     public void setCompleted(boolean completed) {
         this.completed = completed;
     }
 
-    public void checkCompleted(){
+    public void checkCompleted() {
         boolean isThereAtLeastOneActivity = false;
-        if (this.getActivity() == null) {
+        if (this.getActivity().activityList == null) {
             setCompleted(false);
             return;
         }
 
-        for(Activity a : activity){
+        for (Activity a : activity.activityList) {
             isThereAtLeastOneActivity = true;
-            if(a == null || !a.isCompleted()){
+            if (a == null || !a.isCompleted()) {
                 setCompleted(false);
                 return;
             }
@@ -100,12 +123,12 @@ public class Trip {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trip trip = (Trip) o;
-        return id.equals(trip.id) && tripOwner.equals(trip.tripOwner);
+        return id == trip.id && completed == trip.completed && Objects.equals(tripOwner, trip.tripOwner) && Objects.equals(title, trip.title) && Objects.equals(description, trip.description) && Objects.equals(activity, trip.activity) && Objects.equals(participant, trip.participant);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tripOwner);
+        return Objects.hash(id, tripOwner, title, description, activity, participant, completed);
     }
 
     @NonNull
@@ -115,6 +138,8 @@ public class Trip {
                 "id='" + id + '\'' +
                 ", title='" + title + '\'' +
                 ", completed=" + completed +
+                ", activity=" + activity +
                 '}';
     }
+
 }

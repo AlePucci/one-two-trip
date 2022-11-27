@@ -1,0 +1,367 @@
+{
+  "status" : "ok",
+  "totalResults" : 1,
+  "trips": [
+    {
+      "id": 1,
+      "tripOwner" : "test@test.com",
+      "title": "Parigi",
+      "description": "Viaggio a Parigi",
+      "activity": {
+        "activityList": [
+          {
+            "id": 1,
+            "title": "Volo #EZY3932",
+            "description": "Volo da Milano a Parigi",
+            "start_date": "2023-02-14T09:30:00",
+            "end_date": "2023-02-14T11:30:00",
+            "location": "MXP",
+            "end_location": "CDG",
+            "trip_id": 1,
+            "participant": [
+              {
+                "id": 0,
+                "name": "Mario",
+                "surname": "Rossi",
+                "email_address": "test@test.com",
+                "password": "test",
+                "phone_number": "1234567890",
+                "profile_picture": "null"
+              },
+              {
+                "id": 1,
+                "name": "Luigi",
+                "surname": "Rossi",
+                "email_address": "test1@test.com",
+                "password": "test",
+                "phone_number": "1234567890",
+                "profile_picture": "null"
+              },
+              {
+                "id": 2,
+                "name": "Wario",
+                "surname": "Rossi",
+                "email_address": "test2@test.com",
+                "password": "test",
+                "phone_number": "1234567890",
+                "profile_picture": "null"
+              }
+            ],
+            "attachment": [],
+            "link": [],
+            "completed": "false",
+            "type": "moving"
+          },
+          {
+            "id": 2,
+            "title": "Museo del Louvre",
+            "description": "Museum",
+            "start_date": "2023-02-14T15:00:00",
+            "location": "Paris",
+            "trip_id": 1,
+            "participant": [
+              {
+                "id": 0,
+                "name": "Mario",
+                "surname": "Rossi",
+                "email_address": "test@test.com",
+                "password": "test",
+                "phone_number": "1234567890",
+                "profile_picture": "null"
+              },
+              {
+                "id": 1,
+                "name": "Luigi",
+                "surname": "Rossi",
+                "email_address": "test1@test.com",
+                "password": "test",
+                "phone_number": "1234567890",
+                "profile_picture": "null"
+              }
+            ],
+            "attachment": [],
+            "link": [],
+            "completed": "false",
+            "type": "activity"
+          },
+          {
+            "id": 3,
+            "title": "Champs Elisées",
+            "description": "Passeggiata",
+            "start_date": "2023-02-15T10:00:00",
+            "location": "Paris",
+            "trip_id": 1,
+            "participant": [
+              {
+                "id": 0,
+                "name": "Mario",
+                "surname": "Rossi",
+                "email_address": "test@test.com",
+                "password": "test",
+                "phone_number": "1234567890",
+                "profile_picture": "null"
+              },
+              {
+                "id": 1,
+                "name": "Luigi",
+                "surname": "Rossi",
+                "email_address": "test1@test.com",
+                "password": "test",
+                "phone_number": "1234567890",
+                "profile_picture": "null"
+              },
+              {
+                "id": 2,
+                "name": "Wario",
+                "surname": "Rossi",
+                "email_address": "test2@test.com",
+                "password": "test",
+                "phone_number": "1234567890",
+                "profile_picture": "null"
+              }
+            ],
+            "attachment": [],
+            "link": [],
+            "completed": "false",
+            "type": "activity"
+          }
+        ]
+      },
+      "participant": {
+        "personList":
+      [
+          {
+            "id": 0,
+            "name": "Mario",
+            "surname": "Rossi",
+            "email_address": "test@test.com",
+            "password": "test",
+            "phone_number": "1234567890",
+            "profile_picture": "null"
+          },
+          {
+            "id": 1,
+            "name": "Luigi",
+            "surname": "Rossi",
+            "email_address": "test1@test.com",
+            "password": "test",
+            "phone_number": "1234567890",
+            "profile_picture": "null"
+          },
+          {
+            "id": 2,
+            "name": "Wario",
+            "surname": "Rossi",
+            "email_address": "test2@test.com",
+            "password": "test",
+            "phone_number": "1234567890",
+            "profile_picture": "null"
+          }]},
+      "completed" : false
+    },
+    {
+      "id" : 2,
+      "tripOwner" : "test@test.com",
+      "title": "Amsterdam",
+      "description": "Viaggio ad Amsterdam",
+      "activity": {
+        "activityList": []
+      },
+      "participant": {
+        "personList":
+        [
+          {
+            "id": 0,
+            "name": "Mario",
+            "surname": "Rossi",
+            "email_address": "test@test.com",
+            "password": "test",
+            "phone_number": "1234567890",
+            "profile_picture": "null"
+          },
+          {
+            "id": 1,
+            "name": "Luigi",
+            "surname": "Rossi",
+            "email_address": "test1@test.com",
+            "password": "test",
+            "phone_number": "1234567890",
+            "profile_picture": "null"
+          },
+          {
+            "id": 2,
+            "name": "Wario",
+            "surname": "Rossi",
+            "email_address": "test2@test.com",
+            "password": "test",
+            "phone_number": "1234567890",
+            "profile_picture": "null"
+          }]},
+      "completed": false
+    },
+    {
+      "id" : 3,
+      "tripOwner" : "test@test.com",
+      "title": "Londra",
+      "description": "Viaggio a Londra",
+      "activity": {
+        "activityList": [ {
+          "id": 1,
+          "title": "Volo #EZY3932",
+          "description": "Volo da Milano a Parigi",
+          "start_date": "2022-04-16T11:45:00",
+          "end_date": "2022-04-16T13:45:00",
+          "location": "LIN",
+          "end_location": "STN",
+          "trip_id": 3,
+          "participant": [
+            {
+              "id": 0,
+              "name": "Mario",
+              "surname": "Rossi",
+              "email_address": "test@test.com",
+              "password": "test",
+              "phone_number": "1234567890",
+              "profile_picture": "null"
+            },
+            {
+              "id": 1,
+              "name": "Luigi",
+              "surname": "Rossi",
+              "email_address": "test1@test.com",
+              "password": "test",
+              "phone_number": "1234567890",
+              "profile_picture": "null"
+            },
+            {
+              "id": 2,
+              "name": "Wario",
+              "surname": "Rossi",
+              "email_address": "test2@test.com",
+              "password": "test",
+              "phone_number": "1234567890",
+              "profile_picture": "null"
+            }
+          ],
+          "attachment": [],
+          "link": [],
+          "completed": "false",
+          "type": "moving"
+        },
+          {
+            "id": 2,
+            "title": "Buckingham Palace",
+            "description": "Palace",
+            "start_date": "2022-04-16T15:00:00",
+            "location": "London",
+            "trip_id": 2,
+            "participant": [
+              {
+                "id": 0,
+                "name": "Mario",
+                "surname": "Rossi",
+                "email_address": "test@test.com",
+                "password": "test",
+                "phone_number": "1234567890",
+                "profile_picture": "null"
+              },
+              {
+                "id": 1,
+                "name": "Luigi",
+                "surname": "Rossi",
+                "email_address": "test1@test.com",
+                "password": "test",
+                "phone_number": "1234567890",
+                "profile_picture": "null"
+              },
+              {
+                "id": 2,
+                "name": "Wario",
+                "surname": "Rossi",
+                "email_address": "test2@test.com",
+                "password": "test",
+                "phone_number": "1234567890",
+                "profile_picture": "null"
+              }
+            ],
+            "attachment": [],
+            "link": [],
+            "completed": "false",
+            "type": "activity"
+          },
+          {
+            "id": 3,
+            "title": "Harry Potter Studios",
+            "description": "",
+            "start_date": "2022-04-16T17:00:00",
+            "location": "Paris",
+            "trip_id": 1,
+            "participant": [
+              {
+                "id": 0,
+                "name": "Mario",
+                "surname": "Rossi",
+                "email_address": "test@test.com",
+                "password": "test",
+                "phone_number": "1234567890",
+                "profile_picture": "null"
+              },
+              {
+                "id": 1,
+                "name": "Luigi",
+                "surname": "Rossi",
+                "email_address": "test1@test.com",
+                "password": "test",
+                "phone_number": "1234567890",
+                "profile_picture": "null"
+              },
+              {
+                "id": 2,
+                "name": "Wario",
+                "surname": "Rossi",
+                "email_address": "test2@test.com",
+                "password": "test",
+                "phone_number": "1234567890",
+                "profile_picture": "null"
+              }
+            ],
+            "attachment": [],
+            "link": [],
+            "completed": "false",
+            "type": "activity"
+          }]
+      },
+      "participant": {
+        "personList":
+        [
+          {
+            "id": 0,
+            "name": "Mario",
+            "surname": "Rossi",
+            "email_address": "test@test.com",
+            "password": "test",
+            "phone_number": "1234567890",
+            "profile_picture": "null"
+          },
+          {
+            "id": 1,
+            "name": "Luigi",
+            "surname": "Rossi",
+            "email_address": "test1@test.com",
+            "password": "test",
+            "phone_number": "1234567890",
+            "profile_picture": "null"
+          },
+          {
+            "id": 2,
+            "name": "Wario",
+            "surname": "Rossi",
+            "email_address": "test2@test.com",
+            "password": "test",
+            "phone_number": "1234567890",
+            "profile_picture": "null"
+          }]},
+      "completed": false
+    }
+  ]
+}

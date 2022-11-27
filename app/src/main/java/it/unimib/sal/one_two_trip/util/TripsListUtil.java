@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.util;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -22,7 +23,6 @@ import java.util.Date;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.MovingActivity;
 import it.unimib.sal.one_two_trip.model.Trip;
 
 public class TripsListUtil {
@@ -33,17 +33,9 @@ public class TripsListUtil {
      * @param layout the Layout where the empty state will be displayed
      * @param textID the id of the string that will be shown in the empty state
      */
-    public static void showEmptyState (Context context, LinearLayout layout, int textID) {
-        // Layout
-        ConstraintLayout constraintLayout = new ConstraintLayout(context);
-        constraintLayout.setId(View.generateViewId());
-
+    public static void showEmptyState (Context context, ConstraintLayout layout, int textID) {
         ConstraintSet set = new ConstraintSet();
-        set.clone(constraintLayout);
-
-        layout.addView(constraintLayout, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT));
+        set.clone(layout);
 
         // TextView
         TextView emptyStateMessage = new TextView(context);
@@ -51,7 +43,7 @@ public class TripsListUtil {
         emptyStateMessage.setText(context.getString(textID));
         emptyStateMessage.setTextSize(20);
         emptyStateMessage.setGravity(Gravity.CENTER);
-        constraintLayout.addView(emptyStateMessage);
+        layout.addView(emptyStateMessage);
 
         set.connect(emptyStateMessage.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID,
                 ConstraintSet.START, 0);
@@ -65,7 +57,7 @@ public class TripsListUtil {
 
         set.constrainWidth(emptyStateMessage.getId(), ConstraintSet.WRAP_CONTENT);
         set.constrainHeight(emptyStateMessage.getId(), ConstraintSet.WRAP_CONTENT);
-        set.applyTo(constraintLayout);
+        set.applyTo(layout);
 
         // ImageView
         ImageView emptyStateIllustration = new ImageView(context);
@@ -76,7 +68,7 @@ public class TripsListUtil {
         emptyStateIllustration.setMaxWidth(1500);
         emptyStateIllustration.setImageAlpha(220);
 
-        constraintLayout.addView(emptyStateIllustration);
+        layout.addView(emptyStateIllustration);
 
         set.connect(emptyStateIllustration.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID,
                 ConstraintSet.START, 0);
@@ -87,7 +79,7 @@ public class TripsListUtil {
 
         set.constrainWidth(emptyStateIllustration.getId(), ConstraintSet.WRAP_CONTENT);
         set.constrainHeight(emptyStateIllustration.getId(), ConstraintSet.WRAP_CONTENT);
-        set.applyTo(constraintLayout);
+        set.applyTo(layout);
     }
 
     /** This method generates a TripCard, which is a CardView that contains the information of a
@@ -165,11 +157,13 @@ public class TripsListUtil {
         Date lastDate = null;
         ConstraintLayout lastActivity = null;
 
-        if(trip.getActivity() == null){
+        Log.d("a", trip.getActivity().activityList.toString());
+
+        if(trip.getActivity().activityList == null){
             throw new IllegalArgumentException("Trip has null activities");
         }
 
-        for (Activity activity : trip.getActivity()) {
+        for (Activity activity : trip.getActivity().activityList) {
             if (activitiesCount < MAX_ACTIVITIES_IN_A_TRIP) {
                 // Activity layout
                 ConstraintLayout activityLayout = new ConstraintLayout(context);
@@ -194,7 +188,7 @@ public class TripsListUtil {
                 // If the activity is the first one or if the date of the activity is different
                 // from the last one, add the date to the new one.
                 if (lastDate == null || (activity.getStart_date() != null &&
-                        !compareDate(lastDate, activity.getStart_date()))) {
+                        compareDate(lastDate, activity.getStart_date()) == 0)) {
                     // DateView
                     TextView dateView = new TextView(context);
                     dateView.setId(View.generateViewId());
@@ -307,8 +301,6 @@ public class TripsListUtil {
                     });
                 }
 
-
-
                 // Start time TextView
                 TextView activityStartTime = new TextView(context);
                 activityStartTime.setId(View.generateViewId());
@@ -328,7 +320,7 @@ public class TripsListUtil {
                 ConstraintLayout activityInfo = new ConstraintLayout(context);
                 activityInfo.setId(View.generateViewId());
 
-                if (activity instanceof MovingActivity) {
+                if (activity.getType().equals("moving")) {
                     // layout of start time and start location
                     LinearLayout startLayout = new LinearLayout(context);
                     startLayout.setId(View.generateViewId());
@@ -364,10 +356,10 @@ public class TripsListUtil {
                     // End time TextView
                     TextView activityEndTime = new TextView(context);
                     activityEndTime.setId(View.generateViewId());
-                    if (((MovingActivity) (activity)).getEnd_date() != null) {
+                    if (activity.getEnd_date() != null) {
                         activityEndTime.setText(DateFormat
                                 .getTimeInstance(DateFormat.SHORT)
-                                .format(((MovingActivity) (activity)).getEnd_date()));
+                                .format(activity.getEnd_date()));
                     }
                     else {
                         throw new IllegalArgumentException("Moving activity has no end date");
@@ -379,8 +371,8 @@ public class TripsListUtil {
                     TextView activityEndLocation = new TextView(context);
                     activityEndLocation.setId(View.generateViewId());
 
-                    if (((MovingActivity) (activity)).getEnd_location() != null) {
-                        activityEndLocation.setText(((MovingActivity) (activity)).getEnd_location());
+                    if (activity.getEnd_location() != null) {
+                        activityEndLocation.setText(activity.getEnd_location());
                     }
                     else {
                         throw new IllegalArgumentException("Moving activity has no end location");
@@ -430,9 +422,9 @@ public class TripsListUtil {
 
                 // only shows participants if the number of them is different from the number of
                 // participants of the entire trip (and it's not a moving activity)
-                if (activity.getParticipant() != null && trip.getParticipant() != null &&
-                        activity.getParticipant().length != trip.getParticipant().length
-                        && !(activity instanceof MovingActivity)) {
+                if (activity.getParticipant() != null && trip.getParticipant() != null  &&
+                        activity.getParticipant().size() != trip.getParticipant().personList.size()
+                        && !(activity.getType().equals("moving"))) {
                     // Participants layout
                     LinearLayout participantsLayout = new LinearLayout(context);
                     participantsLayout.setId(View.generateViewId());
@@ -452,7 +444,7 @@ public class TripsListUtil {
                     // Participants TextView (count)
                     TextView participantsCount = new TextView(context);
                     participantsCount.setId(View.generateViewId());
-                    participantsCount.setText(String.valueOf(activity.getParticipant().length));
+                    participantsCount.setText(String.valueOf(activity.getParticipant().size()));
                     participantsCount.setTextSize(20);
                     participantsCount.setTextAppearance(context, R.style.Widget_App_TripTimeAppearance);
 
@@ -564,14 +556,17 @@ public class TripsListUtil {
      * @param date2 second date
      * @return true if the dates are in the same day (excluding time), false otherwise
      */
-    private static boolean compareDate(Date date1, Date date2) {
+    public static int compareDate(Date date1, Date date2) {
         Calendar cal1 = Calendar.getInstance();
         Calendar cal2 = Calendar.getInstance();
         cal1.setTime(date1);
         cal2.setTime(date2);
 
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+        if( cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                 cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
-                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
+                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH))
+            return 1;
+
+        return 0;
     }
 }

@@ -1,22 +1,28 @@
 package it.unimib.sal.one_two_trip.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 import java.util.Objects;
+@Entity
+public class Person  {
+    @PrimaryKey(autoGenerate = true)
+    private long id = 0;
+    private String name = "";
+    private String surname = "";
+    private String email_address = "";
+    private String password = "";
+    private String phone_number = "";
+    private String profile_picture = "";
 
-public class Person {
-    private String id;
-    private String name;
-    private String surname;
-    private String email_address;
-    private String password;
-    private String phone_number;
-    private String profile_picture;
+    public Person() {}
 
-    private Trip[] owned_trips;
-    private Trip[] joined_trips;
-
-    public Person(String id, String name, String surname, String email_address, String password, String phone_number, String profile_picture) {
+    public Person(long id, String name, String surname, String email_address, String password, String phone_number, String profile_picture) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -26,76 +32,60 @@ public class Person {
         this.profile_picture = profile_picture;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getSurname() {
-        return surname;
-    }
-
-    public String getEmail_address() {
-        return email_address;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getPhone_number() {
-        return phone_number;
-    }
-
-    public String getProfile_picture() {
-        return profile_picture;
-    }
-
-    public Trip[] getOwned_trips() {
-        return owned_trips;
-    }
-
-    public Trip[] getJoined_trips() {
-        return joined_trips;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
     }
 
     public void setSurname(String surname) {
         this.surname = surname;
     }
 
+    public String getEmail_address() {
+        return email_address;
+    }
+
     public void setEmail_address(String email_address) {
         this.email_address = email_address;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
+    public String getPhone_number() {
+        return phone_number;
+    }
+
     public void setPhone_number(String phone_number) {
         this.phone_number = phone_number;
     }
 
+    public String getProfile_picture() {
+        return profile_picture;
+    }
+
     public void setProfile_picture(String profile_picture) {
         this.profile_picture = profile_picture;
-    }
-
-    public void setOwned_trips(Trip[] owned_trips) {
-        this.owned_trips = owned_trips;
-    }
-
-    public void setJoined_trips(Trip[] joined_trips) {
-        this.joined_trips = joined_trips;
     }
 
     @Override
@@ -121,4 +111,5 @@ public class Person {
                 ", email_address='" + email_address + '\'' +
                 '}';
     }
+
 }
