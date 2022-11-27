@@ -157,8 +157,6 @@ public class TripsListUtil {
         Date lastDate = null;
         ConstraintLayout lastActivity = null;
 
-        Log.d("a", trip.getActivity().activityList.toString());
-
         if(trip.getActivity().activityList == null){
             throw new IllegalArgumentException("Trip has null activities");
         }

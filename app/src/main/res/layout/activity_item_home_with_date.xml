@@ -3,10 +3,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_layout"
+    android:id="@+id/activity_external_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="5dp">
+    android:layout_marginBottom="5dp">
 
     <TextView
         android:id="@+id/activity_date"
@@ -20,6 +20,7 @@
         tools:text="Data" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/activity_internal_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/trip_container_home"
@@ -46,6 +47,7 @@
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/activity_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -53,11 +53,9 @@ public class ActivitiesRecyclerViewAdapter extends
 
     @Override
     public int getItemViewType(int position) {
-        Log.d("c", "nop");
         if (activityList.get(position) != null && position != 0) {
             Date lastDate = activityList.get((position - 1)).getStart_date();
             Date thisDate = activityList.get(position).getStart_date();
-            Log.d("c", TripsListUtil.compareDate(lastDate, thisDate) + "");
             return TripsListUtil.compareDate(lastDate, thisDate);
         }
 
@@ -67,7 +65,6 @@ public class ActivitiesRecyclerViewAdapter extends
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Log.d("b", viewType + "");
         if (viewType == VIEW_WITH_DATE) {
             return new ActivityViewHolderDate(LayoutInflater.from(parent.getContext()).
                     inflate(R.layout.activity_item_home_with_date, parent, false));
