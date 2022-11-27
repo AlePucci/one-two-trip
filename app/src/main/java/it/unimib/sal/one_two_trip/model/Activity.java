@@ -1,18 +1,15 @@
 package it.unimib.sal.one_two_trip.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import androidx.annotation.NonNull;
+import androidx.room.Embedded;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
+import it.unimib.sal.one_two_trip.util.PersonListHolder;
 
 @Entity
 public class Activity {
@@ -25,16 +22,19 @@ public class Activity {
     private String end_location;
     private Date start_date;
     private Date end_date;
-    private List<Person> participant;
+    @Embedded
+    private PersonListHolder participant;
     private long trip_id;
     private List<Object> attachment;
     private List<String> link;
     private boolean completed;
     private String type;
+    private boolean everyoneParticipate;
 
-    public Activity(){}
+    public Activity() {
+    }
 
-    public Activity(long id, String title, String description, String location, String end_location, Date start_date, Date end_date, List<Person> participant, long trip_id, List<Object> attachment, List<String> link, boolean completed, String type) {
+    public Activity(long id, String title, String description, String location, String end_location, Date start_date, Date end_date, PersonListHolder participant, long trip_id, List<Object> attachment, List<String> link, boolean completed, String type, boolean everyoneParticipate) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -48,6 +48,7 @@ public class Activity {
         this.link = link;
         this.completed = completed;
         this.type = type;
+        this.everyoneParticipate = everyoneParticipate;
     }
 
     public long getId() {
@@ -106,11 +107,11 @@ public class Activity {
         this.end_date = end_date;
     }
 
-    public List<Person> getParticipant() {
+    public PersonListHolder getParticipant() {
         return participant;
     }
 
-    public void setParticipant(List<Person> participant) {
+    public void setParticipant(PersonListHolder participant) {
         this.participant = participant;
     }
 
@@ -155,6 +156,14 @@ public class Activity {
         this.type = type;
     }
 
+    public boolean doesEveryoneParticipate() {
+        return everyoneParticipate;
+    }
+
+    public void setEveryoneParticipate(boolean everyoneParticipate) {
+        this.everyoneParticipate = everyoneParticipate;
+    }
+
     public void checkCompleted() {
         if (start_date.before(new Date())) {
             setCompleted(true);
@@ -177,8 +186,7 @@ public class Activity {
     @NonNull
     @Override
     public String toString() {
-        return "Activity{" + "id='" + id + '\'' + ", title='" + title + '\'' + ", location='" +
-                location + '\'' + ", start_date=" + start_date + '}';
+        return "Activity{" + "id='" + id + '\'' + ", title='" + title + '\'' + ", location='" + location + '\'' + ", start_date=" + start_date + '}';
     }
 
 

@@ -53,6 +53,18 @@ public class Converters {
     }
 
     @TypeConverter
+    public static PersonListHolder storedStringToPersonListHolder(String data) {
+        Gson gson = new Gson();
+        return gson.fromJson(data, PersonListHolder.class);
+    }
+
+    @TypeConverter
+    public static String personListHolderToStoredString(PersonListHolder myObjects) {
+        Gson gson = new Gson();
+        return gson.toJson(myObjects);
+    }
+
+    @TypeConverter
     public static List<Person> storedStringToPerson(String data) {
         Gson gson = new Gson();
         if (data == null) {

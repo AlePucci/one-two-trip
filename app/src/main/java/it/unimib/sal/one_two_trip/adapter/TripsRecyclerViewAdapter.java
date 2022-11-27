@@ -79,6 +79,7 @@ public class TripsRecyclerViewAdapter extends
         private final RecyclerView tripView;
         private final MaterialButton tripShare;
         private final MaterialButton moreButton;
+        private final TextView noActivitiesAddedTextView;
 
         private ActivitiesRecyclerViewAdapter activitiesRecyclerViewAdapter;
         private final RecyclerView.LayoutManager layoutManager;
@@ -89,6 +90,7 @@ public class TripsRecyclerViewAdapter extends
             tripView = itemView.findViewById(R.id.trip_view);
             tripShare = itemView.findViewById(R.id.share_trip_button);
             moreButton = itemView.findViewById(R.id.more_button);
+            noActivitiesAddedTextView = itemView.findViewById(R.id.no_activities_added_textview);
 
             layoutManager = new LinearLayoutManager(application.getApplicationContext(),
                     LinearLayoutManager.VERTICAL, false);
@@ -105,6 +107,16 @@ public class TripsRecyclerViewAdapter extends
                     activity -> Log.d("click", "click"));
             tripView.setLayoutManager(layoutManager);
             tripView.setAdapter(activitiesRecyclerViewAdapter);
+
+            if(trip.getActivity().activityList == null || trip.getActivity().activityList.size() == 0){
+                moreButton.setText(R.string.start_adding_button_text);
+                noActivitiesAddedTextView.setText(R.string.no_activities_added);
+                noActivitiesAddedTextView.setVisibility(View.VISIBLE);
+            }
+            else{
+                moreButton.setText(R.string.more_button_text);
+                noActivitiesAddedTextView.setVisibility(View.GONE);
+            }
         }
 
         @Override

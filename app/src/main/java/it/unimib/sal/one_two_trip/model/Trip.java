@@ -1,37 +1,31 @@
 package it.unimib.sal.one_two_trip.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 
 import it.unimib.sal.one_two_trip.util.ActivityListHolder;
 import it.unimib.sal.one_two_trip.util.PersonListHolder;
 
 @Entity
-public class Trip  {
+public class Trip {
     @PrimaryKey(autoGenerate = true)
     private long id;
 
-    private String tripOwner; // email address of the owner
+    private String tripOwner;
     private String title;
     private String description;
-    @Embedded private ActivityListHolder activity;
-    @Embedded private PersonListHolder participant;
+    @Embedded
+    private ActivityListHolder activity;
+    @Embedded
+    private PersonListHolder participant;
     private boolean completed;
 
-    public Trip() {}
+    public Trip() {
+    }
 
     public Trip(long id, String tripOwner, String title, String description, ActivityListHolder activity, PersonListHolder participant, boolean completed) {
         this.id = id;
@@ -123,23 +117,18 @@ public class Trip  {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trip trip = (Trip) o;
-        return id == trip.id && completed == trip.completed && Objects.equals(tripOwner, trip.tripOwner) && Objects.equals(title, trip.title) && Objects.equals(description, trip.description) && Objects.equals(activity, trip.activity) && Objects.equals(participant, trip.participant);
+        return id == trip.id && tripOwner.equals(trip.tripOwner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tripOwner, title, description, activity, participant, completed);
+        return Objects.hash(id, tripOwner);
     }
 
     @NonNull
     @Override
     public String toString() {
-        return "Trip{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                ", completed=" + completed +
-                ", activity=" + activity +
-                '}';
+        return "Trip{" + "id='" + id + '\'' + ", title='" + title + '\'' + ", completed=" + completed + ", activity=" + activity + '}';
     }
 
 }

@@ -4,10 +4,10 @@ import java.util.List;
 
 import it.unimib.sal.one_two_trip.model.Activity;
 
-public class ActivityListHolder  {
+public class ActivityListHolder {
     public List<Activity> activityList;
 
-    public ActivityListHolder(List<Activity> activityList){
+    public ActivityListHolder(List<Activity> activityList) {
         this.activityList = activityList;
     }
 }

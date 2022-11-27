@@ -1,10 +1,10 @@
 {
-  "status" : "ok",
-  "totalResults" : 1,
+  "status": "ok",
+  "totalResults": 1,
   "trips": [
     {
       "id": 1,
-      "tripOwner" : "test@test.com",
+      "tripOwner": "test@test.com",
       "title": "Parigi",
       "description": "Viaggio a Parigi",
       "activity": {
@@ -18,39 +18,44 @@
             "location": "MXP",
             "end_location": "CDG",
             "trip_id": 1,
-            "participant": [
-              {
-                "id": 0,
-                "name": "Mario",
-                "surname": "Rossi",
-                "email_address": "test@test.com",
-                "password": "test",
-                "phone_number": "1234567890",
-                "profile_picture": "null"
-              },
-              {
-                "id": 1,
-                "name": "Luigi",
-                "surname": "Rossi",
-                "email_address": "test1@test.com",
-                "password": "test",
-                "phone_number": "1234567890",
-                "profile_picture": "null"
-              },
-              {
-                "id": 2,
-                "name": "Wario",
-                "surname": "Rossi",
-                "email_address": "test2@test.com",
-                "password": "test",
-                "phone_number": "1234567890",
-                "profile_picture": "null"
-              }
+            "participant": {
+              "personList": [
+                {
+                  "id": 0,
+                  "name": "Mario",
+                  "surname": "Rossi",
+                  "email_address": "test@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                },
+                {
+                  "id": 1,
+                  "name": "Luigi",
+                  "surname": "Rossi",
+                  "email_address": "test1@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                },
+                {
+                  "id": 2,
+                  "name": "Wario",
+                  "surname": "Rossi",
+                  "email_address": "test2@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                }
+              ]
+            },
+            "attachment": [
+              "tickets1.pdf",
+              "tickets2.pdf"
             ],
-            "attachment": [],
             "link": [],
-            "completed": "false",
-            "type": "moving"
+            "type": "moving",
+            "everyoneParticipate": true
           },
           {
             "id": 2,
@@ -59,30 +64,34 @@
             "start_date": "2023-02-14T15:00:00",
             "location": "Paris",
             "trip_id": 1,
-            "participant": [
-              {
-                "id": 0,
-                "name": "Mario",
-                "surname": "Rossi",
-                "email_address": "test@test.com",
-                "password": "test",
-                "phone_number": "1234567890",
-                "profile_picture": "null"
-              },
-              {
-                "id": 1,
-                "name": "Luigi",
-                "surname": "Rossi",
-                "email_address": "test1@test.com",
-                "password": "test",
-                "phone_number": "1234567890",
-                "profile_picture": "null"
-              }
+            "participant": {
+              "personList": [
+                {
+                  "id": 0,
+                  "name": "Mario",
+                  "surname": "Rossi",
+                  "email_address": "test@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                },
+                {
+                  "id": 1,
+                  "name": "Luigi",
+                  "surname": "Rossi",
+                  "email_address": "test1@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                }
+              ]
+            },
+            "attachment": [
+              "tickets.pdf"
             ],
-            "attachment": [],
             "link": [],
-            "completed": "false",
-            "type": "activity"
+            "type": "activity",
+            "everyoneParticipate": false
           },
           {
             "id": 3,
@@ -91,45 +100,46 @@
             "start_date": "2023-02-15T10:00:00",
             "location": "Paris",
             "trip_id": 1,
-            "participant": [
-              {
-                "id": 0,
-                "name": "Mario",
-                "surname": "Rossi",
-                "email_address": "test@test.com",
-                "password": "test",
-                "phone_number": "1234567890",
-                "profile_picture": "null"
-              },
-              {
-                "id": 1,
-                "name": "Luigi",
-                "surname": "Rossi",
-                "email_address": "test1@test.com",
-                "password": "test",
-                "phone_number": "1234567890",
-                "profile_picture": "null"
-              },
-              {
-                "id": 2,
-                "name": "Wario",
-                "surname": "Rossi",
-                "email_address": "test2@test.com",
-                "password": "test",
-                "phone_number": "1234567890",
-                "profile_picture": "null"
-              }
-            ],
+            "participant": {
+              "personList": [
+                {
+                  "id": 0,
+                  "name": "Mario",
+                  "surname": "Rossi",
+                  "email_address": "test@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                },
+                {
+                  "id": 1,
+                  "name": "Luigi",
+                  "surname": "Rossi",
+                  "email_address": "test1@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                },
+                {
+                  "id": 2,
+                  "name": "Wario",
+                  "surname": "Rossi",
+                  "email_address": "test2@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                }
+              ]
+            },
             "attachment": [],
             "link": [],
-            "completed": "false",
-            "type": "activity"
+            "type": "activity",
+            "everyoneParticipate": true
           }
         ]
       },
       "participant": {
-        "personList":
-      [
+        "personList": [
           {
             "id": 0,
             "name": "Mario",
@@ -156,20 +166,20 @@
             "password": "test",
             "phone_number": "1234567890",
             "profile_picture": "null"
-          }]},
-      "completed" : false
+          }
+        ]
+      }
     },
     {
-      "id" : 2,
-      "tripOwner" : "test@test.com",
+      "id": 2,
+      "tripOwner": "test@test.com",
       "title": "Amsterdam",
       "description": "Viaggio ad Amsterdam",
       "activity": {
         "activityList": []
       },
       "participant": {
-        "personList":
-        [
+        "personList": [
           {
             "id": 0,
             "name": "Mario",
@@ -196,58 +206,65 @@
             "password": "test",
             "phone_number": "1234567890",
             "profile_picture": "null"
-          }]},
-      "completed": false
+          }
+        ]
+      }
     },
     {
-      "id" : 3,
-      "tripOwner" : "test@test.com",
+      "id": 3,
+      "tripOwner": "test@test.com",
       "title": "Londra",
       "description": "Viaggio a Londra",
       "activity": {
-        "activityList": [ {
-          "id": 1,
-          "title": "Volo #EZY3932",
-          "description": "Volo da Milano a Parigi",
-          "start_date": "2022-04-16T11:45:00",
-          "end_date": "2022-04-16T13:45:00",
-          "location": "LIN",
-          "end_location": "STN",
-          "trip_id": 3,
-          "participant": [
-            {
-              "id": 0,
-              "name": "Mario",
-              "surname": "Rossi",
-              "email_address": "test@test.com",
-              "password": "test",
-              "phone_number": "1234567890",
-              "profile_picture": "null"
+        "activityList": [
+          {
+            "id": 1,
+            "title": "Volo #EZY3932",
+            "description": "Volo da Milano a Parigi",
+            "start_date": "2022-04-16T11:45:00",
+            "end_date": "2022-04-16T13:45:00",
+            "location": "LIN",
+            "end_location": "STN",
+            "trip_id": 3,
+            "participant": {
+              "personList": [
+                {
+                  "id": 0,
+                  "name": "Mario",
+                  "surname": "Rossi",
+                  "email_address": "test@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                },
+                {
+                  "id": 1,
+                  "name": "Luigi",
+                  "surname": "Rossi",
+                  "email_address": "test1@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                },
+                {
+                  "id": 2,
+                  "name": "Wario",
+                  "surname": "Rossi",
+                  "email_address": "test2@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                }
+              ]
             },
-            {
-              "id": 1,
-              "name": "Luigi",
-              "surname": "Rossi",
-              "email_address": "test1@test.com",
-              "password": "test",
-              "phone_number": "1234567890",
-              "profile_picture": "null"
-            },
-            {
-              "id": 2,
-              "name": "Wario",
-              "surname": "Rossi",
-              "email_address": "test2@test.com",
-              "password": "test",
-              "phone_number": "1234567890",
-              "profile_picture": "null"
-            }
-          ],
-          "attachment": [],
-          "link": [],
-          "completed": "false",
-          "type": "moving"
-        },
+            "attachment": [
+              "tickets1.pdf",
+              "tickets2.pdf"
+            ],
+            "link": [],
+            "type": "moving",
+            "everyoneParticipate": true
+          },
           {
             "id": 2,
             "title": "Buckingham Palace",
@@ -255,39 +272,41 @@
             "start_date": "2022-04-16T15:00:00",
             "location": "London",
             "trip_id": 2,
-            "participant": [
-              {
-                "id": 0,
-                "name": "Mario",
-                "surname": "Rossi",
-                "email_address": "test@test.com",
-                "password": "test",
-                "phone_number": "1234567890",
-                "profile_picture": "null"
-              },
-              {
-                "id": 1,
-                "name": "Luigi",
-                "surname": "Rossi",
-                "email_address": "test1@test.com",
-                "password": "test",
-                "phone_number": "1234567890",
-                "profile_picture": "null"
-              },
-              {
-                "id": 2,
-                "name": "Wario",
-                "surname": "Rossi",
-                "email_address": "test2@test.com",
-                "password": "test",
-                "phone_number": "1234567890",
-                "profile_picture": "null"
-              }
-            ],
+            "participant": {
+              "personList": [
+                {
+                  "id": 0,
+                  "name": "Mario",
+                  "surname": "Rossi",
+                  "email_address": "test@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                },
+                {
+                  "id": 1,
+                  "name": "Luigi",
+                  "surname": "Rossi",
+                  "email_address": "test1@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                },
+                {
+                  "id": 2,
+                  "name": "Wario",
+                  "surname": "Rossi",
+                  "email_address": "test2@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                }
+              ]
+            },
             "attachment": [],
             "link": [],
-            "completed": "false",
-            "type": "activity"
+            "type": "activity",
+            "everyoneParticipate": true
           },
           {
             "id": 3,
@@ -296,44 +315,46 @@
             "start_date": "2022-04-16T17:00:00",
             "location": "Paris",
             "trip_id": 1,
-            "participant": [
-              {
-                "id": 0,
-                "name": "Mario",
-                "surname": "Rossi",
-                "email_address": "test@test.com",
-                "password": "test",
-                "phone_number": "1234567890",
-                "profile_picture": "null"
-              },
-              {
-                "id": 1,
-                "name": "Luigi",
-                "surname": "Rossi",
-                "email_address": "test1@test.com",
-                "password": "test",
-                "phone_number": "1234567890",
-                "profile_picture": "null"
-              },
-              {
-                "id": 2,
-                "name": "Wario",
-                "surname": "Rossi",
-                "email_address": "test2@test.com",
-                "password": "test",
-                "phone_number": "1234567890",
-                "profile_picture": "null"
-              }
-            ],
+            "participant": {
+              "personList": [
+                {
+                  "id": 0,
+                  "name": "Mario",
+                  "surname": "Rossi",
+                  "email_address": "test@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                },
+                {
+                  "id": 1,
+                  "name": "Luigi",
+                  "surname": "Rossi",
+                  "email_address": "test1@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                },
+                {
+                  "id": 2,
+                  "name": "Wario",
+                  "surname": "Rossi",
+                  "email_address": "test2@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                }
+              ]
+            },
             "attachment": [],
             "link": [],
-            "completed": "false",
-            "type": "activity"
-          }]
+            "type": "activity",
+            "everyoneParticipate": false
+          }
+        ]
       },
       "participant": {
-        "personList":
-        [
+        "personList": [
           {
             "id": 0,
             "name": "Mario",
@@ -360,8 +381,9 @@
             "password": "test",
             "phone_number": "1234567890",
             "profile_picture": "null"
-          }]},
-      "completed": false
+          }
+        ]
+      }
     }
   ]
 }

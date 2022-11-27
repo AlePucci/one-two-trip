@@ -14,4 +14,6 @@ public class Constants {
 
     public static final String TRIPS_API_TEST_JSON_FILE = "tripsapi-test.json";
 
+    public static final int MAX_ACTIVITIES_PER_TRIP_HOME = 3;
+
 }

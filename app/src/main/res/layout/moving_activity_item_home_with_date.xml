@@ -27,8 +27,6 @@
         android:descendantFocusability="blocksDescendants"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:layout_marginTop="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight="wrap_content"
@@ -38,8 +36,8 @@
 
         <TextView
             android:id="@+id/activity_name"
-            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_width="0dp"
             android:textSize="19sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHeight="wrap_content"
@@ -50,9 +48,9 @@
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/activity_info"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/activity_info"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/attachments"
             app:layout_constraintHeight="wrap_content"
@@ -60,44 +58,89 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth="wrap_content">
 
-            <TextView
-                android:id="@+id/activity_start_time"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:id="@+id/activity_start_layout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:textAppearance="@style/Widget.App.TripTimeAppearance"
-
-                android:textSize="20sp"
+                android:orientation="vertical"
+                android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHeight="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth="wrap_content" />
+                app:layout_constraintWidth="wrap_content"
+                android:layout_marginStart="25dp">
+
+                <TextView
+                    android:id="@+id/activity_start_time"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textAppearance="@style/Widget.App.TripTimeAppearance"
+                    android:textSize="15sp"
+                    android:layout_gravity="center" />
+
+                <TextView
+                    android:id="@+id/activity_start_location"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textAppearance="@style/Widget.App.TripTimeAppearance"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/activity_end_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHeight="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/activity_start_layout"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth="wrap_content"
+                android:layout_marginStart="20dp">
+
+                <TextView
+                    android:id="@+id/activity_end_time"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textAppearance="@style/Widget.App.TripTimeAppearance"
+                    android:textSize="15sp"
+                    android:layout_gravity="center" />
+
+                <TextView
+                    android:id="@+id/activity_end_location"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textAppearance="@style/Widget.App.TripTimeAppearance"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
 
 
             <TextView
                 android:id="@+id/participants"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
+                android:layout_width="wrap_content"
                 android:textAppearance="@style/Widget.App.TripTimeAppearance"
                 android:textSize="20sp"
                 app:drawableRightCompat="@drawable/ic_outline_group_24"
                 app:drawableTint="?attr/colorOnSurface"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHeight="wrap_content"
-                app:layout_constraintStart_toEndOf="@id/activity_start_time"
+                app:layout_constraintStart_toEndOf="@id/activity_end_layout"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintWidth="wrap_content" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/attachments"
             style="@style/Widget.Material3.Button.IconButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:contentDescription="attachments"
+            android:id="@+id/attachments"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             app:icon="@drawable/ic_baseline_file_present_24"
             app:iconTint="?attr/colorOnSurface"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -105,7 +148,6 @@
             app:layout_constraintHeight="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth="wrap_content" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

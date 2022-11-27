@@ -38,8 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="Share"
-            app:icon="@drawable/ic_baseline_share_24"
-            app:iconTint="?attr/colorOnSecondary"
+            app:icon="@drawable/ic_outline_share_24"
+            app:iconTint="?attr/colorOnSurface"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
@@ -56,6 +56,19 @@
             app:layout_constraintTop_toBottomOf="@id/trip_title"
             app:layout_constraintWidth="match_constraint" />
 
+        <TextView
+            android:id="@+id/no_activities_added_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight="wrap_content"
+            app:layout_constraintWidth="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/trip_view"
+            android:visibility="gone" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/more_button"
             style="@style/Widget.Material3.Button.OutlinedButton"
@@ -67,7 +80,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/trip_view"
+            app:layout_constraintTop_toBottomOf="@id/no_activities_added_textview"
             app:layout_constraintWidth="wrap_content" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

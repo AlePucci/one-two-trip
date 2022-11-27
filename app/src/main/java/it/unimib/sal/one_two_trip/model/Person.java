@@ -1,26 +1,24 @@
 package it.unimib.sal.one_two_trip.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
-@Entity
-public class Person  {
-    @PrimaryKey(autoGenerate = true)
-    private long id = 0;
-    private String name = "";
-    private String surname = "";
-    private String email_address = "";
-    private String password = "";
-    private String phone_number = "";
-    private String profile_picture = "";
 
-    public Person() {}
+@Entity
+public class Person {
+    @PrimaryKey(autoGenerate = true)
+    private long id;
+    private String name;
+    private String surname;
+    private String email_address;
+    private String password;
+    private String phone_number;
+    private String profile_picture;
+
+    public Person() {
+    }
 
     public Person(long id, String name, String surname, String email_address, String password, String phone_number, String profile_picture) {
         this.id = id;
@@ -104,12 +102,7 @@ public class Person  {
     @NonNull
     @Override
     public String toString() {
-        return "Person{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", email_address='" + email_address + '\'' +
-                '}';
+        return "Person{" + "id='" + id + '\'' + ", name='" + name + '\'' + ", surname='" + surname + '\'' + ", email_address='" + email_address + '\'' + '}';
     }
 
 }
