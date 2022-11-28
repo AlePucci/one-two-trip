@@ -1,18 +1,16 @@
 package it.unimib.sal.one_two_trip.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import androidx.annotation.NonNull;
 
 import java.util.List;
 
-public class TripsApiResponse  {
+public class TripsApiResponse {
     private String status;
     private int totalResults;
     private List<Trip> trips;
 
-    public TripsApiResponse() {}
+    public TripsApiResponse() {
+    }
 
     public TripsApiResponse(String status, int totalResults, List<Trip> trips) {
         this.status = status;
@@ -47,10 +45,6 @@ public class TripsApiResponse  {
     @Override
     @NonNull
     public String toString() {
-        return "TripsApiResponse{" +
-                "status='" + status + '\'' +
-                ", totalResults=" + totalResults +
-                ", trips=" + trips.toString() +
-                '}';
+        return "TripsApiResponse{" + "status='" + status + '\'' + ", totalResults=" + totalResults + ", trips=" + trips.toString() + '}';
     }
 }

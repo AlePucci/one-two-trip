@@ -3,12 +3,13 @@ package it.unimib.sal.one_two_trip.model;
 import androidx.annotation.NonNull;
 import androidx.room.Embedded;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
-import it.unimib.sal.one_two_trip.util.ActivityListHolder;
-import it.unimib.sal.one_two_trip.util.PersonListHolder;
+import it.unimib.sal.one_two_trip.util.holder.ActivityListHolder;
+import it.unimib.sal.one_two_trip.util.holder.PersonListHolder;
 
 @Entity
 public class Trip {
@@ -27,6 +28,7 @@ public class Trip {
     public Trip() {
     }
 
+    @Ignore
     public Trip(long id, String tripOwner, String title, String description, ActivityListHolder activity, PersonListHolder participant, boolean completed) {
         this.id = id;
         this.tripOwner = tripOwner;

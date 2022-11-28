@@ -15,4 +15,8 @@
     <string name="start_adding_button_text">Start adding!</string>
     <string name="default_trip_title">Awesome new trip</string>
     <string name="default_activity_name">Activity</string>
+    <string name="error_json_parsing">Error! Please try again</string>
+    <string name="attachments_present">There are attachments for this activity</string>
+    <string name="no_trips_description">There are no trips in this section</string>
+    <string name="share_trip_button_description">Share this trip!</string>
 </resources>

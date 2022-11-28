@@ -2,6 +2,7 @@ package it.unimib.sal.one_two_trip.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
@@ -20,6 +21,7 @@ public class Person {
     public Person() {
     }
 
+    @Ignore
     public Person(long id, String name, String surname, String email_address, String password, String phone_number, String profile_picture) {
         this.id = id;
         this.name = name;

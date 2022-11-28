@@ -3,13 +3,14 @@ package it.unimib.sal.one_two_trip.model;
 import androidx.annotation.NonNull;
 import androidx.room.Embedded;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import it.unimib.sal.one_two_trip.util.PersonListHolder;
+import it.unimib.sal.one_two_trip.util.holder.PersonListHolder;
 
 @Entity
 public class Activity {
@@ -34,6 +35,7 @@ public class Activity {
     public Activity() {
     }
 
+    @Ignore
     public Activity(long id, String title, String description, String location, String end_location, Date start_date, Date end_date, PersonListHolder participant, long trip_id, List<Object> attachment, List<String> link, boolean completed, String type, boolean everyoneParticipate) {
         this.id = id;
         this.title = title;
@@ -188,6 +190,5 @@ public class Activity {
     public String toString() {
         return "Activity{" + "id='" + id + '\'' + ", title='" + title + '\'' + ", location='" + location + '\'' + ", start_date=" + start_date + '}';
     }
-
 
 }

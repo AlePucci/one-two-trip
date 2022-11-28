@@ -30,14 +30,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth="wrap_content"
-            tools:text="Titolo viaggio" />
+            tools:text="@string/trip_title" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/share_trip_button"
             style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="Share"
+            android:contentDescription="@string/share_trip_button_description"
             app:icon="@drawable/ic_outline_share_24"
             app:iconTint="?attr/colorOnSurface"
             app:layout_constraintEnd_toEndOf="parent"
@@ -57,7 +57,7 @@
             app:layout_constraintWidth="match_constraint" />
 
         <TextView
-            android:id="@+id/no_activities_added_textview"
+            android:id="@+id/no_activities_added_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -80,7 +80,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/no_activities_added_textview"
+            app:layout_constraintTop_toBottomOf="@id/no_activities_added_text"
             app:layout_constraintWidth="wrap_content" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

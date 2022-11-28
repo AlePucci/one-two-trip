@@ -24,22 +24,19 @@ public class HomeActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.top_appbar);
         setSupportActionBar(toolbar);
 
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().
-                findFragmentById(R.id.nav_host_fragment);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
 
         NavController navController = null;
-        if(navHostFragment != null)  navController = navHostFragment.getNavController();
+        if (navHostFragment != null) navController = navHostFragment.getNavController();
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
 
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.fragment_coming_trips, R.id.fragment_past_trips).build();
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.fragment_coming_trips, R.id.fragment_past_trips).build();
 
         // For the Toolbar
-        if(navController != null) NavigationUI.setupActionBarWithNavController(this,
-                navController, appBarConfiguration);
+        if (navController != null)
+            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         // For the BottomNavigationView
-        if(navController != null) NavigationUI.setupWithNavController(bottomNav, navController);
-
+        if (navController != null) NavigationUI.setupWithNavController(bottomNav, navController);
     }
 }

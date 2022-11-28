@@ -15,4 +15,8 @@
     <string name="start_adding_button_text">Inizia ad aggiungerne!</string>
     <string name="default_trip_title">Un fantastico nuovo viaggio</string>
     <string name="default_activity_name">Attività</string>
+    <string name="error_json_parsing">Errore! Riprovare più tardi</string>
+    <string name="attachments_present">Sono presenti allegati per questa attività</string>
+    <string name="no_trips_description">Non sono presenti viaggi in questa sezione</string>
+    <string name="share_trip_button_description">Condividi il tuo viaggio!</string>
 </resources>

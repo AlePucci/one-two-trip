@@ -13,8 +13,6 @@ import androidx.room.TypeConverters;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.Person;
 import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.util.Converters;
 
@@ -22,12 +20,10 @@ import it.unimib.sal.one_two_trip.util.Converters;
 @TypeConverters({Converters.class})
 public abstract class TripsRoomDatabase extends RoomDatabase {
 
-    public abstract ITripsDAO tripsDAO();
-
-    private static volatile TripsRoomDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = Runtime.getRuntime().availableProcessors();
     public static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+    private static volatile TripsRoomDatabase INSTANCE;
 
     public static TripsRoomDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
@@ -40,4 +36,6 @@ public abstract class TripsRoomDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
+
+    public abstract ITripsDAO tripsDAO();
 }

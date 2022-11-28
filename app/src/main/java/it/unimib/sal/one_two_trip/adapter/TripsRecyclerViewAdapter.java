@@ -1,15 +1,12 @@
 package it.unimib.sal.one_two_trip.adapter;
 
 import android.app.Application;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,23 +23,12 @@ import it.unimib.sal.one_two_trip.model.Trip;
  * Custom adapter that extends RecyclerView.Adapter to show an ArrayList of News
  * with a RecyclerView.
  */
-public class TripsRecyclerViewAdapter extends
-        RecyclerView.Adapter<TripsRecyclerViewAdapter.TripViewHolder> {
-
-    /**
-     * Interface to associate a click listener with
-     * a RecyclerView item.
-     */
-    public interface OnItemClickListener {
-        void onTripShare(Trip trip);
-    }
-
+public class TripsRecyclerViewAdapter extends RecyclerView.Adapter<TripsRecyclerViewAdapter.TripViewHolder> {
     private final List<Trip> tripList;
     private final Application application;
     private final OnItemClickListener onItemClickListener;
 
-    public TripsRecyclerViewAdapter(List<Trip> tripList, Application application,
-                                   OnItemClickListener onItemClickListener) {
+    public TripsRecyclerViewAdapter(List<Trip> tripList, Application application, OnItemClickListener onItemClickListener) {
         this.tripList = tripList;
         this.application = application;
         this.onItemClickListener = onItemClickListener;
@@ -51,10 +37,7 @@ public class TripsRecyclerViewAdapter extends
     @NonNull
     @Override
     public TripViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).
-                inflate(R.layout.trip_item_home, parent, false);
-
-        return new TripViewHolder(view);
+        return new TripViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.trip_item_home, parent, false));
     }
 
     @Override
@@ -71,60 +54,78 @@ public class TripsRecyclerViewAdapter extends
     }
 
     /**
+     * Interface to associate a click listener with
+     * a RecyclerView item.
+     */
+    public interface OnItemClickListener {
+        void onTripShare(Trip trip);
+
+        void onTripClick(Trip trip);
+
+        void onButtonClick(Trip trip);
+    }
+
+    /**
      * Custom ViewHolder to bind data to the RecyclerView items.
      */
-    public class TripViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-
+    public class TripViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView tripTitle;
-        private final RecyclerView tripView;
-        private final MaterialButton tripShare;
+        private final RecyclerView activityView;
         private final MaterialButton moreButton;
-        private final TextView noActivitiesAddedTextView;
-
-        private ActivitiesRecyclerViewAdapter activitiesRecyclerViewAdapter;
+        private final TextView noActivitiesAddedText;
         private final RecyclerView.LayoutManager layoutManager;
 
         public TripViewHolder(@NonNull View itemView) {
             super(itemView);
             tripTitle = itemView.findViewById(R.id.trip_title);
-            tripView = itemView.findViewById(R.id.trip_view);
-            tripShare = itemView.findViewById(R.id.share_trip_button);
+            activityView = itemView.findViewById(R.id.trip_view);
+            MaterialButton tripShare = itemView.findViewById(R.id.share_trip_button);
             moreButton = itemView.findViewById(R.id.more_button);
-            noActivitiesAddedTextView = itemView.findViewById(R.id.no_activities_added_textview);
+            noActivitiesAddedText = itemView.findViewById(R.id.no_activities_added_text);
 
-            layoutManager = new LinearLayoutManager(application.getApplicationContext(),
-                    LinearLayoutManager.VERTICAL, false);
+            layoutManager = new LinearLayoutManager(application.getApplicationContext(), LinearLayoutManager.VERTICAL, false);
 
+            itemView.setOnClickListener(this);
             tripShare.setOnClickListener(this);
             moreButton.setOnClickListener(this);
         }
 
         public void bind(Trip trip) {
+            ActivitiesRecyclerViewAdapter activitiesRecyclerViewAdapter = new ActivitiesRecyclerViewAdapter(trip.getActivity().activityList, application, new ActivitiesRecyclerViewAdapter.OnItemClickListener() {
+                @Override
+                public void onAttachmentsClick(Activity activity) {
+                    Snackbar.make(itemView, activity.getAttachment().toString(), Snackbar.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onActivityClick(Activity activity) {
+                    Snackbar.make(itemView, activity.getTitle(), Snackbar.LENGTH_SHORT).show();
+                }
+            });
+
+            activityView.setLayoutManager(layoutManager);
+            activityView.setAdapter(activitiesRecyclerViewAdapter);
+
             tripTitle.setText(trip.getTitle());
 
-            activitiesRecyclerViewAdapter = new ActivitiesRecyclerViewAdapter(trip.getActivity().activityList,
-                    application,
-                    activity -> Log.d("click", "click"));
-            tripView.setLayoutManager(layoutManager);
-            tripView.setAdapter(activitiesRecyclerViewAdapter);
-
-            if(trip.getActivity().activityList == null || trip.getActivity().activityList.size() == 0){
+            if (trip.getActivity() == null || trip.getActivity().activityList == null || trip.getActivity().activityList.size() == 0) {
                 moreButton.setText(R.string.start_adding_button_text);
-                noActivitiesAddedTextView.setText(R.string.no_activities_added);
-                noActivitiesAddedTextView.setVisibility(View.VISIBLE);
-            }
-            else{
+                noActivitiesAddedText.setText(R.string.no_activities_added);
+                noActivitiesAddedText.setVisibility(View.VISIBLE);
+            } else {
                 moreButton.setText(R.string.more_button_text);
-                noActivitiesAddedTextView.setVisibility(View.GONE);
+                noActivitiesAddedText.setVisibility(View.GONE);
             }
         }
 
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.share_trip_button) {
-                /* TO DO: share trip */
+                onItemClickListener.onTripShare(tripList.get(getAdapterPosition()));
+            } else if (v.getId() == R.id.more_button) {
+                onItemClickListener.onButtonClick(tripList.get(getAdapterPosition()));
             } else {
-                /* TO DO: OPEN UP ACTIVITY LIST */
+                onItemClickListener.onTripClick(tripList.get(getAdapterPosition()));
             }
         }
     }

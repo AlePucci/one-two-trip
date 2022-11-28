@@ -175,9 +175,6 @@
       "tripOwner": "test@test.com",
       "title": "Amsterdam",
       "description": "Viaggio ad Amsterdam",
-      "activity": {
-        "activityList": []
-      },
       "participant": {
         "personList": [
           {
@@ -219,7 +216,7 @@
         "activityList": [
           {
             "id": 1,
-            "title": "Volo #EZY3932",
+            "title": "Volo #EZY3071",
             "description": "Volo da Milano a Parigi",
             "start_date": "2022-04-16T11:45:00",
             "end_date": "2022-04-16T13:45:00",

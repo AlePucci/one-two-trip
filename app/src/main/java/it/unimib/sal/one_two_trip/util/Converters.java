@@ -12,6 +12,8 @@ import java.util.List;
 
 import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Person;
+import it.unimib.sal.one_two_trip.util.holder.ActivityListHolder;
+import it.unimib.sal.one_two_trip.util.holder.PersonListHolder;
 
 public class Converters {
     @TypeConverter
@@ -25,17 +27,18 @@ public class Converters {
     }
 
     @TypeConverter
-    public static List<Activity> storedStringToActivity(String data) {
+    public static List<Activity> storedStringToActivityList(String data) {
         Gson gson = new Gson();
         if (data == null) {
             return Collections.emptyList();
         }
-        Type listType = new TypeToken<List<Activity>>() {}.getType();
+        Type listType = new TypeToken<List<Activity>>() {
+        }.getType();
         return gson.fromJson(data, listType);
     }
 
     @TypeConverter
-    public static String activityToStoredString(List<Activity> myObjects) {
+    public static String activityListToStoredString(List<Activity> myObjects) {
         Gson gson = new Gson();
         return gson.toJson(myObjects);
     }
@@ -65,49 +68,52 @@ public class Converters {
     }
 
     @TypeConverter
-    public static List<Person> storedStringToPerson(String data) {
+    public static List<Person> storedStringToPersonList(String data) {
         Gson gson = new Gson();
         if (data == null) {
             return Collections.emptyList();
         }
-        Type listType = new TypeToken<List<Activity>>() {}.getType();
+        Type listType = new TypeToken<List<Activity>>() {
+        }.getType();
         return gson.fromJson(data, listType);
     }
 
     @TypeConverter
-    public static String personToStoredString(List<Person> myObjects) {
+    public static String personListToStoredString(List<Person> myObjects) {
         Gson gson = new Gson();
         return gson.toJson(myObjects);
     }
 
     @TypeConverter
-    public static List<Object> storedStringToObject(String data) {
+    public static List<Object> storedStringToObjectList(String data) {
         Gson gson = new Gson();
         if (data == null) {
             return Collections.emptyList();
         }
-        Type listType = new TypeToken<List<Object>>() {}.getType();
+        Type listType = new TypeToken<List<Object>>() {
+        }.getType();
         return gson.fromJson(data, listType);
     }
 
     @TypeConverter
-    public static String objectToStoredString(List<Object> myObjects) {
+    public static String objectListToStoredString(List<Object> myObjects) {
         Gson gson = new Gson();
         return gson.toJson(myObjects);
     }
 
     @TypeConverter
-    public static List<String> storedStringToString(String data) {
+    public static List<String> storedStringToStringList(String data) {
         Gson gson = new Gson();
         if (data == null) {
             return Collections.emptyList();
         }
-        Type listType = new TypeToken<List<String>>() {}.getType();
+        Type listType = new TypeToken<List<String>>() {
+        }.getType();
         return gson.fromJson(data, listType);
     }
 
     @TypeConverter
-    public static String stringToStoredString(List<String> myObjects) {
+    public static String stringListToStoredString(List<String> myObjects) {
         Gson gson = new Gson();
         return gson.toJson(myObjects);
     }
