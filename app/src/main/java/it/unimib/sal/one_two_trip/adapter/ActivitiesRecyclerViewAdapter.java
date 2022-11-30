@@ -34,7 +34,8 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     private final Application application;
     private final OnItemClickListener onItemClickListener;
 
-    public ActivitiesRecyclerViewAdapter(List<Activity> activityList, Application application, OnItemClickListener onItemClickListener) {
+    public ActivitiesRecyclerViewAdapter(List<Activity> activityList, Application application,
+                                         OnItemClickListener onItemClickListener) {
         this.activityList = activityList;
         this.application = application;
         this.onItemClickListener = onItemClickListener;
@@ -42,7 +43,8 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
     @Override
     public int getItemViewType(int position) {
-        if (activityList.get(position) != null && activityList.get(position).getType() != null && activityList.get(position).getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
+        if (activityList.get(position) != null && activityList.get(position).getType() != null
+                && activityList.get(position).getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
             return MOVING_ACTIVITY;
         }
         return ACTIVITY;
@@ -127,16 +129,20 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
         public void bind(Activity activity, int position) {
             activityName.setText(activity.getTitle());
-            activityStartTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(activity.getStart_date()));
+            activityStartTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT)
+                    .format(activity.getStart_date()));
 
             if (isActivityFirstOfTheDay(position)) {
-                activityDate.setText(DateFormat.getDateInstance(DateFormat.LONG).format(activity.getStart_date()));
+                activityDate.setText(DateFormat.getDateInstance(DateFormat.LONG)
+                        .format(activity.getStart_date()));
                 activityDate.setVisibility(View.VISIBLE);
             } else {
                 activityDate.setVisibility(View.GONE);
             }
 
-            if (activity.getParticipant() == null || activity.getParticipant().personList == null || activity.getParticipant().personList.isEmpty() || activity.doesEveryoneParticipate()) {
+            if (activity.getParticipant() == null || activity.getParticipant().personList == null
+                    || activity.getParticipant().personList.isEmpty()
+                    || activity.doesEveryoneParticipate()) {
                 participants.setVisibility(View.GONE);
             } else {
                 participants.setText(String.valueOf(activity.getParticipant().personList.size()));
@@ -193,13 +199,16 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             participants.setVisibility(View.GONE);
 
             activityName.setText(activity.getTitle());
-            activityStartTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(activity.getStart_date()));
+            activityStartTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT)
+                    .format(activity.getStart_date()));
             activityStartLocation.setText(activity.getLocation());
-            activityEndTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(activity.getEnd_date()));
+            activityEndTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT)
+                    .format(activity.getEnd_date()));
             activityEndLocation.setText(activity.getEnd_location());
 
             if (isActivityFirstOfTheDay(position)) {
-                activityDate.setText(DateFormat.getDateInstance(DateFormat.LONG).format(activity.getStart_date()));
+                activityDate.setText(DateFormat.getDateInstance(DateFormat.LONG)
+                        .format(activity.getStart_date()));
                 activityDate.setVisibility(View.VISIBLE);
             } else {
                 activityDate.setVisibility(View.GONE);

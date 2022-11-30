@@ -1,5 +1,8 @@
 package it.unimib.sal.one_two_trip.util;
 
+/**
+ * Constants used in the application.
+ */
 public class Constants {
     public static final String TRIPS_DATABASE_NAME = "TripsDatabase";
     public static final int TRIPS_DATABASE_VERSION = 1;

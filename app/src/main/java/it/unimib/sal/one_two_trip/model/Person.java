@@ -7,6 +7,9 @@ import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
+/**
+ * This class represents a person/user.
+ */
 @Entity
 public class Person {
     @PrimaryKey(autoGenerate = true)

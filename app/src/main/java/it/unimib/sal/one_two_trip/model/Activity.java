@@ -12,6 +12,11 @@ import java.util.Objects;
 
 import it.unimib.sal.one_two_trip.util.holder.PersonListHolder;
 
+/**
+ * This class represents an activity.
+ * {@link #type Type property} tells us if it's a moving activity (like a flight or train ride)
+ * or a standard activity (like a visit to a museum).
+ */
 @Entity
 public class Activity {
     @PrimaryKey(autoGenerate = true)
@@ -166,10 +171,21 @@ public class Activity {
         this.everyoneParticipate = everyoneParticipate;
     }
 
+    /**
+     * This method checks if the activity is completed.
+     * An activity is automatically marked as completed if the current date is after the end date.
+     */
     public void checkCompleted() {
-        if (start_date.before(new Date())) {
-            setCompleted(true);
+        boolean completed;
+
+        if(end_date != null) {
+            completed = end_date.before(new Date());
         }
+        else{
+            completed = start_date.before(new Date());
+        }
+
+        setCompleted(completed);
     }
 
     @Override

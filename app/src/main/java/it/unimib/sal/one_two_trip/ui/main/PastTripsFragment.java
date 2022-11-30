@@ -28,7 +28,7 @@ import it.unimib.sal.one_two_trip.repository.TripsMockRepository;
 import it.unimib.sal.one_two_trip.util.ResponseCallback;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass that shows the past trips of the user.
  * Use the {@link PastTripsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -52,7 +52,8 @@ public class PastTripsFragment extends Fragment implements ResponseCallback {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pastTrips = new ArrayList<>();
-        iTripsRepository = new TripsMockRepository(requireActivity().getApplication(), this);
+        iTripsRepository = new TripsMockRepository(requireActivity().getApplication(),
+                this);
     }
 
     @Override
@@ -71,9 +72,12 @@ public class PastTripsFragment extends Fragment implements ResponseCallback {
 
         progressBar = view.findViewById(R.id.progress_bar);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(),
+                LinearLayoutManager.VERTICAL, false);
 
-        tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(pastTrips, requireActivity().getApplication(), new TripsRecyclerViewAdapter.OnItemClickListener() {
+        tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(pastTrips,
+                requireActivity().getApplication(),
+                new TripsRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onTripShare(Trip trip) {
                 Snackbar.make(view, "Share " + trip.getTitle(), Snackbar.LENGTH_SHORT).show();
@@ -119,27 +123,26 @@ public class PastTripsFragment extends Fragment implements ResponseCallback {
             }
 
             void checkSize() {
-                pastTripsView.setVisibility(tripsRecyclerViewAdapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
-                pastTripsTitle.setVisibility(tripsRecyclerViewAdapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
-                noTripsImage.setVisibility(tripsRecyclerViewAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
-                noTripsText.setVisibility(tripsRecyclerViewAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+                int pastTripsCount = tripsRecyclerViewAdapter.getItemCount();
+                pastTripsView.setVisibility(pastTripsCount == 0 ? View.GONE : View.VISIBLE);
+                pastTripsTitle.setVisibility(pastTripsCount == 0 ? View.GONE : View.VISIBLE);
+                noTripsImage.setVisibility(pastTripsCount == 0 ? View.VISIBLE : View.GONE);
+                noTripsText.setVisibility(pastTripsCount == 0 ? View.VISIBLE : View.GONE);
             }
         });
     }
 
     @Override
     public void onSuccess(List<Trip> tripList, long lastUpdate) {
-        if (tripList != null && tripList.size() > 0) {
+        if (tripList != null && !tripList.isEmpty()) {
             this.pastTrips.clear();
 
             List<Trip> temp = new ArrayList<>(tripList);
 
-            Iterator<Trip> tripIt = temp.iterator();
-            while (tripIt.hasNext()) {
-                Trip trip = tripIt.next();
-                if (trip != null && !trip.isCompleted()) tripIt.remove();
+            for (Iterator<Trip> i = temp.iterator(); i.hasNext(); ) {
+                Trip trip = i.next();
+                if (trip != null && !trip.isCompleted()) i.remove();
             }
-
             this.pastTrips.addAll(temp);
 
             requireActivity().runOnUiThread(() -> {
@@ -151,6 +154,7 @@ public class PastTripsFragment extends Fragment implements ResponseCallback {
 
     @Override
     public void onFailure(String errorMessage) {
-        Snackbar.make(requireActivity().findViewById(android.R.id.content), errorMessage, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(requireActivity().findViewById(android.R.id.content), errorMessage,
+                Snackbar.LENGTH_LONG).show();
     }
 }

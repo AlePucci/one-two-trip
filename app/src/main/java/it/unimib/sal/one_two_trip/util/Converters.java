@@ -15,6 +15,10 @@ import it.unimib.sal.one_two_trip.model.Person;
 import it.unimib.sal.one_two_trip.util.holder.ActivityListHolder;
 import it.unimib.sal.one_two_trip.util.holder.PersonListHolder;
 
+/**
+ * This class contains the converters to convert the types used to the types supported by Room
+ * database.
+ */
 public class Converters {
     @TypeConverter
     public static Date toDate(Long timestamp) {

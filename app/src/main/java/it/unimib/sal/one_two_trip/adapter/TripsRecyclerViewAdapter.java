@@ -28,7 +28,8 @@ public class TripsRecyclerViewAdapter extends RecyclerView.Adapter<TripsRecycler
     private final Application application;
     private final OnItemClickListener onItemClickListener;
 
-    public TripsRecyclerViewAdapter(List<Trip> tripList, Application application, OnItemClickListener onItemClickListener) {
+    public TripsRecyclerViewAdapter(List<Trip> tripList, Application application,
+                                    OnItemClickListener onItemClickListener) {
         this.tripList = tripList;
         this.application = application;
         this.onItemClickListener = onItemClickListener;
@@ -37,7 +38,8 @@ public class TripsRecyclerViewAdapter extends RecyclerView.Adapter<TripsRecycler
     @NonNull
     @Override
     public TripViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new TripViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.trip_item_home, parent, false));
+        return new TripViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.trip_item_home,
+                parent, false));
     }
 
     @Override
@@ -83,7 +85,8 @@ public class TripsRecyclerViewAdapter extends RecyclerView.Adapter<TripsRecycler
             moreButton = itemView.findViewById(R.id.more_button);
             noActivitiesAddedText = itemView.findViewById(R.id.no_activities_added_text);
 
-            layoutManager = new LinearLayoutManager(application.getApplicationContext(), LinearLayoutManager.VERTICAL, false);
+            layoutManager = new LinearLayoutManager(application.getApplicationContext(),
+                    LinearLayoutManager.VERTICAL, false);
 
             itemView.setOnClickListener(this);
             tripShare.setOnClickListener(this);
@@ -91,10 +94,14 @@ public class TripsRecyclerViewAdapter extends RecyclerView.Adapter<TripsRecycler
         }
 
         public void bind(Trip trip) {
-            ActivitiesRecyclerViewAdapter activitiesRecyclerViewAdapter = new ActivitiesRecyclerViewAdapter(trip.getActivity().activityList, application, new ActivitiesRecyclerViewAdapter.OnItemClickListener() {
+            ActivitiesRecyclerViewAdapter activitiesRecyclerViewAdapter =
+                    new ActivitiesRecyclerViewAdapter(trip.getActivity().activityList,
+                            application,
+                            new ActivitiesRecyclerViewAdapter.OnItemClickListener() {
                 @Override
                 public void onAttachmentsClick(Activity activity) {
-                    Snackbar.make(itemView, activity.getAttachment().toString(), Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(itemView, activity.getAttachment().toString(),
+                            Snackbar.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -108,7 +115,8 @@ public class TripsRecyclerViewAdapter extends RecyclerView.Adapter<TripsRecycler
 
             tripTitle.setText(trip.getTitle());
 
-            if (trip.getActivity() == null || trip.getActivity().activityList == null || trip.getActivity().activityList.isEmpty()) {
+            if (trip.getActivity() == null || trip.getActivity().activityList == null
+                    || trip.getActivity().activityList.isEmpty()) {
                 moreButton.setText(R.string.start_adding_button_text);
                 noActivitiesAddedText.setText(R.string.no_activities_added);
                 noActivitiesAddedText.setVisibility(View.VISIBLE);

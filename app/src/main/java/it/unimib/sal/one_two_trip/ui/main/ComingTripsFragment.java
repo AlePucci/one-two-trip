@@ -28,7 +28,7 @@ import it.unimib.sal.one_two_trip.repository.TripsMockRepository;
 import it.unimib.sal.one_two_trip.util.ResponseCallback;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass that shows the coming trips of the user.
  * Use the {@link ComingTripsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -52,7 +52,8 @@ public class ComingTripsFragment extends Fragment implements ResponseCallback {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         comingTrips = new ArrayList<>();
-        iTripsRepository = new TripsMockRepository(requireActivity().getApplication(), this);
+        iTripsRepository = new TripsMockRepository(requireActivity().getApplication(),
+                this);
     }
 
     @Override
@@ -71,9 +72,12 @@ public class ComingTripsFragment extends Fragment implements ResponseCallback {
 
         progressBar = view.findViewById(R.id.progress_bar);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(),
+                LinearLayoutManager.VERTICAL, false);
 
-        tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(comingTrips, requireActivity().getApplication(), new TripsRecyclerViewAdapter.OnItemClickListener() {
+        tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(comingTrips,
+                requireActivity().getApplication(),
+                new TripsRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onTripShare(Trip trip) {
                 Snackbar.make(view, "Share " + trip.getTitle(), Snackbar.LENGTH_SHORT).show();
@@ -123,7 +127,8 @@ public class ComingTripsFragment extends Fragment implements ResponseCallback {
                 if (comingTripsCount == 1) {
                     comingTripsTitle.setText(R.string.coming_trips_title_single);
                 } else {
-                    comingTripsTitle.setText(String.format(getString(R.string.coming_trips_title_multiple), comingTripsCount));
+                    comingTripsTitle.setText(String.format(getString(R.string.coming_trips_title_multiple),
+                            comingTripsCount));
                 }
 
                 comingTripsView.setVisibility(comingTripsCount == 0 ? View.GONE : View.VISIBLE);
@@ -136,15 +141,14 @@ public class ComingTripsFragment extends Fragment implements ResponseCallback {
 
     @Override
     public void onSuccess(List<Trip> tripList, long lastUpdate) {
-        if (tripList != null && tripList.size() > 0) {
+        if (tripList != null && !tripList.isEmpty()) {
             this.comingTrips.clear();
 
             List<Trip> temp = new ArrayList<>(tripList);
 
-            Iterator<Trip> tripIt = temp.iterator();
-            while (tripIt.hasNext()) {
-                Trip trip = tripIt.next();
-                if (trip != null && trip.isCompleted()) tripIt.remove();
+            for (Iterator<Trip> i = temp.iterator(); i.hasNext(); ) {
+                Trip trip = i.next();
+                if (trip != null && trip.isCompleted()) i.remove();
             }
             this.comingTrips.addAll(temp);
 
@@ -153,11 +157,11 @@ public class ComingTripsFragment extends Fragment implements ResponseCallback {
                 progressBar.setVisibility(View.GONE);
             });
         }
-
     }
 
     @Override
     public void onFailure(String errorMessage) {
-        Snackbar.make(requireActivity().findViewById(android.R.id.content), errorMessage, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(requireActivity().findViewById(android.R.id.content), errorMessage,
+                Snackbar.LENGTH_LONG).show();
     }
 }

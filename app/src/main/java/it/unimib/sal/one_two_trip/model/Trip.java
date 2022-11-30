@@ -11,6 +11,9 @@ import java.util.Objects;
 import it.unimib.sal.one_two_trip.util.holder.ActivityListHolder;
 import it.unimib.sal.one_two_trip.util.holder.PersonListHolder;
 
+/**
+ * This class represents a trip.
+ */
 @Entity
 public class Trip {
     @PrimaryKey(autoGenerate = true)
@@ -96,6 +99,9 @@ public class Trip {
         this.completed = completed;
     }
 
+    /**
+     * Check if the trip is completed, i.e. all the activities are completed.
+     */
     public void checkCompleted() {
         boolean isThereAtLeastOneActivity = false;
         if (this.getActivity() == null || this.getActivity().activityList == null) {
