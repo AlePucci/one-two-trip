@@ -98,7 +98,7 @@ public class Trip {
 
     public void checkCompleted() {
         boolean isThereAtLeastOneActivity = false;
-        if (this.getActivity().activityList == null) {
+        if (this.getActivity() == null || this.getActivity().activityList == null) {
             setCompleted(false);
             return;
         }

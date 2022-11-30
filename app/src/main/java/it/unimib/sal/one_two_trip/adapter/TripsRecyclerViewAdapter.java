@@ -108,7 +108,7 @@ public class TripsRecyclerViewAdapter extends RecyclerView.Adapter<TripsRecycler
 
             tripTitle.setText(trip.getTitle());
 
-            if (trip.getActivity() == null || trip.getActivity().activityList == null || trip.getActivity().activityList.size() == 0) {
+            if (trip.getActivity() == null || trip.getActivity().activityList == null || trip.getActivity().activityList.isEmpty()) {
                 moreButton.setText(R.string.start_adding_button_text);
                 noActivitiesAddedText.setText(R.string.no_activities_added);
                 noActivitiesAddedText.setVisibility(View.VISIBLE);

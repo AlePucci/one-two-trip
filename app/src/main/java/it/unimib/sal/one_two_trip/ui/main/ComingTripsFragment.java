@@ -69,6 +69,8 @@ public class ComingTripsFragment extends Fragment implements ResponseCallback {
         TextView noTripsText = view.findViewById(R.id.no_trips_text);
         ImageView noTripsImage = view.findViewById(R.id.no_trips_image);
 
+        progressBar = view.findViewById(R.id.progress_bar);
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false);
 
         tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(comingTrips, requireActivity().getApplication(), new TripsRecyclerViewAdapter.OnItemClickListener() {
@@ -91,6 +93,7 @@ public class ComingTripsFragment extends Fragment implements ResponseCallback {
         comingTripsView.setLayoutManager(layoutManager);
         comingTripsView.setAdapter(tripsRecyclerViewAdapter);
 
+        progressBar.setVisibility(View.VISIBLE);
         iTripsRepository.fetchTrips(0);
 
         noTripsText.setText(R.string.no_coming_trips);
@@ -145,7 +148,10 @@ public class ComingTripsFragment extends Fragment implements ResponseCallback {
             }
             this.comingTrips.addAll(temp);
 
-            requireActivity().runOnUiThread(() -> tripsRecyclerViewAdapter.notifyDataSetChanged());
+            requireActivity().runOnUiThread(() -> {
+                tripsRecyclerViewAdapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+            });
         }
 
     }

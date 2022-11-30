@@ -175,6 +175,9 @@
       "tripOwner": "test@test.com",
       "title": "Amsterdam",
       "description": "Viaggio ad Amsterdam",
+      "activity": {
+        "activityList": []
+      },
       "participant": {
         "personList": [
           {
