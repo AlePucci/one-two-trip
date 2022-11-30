@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.Onetwotrip" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryVariant">@color/yellow_500</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -12,7 +12,6 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-
     </style>
 
     <style name="Widget.App.CardView" parent="Widget.Material3.CardView.Elevated">
@@ -30,11 +29,30 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="Widget.App.BottomNavigationView" parent="">
+        <item name="android:textColorPrimary">@color/yellow_500</item>
+    </style>
+
     <style name="Widget.App.TripLocationAppearance" parent="">
         <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="fontFamily">sans-serif-light</item>
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.App.ToolbarTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">36sp</item>
+        <item name="fontFamily">sans-serif-condensed-medium</item>
+        <item name="android:fontFamily">sans-serif-condensed-medium</item>
+        <item name="android:textStyle">bold|italic</item>
+    </style>
+
+    <!-- Style for Toolbar -->
+    <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="titleTextColor">@color/black</item>
+        <item name="titleTextAppearance">@style/Widget.App.ToolbarTextAppearance</item>
+        <item name="android:titleTextAppearance">@style/Widget.App.ToolbarTextAppearance</item>
+        <item name="android:textColorPrimary">@color/black</item>
     </style>
 
 </resources>
