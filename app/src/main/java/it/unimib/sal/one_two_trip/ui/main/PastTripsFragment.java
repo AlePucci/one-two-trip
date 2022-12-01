@@ -94,6 +94,7 @@ public class PastTripsFragment extends Fragment implements ResponseCallback {
             }
         });
 
+        pastTripsView.setNestedScrollingEnabled(false);
         pastTripsView.setLayoutManager(layoutManager);
         pastTripsView.setAdapter(tripsRecyclerViewAdapter);
 

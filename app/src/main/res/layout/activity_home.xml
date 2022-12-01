@@ -7,20 +7,17 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.HomeActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/activity_home_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.main.HomeActivity">
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/top_appbar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="20dp"
             android:background="?attr/colorSurface"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -62,20 +59,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            app:tint="@color/black"
             android:backgroundTint="@color/yellow_500"
             android:contentDescription="@string/new_trip_fab_desc"
             app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.95"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_plus_24px" />
+            app:srcCompat="@drawable/ic_plus_24px"
+            app:tint="@color/black" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/Widget.App.BottomNavigationView"
+            app:elevation="5dp"
             app:labelVisibilityMode="selected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -91,9 +88,6 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/header_navigation_drawer"
-        app:itemIconTint="#000000"
         app:menu="@menu/navigation_drawer_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
-
-

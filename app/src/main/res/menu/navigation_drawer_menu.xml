@@ -1,32 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/main_item"
-        android:title="A">
+        android:id="@+id/main_section_items"
+        android:title="First section">
         <menu>
             <item
-                android:id="@+id/fragment_country_news"
                 android:checkable="true"
-                android:title="B" />
+                android:title="First option" />
             <item
-                android:id="@+id/fragment_topic_news"
                 android:checkable="true"
-                android:title="C"/>
+                android:title="Second option" />
             <item
-                android:id="@+id/fragment_favorite_news"
                 android:checkable="true"
-                android:title="D"/>
+                android:title="Third option" />
         </menu>
     </item>
     <item
-        android:id="@+id/labels_item"
-        android:title="AAA">
+        android:id="@+id/secondary_section_items"
+        android:title="Second section">
         <menu>
             <item
-                android:id="@+id/fragment_settings"
-
                 android:checkable="true"
-                android:title="A"/>
+                android:title="First option" />
         </menu>
     </item>
 </menu>

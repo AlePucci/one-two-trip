@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="Theme.Onetwotrip" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimary">?attr/colorOnSurface</item>
         <item name="colorPrimaryVariant">@color/yellow_500</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
