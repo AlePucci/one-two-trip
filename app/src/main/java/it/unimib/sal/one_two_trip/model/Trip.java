@@ -32,7 +32,8 @@ public class Trip {
     }
 
     @Ignore
-    public Trip(long id, String tripOwner, String title, String description, ActivityListHolder activity, PersonListHolder participant, boolean completed) {
+    public Trip(long id, String tripOwner, String title, String description,
+                ActivityListHolder activity, PersonListHolder participant, boolean completed) {
         this.id = id;
         this.tripOwner = tripOwner;
         this.title = title;
@@ -136,7 +137,7 @@ public class Trip {
     @NonNull
     @Override
     public String toString() {
-        return "Trip{" + "id='" + id + '\'' + ", title='" + title + '\'' + ", completed=" + completed + ", activity=" + activity + '}';
+        return "Trip{" + "id='" + id + '\'' + ", title='" + title + '\'' + ", completed=" +
+                completed + ", activity=" + activity + '}';
     }
-
 }

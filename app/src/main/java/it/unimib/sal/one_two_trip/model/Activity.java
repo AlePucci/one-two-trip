@@ -41,7 +41,10 @@ public class Activity {
     }
 
     @Ignore
-    public Activity(long id, String title, String description, String location, String end_location, Date start_date, Date end_date, PersonListHolder participant, long trip_id, List<Object> attachment, List<String> link, boolean completed, String type, boolean everyoneParticipate) {
+    public Activity(long id, String title, String description, String location, String end_location,
+                    Date start_date, Date end_date, PersonListHolder participant, long trip_id,
+                    List<Object> attachment, List<String> link, boolean completed, String type,
+                    boolean everyoneParticipate) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -173,7 +176,8 @@ public class Activity {
 
     /**
      * This method checks if the activity is completed.
-     * An activity is automatically marked as completed if the current date is after the end date.
+     * An activity is automatically marked as completed if the current date
+     * is after the end date.
      */
     public void checkCompleted() {
         boolean completed;
@@ -204,7 +208,7 @@ public class Activity {
     @NonNull
     @Override
     public String toString() {
-        return "Activity{" + "id='" + id + '\'' + ", title='" + title + '\'' + ", location='" + location + '\'' + ", start_date=" + start_date + '}';
+        return "Activity{" + "id='" + id + '\'' + ", title='" + title + '\'' +
+                ", location='" + location + '\'' + ", start_date=" + start_date + '}';
     }
-
 }

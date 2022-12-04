@@ -3,7 +3,6 @@ package it.unimib.sal.one_two_trip.adapter;
 import static it.unimib.sal.one_two_trip.util.Constants.MAX_ACTIVITIES_PER_TRIP_HOME;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 
-import android.app.Application;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,20 +30,19 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     private static final int MOVING_ACTIVITY = 1;
 
     private final List<Activity> activityList;
-    private final Application application;
     private final OnItemClickListener onItemClickListener;
 
-    public ActivitiesRecyclerViewAdapter(List<Activity> activityList, Application application,
+    public ActivitiesRecyclerViewAdapter(List<Activity> activityList,
                                          OnItemClickListener onItemClickListener) {
         this.activityList = activityList;
-        this.application = application;
         this.onItemClickListener = onItemClickListener;
     }
 
     @Override
     public int getItemViewType(int position) {
         if (activityList.get(position) != null && activityList.get(position).getType() != null
-                && activityList.get(position).getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
+                && activityList.get(position).getType()
+                .equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
             return MOVING_ACTIVITY;
         }
         return ACTIVITY;
@@ -54,9 +52,11 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == MOVING_ACTIVITY) {
-            return new MovingActivityViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.moving_activity_item_home, parent, false));
+            return new MovingActivityViewHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.moving_activity_item_home, parent, false));
         } else {
-            return new ActivityViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_item_home, parent, false));
+            return new ActivityViewHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.activity_item_home, parent, false));
         }
     }
 
@@ -108,7 +108,8 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     /**
      * Custom ViewHolder to bind data to the RecyclerView items (activities).
      */
-    public class ActivityViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ActivityViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
         private final TextView activityDate;
         private final TextView activityName;
         private final TextView activityStartTime;
@@ -170,7 +171,8 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     /**
      * Custom ViewHolder to bind data to the RecyclerView items (moving activities).
      */
-    public class MovingActivityViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MovingActivityViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
         private final TextView activityDate;
         private final TextView activityName;
         private final TextView activityStartTime;

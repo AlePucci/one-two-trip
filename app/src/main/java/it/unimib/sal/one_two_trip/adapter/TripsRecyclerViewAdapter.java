@@ -20,10 +20,11 @@ import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Trip;
 
 /**
- * Custom adapter that extends RecyclerView.Adapter to show an ArrayList of News
+ * Custom adapter that extends RecyclerView.Adapter to show an ArrayList of Trips
  * with a RecyclerView.
  */
-public class TripsRecyclerViewAdapter extends RecyclerView.Adapter<TripsRecyclerViewAdapter.TripViewHolder> {
+public class TripsRecyclerViewAdapter
+        extends RecyclerView.Adapter<TripsRecyclerViewAdapter.TripViewHolder> {
     private final List<Trip> tripList;
     private final Application application;
     private final OnItemClickListener onItemClickListener;
@@ -38,7 +39,8 @@ public class TripsRecyclerViewAdapter extends RecyclerView.Adapter<TripsRecycler
     @NonNull
     @Override
     public TripViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new TripViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.trip_item_home,
+        return new TripViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.trip_item_home,
                 parent, false));
     }
 
@@ -96,7 +98,6 @@ public class TripsRecyclerViewAdapter extends RecyclerView.Adapter<TripsRecycler
         public void bind(Trip trip) {
             ActivitiesRecyclerViewAdapter activitiesRecyclerViewAdapter =
                     new ActivitiesRecyclerViewAdapter(trip.getActivity().activityList,
-                            application,
                             new ActivitiesRecyclerViewAdapter.OnItemClickListener() {
                 @Override
                 public void onAttachmentsClick(Activity activity) {

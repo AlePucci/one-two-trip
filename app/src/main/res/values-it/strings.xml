@@ -19,4 +19,7 @@
     <string name="attachments_present">Sono presenti allegati per questa attività</string>
     <string name="no_trips_description">Non sono presenti viaggi in questa sezione</string>
     <string name="share_trip_button_description">Condividi il tuo viaggio!</string>
+    <string name="error_retrieving_trips">Errore nello scaricamento dei viaggi</string>
+    <string name="api_key_error">API key non valida o massimo numero di richieste raggiunto</string>
+    <string name="unexpected_error">Errore generico</string>
 </resources>

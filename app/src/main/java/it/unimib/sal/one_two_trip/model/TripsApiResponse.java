@@ -45,6 +45,7 @@ public class TripsApiResponse {
     @Override
     @NonNull
     public String toString() {
-        return "TripsApiResponse{" + "status='" + status + '\'' + ", totalResults=" + totalResults + ", trips=" + trips.toString() + '}';
+        return "TripsApiResponse{" + "status='" + status + '\'' + ", totalResults=" + totalResults +
+                ", trips=" + trips.toString() + '}';
     }
 }

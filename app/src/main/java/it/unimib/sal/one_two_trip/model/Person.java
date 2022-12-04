@@ -25,7 +25,8 @@ public class Person {
     }
 
     @Ignore
-    public Person(long id, String name, String surname, String email_address, String password, String phone_number, String profile_picture) {
+    public Person(long id, String name, String surname, String email_address, String password,
+                  String phone_number, String profile_picture) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -107,7 +108,7 @@ public class Person {
     @NonNull
     @Override
     public String toString() {
-        return "Person{" + "id='" + id + '\'' + ", name='" + name + '\'' + ", surname='" + surname + '\'' + ", email_address='" + email_address + '\'' + '}';
+        return "Person{" + "id='" + id + '\'' + ", name='" + name + '\'' + ", surname='" +
+                surname + '\'' + ", email_address='" + email_address + '\'' + '}';
     }
-
 }

@@ -7,6 +7,7 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -29,10 +30,10 @@ import it.unimib.sal.one_two_trip.R;
 public class HomeActivity extends AppCompatActivity {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
+    private DrawerLayout drawerLayout;
 
     private AppBarConfiguration appBarConfiguration;
     private NavController navController;
-    private NavigationView navView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,21 +43,24 @@ public class HomeActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.top_appbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        this.drawerLayout = findViewById(R.id.drawer_layout);
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().
                 findFragmentById(R.id.nav_host_fragment);
 
+        assert navHostFragment != null;
         navController = navHostFragment.getNavController();
 
         NavigationView topNav = findViewById(R.id.top_navigation);
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
 
         appBarConfiguration = new AppBarConfiguration.
-                Builder(R.id.fragment_coming_trips, R.id.fragment_past_trips).setOpenableLayout(drawerLayout).build();
+                Builder(R.id.fragment_coming_trips, R.id.fragment_past_trips)
+                .setOpenableLayout(drawerLayout).build();
 
         // For the Toolbar
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupActionBarWithNavController(this, navController,
+                appBarConfiguration);
 
         // For the Toolbar Menu
         NavigationUI.setupWithNavController(topNav, navController);
@@ -82,7 +86,11 @@ public class HomeActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration);
     }
 
-
-
-
+    public void onBackPressed() {
+        if (this.drawerLayout != null && this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
 }
