@@ -1,6 +1,8 @@
 package it.unimib.sal.one_two_trip.util;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -27,16 +29,19 @@ import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.MovingActivity;
 import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.ui.trip.TripActivity;
 
 public class TripsListUtil {
     private static final int MAX_ACTIVITIES_IN_A_TRIP = 3;
 
-    /** This method generates and shows the empty state of the trips list (coming or past)
+    /**
+     * This method generates and shows the empty state of the trips list (coming or past)
+     *
      * @param context the Context of the activity that calls this method
-     * @param layout the Layout where the empty state will be displayed
-     * @param textID the id of the string that will be shown in the empty state
+     * @param layout  the Layout where the empty state will be displayed
+     * @param textID  the id of the string that will be shown in the empty state
      */
-    public static void showEmptyState (Context context, LinearLayout layout, int textID) {
+    public static void showEmptyState(Context context, LinearLayout layout, int textID) {
         // Layout
         ConstraintLayout constraintLayout = new ConstraintLayout(context);
         constraintLayout.setId(View.generateViewId());
@@ -58,7 +63,7 @@ public class TripsListUtil {
 
         set.connect(emptyStateMessage.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID,
                 ConstraintSet.START, 0);
-        set.connect(emptyStateMessage.getId(), ConstraintSet.END,  ConstraintSet.PARENT_ID,
+        set.connect(emptyStateMessage.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID,
                 ConstraintSet.END, 0);
         set.connect(emptyStateMessage.getId(), ConstraintSet.TOP, ConstraintSet.PARENT_ID,
                 ConstraintSet.TOP, 0);
@@ -85,7 +90,7 @@ public class TripsListUtil {
                 ConstraintSet.START, 0);
         set.connect(emptyStateIllustration.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID,
                 ConstraintSet.END, 0);
-        set.connect(emptyStateIllustration.getId(), ConstraintSet.BOTTOM,  emptyStateMessage.getId(),
+        set.connect(emptyStateIllustration.getId(), ConstraintSet.BOTTOM, emptyStateMessage.getId(),
                 ConstraintSet.TOP, 0);
 
         set.constrainWidth(emptyStateIllustration.getId(), ConstraintSet.WRAP_CONTENT);
@@ -93,10 +98,12 @@ public class TripsListUtil {
         set.applyTo(constraintLayout);
     }
 
-    /** This method generates a TripCard, which is a CardView that contains the information of a
+    /**
+     * This method generates a TripCard, which is a CardView that contains the information of a
      * trip
+     *
      * @param context the Context of the activity that calls this method
-     * @param trip the Trip that will be shown in the TripCard
+     * @param trip    the Trip that will be shown in the TripCard
      * @return the TripCard
      */
     @NonNull
@@ -349,7 +356,7 @@ public class TripsListUtil {
             }
         }
 
-        if (lastActivity != null){
+        if (lastActivity != null) {
             // Some activities were added to the layout
             MaterialButton moreButton = new MaterialButton(context, null,
                     com.google.android.material.R.attr.materialButtonOutlinedStyle);
@@ -370,14 +377,17 @@ public class TripsListUtil {
             set.applyTo(cardViewLayout);
 
             moreButton.setOnClickListener(v -> {
-                if(trip.isCompleted()) {
-                    Navigation.findNavController(cardView).navigate(R.id.action_fragment_past_trips_to_trip);
+                Intent intent = new Intent(context, TripActivity.class);
+                intent.putExtra("tripId", trip.getId());
+                context.startActivity(intent);
+
+                /*if (trip.isCompleted()) {
+                    Navigation.findNavController(cardView).navigate(R.id.action_fragment_past_trips_to_trip, b);
                 } else {
-                    Navigation.findNavController(cardView).navigate(R.id.action_fragment_coming_trips_to_trip);
-                }
+                    Navigation.findNavController(cardView).navigate(R.id.action_fragment_coming_trips_to_trip, b);
+                }*/
             });
-        }
-        else{
+        } else {
             // no activities were added to the layout
             TextView noActivitiesText = new TextView(context);
             noActivitiesText.setId(View.generateViewId());
@@ -423,13 +433,14 @@ public class TripsListUtil {
                 CardView.LayoutParams.MATCH_PARENT,
                 CardView.LayoutParams.WRAP_CONTENT);
 
-        cardViewLayoutParams.setMargins(0,0,0,30);
+        cardViewLayoutParams.setMargins(0, 0, 0, 30);
         cardView.addView(cardViewLayout, cardViewLayoutParams);
 
         return cardView;
     }
 
-    /** Utility method to verify if two dates are in the same day
+    /**
+     * Utility method to verify if two dates are in the same day
      *
      * @param date1 first date
      * @param date2 second date
@@ -444,21 +455,5 @@ public class TripsListUtil {
         return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                 cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
                 cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
-    }
-
-    /** Utility method to get a time independent date
-     *
-     * @param date the date
-     * @return a new date with the same year, month, day
-     */
-    public static Date getDateDay(Date date) {
-        DateFormat df = SimpleDateFormat.getDateInstance();
-        try {
-            return df.parse(df.format(date));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return new Date();
     }
 }

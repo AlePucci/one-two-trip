@@ -1,14 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp">
 
     <TextView
-        android:id="@+id/item_activity_title"
+        android:id="@+id/item_activity_date"
+        style="@style/MaterialAlertDialog.Material3.Title.Text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="12 febbraio 2022" />
+
+    <ImageButton
+        android:id="@+id/activity_dragbutton"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="@+id/activity_cardview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/activity_cardview"
+        app:srcCompat="@drawable/ic_baseline_drag_indicator_24" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/activity_cardview"
+        style="?materialCardViewOutlinedStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/activity_dragbutton"
+        app:layout_constraintTop_toBottomOf="@+id/item_activity_date">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/item_activity_constraint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+
+
+            <TextView
+                android:id="@+id/item_activity_title"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_alignBottom="@id/item_activity_ll"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                app:layout_constraintBottom_toBottomOf="@id/item_activity_ll"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Volo #EZY3932" />
+
+            <LinearLayout
+                android:id="@+id/item_activity_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/item_activity_start_ll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/item_activity_pos1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                        tools:text="MXP" />
+
+                    <TextView
+                        android:id="@+id/item_activity_time1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        tools:text="9:30" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/item_activity_separator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/ic_baseline_horizontal_rule_24" />
+
+                <LinearLayout
+                    android:id="@+id/item_activity_end_ll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/item_activity_pos2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                        tools:text="CDG" />
+
+                    <TextView
+                        android:id="@+id/item_activity_time2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                        tools:text="11:30" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/item_activity_descr"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/item_activity_ll"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/item_activity_ll"
+                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
