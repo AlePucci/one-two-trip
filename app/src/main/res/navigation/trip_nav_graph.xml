@@ -9,5 +9,6 @@
         android:id="@+id/tripFragment"
         android:name="it.unimib.sal.one_two_trip.ui.trip.TripFragment"
         android:label="fragment_trip"
-        tools:layout="@layout/fragment_trip" />
+        tools:layout="@layout/fragment_trip" >
+    </fragment>
 </navigation>

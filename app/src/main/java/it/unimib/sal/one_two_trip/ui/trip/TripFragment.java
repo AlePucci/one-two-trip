@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +41,7 @@ import java.util.Arrays;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.TripAdapter;
+import it.unimib.sal.one_two_trip.TripViewModel;
 
 public class TripFragment extends Fragment {
 
@@ -74,6 +76,8 @@ public class TripFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        TripViewModel viewModel = new ViewModelProvider(requireActivity()).get(TripViewModel.class);
+
         //Ask for permissions
         ActivityResultContracts.RequestMultiplePermissions multiplePermissionsContract = new ActivityResultContracts.RequestMultiplePermissions();
 
@@ -87,10 +91,11 @@ public class TripFragment extends Fragment {
 
         bottomSheetSetup();
 
+        //RecyclerView
         RecyclerView recyclerView = view.findViewById(R.id.trip_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        TripAdapter adapter = new TripAdapter(Arrays.asList(trips[0].getActivity()));
+        TripAdapter adapter = new TripAdapter(Arrays.asList(viewModel.getTrip().getActivity()));
         recyclerView.setAdapter(adapter);
     }
 

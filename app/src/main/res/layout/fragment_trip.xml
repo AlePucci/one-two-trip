@@ -39,9 +39,10 @@
             android:paddingBottom="22dp" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/trip_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/trip_recyclerview" />
+            android:padding="8dp" />
 
     </LinearLayout>
 

@@ -2,25 +2,19 @@ package it.unimib.sal.one_two_trip.ui.trip;
 
 import static it.unimib.sal.one_two_trip.util.TemporaryTrips.trips;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavHost;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-
-import org.osmdroid.api.IMapController;
-import org.osmdroid.config.Configuration;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-
-import it.unimib.sal.one_two_trip.BuildConfig;
 import it.unimib.sal.one_two_trip.R;
+import it.unimib.sal.one_two_trip.TripViewModel;
+import it.unimib.sal.one_two_trip.model.Trip;
 
 public class TripActivity extends AppCompatActivity {
 
@@ -29,9 +23,20 @@ public class TripActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip);
 
+        TripViewModel viewModel = new ViewModelProvider(this).get(TripViewModel.class);
+        String id = getIntent().getStringExtra("tripId");
+        for(Trip t: trips) {
+            if(t.getId().equals(id)) {
+                viewModel.setTrip(t);
+                break;
+            }
+        }
+
+
+
         //Toolbar
         Toolbar toolbar = findViewById(R.id.trip_toolbar);
-        toolbar.setTitle(trips[0].getTitle());
+        toolbar.setTitle(viewModel.getTrip().getTitle());
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
