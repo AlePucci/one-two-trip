@@ -15,4 +15,13 @@
     <string name="start_adding_button_text">Inizia ad aggiungerne!</string>
     <string name="trip_map_description">Mappa del viaggio</string>
     <string name="trip_fab_label">Aggiungi Attività</string>
+    <string name="default_trip_title">Un fantastico nuovo viaggio</string>
+    <string name="default_activity_name">Attività</string>
+    <string name="error_json_parsing">Errore! Riprovare più tardi</string>
+    <string name="attachments_present">Sono presenti allegati per questa attività</string>
+    <string name="no_trips_description">Non sono presenti viaggi in questa sezione</string>
+    <string name="share_trip_button_description">Condividi il tuo viaggio!</string>
+    <string name="error_retrieving_trips">Errore nello scaricamento dei viaggi</string>
+    <string name="api_key_error">API key non valida o massimo numero di richieste raggiunto</string>
+    <string name="unexpected_error">Errore generico</string>
 </resources>

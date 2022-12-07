@@ -1,8 +1,8 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.Onetwotrip" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
+        <item name="colorPrimary">?attr/colorOnSurface</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
@@ -11,20 +11,10 @@
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
     </style>
 
     <style name="Widget.App.CardView" parent="Widget.Material3.CardView.Elevated">
         <item name="cardBackgroundColor">@color/cardview_dark_background</item>
     </style>
 
-    <style name="Widget.App.ShareButton" parent="Widget.Material3.Button.IconButton">
-        <item name="iconTint">?attr/colorOnSecondary</item>
-    </style>
-
-    <style name="Widget.App.TripTimeAppearance" parent="">
-        <item name="fontFamily">sans-serif-light</item>
-        <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:textStyle">normal</item>
-    </style>
 </resources>

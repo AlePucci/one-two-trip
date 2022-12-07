@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/main_section_items"
+        android:title="First section">
+        <menu>
+            <item
+                android:checkable="true"
+                android:title="First option" />
+            <item
+                android:checkable="true"
+                android:title="Second option" />
+            <item
+                android:checkable="true"
+                android:title="Third option" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/secondary_section_items"
+        android:title="Second section">
+        <menu>
+            <item
+                android:checkable="true"
+                android:title="First option" />
+        </menu>
+    </item>
+</menu>

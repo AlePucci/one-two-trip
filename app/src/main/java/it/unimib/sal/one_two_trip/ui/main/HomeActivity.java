@@ -1,8 +1,15 @@
 package it.unimib.sal.one_two_trip.ui.main;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.MenuProvider;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -10,42 +17,80 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.util.TemporaryTrips;
 
+/**
+ * The main activity of the app that a user sees after logging in.
+ * It contains a {@link BottomNavigationView} that allows the user to navigate between the
+ * {@link ComingTripsFragment} that shows the coming trips of the user and the
+ * {@link PastTripsFragment} that shows the past trips of the user.
+ */
 public class HomeActivity extends AppCompatActivity {
+
     private static final String TAG = HomeActivity.class.getSimpleName();
+    private DrawerLayout drawerLayout;
+
+    private AppBarConfiguration appBarConfiguration;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        TemporaryTrips.trip_1.setActivity(new Activity[]{TemporaryTrips.activity_1, TemporaryTrips.activity_2, TemporaryTrips.activity_3});
-        TemporaryTrips.trip_2.setActivity(new Activity[]{TemporaryTrips.activity_4, TemporaryTrips.activity_5, TemporaryTrips.activity_6});
-        TemporaryTrips.trip_3.setActivity(new Activity[]{});
-
         MaterialToolbar toolbar = findViewById(R.id.top_appbar);
         setSupportActionBar(toolbar);
+
+        this.drawerLayout = findViewById(R.id.drawer_layout);
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().
                 findFragmentById(R.id.nav_host_fragment);
 
-        NavController navController = null;
-        if(navHostFragment != null)  navController = navHostFragment.getNavController();
+        assert navHostFragment != null;
+        navController = navHostFragment.getNavController();
+
+        NavigationView topNav = findViewById(R.id.top_navigation);
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
 
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.fragment_coming_trips, R.id.fragment_past_trips).build();
+        appBarConfiguration = new AppBarConfiguration.
+                Builder(R.id.fragment_coming_trips, R.id.fragment_past_trips)
+                .setOpenableLayout(drawerLayout).build();
 
         // For the Toolbar
-        if(navController != null) NavigationUI.setupActionBarWithNavController(this,
-                navController, appBarConfiguration);
+        NavigationUI.setupActionBarWithNavController(this, navController,
+                appBarConfiguration);
+
+        // For the Toolbar Menu
+        NavigationUI.setupWithNavController(topNav, navController);
 
         // For the BottomNavigationView
-        if(navController != null) NavigationUI.setupWithNavController(bottomNav, navController);
+        NavigationUI.setupWithNavController(bottomNav, navController);
 
+        addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.top_appbar_menu, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        return NavigationUI.navigateUp(navController, appBarConfiguration);
+    }
+
+    public void onBackPressed() {
+        if (this.drawerLayout != null && this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 }
