@@ -16,15 +16,15 @@ public abstract class Result {
      * Class that represents a successful action during the interaction
      * with a Web Service or a local database.
      */
-    public static final class Success extends Result {
-        private final TripsResponse tripsResponse;
+    public static final class Success<T> extends Result {
+        private final T response;
 
-        public Success(TripsResponse tripsResponse) {
-            this.tripsResponse = tripsResponse;
+        public Success(T response) {
+            this.response = response;
         }
 
-        public TripsResponse getData() {
-            return tripsResponse;
+        public T getData() {
+            return response;
         }
     }
 

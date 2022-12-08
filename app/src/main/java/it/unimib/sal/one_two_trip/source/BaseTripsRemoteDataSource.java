@@ -8,4 +8,5 @@ public abstract class BaseTripsRemoteDataSource {
     }
 
     public abstract void getTrips();
+    public abstract void getTrip(long id);
 }

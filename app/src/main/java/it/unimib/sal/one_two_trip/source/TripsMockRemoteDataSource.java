@@ -4,6 +4,8 @@ import static it.unimib.sal.one_two_trip.util.Constants.TRIPS_API_TEST_JSON_FILE
 
 import java.io.IOException;
 
+import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.model.TripApiResponse;
 import it.unimib.sal.one_two_trip.model.TripsApiResponse;
 import it.unimib.sal.one_two_trip.util.JSONParserUtil;
 
@@ -30,6 +32,32 @@ public class TripsMockRemoteDataSource extends BaseTripsRemoteDataSource {
             tripCallback.onSuccessFromRemote(tripsApiResponse, System.currentTimeMillis());
         } else {
             tripCallback.onFailureFromRemote(new Exception("Unexpected error"));
+        }
+    }
+
+    @Override
+    public void getTrip(long id) {
+        TripApiResponse tripApiResponse = null;
+
+        try {
+            TripsApiResponse tripsApiResponse = jsonParserUtil.parseJSON(TRIPS_API_TEST_JSON_FILE);
+
+            for(Trip t: tripsApiResponse.getTrips()) {
+                if(t.getId() == id) {
+                    tripApiResponse = new TripApiResponse();
+                    tripApiResponse.setTrip(t);
+                    tripApiResponse.setStatus(tripsApiResponse.getStatus());
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(tripApiResponse != null) {
+            tripCallback.onSuccessFromRemote(tripApiResponse, System.currentTimeMillis());
+        } else {
+            tripCallback.onFailureFromRemote(new Exception("Unexpected Error"));
         }
     }
 }

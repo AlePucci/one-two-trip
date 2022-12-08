@@ -33,6 +33,12 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
     }
 
     @Override
+    public void getTrip(long id) {
+        TripsRoomDatabase.databaseWriteExecutor.execute(
+                () -> tripCallback.onSuccessFromLocal(tripsDAO.getTrip(id)));
+    }
+
+    @Override
     public void updateTrip(Trip trip) {
         /* TO DO */
     }
@@ -75,6 +81,26 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
 
                 tripCallback.onSuccessFromLocal(tripList);
             }
+        });
+    }
+
+    @Override
+    public void insertTrip(Trip trip) {
+        TripsRoomDatabase.databaseWriteExecutor.execute(() -> {
+            List<Trip> allTrips = tripsDAO.getAll();
+            Trip nTrip = trip;
+
+            if(allTrips.contains(trip)) {
+                nTrip = allTrips.get(allTrips.indexOf(trip));
+            }
+
+            long insertedId = tripsDAO.insertTrip(nTrip);
+            nTrip.setId(insertedId);
+
+            sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE,
+                    String.valueOf(System.currentTimeMillis()));
+
+            tripCallback.onSuccessFromLocal(nTrip);
         });
     }
 }

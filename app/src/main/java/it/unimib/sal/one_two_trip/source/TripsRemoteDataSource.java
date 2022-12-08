@@ -10,4 +10,9 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
     public void getTrips() {
 
     }
+
+    @Override
+    public void getTrip(long id) {
+
+    }
 }

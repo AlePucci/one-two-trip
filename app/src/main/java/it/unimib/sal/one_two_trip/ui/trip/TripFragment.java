@@ -3,9 +3,11 @@ package it.unimib.sal.one_two_trip.ui.trip;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_DRAGGING;
 
-import static it.unimib.sal.one_two_trip.util.TemporaryTrips.trips;
+import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.Manifest;
+import android.app.Application;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -26,7 +28,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.LinearLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -37,15 +38,27 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.TripAdapter;
-import it.unimib.sal.one_two_trip.TripViewModel;
+import it.unimib.sal.one_two_trip.adapter.TripRecyclerViewAdapter;
+import it.unimib.sal.one_two_trip.model.Activity;
+import it.unimib.sal.one_two_trip.model.Result;
+import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.model.TripResponse;
+import it.unimib.sal.one_two_trip.repository.ITripsRepository;
+import it.unimib.sal.one_two_trip.util.ServiceLocator;
+import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 public class TripFragment extends Fragment {
 
     private ActivityResultLauncher<String[]> multiplePermissionLauncher;
+
+    private Application application;
+    private TripViewModel viewModel;
+    private SharedPreferencesUtil sharedPreferencesUtil;
+
 
     private final String[] PERMISSIONS = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -57,6 +70,8 @@ public class TripFragment extends Fragment {
 
     private int bottomSheetLastDelta = 0;
 
+    private List<Activity> activityList;
+
     public TripFragment() {
         // Required empty public constructor
     }
@@ -64,6 +79,17 @@ public class TripFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        application = requireActivity().getApplication();
+
+        sharedPreferencesUtil = new SharedPreferencesUtil(application);
+
+        ITripsRepository tripsRepository = ServiceLocator.getInstance()
+                .getTripsRepository(application);
+        viewModel = new ViewModelProvider(requireActivity(),
+                new TripViewModelFactory(tripsRepository)).get(TripViewModel.class);
+
+        activityList = new ArrayList<>();
     }
 
     @Override
@@ -75,8 +101,6 @@ public class TripFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        TripViewModel viewModel = new ViewModelProvider(requireActivity()).get(TripViewModel.class);
 
         //Ask for permissions
         ActivityResultContracts.RequestMultiplePermissions multiplePermissionsContract = new ActivityResultContracts.RequestMultiplePermissions();
@@ -95,8 +119,26 @@ public class TripFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.trip_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        TripAdapter adapter = new TripAdapter(Arrays.asList(viewModel.getTrip().getActivity()));
+        TripRecyclerViewAdapter adapter = new TripRecyclerViewAdapter(activityList);
         recyclerView.setAdapter(adapter);
+
+        String lastUpdate = "0";
+        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                LAST_UPDATE) != null) {
+            lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                    LAST_UPDATE);
+        }
+
+        viewModel.getTrip(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
+            if(result.isSuccess()) {
+                Trip fetchedTrip = ((Result.Success<TripResponse>) result).getData().getTrip();
+
+                int initialSize = activityList.size();
+                activityList.clear();
+                activityList.addAll(fetchedTrip.getActivity().activityList);
+                adapter.notifyItemRangeInserted(initialSize, activityList.size());
+            }
+        });
     }
 
     @Override

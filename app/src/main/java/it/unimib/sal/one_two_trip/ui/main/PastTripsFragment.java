@@ -4,6 +4,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,8 @@ import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.TripsRecyclerViewAdapter;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.model.TripsResponse;
+import it.unimib.sal.one_two_trip.ui.trip.TripActivity;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
@@ -94,12 +97,16 @@ public class PastTripsFragment extends Fragment {
 
                     @Override
                     public void onTripClick(Trip trip) {
-                        Snackbar.make(view, trip.getTitle(), Snackbar.LENGTH_SHORT).show();
+                        Intent intent = new Intent(requireContext(), TripActivity.class);
+                        intent.putExtra("tripId", trip.getId());
+                        requireContext().startActivity(intent);
                     }
 
                     @Override
                     public void onButtonClick(Trip trip) {
-                        Snackbar.make(view, trip.getTitle(), Snackbar.LENGTH_SHORT).show();
+                        Intent intent = new Intent(requireContext(), TripActivity.class);
+                        intent.putExtra("tripId", trip.getId());
+                        requireContext().startActivity(intent);
                     }
                 });
 
@@ -119,7 +126,7 @@ public class PastTripsFragment extends Fragment {
         tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
-                        List<Trip> fetchedTrips = ((Result.Success) result).getData().getTripList();
+                        List<Trip> fetchedTrips = ((Result.Success<TripsResponse>) result).getData().getTripList();
 
                         // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
                         if (fetchedTrips == null || fetchedTrips.isEmpty()) {

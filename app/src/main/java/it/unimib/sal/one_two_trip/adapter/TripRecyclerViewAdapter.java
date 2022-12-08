@@ -1,6 +1,5 @@
-package it.unimib.sal.one_two_trip;
+package it.unimib.sal.one_two_trip.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,22 +9,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.w3c.dom.Text;
-
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.MovingActivity;
-import it.unimib.sal.one_two_trip.util.TripsListUtil;
 
-public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripHolder> {
+public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerViewAdapter.TripHolder> {
     private final List<Activity> activities;
 
-    public TripAdapter(List<Activity> activities) {
+    public TripRecyclerViewAdapter(List<Activity> activities) {
         this.activities = activities;
     }
 
@@ -83,12 +77,11 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripHolder> {
             String date = df.format(activity.getStart_date());
             item_time1.setText(date);
 
-            if(activity instanceof MovingActivity) {
-                MovingActivity a = (MovingActivity) activity;
+            if(false) {
                 item_pos2.setVisibility(View.VISIBLE);
-                item_pos2.setText(a.getEnd_location());
+                item_pos2.setText(activity.getEnd_location());
 
-                String end_date = df.format(a.getEnd_date());
+                String end_date = df.format(activity.getEnd_date());
                 item_time2.setVisibility(View.VISIBLE);
                 item_time2.setText(end_date);
 
