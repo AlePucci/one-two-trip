@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.source;
 
 import static it.unimib.sal.one_two_trip.util.Constants.TRIPS_API_TEST_JSON_FILE;
+import static it.unimib.sal.one_two_trip.util.Constants.UNEXPECTED_ERROR;
 
 import java.io.IOException;
 
@@ -31,7 +32,7 @@ public class TripsMockRemoteDataSource extends BaseTripsRemoteDataSource {
 
             tripCallback.onSuccessFromRemote(tripsApiResponse, System.currentTimeMillis());
         } else {
-            tripCallback.onFailureFromRemote(new Exception("Unexpected error"));
+            tripCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
         }
     }
 
@@ -57,7 +58,7 @@ public class TripsMockRemoteDataSource extends BaseTripsRemoteDataSource {
         if(tripApiResponse != null) {
             tripCallback.onSuccessFromRemote(tripApiResponse, System.currentTimeMillis());
         } else {
-            tripCallback.onFailureFromRemote(new Exception("Unexpected Error"));
+            tripCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
         }
     }
 }

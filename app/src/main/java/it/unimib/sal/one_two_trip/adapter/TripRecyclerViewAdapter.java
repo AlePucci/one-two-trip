@@ -1,5 +1,7 @@
 package it.unimib.sal.one_two_trip.adapter;
 
+import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,14 +9,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Activity;
+import it.unimib.sal.one_two_trip.model.Person;
 
 public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerViewAdapter.TripHolder> {
     private final List<Activity> activities;
@@ -32,6 +37,7 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
         private final TextView item_time1;
         private final TextView item_time2;
         private final ImageView item_separator;
+        private final RecyclerView participants;
 
         public TripHolder(@NonNull View itemView) {
             super(itemView);
@@ -44,7 +50,7 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
             item_time1 = itemView.findViewById(R.id.item_activity_time1);
             item_time2 = itemView.findViewById(R.id.item_activity_time2);
             item_separator = itemView.findViewById(R.id.item_activity_separator);
-
+            participants = itemView.findViewById(R.id.participants_recycler);
         }
 
         public void bind(Activity activity) {
@@ -58,6 +64,11 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
             } else {
                 item_header.setVisibility(View.GONE);
             }
+
+            ParticipantRecyclerViewAdapter adapter = new ParticipantRecyclerViewAdapter(activity.getParticipant().personList);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
+            participants.setLayoutManager(layoutManager);
+            participants.setAdapter(adapter);
 
             //Title
             item_title.setText(activity.getTitle());
@@ -77,7 +88,7 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
             String date = df.format(activity.getStart_date());
             item_time1.setText(date);
 
-            if(false) {
+            if(activity.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
                 item_pos2.setVisibility(View.VISIBLE);
                 item_pos2.setText(activity.getEnd_location());
 
@@ -123,5 +134,12 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
         String day2 = df.format(date2);
 
         return day1.equals(day2);
+    }
+
+    public void addData(List<Activity> activities) {
+        int initialSize = this.activities.size();
+        this.activities.clear();
+        this.activities.addAll(activities);
+        notifyItemRangeInserted(initialSize, activities.size());
     }
 }

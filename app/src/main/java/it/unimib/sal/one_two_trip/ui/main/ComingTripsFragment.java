@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.ui.main;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
@@ -104,14 +105,14 @@ public class ComingTripsFragment extends Fragment {
                     @Override
                     public void onTripClick(Trip trip) {
                         Intent intent = new Intent(requireContext(), TripActivity.class);
-                        intent.putExtra("tripId", trip.getId());
+                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
                         requireContext().startActivity(intent);
                     }
 
                     @Override
                     public void onButtonClick(Trip trip) {
                         Intent intent = new Intent(requireContext(), TripActivity.class);
-                        intent.putExtra("tripId", trip.getId());
+                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
                         requireContext().startActivity(intent);
                     }
                 });

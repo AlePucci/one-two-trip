@@ -44,25 +44,34 @@
             android:padding="8dp">
 
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/participants_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/item_activity_title"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_alignBottom="@id/item_activity_ll"
+                android:layout_marginTop="8dp"
                 android:gravity="center_vertical"
                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                 app:layout_constraintBottom_toBottomOf="@id/item_activity_ll"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/participants_recycler"
                 tools:text="Volo #EZY3932" />
 
             <LinearLayout
                 android:id="@+id/item_activity_ll"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
+                android:layout_marginTop="8dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/participants_recycler">
 
                 <LinearLayout
                     android:id="@+id/item_activity_start_ll"
@@ -125,6 +134,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/item_activity_ll"
+                android:layout_marginTop="8dp"
+                android:maxLines="3"
                 android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

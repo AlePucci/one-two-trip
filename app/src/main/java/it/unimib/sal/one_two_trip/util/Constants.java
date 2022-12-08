@@ -22,4 +22,6 @@ public class Constants {
     public static final String RETROFIT_ERROR = "retrofit_error";
     public static final String API_KEY_ERROR = "api_key_error";
     public static final String UNEXPECTED_ERROR = "unexpected_error";
+
+    public static final String SELECTED_TRIP_ID = "tripId";
 }

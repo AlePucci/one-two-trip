@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.ui.trip;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
@@ -35,7 +36,7 @@ public class TripActivity extends AppCompatActivity {
                 new TripViewModelFactory(tripsRepository)).get(TripViewModel.class);
 
 
-        long id = getIntent().getLongExtra("tripId", 0);
+        long id = getIntent().getLongExtra(SELECTED_TRIP_ID, 0);
         viewModel.setId(id);
 
         String lastUpdate = "0";

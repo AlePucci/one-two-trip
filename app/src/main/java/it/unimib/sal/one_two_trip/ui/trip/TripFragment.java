@@ -133,10 +133,7 @@ public class TripFragment extends Fragment {
             if(result.isSuccess()) {
                 Trip fetchedTrip = ((Result.Success<TripResponse>) result).getData().getTrip();
 
-                int initialSize = activityList.size();
-                activityList.clear();
-                activityList.addAll(fetchedTrip.getActivity().activityList);
-                adapter.notifyItemRangeInserted(initialSize, activityList.size());
+                adapter.addData(fetchedTrip.getActivity().activityList);
             }
         });
     }
