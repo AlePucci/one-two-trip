@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "484986298181",
+    "firebase_url": "https://trip-b29d1-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "trip-b29d1",
+    "storage_bucket": "trip-b29d1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:484986298181:android:eb5f4c5b4593eef31b282c",
+        "android_client_info": {
+          "package_name": "it.unimib.sal.one_two_trip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "484986298181-ladhfuoem9ibjaasg8g0r6m06srmaj03.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.unimib.sal.one_two_trip",
+            "certificate_hash": "4a4fa7675b99c6a981058eee2e40f77ec3c0f277"
+          }
+        },
+        {
+          "client_id": "484986298181-gm1ouq9nmf9jr76mi0l7gg63ogncfebr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6nKuIxin5BpDXUnzYKCx5xohuS7sJeEk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "484986298181-gm1ouq9nmf9jr76mi0l7gg63ogncfebr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
