@@ -17,25 +17,28 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="12 febbraio 2022" />
 
-    <ImageButton
-        android:id="@+id/activity_dragbutton"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/item_activity_dragbutton"
         style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        app:layout_constraintBottom_toBottomOf="@+id/activity_cardview"
+        android:hapticFeedbackEnabled="true"
+        app:icon="@drawable/ic_baseline_drag_indicator_24"
+        app:iconTint="?colorOnSurface"
+        app:layout_constraintBottom_toBottomOf="@+id/item_activity_cardview"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/activity_cardview"
-        app:srcCompat="@drawable/ic_baseline_drag_indicator_24" />
+        app:layout_constraintTop_toTopOf="@+id/item_activity_cardview" />
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/activity_cardview"
+        android:id="@+id/item_activity_cardview"
         style="?materialCardViewOutlinedStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/activity_dragbutton"
-        app:layout_constraintTop_toBottomOf="@+id/item_activity_date">
+        app:layout_constraintStart_toEndOf="@+id/item_activity_dragbutton"
+        app:layout_constraintTop_toBottomOf="@+id/item_activity_date"
+        android:background="?android:selectableItemBackground">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/item_activity_constraint"
@@ -49,7 +52,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:orientation="horizontal"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
             <TextView
                 android:id="@+id/item_activity_title"
@@ -101,7 +106,8 @@
                     android:id="@+id/item_activity_separator"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/ic_baseline_horizontal_rule_24" />
+                    app:srcCompat="@drawable/ic_baseline_horizontal_rule_24"
+                    app:tint="?colorOnSurface" />
 
                 <LinearLayout
                     android:id="@+id/item_activity_end_ll"

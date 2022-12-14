@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
@@ -22,7 +24,7 @@ public class ParticipantRecyclerViewAdapter
         this.personList = personList;
     }
 
-    public class ParticipantHolder extends RecyclerView.ViewHolder {
+    public class ParticipantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView item_name;
 
         public ParticipantHolder(@NonNull View itemView) {
@@ -32,7 +34,15 @@ public class ParticipantRecyclerViewAdapter
         }
 
         public void bind(Person person) {
-            item_name.setText(person.getName() + " " + person.getSurname());
+            item_name.setText(person.getFullName());
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Snackbar.make(v, "User " + personList.get(getAdapterPosition()).getFullName(),
+                    Snackbar.LENGTH_SHORT).show();
         }
     }
 

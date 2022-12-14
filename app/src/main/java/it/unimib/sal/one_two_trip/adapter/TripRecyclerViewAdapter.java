@@ -2,15 +2,22 @@ package it.unimib.sal.one_two_trip.adapter;
 
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -28,7 +35,7 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
         this.activities = activities;
     }
 
-    public class TripHolder extends RecyclerView.ViewHolder {
+    public class TripHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView item_title;
         private final TextView item_header;
         private final TextView item_descr;
@@ -38,6 +45,8 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
         private final TextView item_time2;
         private final ImageView item_separator;
         private final RecyclerView participants;
+        private final MaterialButton drag_button;
+        private final MaterialCardView cardView;
 
         public TripHolder(@NonNull View itemView) {
             super(itemView);
@@ -51,6 +60,8 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
             item_time2 = itemView.findViewById(R.id.item_activity_time2);
             item_separator = itemView.findViewById(R.id.item_activity_separator);
             participants = itemView.findViewById(R.id.participants_recycler);
+            drag_button = itemView.findViewById(R.id.item_activity_dragbutton);
+            cardView = itemView.findViewById(R.id.item_activity_cardview);
         }
 
         public void bind(Activity activity) {
@@ -65,6 +76,7 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
                 item_header.setVisibility(View.GONE);
             }
 
+            //Participants
             ParticipantRecyclerViewAdapter adapter = new ParticipantRecyclerViewAdapter(activity.getParticipant().personList);
             LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
             participants.setLayoutManager(layoutManager);
@@ -101,6 +113,27 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
                 item_pos2.setVisibility(View.GONE);
                 item_time2.setVisibility(View.GONE);
                 item_separator.setVisibility(View.GONE);
+            }
+
+            //Drag Button
+            drag_button.setOnClickListener(this);
+
+            //CardView
+            cardView.setOnClickListener(this);
+
+            //ItemView
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if(v.getId() == R.id.item_activity_dragbutton) {
+                Snackbar.make(v, "Drag " + activities.get(getAdapterPosition()).getTitle(),
+                        Snackbar.LENGTH_SHORT).show();
+                drag_button.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            } else if(v.getId() == R.id.item_activity_cardview){
+                Snackbar.make(v, "Activity " + activities.get(getAdapterPosition()).getTitle(),
+                        Snackbar.LENGTH_SHORT).show();
             }
         }
     }

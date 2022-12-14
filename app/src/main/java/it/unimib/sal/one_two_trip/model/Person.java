@@ -56,6 +56,10 @@ public class Person {
         return surname;
     }
 
+    public String getFullName() {
+        return getName() + " " + getSurname();
+    }
+
     public void setSurname(String surname) {
         this.surname = surname;
     }
