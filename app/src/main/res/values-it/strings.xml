@@ -24,4 +24,6 @@
     <string name="error_retrieving_trips">Errore nello scaricamento dei viaggi</string>
     <string name="api_key_error">API key non valida o massimo numero di richieste raggiunto</string>
     <string name="unexpected_error">Errore generico</string>
+    <string name="delete">Elimina</string>
+    <string name="rename">Rinomina</string>
 </resources>

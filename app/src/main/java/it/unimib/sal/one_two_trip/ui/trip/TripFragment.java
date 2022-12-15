@@ -17,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,6 +27,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -112,6 +117,30 @@ public class TripFragment extends Fragment {
         multiplePermissionLauncher = registerForActivityResult(multiplePermissionsContract, isGranted -> {
             if(!isGranted.containsValue(false)) {
                 loadMap();
+            }
+        });
+
+        //Toolbar
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.trip_appbar_menu, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                if(menuItem.getItemId() == R.id.trip_menu_rename) {
+                    //TODO: rename trip
+                    Snackbar.make(view, "Rename", Snackbar.LENGTH_SHORT).show();
+                    return true;
+                } else if(menuItem.getItemId() == R.id.trip_menu_delete) {
+                    //TODO: delete trip
+                    Snackbar.make(view, "Delete", Snackbar.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                return false;
             }
         });
 
