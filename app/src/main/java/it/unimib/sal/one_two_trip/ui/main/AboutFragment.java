@@ -1,10 +1,13 @@
 package it.unimib.sal.one_two_trip.ui.main;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -55,6 +58,7 @@ public class AboutFragment extends Fragment {
         BottomNavigationView bottomNavigationView = requireActivity()
                 .findViewById(R.id.bottom_navigation);
         FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
+        LinearLayout contribute = requireActivity().findViewById(R.id.contribute_layout);
         bottomNavigationView.setVisibility(View.GONE);
         fab.setVisibility(View.GONE);
 
@@ -68,5 +72,12 @@ public class AboutFragment extends Fragment {
         dev3.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
         dev4.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
 
+        contribute.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.addCategory(Intent.CATEGORY_BROWSABLE);
+            intent.setData(Uri.parse(getString(R.string.github_link)));
+            startActivity(intent);
+        });
     }
 }
