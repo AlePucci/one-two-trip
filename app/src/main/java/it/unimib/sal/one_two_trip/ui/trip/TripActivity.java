@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
@@ -18,6 +20,7 @@ import it.unimib.sal.one_two_trip.model.TripResponse;
 import it.unimib.sal.one_two_trip.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
+import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
@@ -54,6 +57,10 @@ public class TripActivity extends AppCompatActivity {
                 Trip fetchedTrip = ((Result.Success<TripResponse>) result).getData().getTrip();
 
                 toolbar.setTitle(fetchedTrip.getTitle());
+            } else {
+                ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(application);
+                Snackbar.make(toolbar, errorMessagesUtil.getErrorMessage(((Result.Error) result)
+                        .getMessage()), Snackbar.LENGTH_SHORT).show();
             }
         });
 

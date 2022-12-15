@@ -41,6 +41,7 @@ public class ParticipantRecyclerViewAdapter
 
         @Override
         public void onClick(View v) {
+            //TODO: goto user page
             Snackbar.make(v, "User " + personList.get(getAdapterPosition()).getFullName(),
                     Snackbar.LENGTH_SHORT).show();
         }

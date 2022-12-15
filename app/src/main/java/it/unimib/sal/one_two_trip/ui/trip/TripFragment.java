@@ -15,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -28,9 +29,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.ProgressBar;
 
+import com.google.android.material.animation.MotionSpec;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -48,6 +53,7 @@ import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.model.TripResponse;
 import it.unimib.sal.one_two_trip.repository.ITripsRepository;
+import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
@@ -67,8 +73,6 @@ public class TripFragment extends Fragment {
     };
 
     private MapView mapView;
-
-    private int bottomSheetLastDelta = 0;
 
     private List<Activity> activityList;
 
@@ -113,7 +117,10 @@ public class TripFragment extends Fragment {
 
         mapSetup();
 
-        bottomSheetSetup();
+        //FAB
+        FloatingActionButton fab = view.findViewById(R.id.trip_fab);
+        //TODO: add activity
+        fab.setOnClickListener(v -> Snackbar.make(v, "Add Activity", Snackbar.LENGTH_SHORT).show());
 
         //RecyclerView
         RecyclerView recyclerView = view.findViewById(R.id.trip_recyclerview);
@@ -130,10 +137,20 @@ public class TripFragment extends Fragment {
         }
 
         viewModel.getTrip(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
+            ProgressBar progressBar = requireView().findViewById(R.id.trip_progressbar);
+
             if(result.isSuccess()) {
                 Trip fetchedTrip = ((Result.Success<TripResponse>) result).getData().getTrip();
 
                 adapter.addData(fetchedTrip.getActivity().activityList);
+
+                progressBar.setVisibility(View.GONE);
+            } else {
+                ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
+                Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
+                        .getMessage()), Snackbar.LENGTH_SHORT).show();
+
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -184,37 +201,5 @@ public class TripFragment extends Fragment {
         } else {
             multiplePermissionLauncher.launch(PERMISSIONS);
         }
-    }
-
-    private void bottomSheetSetup() {
-        BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from(requireView().findViewById(R.id.trip_sheet));
-        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                ExtendedFloatingActionButton fab = requireView().findViewById(R.id.trip_extended_fab);
-                final int delta = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics());
-
-                if(newState == STATE_COLLAPSED) {
-                    final Animation animation = new TranslateAnimation(0,0, delta, 0);
-                    animation.setDuration(500);
-                    animation.setFillAfter(true);
-                    fab.startAnimation(animation);
-
-                    bottomSheetLastDelta = 0;
-                } else if(newState == STATE_DRAGGING) {
-                    final Animation animation = new TranslateAnimation(0,0,bottomSheetLastDelta, delta);
-                    animation.setDuration(500);
-                    animation.setFillAfter(true);
-                    fab.startAnimation(animation);
-
-                    bottomSheetLastDelta = delta;
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-            }
-        });
-
     }
 }

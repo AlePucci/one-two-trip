@@ -128,10 +128,12 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
         @Override
         public void onClick(View v) {
             if(v.getId() == R.id.item_activity_dragbutton) {
+                //TODO: change activity date and time
                 Snackbar.make(v, "Drag " + activities.get(getAdapterPosition()).getTitle(),
                         Snackbar.LENGTH_SHORT).show();
                 drag_button.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             } else if(v.getId() == R.id.item_activity_cardview){
+                //TODO: goto activity details
                 Snackbar.make(v, "Activity " + activities.get(getAdapterPosition()).getTitle(),
                         Snackbar.LENGTH_SHORT).show();
             }

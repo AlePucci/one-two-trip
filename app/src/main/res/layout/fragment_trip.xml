@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.trip.TripFragment"
-    android:id="@+id/coordinator"
+    android:id="@+id/trip_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent">
@@ -38,22 +38,29 @@
             android:paddingTop="22dp"
             android:paddingBottom="22dp" />
 
+        <ProgressBar
+            android:id="@+id/trip_progressbar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/trip_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp" />
+            android:padding="8dp"/>
 
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/trip_extended_fab"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/trip_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="64dp"
-        android:text="@string/trip_fab_label"
-        app:icon="@drawable/ic_baseline_add_24" />
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/trip_fab_label"
+        android:src="@drawable/ic_baseline_add_24"
+        app:layout_anchorGravity="end" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
