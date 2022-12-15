@@ -59,4 +59,5 @@
     <string name="github_link" translatable="false">https://github.com/AlePucci/one-two-trip</string>
     <string name="version">Version:</string>
     <string name="github" translatable="false">github</string>
+    <string name="save">Save</string>
 </resources>
