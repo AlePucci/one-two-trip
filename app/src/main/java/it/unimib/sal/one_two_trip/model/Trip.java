@@ -126,7 +126,7 @@ public class Trip {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trip trip = (Trip) o;
-        return id == trip.id && tripOwner.equals(trip.tripOwner);
+        return id == trip.id && completed == trip.completed && Objects.equals(tripOwner, trip.tripOwner) && Objects.equals(title, trip.title) && Objects.equals(description, trip.description) && Objects.equals(activity, trip.activity) && Objects.equals(participant, trip.participant);
     }
 
     @Override
