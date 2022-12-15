@@ -194,7 +194,6 @@ public class SettingsFragment extends Fragment {
                 }
             }
         }
-        else
-            toggleNotificationsList(false);
+        else toggleNotificationsList(false);
     }
 }
