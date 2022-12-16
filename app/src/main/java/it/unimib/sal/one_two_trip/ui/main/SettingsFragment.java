@@ -15,16 +15,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.HashSet;
@@ -42,7 +44,8 @@ public class SettingsFragment extends Fragment {
 
     private static final String TAG = SettingsFragment.class.getSimpleName();
 
-    private ConstraintLayout notifications_layout;
+    private MaterialCardView notifications_cardview;
+    private TextView notifications_disabled;
     private SwitchMaterial notifications_switch;
     private ToggleButton twelve_hours_trip;
     private ToggleButton one_day_trip;
@@ -89,7 +92,8 @@ public class SettingsFragment extends Fragment {
         fab.setVisibility(View.GONE);
 
         notifications_switch = view.findViewById(R.id.notifications_switch);
-        notifications_layout = view.findViewById(R.id.notifications_layout);
+        notifications_cardview = view.findViewById(R.id.notifications_cardview);
+        notifications_disabled = view.findViewById(R.id.notifications_disabled);
         twelve_hours_trip = view.findViewById(R.id.trip_twelve_hours);
         one_day_trip = view.findViewById(R.id.trip_one_day);
         two_days_trip = view.findViewById(R.id.trip_two_days);
@@ -103,14 +107,15 @@ public class SettingsFragment extends Fragment {
         notifications_switch
                 .setOnCheckedChangeListener((v, isChecked) -> toggleNotificationsList(isChecked));
 
-        save_button.setOnClickListener(v -> saveSettings());
+        save_button.setOnClickListener(this::saveSettings);
     }
 
     private void toggleNotificationsList(boolean isVisible) {
-        notifications_layout.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        notifications_cardview.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        notifications_disabled.setVisibility(isVisible ? View.GONE : View.VISIBLE);
     }
 
-    private void saveSettings() {
+    private void saveSettings(View v) {
         SharedPreferencesUtil sharedPreferencesUtil
                 = new SharedPreferencesUtil(requireActivity().getApplication());
         boolean notifications = notifications_switch.isChecked();
@@ -152,6 +157,8 @@ public class SettingsFragment extends Fragment {
         sharedPreferencesUtil.writeStringData(
                 SHARED_PREFERENCES_FILE_NAME, SHARED_PREFERENCES_NOTIFICATIONS_ON,
                 String.valueOf(notifications));
+
+        Snackbar.make(v, getString(R.string.settings_saved), Snackbar.LENGTH_SHORT).show();
     }
 
     private void restoreSettings() {
@@ -193,7 +200,8 @@ public class SettingsFragment extends Fragment {
                     two_hours_activity.setChecked(true);
                 }
             }
+        } else {
+            toggleNotificationsList(false);
         }
-        else toggleNotificationsList(false);
     }
 }

@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/fragment_coming_trips"
         android:name="it.unimib.sal.one_two_trip.ui.main.ComingTripsFragment"
-        tools:layout="@layout/fragment_coming_trips" >
+        tools:layout="@layout/fragment_coming_trips">
         <action
             android:id="@+id/action_fragment_coming_trips_to_aboutFragment2"
             app:destination="@id/fragment_about" />
@@ -19,7 +19,7 @@
     <fragment
         android:id="@+id/fragment_past_trips"
         android:name="it.unimib.sal.one_two_trip.ui.main.PastTripsFragment"
-        tools:layout="@layout/fragment_past_trips" >
+        tools:layout="@layout/fragment_past_trips">
         <action
             android:id="@+id/action_fragment_past_trips_to_aboutFragment2"
             app:destination="@id/fragment_about" />
@@ -41,7 +41,7 @@
     <fragment
         android:id="@+id/fragment_settings"
         android:name="it.unimib.sal.one_two_trip.ui.main.SettingsFragment"
-        tools:layout="@layout/fragment_settings" >
+        tools:layout="@layout/fragment_settings">
         <action
             android:id="@+id/action_settingsFragment_to_fragment_coming_trips"
             app:destination="@id/fragment_coming_trips" />

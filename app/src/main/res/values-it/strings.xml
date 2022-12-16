@@ -38,10 +38,12 @@
     <string name="two_hours">2h</string>
     <string name="three_hours">3h</string>
     <string name="half_hour">30m</string>
-    <string name="activity_notifications_title">Ricordami di un\'attività a breve</string>
+    <string name="activity_notifications_title">Ricordami di un\'attività a breve:</string>
     <string name="two_days">2g</string>
     <string name="contribute">Contribuisci su</string>
     <string name="version">Versione:</string>
     <string name="menu_account">Account</string>
     <string name="save">Salva</string>
+    <string name="settings_saved">Impostazioni salvate con successo</string>
+    <string name="notifications_disabled">Notifiche disabilitate</string>
 </resources>
