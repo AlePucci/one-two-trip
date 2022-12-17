@@ -15,11 +15,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -62,7 +64,7 @@ import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
-public class TripFragment extends Fragment {
+public class TripFragment extends Fragment implements MenuProvider{
 
     private ActivityResultLauncher<String[]> multiplePermissionLauncher;
 
@@ -80,6 +82,8 @@ public class TripFragment extends Fragment {
     private MapView mapView;
 
     private List<Activity> activityList;
+    private String title;
+
 
     public TripFragment() {
         // Required empty public constructor
@@ -121,28 +125,10 @@ public class TripFragment extends Fragment {
         });
 
         //Toolbar
+        Toolbar toolbar = requireActivity().findViewById(R.id.trip_toolbar);
+
         MenuHost menuHost = requireActivity();
-        menuHost.addMenuProvider(new MenuProvider() {
-            @Override
-            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.trip_appbar_menu, menu);
-            }
-
-            @Override
-            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                if(menuItem.getItemId() == R.id.trip_menu_rename) {
-                    //TODO: rename trip
-                    Snackbar.make(view, "Rename", Snackbar.LENGTH_SHORT).show();
-                    return true;
-                } else if(menuItem.getItemId() == R.id.trip_menu_delete) {
-                    //TODO: delete trip
-                    Snackbar.make(view, "Delete", Snackbar.LENGTH_SHORT).show();
-                    return true;
-                }
-
-                return false;
-            }
-        });
+        menuHost.addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
 
         mapSetup();
 
@@ -170,6 +156,9 @@ public class TripFragment extends Fragment {
 
             if(result.isSuccess()) {
                 Trip fetchedTrip = ((Result.Success<TripResponse>) result).getData().getTrip();
+
+                title = fetchedTrip.getTitle();
+                toolbar.setTitle(title);
 
                 adapter.addData(fetchedTrip.getActivity().activityList);
 
@@ -230,5 +219,25 @@ public class TripFragment extends Fragment {
         } else {
             multiplePermissionLauncher.launch(PERMISSIONS);
         }
+    }
+
+    @Override
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.trip_appbar_menu, menu);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        if(menuItem.getItemId() == R.id.trip_menu_rename) {
+            //TODO: rename trip
+            Snackbar.make(requireView(), "Rename", Snackbar.LENGTH_SHORT).show();
+            return true;
+        } else if(menuItem.getItemId() == R.id.trip_menu_delete) {
+            //TODO: delete trip
+            Snackbar.make(requireView(), "Delete", Snackbar.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return false;
     }
 }

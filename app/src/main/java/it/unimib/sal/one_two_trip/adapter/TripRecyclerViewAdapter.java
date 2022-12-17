@@ -2,6 +2,7 @@ package it.unimib.sal.one_two_trip.adapter;
 
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 
+import android.os.Bundle;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -133,9 +135,9 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
                         Snackbar.LENGTH_SHORT).show();
                 drag_button.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             } else if(v.getId() == R.id.item_activity_cardview){
-                //TODO: goto activity details
-                Snackbar.make(v, "Activity " + activities.get(getAdapterPosition()).getTitle(),
-                        Snackbar.LENGTH_SHORT).show();
+                Bundle bundle = new Bundle();
+                bundle.putInt("activityPos", getAdapterPosition());
+                Navigation.findNavController(v).navigate(R.id.action_tripFragment_to_activityFragment, bundle);
             }
         }
     }
