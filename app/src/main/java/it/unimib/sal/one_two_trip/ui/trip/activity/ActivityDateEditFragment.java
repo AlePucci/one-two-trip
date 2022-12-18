@@ -93,6 +93,7 @@ public class ActivityDateEditFragment extends Fragment {
         MaterialButton dateb1 = requireView().findViewById(R.id.activity_when1_edit);
         MaterialButton dateb2 = requireView().findViewById(R.id.activity_when2_edit);
         MaterialButton editButton = requireView().findViewById(R.id.activity_when_confirm);
+        ImageView arrow = requireView().findViewById(R.id.activity_when_arrow);
 
         dateb1.setOnClickListener(view12 -> {
             final Calendar c = Calendar.getInstance();
@@ -182,8 +183,10 @@ public class ActivityDateEditFragment extends Fragment {
                     dateb2.setHint(df.format(activity.getEnd_date()));
 
                     dateb2.setVisibility(View.VISIBLE);
+                    arrow.setVisibility(View.VISIBLE);
                 } else {
                     dateb2.setVisibility(View.GONE);
+                    arrow.setVisibility(View.GONE);
                 }
             } else {
                 ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);

@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -86,6 +87,7 @@ public class ActivityLocationEditFragment extends Fragment {
         TextInputLayout loc1 = requireView().findViewById(R.id.activity_where1_edit);
         TextInputLayout loc2 = requireView().findViewById(R.id.activity_where2_edit);
         MaterialButton confirmButton = requireView().findViewById(R.id.activity_where_confirm);
+        ImageView arrow = requireView().findViewById(R.id.activity_where_arrow);
 
         //Confirm Edit
         confirmButton.setOnClickListener(view1 -> {
@@ -159,8 +161,10 @@ public class ActivityLocationEditFragment extends Fragment {
                     loc2.setHint(activity.getEnd_location());
 
                     loc2.setVisibility(View.VISIBLE);
+                    arrow.setVisibility(View.VISIBLE);
                 } else {
                     loc2.setVisibility(View.GONE);
+                    arrow.setVisibility(View.GONE);
                 }
             } else {
                 ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
