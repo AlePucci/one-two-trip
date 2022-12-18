@@ -74,8 +74,8 @@ public class ActivityDateFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //MaterialButton editButton = requireView().findViewById(R.id.activity_where_confirm);
-        //editButton.setOnClickListener(view1 -> Navigation.findNavController(view1).navigate(R.id.action_activityLocationFragment_to_activityLocationEditFragment));
+        MaterialButton editButton = requireView().findViewById(R.id.activity_when_edit);
+        editButton.setOnClickListener(view1 -> Navigation.findNavController(view1).navigate(R.id.action_activityDateFragment_to_activityDateEditFragment));
 
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,

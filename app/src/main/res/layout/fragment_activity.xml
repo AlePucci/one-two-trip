@@ -20,9 +20,11 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView2"
-        android:name="it.unimib.sal.one_two_trip.ui.trip.activity.ActivityDateFragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        tools:layout="@layout/fragment_activity_date" />
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/activity_when_nav_graph" />
+
 </LinearLayout>
