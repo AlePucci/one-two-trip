@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 
 import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
@@ -88,8 +87,8 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
      */
     protected boolean isActivityFirstOfTheDay(int position) {
         if (activityList.get(position) != null && position != 0) {
-            Date lastDate = activityList.get((position - 1)).getStart_date();
-            Date thisDate = activityList.get(position).getStart_date();
+            long lastDate = activityList.get((position - 1)).getStart_date();
+            long thisDate = activityList.get(position).getStart_date();
             return !Utility.compareDate(lastDate, thisDate);
         }
         return true;

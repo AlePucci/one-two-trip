@@ -96,23 +96,25 @@ public class TripsRecyclerViewAdapter
         }
 
         public void bind(Trip trip) {
-            ActivitiesRecyclerViewAdapter activitiesRecyclerViewAdapter =
-                    new ActivitiesRecyclerViewAdapter(trip.getActivity().activityList,
-                            new ActivitiesRecyclerViewAdapter.OnItemClickListener() {
-                @Override
-                public void onAttachmentsClick(Activity activity) {
-                    Snackbar.make(itemView, activity.getAttachment().toString(),
-                            Snackbar.LENGTH_SHORT).show();
-                }
+            if (trip.getActivity() != null && trip.getActivity().getActivityList() != null) {
+                ActivitiesRecyclerViewAdapter activitiesRecyclerViewAdapter =
+                        new ActivitiesRecyclerViewAdapter(trip.getActivity().activityList,
+                                new ActivitiesRecyclerViewAdapter.OnItemClickListener() {
+                                    @Override
+                                    public void onAttachmentsClick(Activity activity) {
+                                        Snackbar.make(itemView, activity.getAttachment().toString(),
+                                                Snackbar.LENGTH_SHORT).show();
+                                    }
 
-                @Override
-                public void onActivityClick(Activity activity) {
-                    Snackbar.make(itemView, activity.getTitle(), Snackbar.LENGTH_SHORT).show();
-                }
-            });
+                                    @Override
+                                    public void onActivityClick(Activity activity) {
+                                        Snackbar.make(itemView, activity.getTitle(), Snackbar.LENGTH_SHORT).show();
+                                    }
+                                });
 
-            activityView.setLayoutManager(layoutManager);
-            activityView.setAdapter(activitiesRecyclerViewAdapter);
+                activityView.setLayoutManager(layoutManager);
+                activityView.setAdapter(activitiesRecyclerViewAdapter);
+            }
 
             tripTitle.setText(trip.getTitle());
 

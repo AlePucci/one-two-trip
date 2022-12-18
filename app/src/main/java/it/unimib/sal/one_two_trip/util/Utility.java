@@ -80,11 +80,11 @@ public class Utility {
      * @param date2 second date
      * @return true if the dates are in the same day (ignoring time), false otherwise
      */
-    public static boolean compareDate(Date date1, Date date2) {
+    public static boolean compareDate(long date1, long date2) {
         Calendar cal1 = Calendar.getInstance();
         Calendar cal2 = Calendar.getInstance();
-        cal1.setTime(date1);
-        cal2.setTime(date2);
+        cal1.setTime(new Date(date1));
+        cal2.setTime(new Date(date2));
 
         return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
                 && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH)
