@@ -32,6 +32,16 @@
             app:layout_constraintStart_toEndOf="@+id/activity_where_icon_edit"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/activity_where_arrow_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_baseline_arrow_downward_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_where1_edit" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/activity_where1_edit"
             android:layout_width="0dp"
@@ -48,15 +58,6 @@
                 android:layout_height="match_parent" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/activity_where_ismoving"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_where1_edit" />
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/activity_where2_edit"
             android:layout_width="0dp"
@@ -68,7 +69,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_where_ismoving">
+            app:layout_constraintTop_toBottomOf="@+id/activity_where_arrow_edit">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/activity_where_edittext2"

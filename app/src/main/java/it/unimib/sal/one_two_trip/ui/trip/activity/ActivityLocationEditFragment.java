@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.ui.trip.activity;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
@@ -84,59 +85,60 @@ public class ActivityLocationEditFragment extends Fragment {
 
         TextInputLayout loc1 = requireView().findViewById(R.id.activity_where1_edit);
         TextInputLayout loc2 = requireView().findViewById(R.id.activity_where2_edit);
-        SwitchMaterial materialSwitch = requireView().findViewById(R.id.activity_where_ismoving);
         MaterialButton confirmButton = requireView().findViewById(R.id.activity_where_confirm);
-
-        //Switch for moving activities
-        materialSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
-            if(b) {
-                loc2.setVisibility(View.VISIBLE);
-            } else {
-                loc2.setVisibility(View.GONE);
-            }
-        });
 
         //Confirm Edit
         confirmButton.setOnClickListener(view1 -> {
-            boolean valid = true;
+            String location1 = null;
+            String location2 = null;
 
-            if(hasLocationChanged(loc1)) {
-                activity.setLocation(loc1.getEditText().getText().toString());
+            if(loc1.getEditText() != null) {
+                location1 = loc1.getEditText().getText().toString();
             }
 
-            //If the activity changes from moving to static of vice versa
-            if(materialSwitch.isChecked() != activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
-                //If it has been switched off, just update it
-                if(!materialSwitch.isChecked()) {
-                    activity.setType(Constants.STATIC_ACTIVITY_TYPE_NAME);
-                } else {
-                    //If it has been switched on, check that the new field has been filled
-                    if(hasLocationChanged(loc2)) {
-                        activity.setType(Constants.MOVING_ACTIVITY_TYPE_NAME);
+            if(loc2.getEditText() != null) {
+                location2 = loc2.getEditText().getText().toString();
+            }
 
-                        //TODO: ask for a date
-                        activity.setEnd_date(new Date());
-                    } else {
-                        //Show the error prompt
-                        loc2.setError(getResources().getString(R.string.activity_field_error));
-                        valid = false;
-                    }
+            Log.d("AAA", location1 + " " + location2);
+
+            boolean valid = false;
+
+            if(location1 == null) {
+                loc1.setError(getResources().getString(R.string.activity_field_error));
+                return;
+            }
+
+            if(location1.equals("")) {
+                location1 = activity.getLocation();
+            }
+
+            if(!activity.getLocation().equals(location1)) {
+                activity.setLocation(location1);
+                valid = true;
+            }
+
+            if(activity.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
+                if(location2 == null) {
+                    loc2.setError(getResources().getString(R.string.activity_field_error));
+                    return;
                 }
-            }
 
-            //If the check is on (it has not been changed)
-            if(materialSwitch.isChecked()) {
-                //Update if needed
-                if(hasLocationChanged(loc2)) {
-                    activity.setEnd_location(loc2.getEditText().getText().toString());
+                if(location2.equals("")) {
+                    location2 = activity.getEnd_location();
+                }
+
+                if(!activity.getEnd_location().equals(location2)) {
+                    activity.setEnd_location(location2);
+                    valid = true;
                 }
             }
 
             if(valid) {
                 viewModel.updateTrip(trip);
-
-                Navigation.findNavController(view1).navigate(R.id.action_activityLocationEditFragment_to_activityLocationFragment);
             }
+
+            Navigation.findNavController(view1).navigate(R.id.action_activityLocationEditFragment_to_activityLocationFragment);
         });
 
         String lastUpdate = "0";
@@ -154,13 +156,10 @@ public class ActivityLocationEditFragment extends Fragment {
                 loc1.setHint(activity.getLocation());
 
                 if(activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
-                    materialSwitch.setChecked(true);
                     loc2.setHint(activity.getEnd_location());
 
                     loc2.setVisibility(View.VISIBLE);
                 } else {
-                    materialSwitch.setChecked(false);
-
                     loc2.setVisibility(View.GONE);
                 }
             } else {
