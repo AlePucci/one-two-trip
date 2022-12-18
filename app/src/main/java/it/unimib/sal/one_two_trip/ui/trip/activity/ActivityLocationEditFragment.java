@@ -104,16 +104,18 @@ public class ActivityLocationEditFragment extends Fragment {
                 activity.setLocation(loc1.getEditText().getText().toString());
             }
 
-            Log.d("AAA", materialSwitch.isChecked() + " " + activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME));
             //If the activity changes from moving to static of vice versa
             if(materialSwitch.isChecked() != activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
                 //If it has been switched off, just update it
                 if(!materialSwitch.isChecked()) {
-                    activity.setType(materialSwitch.isChecked() ? Constants.MOVING_ACTIVITY_TYPE_NAME : Constants.STATIC_ACTIVITY_TYPE_NAME);
+                    activity.setType(Constants.STATIC_ACTIVITY_TYPE_NAME);
                 } else {
                     //If it has been switched on, check that the new field has been filled
                     if(hasLocationChanged(loc2)) {
-                        activity.setType(materialSwitch.isChecked() ? Constants.MOVING_ACTIVITY_TYPE_NAME : Constants.STATIC_ACTIVITY_TYPE_NAME);
+                        activity.setType(Constants.MOVING_ACTIVITY_TYPE_NAME);
+
+                        //TODO: ask for a date
+                        activity.setEnd_date(new Date());
                     } else {
                         //Show the error prompt
                         loc2.setError(getResources().getString(R.string.activity_field_error));
@@ -127,8 +129,6 @@ public class ActivityLocationEditFragment extends Fragment {
                 //Update if needed
                 if(hasLocationChanged(loc2)) {
                     activity.setEnd_location(loc2.getEditText().getText().toString());
-                    //TODO: ask for a date
-                    activity.setEnd_date(new Date());
                 }
             }
 
