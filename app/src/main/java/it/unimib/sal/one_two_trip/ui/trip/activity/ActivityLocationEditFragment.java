@@ -87,7 +87,7 @@ public class ActivityLocationEditFragment extends Fragment {
         TextInputLayout loc1 = requireView().findViewById(R.id.activity_where1_edit);
         TextInputLayout loc2 = requireView().findViewById(R.id.activity_where2_edit);
         MaterialButton confirmButton = requireView().findViewById(R.id.activity_where_confirm);
-        ImageView arrow = requireView().findViewById(R.id.activity_where_arrow);
+        ImageView arrow = requireView().findViewById(R.id.activity_where_arrow_edit);
 
         //Confirm Edit
         confirmButton.setOnClickListener(view1 -> {

@@ -93,7 +93,7 @@ public class ActivityDateEditFragment extends Fragment {
         MaterialButton dateb1 = requireView().findViewById(R.id.activity_when1_edit);
         MaterialButton dateb2 = requireView().findViewById(R.id.activity_when2_edit);
         MaterialButton editButton = requireView().findViewById(R.id.activity_when_confirm);
-        ImageView arrow = requireView().findViewById(R.id.activity_when_arrow);
+        ImageView arrow = requireView().findViewById(R.id.activity_when_arrow_edit);
 
         dateb1.setOnClickListener(view12 -> {
             final Calendar c = Calendar.getInstance();
