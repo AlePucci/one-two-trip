@@ -10,7 +10,7 @@ import it.unimib.sal.one_two_trip.source.BaseTripsLocalDataSource;
 import it.unimib.sal.one_two_trip.source.BaseTripsRemoteDataSource;
 import it.unimib.sal.one_two_trip.source.PhotoRemoteDataSource;
 import it.unimib.sal.one_two_trip.source.TripsLocalDataSource;
-import it.unimib.sal.one_two_trip.source.TripsMockRemoteDataSource;
+import it.unimib.sal.one_two_trip.source.TripsRemoteDataSource;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -47,7 +47,7 @@ public class ServiceLocator {
         BaseTripsLocalDataSource newsLocalDataSource;
         SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
 
-        newsRemoteDataSource = new TripsMockRemoteDataSource(new JSONParserUtil(application));
+        newsRemoteDataSource = new TripsRemoteDataSource("1");
 
         newsLocalDataSource = new TripsLocalDataSource(getTripsDAO(application),
                 sharedPreferencesUtil);

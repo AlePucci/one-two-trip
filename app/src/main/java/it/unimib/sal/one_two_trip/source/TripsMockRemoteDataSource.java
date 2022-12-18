@@ -3,7 +3,9 @@ package it.unimib.sal.one_two_trip.source;
 import static it.unimib.sal.one_two_trip.util.Constants.TRIPS_API_TEST_JSON_FILE;
 
 import java.io.IOException;
+import java.util.List;
 
+import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.model.TripsApiResponse;
 import it.unimib.sal.one_two_trip.util.JSONParserUtil;
 
@@ -31,5 +33,15 @@ public class TripsMockRemoteDataSource extends BaseTripsRemoteDataSource {
         } else {
             tripCallback.onFailureFromRemote(new Exception("Unexpected error"));
         }
+    }
+
+    @Override
+    public void updateTrip(Trip trip) {
+
+    }
+
+    @Override
+    public void insertTrips(List<Trip> tripList) {
+
     }
 }
