@@ -3,7 +3,9 @@ package it.unimib.sal.one_two_trip.ui.trip;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Result;
+import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.repository.ITripsRepository;
 
 public class TripViewModel extends ViewModel {
@@ -39,5 +41,9 @@ public class TripViewModel extends ViewModel {
 
     private void fetchTrip(long id, long lastUpdate) {
         tripLiveData = tripsRepository.fetchTrip(id, lastUpdate);
+    }
+
+    public void updateTrip(Trip trip) {
+        tripsRepository.updateTrip(trip);
     }
 }

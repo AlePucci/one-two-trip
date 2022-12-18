@@ -48,6 +48,9 @@ public class ActivityLocationEditFragment extends Fragment {
     private TripViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
 
+    private Trip trip;
+    private Activity activity;
+
     public ActivityLocationEditFragment() {
         // Required empty public constructor
     }
@@ -76,26 +79,43 @@ public class ActivityLocationEditFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Switch for moving activities
+        TextInputLayout loc1 = requireView().findViewById(R.id.activity_where1_edit);
         TextInputLayout loc2 = requireView().findViewById(R.id.activity_where2_edit);
         SwitchMaterial materialSwitch = requireView().findViewById(R.id.activity_where_ismoving);
-        materialSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b) {
-                    loc2.setVisibility(View.VISIBLE);
-                } else {
-                    loc2.setVisibility(View.GONE);
-                }
+        MaterialButton confirmButton = requireView().findViewById(R.id.activity_where_confirm);
+
+        //Switch for moving activities
+        materialSwitch.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(b) {
+                loc2.setVisibility(View.VISIBLE);
+            } else {
+                loc2.setVisibility(View.GONE);
             }
         });
 
         //Confirm Edit
-        MaterialButton confirmButton = requireView().findViewById(R.id.activity_where_confirm);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_activityLocationEditFragment_to_activityLocationFragment);
+        confirmButton.setOnClickListener(view1 -> {
+            Navigation.findNavController(view1).navigate(R.id.action_activityLocationEditFragment_to_activityLocationFragment);
+
+            boolean valid = false;
+
+            if(hasLocationChanged(loc1)) {
+                activity.setLocation(loc1.getEditText().getText().toString());
+                valid = true;
+            }
+
+            if(materialSwitch.isChecked() != activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
+                activity.setType(materialSwitch.isChecked() ? Constants.MOVING_ACTIVITY_TYPE_NAME : Constants.STATIC_ACTIVITY_TYPE_NAME);
+                valid = true;
+            }
+
+            if(materialSwitch.isChecked() && hasLocationChanged(loc2)) {
+                activity.setEnd_location(loc2.getEditText().getText().toString());
+                valid = true;
+            }
+
+            if(valid) {
+                viewModel.updateTrip(trip);
             }
         });
 
@@ -108,10 +128,9 @@ public class ActivityLocationEditFragment extends Fragment {
 
         viewModel.getTrip(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
             if(result.isSuccess()) {
-                Trip trip = ((Result.Success<TripResponse>) result).getData().getTrip();
-                Activity activity = trip.getActivity().activityList.get(viewModel.getActivityPosition());
+                trip = ((Result.Success<TripResponse>) result).getData().getTrip();
+                activity = trip.getActivity().activityList.get(viewModel.getActivityPosition());
 
-                TextInputLayout loc1 = requireView().findViewById(R.id.activity_where1_edit);
                 loc1.setHint(activity.getLocation());
 
                 if(activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
@@ -130,5 +149,11 @@ public class ActivityLocationEditFragment extends Fragment {
                         .getMessage()), Snackbar.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private boolean hasLocationChanged(TextInputLayout location) {
+        return location.getEditText() != null &&
+                !location.getEditText().getText().toString().equals("") &&
+                !location.getEditText().getText().toString().equals(activity.getLocation());
     }
 }

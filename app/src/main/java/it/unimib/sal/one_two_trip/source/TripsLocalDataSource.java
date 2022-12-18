@@ -7,6 +7,7 @@ import java.util.List;
 
 import it.unimib.sal.one_two_trip.database.ITripsDAO;
 import it.unimib.sal.one_two_trip.database.TripsRoomDatabase;
+import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
@@ -40,7 +41,10 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
 
     @Override
     public void updateTrip(Trip trip) {
-        /* TO DO */
+        TripsRoomDatabase.databaseWriteExecutor.execute(() -> {
+            tripsDAO.updateTrip(trip);
+            tripCallback.onSuccessFromLocal(trip);
+        });
     }
 
     @Override

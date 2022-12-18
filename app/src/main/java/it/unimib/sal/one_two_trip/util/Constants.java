@@ -11,6 +11,7 @@ public class Constants {
 
     public static final int MAX_ACTIVITIES_PER_TRIP_HOME = 3;
     public static final String MOVING_ACTIVITY_TYPE_NAME = "moving";
+    public static final String STATIC_ACTIVITY_TYPE_NAME = "activity";
 
     // Constants for SharedPreferences
     public static final String SHARED_PREFERENCES_FILE_NAME = "it.unimib.sal.one_two_trip.preferences";

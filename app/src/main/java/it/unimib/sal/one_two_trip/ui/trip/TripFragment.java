@@ -63,6 +63,8 @@ public class TripFragment extends Fragment implements MenuProvider{
     private TripViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
 
+    private Trip trip;
+
 
     private final String[] PERMISSIONS = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -141,6 +143,7 @@ public class TripFragment extends Fragment implements MenuProvider{
 
             @Override
             public void onDragClick(int position) {
+                //TODO: drag activity
                 requireView().findViewById(R.id.item_activity_dragbutton).performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                 Snackbar.make(requireView(), "Drag " + activityList.get(position).getTitle(), Snackbar.LENGTH_SHORT).show();
             }
@@ -158,12 +161,12 @@ public class TripFragment extends Fragment implements MenuProvider{
             ProgressBar progressBar = requireView().findViewById(R.id.trip_progressbar);
 
             if(result.isSuccess()) {
-                Trip fetchedTrip = ((Result.Success<TripResponse>) result).getData().getTrip();
+                trip = ((Result.Success<TripResponse>) result).getData().getTrip();
 
-                title = fetchedTrip.getTitle();
+                title = trip.getTitle();
                 toolbar.setTitle(title);
 
-                adapter.addData(fetchedTrip.getActivity().activityList);
+                adapter.addData(trip.getActivity().activityList);
 
                 progressBar.setVisibility(View.GONE);
             } else {

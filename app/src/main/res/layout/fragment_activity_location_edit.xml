@@ -42,6 +42,7 @@
             app:layout_constraintTop_toBottomOf="@+id/activity_where_label_edit" >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_where_edittext1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -69,6 +70,7 @@
             app:layout_constraintTop_toBottomOf="@+id/activity_where_ismoving">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_where_edittext2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </com.google.android.material.textfield.TextInputLayout>

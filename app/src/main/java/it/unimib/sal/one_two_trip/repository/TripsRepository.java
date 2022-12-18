@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
+import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.model.TripApiResponse;
