@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/about_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        tools:context=".ui.main.SettingsFragment">
+
+        <TextView
+            android:id="@+id/settings_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/settings_title"
+            android:textSize="28sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/notifications_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:button="@color/yellow_500"
+            android:minHeight="48dp"
+            android:text="@string/notifications_switch"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/settings_title"
+            app:trackTint="@drawable/switch_track" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/notifications_cardview"
+            style="@style/Widget.App.CardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/notifications_switch">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/notifications_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="16dp">
+
+                <TextView
+                    android:id="@+id/remind_me_trip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/coming_trip_notifications_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/trip_notifications_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/remind_me_trip">
+
+                    <ToggleButton
+                        android:id="@+id/trip_twelve_hours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/toggle_button"
+                        android:gravity="center"
+                        android:textColor="@drawable/toggle_button_text"
+                        android:textOff="@string/twelve_hours"
+                        android:textOn="@string/twelve_hours"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="TextContrastCheck" />
+
+                    <ToggleButton
+                        android:id="@+id/trip_one_day"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginEnd="32dp"
+                        android:background="@drawable/toggle_button"
+                        android:gravity="center"
+                        android:textColor="@drawable/toggle_button_text"
+                        android:textOff="@string/one_day"
+                        android:textOn="@string/one_day"
+                        app:layout_constraintEnd_toStartOf="@+id/trip_two_days"
+                        app:layout_constraintStart_toEndOf="@+id/trip_twelve_hours"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="TextContrastCheck" />
+
+                    <ToggleButton
+                        android:id="@+id/trip_two_days"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/toggle_button"
+                        android:gravity="center"
+                        android:textColor="@drawable/toggle_button_text"
+                        android:textOff="@string/two_days"
+                        android:textOn="@string/two_days"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="TextContrastCheck" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/remind_me_activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/activity_notifications_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/trip_notifications_layout" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/activity_notifications_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/remind_me_activity">
+
+                    <ToggleButton
+                        android:id="@+id/activity_half_hour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/toggle_button"
+                        android:gravity="center"
+                        android:textColor="@drawable/toggle_button_text"
+                        android:textOff="@string/half_hour"
+                        android:textOn="@string/half_hour"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="TextContrastCheck" />
+
+                    <ToggleButton
+                        android:id="@+id/activity_one_hour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginEnd="32dp"
+                        android:background="@drawable/toggle_button"
+                        android:gravity="center"
+                        android:textColor="@drawable/toggle_button_text"
+                        android:textOff="@string/one_hour"
+                        android:textOn="@string/one_hour"
+                        app:layout_constraintEnd_toStartOf="@+id/activity_two_hours"
+                        app:layout_constraintStart_toEndOf="@+id/activity_half_hour"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="TextContrastCheck" />
+
+                    <ToggleButton
+                        android:id="@+id/activity_two_hours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/toggle_button"
+                        android:gravity="center"
+                        android:textColor="@drawable/toggle_button_text"
+                        android:textOff="@string/two_hours"
+                        android:textOn="@string/two_hours"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="TextContrastCheck" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/save_settings_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="336dp"
+            android:backgroundTint="@color/yellow_500"
+            android:paddingLeft="44dp"
+            android:paddingTop="16dp"
+            android:paddingRight="44dp"
+            android:paddingBottom="16dp"
+            android:text="@string/save"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/notifications_switch" />
+
+        <TextView
+            android:id="@+id/notifications_disabled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="148dp"
+            android:text="@string/notifications_disabled"
+            android:textSize="26sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/notifications_switch" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

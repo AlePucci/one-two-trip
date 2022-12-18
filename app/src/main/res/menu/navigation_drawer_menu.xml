@@ -1,27 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/main_section_items"
-        android:title="First section">
-        <menu>
-            <item
-                android:checkable="true"
-                android:title="First option" />
-            <item
-                android:checkable="true"
-                android:title="Second option" />
-            <item
-                android:checkable="true"
-                android:title="Third option" />
-        </menu>
-    </item>
-    <item
-        android:id="@+id/secondary_section_items"
-        android:title="Second section">
-        <menu>
-            <item
-                android:checkable="true"
-                android:title="First option" />
-        </menu>
-    </item>
+    <group
+        android:id="@+id/home_group"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/fragment_coming_trips"
+            android:checkable="true"
+            android:icon="@drawable/ic_baseline_home_24"
+            android:title="@string/menu_home" />
+    </group>
+
+    <group
+        android:id="@+id/settings_group"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/fragment_settings"
+            android:checkable="true"
+            android:icon="@drawable/ic_baseline_settings_24"
+            android:title="@string/menu_settings" />
+        <item
+            android:id="@+id/fragment_about"
+            android:checkable="true"
+            android:icon="@drawable/ic_baseline_info_24"
+            android:title="@string/menu_about" />
+
+        <item
+            android:id="@+id/logout"
+            android:checkable="true"
+            android:icon="@drawable/ic_baseline_exit_to_app_24"
+            android:title="@string/menu_logout" />
+    </group>
 </menu>

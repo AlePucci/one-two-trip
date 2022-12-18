@@ -12,8 +12,17 @@ public class Constants {
     public static final int MAX_ACTIVITIES_PER_TRIP_HOME = 3;
     public static final String MOVING_ACTIVITY_TYPE_NAME = "moving";
 
-    // Constants for SharedPreferences
+    // SharedPreferences
     public static final String SHARED_PREFERENCES_FILE_NAME = "it.unimib.sal.one_two_trip.preferences";
+    public static final String SHARED_PREFERENCES_NOTIFICATIONS_ON = "notifications_o";
+    public static final String SHARED_PREFERENCES_TRIP_NOTIFICATIONS= "trip_notifications";
+    public static final String SHARED_PREFERENCES_ACTIVITY_NOTIFICATIONS = "activity_notifications";
+    public static final String TWELVE_HOURS = "720";    // Minutes
+    public static final String ONE_DAY = "144";
+    public static final String TWO_DAYS = "288";
+    public static final String HALF_HOUR = "30";
+    public static final String ONE_HOUR = "60";
+    public static final String TWO_HOURS = "120";
 
     // Constants for refresh rate of trips
     public static final String LAST_UPDATE = "last_update";

@@ -19,6 +19,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -85,6 +87,12 @@ public class ComingTripsFragment extends Fragment {
         TextView noTripsText = view.findViewById(R.id.no_trips_text);
         ImageView noTripsImage = view.findViewById(R.id.no_trips_image);
         ProgressBar progressBar = view.findViewById(R.id.progress_bar);
+        BottomNavigationView bottomNavigationView = requireActivity()
+                .findViewById(R.id.bottom_navigation);
+        FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
+
+        bottomNavigationView.setVisibility(View.VISIBLE);
+        fab.setVisibility(View.VISIBLE);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(),
                 LinearLayoutManager.VERTICAL, false);
