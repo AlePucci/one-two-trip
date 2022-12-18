@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -15,13 +16,18 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Activity;
@@ -37,12 +43,12 @@ import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 
-public class ActivityLocationFragment extends Fragment {
+public class ActivityLocationEditFragment extends Fragment {
     private Application application;
     private TripViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
 
-    public ActivityLocationFragment() {
+    public ActivityLocationEditFragment() {
         // Required empty public constructor
     }
 
@@ -63,18 +69,33 @@ public class ActivityLocationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_activity_location, container, false);
+        return inflater.inflate(R.layout.fragment_activity_location_edit, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MaterialButton editButton = requireView().findViewById(R.id.activity_where_confirm);
-        editButton.setOnClickListener(new View.OnClickListener() {
+        //Switch for moving activities
+        TextInputLayout loc2 = requireView().findViewById(R.id.activity_where2_edit);
+        SwitchMaterial materialSwitch = requireView().findViewById(R.id.activity_where_ismoving);
+        materialSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b) {
+                    loc2.setVisibility(View.VISIBLE);
+                } else {
+                    loc2.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        //Confirm Edit
+        MaterialButton confirmButton = requireView().findViewById(R.id.activity_where_confirm);
+        confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_activityLocationFragment_to_activityLocationEditFragment);
+                Navigation.findNavController(view).navigate(R.id.action_activityLocationEditFragment_to_activityLocationFragment);
             }
         });
 
@@ -90,25 +111,18 @@ public class ActivityLocationFragment extends Fragment {
                 Trip trip = ((Result.Success<TripResponse>) result).getData().getTrip();
                 Activity activity = trip.getActivity().activityList.get(viewModel.getActivityPosition());
 
-                TextView loc1 = requireView().findViewById(R.id.activity_where1);
-                loc1.setText(activity.getLocation());
+                TextInputLayout loc1 = requireView().findViewById(R.id.activity_where1_edit);
+                loc1.setHint(activity.getLocation());
 
-                TextView loc2 = requireView().findViewById(R.id.activity_where2);
-                ImageButton locate2 = requireView().findViewById(R.id.activity_where_locate2);
-                ImageButton navigate2 = requireView().findViewById(R.id.activity_where_navigation2);
-                ImageView arrow = requireView().findViewById(R.id.activity_where_arrow);
                 if(activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
-                    loc2.setText(activity.getEnd_location());
+                    materialSwitch.setChecked(true);
+                    loc2.setHint(activity.getEnd_location());
 
                     loc2.setVisibility(View.VISIBLE);
-                    locate2.setVisibility(View.VISIBLE);
-                    navigate2.setVisibility(View.VISIBLE);
-                    arrow.setVisibility(View.VISIBLE);
                 } else {
+                    materialSwitch.setChecked(false);
+
                     loc2.setVisibility(View.GONE);
-                    locate2.setVisibility(View.GONE);
-                    navigate2.setVisibility(View.GONE);
-                    arrow.setVisibility(View.GONE);
                 }
             } else {
                 ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);

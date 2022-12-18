@@ -7,14 +7,13 @@
     android:layout_height="wrap_content"
     tools:context=".ui.trip.activity.ActivityLocationFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp">
 
         <ImageView
-            android:id="@+id/activity_where_icon"
+            android:id="@+id/activity_where_icon_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="@+id/activity_where_label"
@@ -29,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="Dove"
-            app:layout_constraintStart_toEndOf="@+id/activity_where_icon"
+            app:layout_constraintStart_toEndOf="@+id/activity_where_icon_edit"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -63,7 +62,7 @@
             app:layout_constraintTop_toTopOf="@+id/activity_where_locate1" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/activity_where_arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -99,15 +98,15 @@
             app:layout_constraintEnd_toStartOf="@+id/activity_where_locate1"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3"
+            app:layout_constraintTop_toBottomOf="@+id/activity_where_arrow"
             tools:text="Parigi" />
 
-        <ImageButton
-            android:id="@+id/activity_where_edit"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/activity_where_confirm"
             style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_edit_24"
+            app:icon="@drawable/ic_baseline_edit_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_where_navigation2" />
 

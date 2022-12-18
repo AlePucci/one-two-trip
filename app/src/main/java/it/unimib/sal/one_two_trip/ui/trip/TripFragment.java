@@ -1,8 +1,5 @@
 package it.unimib.sal.one_two_trip.ui.trip;
 
-import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED;
-import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_DRAGGING;
-
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
@@ -10,13 +7,21 @@ import android.Manifest;
 import android.app.Application;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.HapticFeedbackConstants;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
@@ -27,21 +32,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.preference.PreferenceManager;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.ProgressBar;
-
-import com.google.android.material.animation.MotionSpec;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -151,7 +141,8 @@ public class TripFragment extends Fragment implements MenuProvider{
 
             @Override
             public void onDragClick(int position) {
-                Snackbar.make(requireView(), "Drag " + activityList.get(position), Snackbar.LENGTH_SHORT).show();
+                requireView().findViewById(R.id.item_activity_dragbutton).performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                Snackbar.make(requireView(), "Drag " + activityList.get(position).getTitle(), Snackbar.LENGTH_SHORT).show();
             }
         });
         recyclerView.setAdapter(adapter);

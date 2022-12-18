@@ -12,8 +12,9 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
-        android:name="it.unimib.sal.one_two_trip.ui.trip.activity.ActivityLocationFragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout="@layout/fragment_activity_location" />
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/activity_where_nav_graph" />
 </LinearLayout>
