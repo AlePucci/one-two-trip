@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.Date;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Activity;
@@ -95,27 +98,44 @@ public class ActivityLocationEditFragment extends Fragment {
 
         //Confirm Edit
         confirmButton.setOnClickListener(view1 -> {
-            Navigation.findNavController(view1).navigate(R.id.action_activityLocationEditFragment_to_activityLocationFragment);
-
-            boolean valid = false;
+            boolean valid = true;
 
             if(hasLocationChanged(loc1)) {
                 activity.setLocation(loc1.getEditText().getText().toString());
-                valid = true;
             }
 
+            Log.d("AAA", materialSwitch.isChecked() + " " + activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME));
+            //If the activity changes from moving to static of vice versa
             if(materialSwitch.isChecked() != activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
-                activity.setType(materialSwitch.isChecked() ? Constants.MOVING_ACTIVITY_TYPE_NAME : Constants.STATIC_ACTIVITY_TYPE_NAME);
-                valid = true;
+                //If it has been switched off, just update it
+                if(!materialSwitch.isChecked()) {
+                    activity.setType(materialSwitch.isChecked() ? Constants.MOVING_ACTIVITY_TYPE_NAME : Constants.STATIC_ACTIVITY_TYPE_NAME);
+                } else {
+                    //If it has been switched on, check that the new field has been filled
+                    if(hasLocationChanged(loc2)) {
+                        activity.setType(materialSwitch.isChecked() ? Constants.MOVING_ACTIVITY_TYPE_NAME : Constants.STATIC_ACTIVITY_TYPE_NAME);
+                    } else {
+                        //Show the error prompt
+                        loc2.setError(getResources().getString(R.string.activity_field_error));
+                        valid = false;
+                    }
+                }
             }
 
-            if(materialSwitch.isChecked() && hasLocationChanged(loc2)) {
-                activity.setEnd_location(loc2.getEditText().getText().toString());
-                valid = true;
+            //If the check is on (it has not been changed)
+            if(materialSwitch.isChecked()) {
+                //Update if needed
+                if(hasLocationChanged(loc2)) {
+                    activity.setEnd_location(loc2.getEditText().getText().toString());
+                    //TODO: ask for a date
+                    activity.setEnd_date(new Date());
+                }
             }
 
             if(valid) {
                 viewModel.updateTrip(trip);
+
+                Navigation.findNavController(view1).navigate(R.id.action_activityLocationEditFragment_to_activityLocationFragment);
             }
         });
 

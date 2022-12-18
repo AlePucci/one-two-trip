@@ -23,6 +23,10 @@ import android.widget.TextView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Result;
@@ -37,12 +41,12 @@ import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 
-public class ActivityLocationFragment extends Fragment {
+public class ActivityDateFragment extends Fragment {
     private Application application;
     private TripViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
 
-    public ActivityLocationFragment() {
+    public ActivityDateFragment() {
         // Required empty public constructor
     }
 
@@ -63,15 +67,15 @@ public class ActivityLocationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_activity_location, container, false);
+        return inflater.inflate(R.layout.fragment_activity_date, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MaterialButton editButton = requireView().findViewById(R.id.activity_where_edit);
-        editButton.setOnClickListener(view1 -> Navigation.findNavController(view1).navigate(R.id.action_activityLocationFragment_to_activityLocationEditFragment));
+        //MaterialButton editButton = requireView().findViewById(R.id.activity_where_confirm);
+        //editButton.setOnClickListener(view1 -> Navigation.findNavController(view1).navigate(R.id.action_activityLocationFragment_to_activityLocationEditFragment));
 
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
@@ -85,24 +89,22 @@ public class ActivityLocationFragment extends Fragment {
                 Trip trip = ((Result.Success<TripResponse>) result).getData().getTrip();
                 Activity activity = trip.getActivity().activityList.get(viewModel.getActivityPosition());
 
-                TextView loc1 = requireView().findViewById(R.id.activity_where1);
-                loc1.setText(activity.getLocation());
+                TextView date1 = requireView().findViewById(R.id.activity_when1);
+                DateFormat df = SimpleDateFormat.getInstance();
+                date1.setText(df.format(activity.getStart_date()));
 
-                TextView loc2 = requireView().findViewById(R.id.activity_where2);
-                ImageButton locate2 = requireView().findViewById(R.id.activity_where_locate2);
-                ImageButton navigate2 = requireView().findViewById(R.id.activity_where_navigation2);
-                ImageView arrow = requireView().findViewById(R.id.activity_where_arrow);
+                TextView date2 = requireView().findViewById(R.id.activity_when2);
+                ImageButton save2 = requireView().findViewById(R.id.activity_when_save2);
+                ImageView arrow = requireView().findViewById(R.id.activity_when_arrow);
                 if(activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
-                    loc2.setText(activity.getEnd_location());
+                    date2.setText(df.format(activity.getEnd_date()));
 
-                    loc2.setVisibility(View.VISIBLE);
-                    locate2.setVisibility(View.VISIBLE);
-                    navigate2.setVisibility(View.VISIBLE);
+                    date2.setVisibility(View.VISIBLE);
+                    save2.setVisibility(View.VISIBLE);
                     arrow.setVisibility(View.VISIBLE);
                 } else {
-                    loc2.setVisibility(View.GONE);
-                    locate2.setVisibility(View.GONE);
-                    navigate2.setVisibility(View.GONE);
+                    date2.setVisibility(View.GONE);
+                    save2.setVisibility(View.GONE);
                     arrow.setVisibility(View.GONE);
                 }
             } else {
