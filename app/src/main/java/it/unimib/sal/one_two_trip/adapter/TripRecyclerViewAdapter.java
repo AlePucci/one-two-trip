@@ -32,9 +32,54 @@ import it.unimib.sal.one_two_trip.model.Person;
 
 public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerViewAdapter.TripHolder> {
     private final List<Activity> activities;
+    private final OnItemClickListener onClickListener;
 
-    public TripRecyclerViewAdapter(List<Activity> activities) {
+    public TripRecyclerViewAdapter(List<Activity> activities, OnItemClickListener onClickListener) {
         this.activities = activities;
+        this.onClickListener = onClickListener;
+    }
+
+    public interface OnItemClickListener {
+        void onActivityClick(int position);
+        void onDragClick(int position);
+    }
+
+    @NonNull
+    @Override
+    public TripHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.trip_item, parent, false);
+
+        return new TripHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull TripHolder holder, int position) {
+        Activity activity = activities.get(position);
+        holder.bind(activity);
+    }
+
+    @Override
+    public int getItemCount() {
+        if(activities == null) {
+            return 0;
+        }
+
+        return activities.size();
+    }
+
+    private boolean isSameDay(Date date1, Date date2) {
+        DateFormat df = DateFormat.getDateInstance();
+        String day1 = df.format(date1);
+        String day2 = df.format(date2);
+
+        return day1.equals(day2);
+    }
+
+    public void addData(List<Activity> activities) {
+        int initialSize = this.activities.size();
+        this.activities.clear();
+        this.activities.addAll(activities);
+        notifyItemRangeInserted(initialSize, activities.size());
     }
 
     public class TripHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -130,53 +175,10 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
         @Override
         public void onClick(View v) {
             if(v.getId() == R.id.item_activity_dragbutton) {
-                //TODO: change activity date and time
-                Snackbar.make(v, "Drag " + activities.get(getAdapterPosition()).getTitle(),
-                        Snackbar.LENGTH_SHORT).show();
-                drag_button.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                onClickListener.onDragClick(getAdapterPosition());
             } else if(v.getId() == R.id.item_activity_cardview){
-                Bundle bundle = new Bundle();
-                bundle.putInt("activityPos", getAdapterPosition());
-                Navigation.findNavController(v).navigate(R.id.action_tripFragment_to_activityFragment, bundle);
+                onClickListener.onActivityClick(getAdapterPosition());
             }
         }
-    }
-
-    @NonNull
-    @Override
-    public TripHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.trip_item, parent, false);
-
-        return new TripHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull TripHolder holder, int position) {
-        Activity activity = activities.get(position);
-        holder.bind(activity);
-    }
-
-    @Override
-    public int getItemCount() {
-        if(activities == null) {
-            return 0;
-        }
-
-        return activities.size();
-    }
-
-    private boolean isSameDay(Date date1, Date date2) {
-        DateFormat df = DateFormat.getDateInstance();
-        String day1 = df.format(date1);
-        String day2 = df.format(date2);
-
-        return day1.equals(day2);
-    }
-
-    public void addData(List<Activity> activities) {
-        int initialSize = this.activities.size();
-        this.activities.clear();
-        this.activities.addAll(activities);
-        notifyItemRangeInserted(initialSize, activities.size());
     }
 }

@@ -10,6 +10,7 @@ public class TripViewModel extends ViewModel {
 
     private final ITripsRepository tripsRepository;
     private long id;
+    private int activityPosition;
     private MutableLiveData<Result> tripLiveData;
 
     public TripViewModel(ITripsRepository tripsRepository) {
@@ -26,6 +27,14 @@ public class TripViewModel extends ViewModel {
     public void setId(long id) {
         this.id = id;
         tripLiveData = null;
+    }
+
+    public void setActivityPosition(int position) {
+        this.activityPosition = position;
+    }
+
+    public int getActivityPosition() {
+        return activityPosition;
     }
 
     private void fetchTrip(long id, long lastUpdate) {

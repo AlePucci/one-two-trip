@@ -34,8 +34,6 @@ import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 
 public class ActivityFragment extends Fragment {
-    private int activityPos;
-
     private Application application;
     private TripViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
@@ -68,17 +66,6 @@ public class ActivityFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ProgressBar progressBar = view.findViewById(R.id.activity_progressbar);
-
-        if(getArguments() != null) {
-            activityPos = getArguments().getInt("activityPos");
-            progressBar.setVisibility(View.GONE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-            Snackbar.make(view, R.string.unexpected_error, Snackbar.LENGTH_SHORT).show();
-        }
-
-
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
                 LAST_UPDATE) != null) {
@@ -90,7 +77,7 @@ public class ActivityFragment extends Fragment {
             if(result.isSuccess()) {
                 Toolbar toolbar = requireActivity().findViewById(R.id.trip_toolbar);
                 Trip trip = ((Result.Success<TripResponse>) result).getData().getTrip();
-                Activity activity = trip.getActivity().activityList.get(activityPos);
+                Activity activity = trip.getActivity().activityList.get(viewModel.getActivityPosition());
 
                 toolbar.setTitle(activity.getTitle());
             } else {

@@ -23,6 +23,7 @@ import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -141,7 +142,18 @@ public class TripFragment extends Fragment implements MenuProvider{
         RecyclerView recyclerView = view.findViewById(R.id.trip_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        TripRecyclerViewAdapter adapter = new TripRecyclerViewAdapter(activityList);
+        TripRecyclerViewAdapter adapter = new TripRecyclerViewAdapter(activityList, new TripRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onActivityClick(int position) {
+                viewModel.setActivityPosition(position);
+                Navigation.findNavController(requireView()).navigate(R.id.action_tripFragment_to_activityFragment);
+            }
+
+            @Override
+            public void onDragClick(int position) {
+                Snackbar.make(requireView(), "Drag " + activityList.get(position), Snackbar.LENGTH_SHORT).show();
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         String lastUpdate = "0";
