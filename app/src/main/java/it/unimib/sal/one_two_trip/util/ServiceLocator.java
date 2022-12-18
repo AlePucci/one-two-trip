@@ -9,6 +9,7 @@ import it.unimib.sal.one_two_trip.source.BaseTripsLocalDataSource;
 import it.unimib.sal.one_two_trip.source.BaseTripsRemoteDataSource;
 import it.unimib.sal.one_two_trip.source.TripsLocalDataSource;
 import it.unimib.sal.one_two_trip.source.TripsMockRemoteDataSource;
+import it.unimib.sal.one_two_trip.source.TripsRemoteDataSource;
 
 public class ServiceLocator {
 
@@ -43,7 +44,7 @@ public class ServiceLocator {
         BaseTripsLocalDataSource newsLocalDataSource;
         SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
 
-        newsRemoteDataSource = new TripsMockRemoteDataSource(new JSONParserUtil(application));
+        newsRemoteDataSource = new TripsRemoteDataSource("1");
 
         newsLocalDataSource = new TripsLocalDataSource(getTripsDAO(application),
                 sharedPreferencesUtil);
