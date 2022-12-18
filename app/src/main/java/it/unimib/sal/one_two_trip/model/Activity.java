@@ -26,8 +26,8 @@ public class Activity {
     private String description;
     private String location;
     private String end_location;
-    private Date start_date;
-    private Date end_date;
+    private long start_date;
+    private long end_date;
     @Embedded
     private PersonListHolder participant;
     private long trip_id;
@@ -42,7 +42,7 @@ public class Activity {
 
     @Ignore
     public Activity(long id, String title, String description, String location, String end_location,
-                    Date start_date, Date end_date, PersonListHolder participant, long trip_id,
+                    long start_date, long end_date, PersonListHolder participant, long trip_id,
                     List<Object> attachment, List<String> link, boolean completed, String type,
                     boolean everyoneParticipate) {
         this.id = id;
@@ -101,19 +101,19 @@ public class Activity {
         this.end_location = end_location;
     }
 
-    public Date getStart_date() {
+    public long getStart_date() {
         return start_date;
     }
 
-    public void setStart_date(Date start_date) {
+    public void setStart_date(long start_date) {
         this.start_date = start_date;
     }
 
-    public Date getEnd_date() {
+    public long getEnd_date() {
         return end_date;
     }
 
-    public void setEnd_date(Date end_date) {
+    public void setEnd_date(long end_date) {
         this.end_date = end_date;
     }
 
@@ -182,11 +182,11 @@ public class Activity {
     public void checkCompleted() {
         boolean completed;
 
-        if(end_date != null) {
-            completed = end_date.before(new Date());
+        if(end_date != 0) {
+            completed = end_date < (new Date().getTime());
         }
         else{
-            completed = start_date.before(new Date());
+            completed = start_date < (new Date().getTime());
         }
 
         setCompleted(completed);

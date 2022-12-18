@@ -24,7 +24,6 @@ public class JSONParserUtil {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         return new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .create()
                 .fromJson(bufferedReader, TripsApiResponse.class);
     }
