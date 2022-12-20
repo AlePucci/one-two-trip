@@ -26,4 +26,7 @@
     <string name="unexpected_error">Errore generico</string>
     <string name="delete">Elimina</string>
     <string name="rename">Rinomina</string>
+    <string name="activity_where_title">Dove</string>
+    <string name="activity_when_title">Quando</string>
+    <string name="activity_field_error">Il valore del campo non è valido.</string>
 </resources>

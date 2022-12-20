@@ -3,13 +3,16 @@ package it.unimib.sal.one_two_trip.ui.trip;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Result;
+import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.repository.ITripsRepository;
 
 public class TripViewModel extends ViewModel {
 
     private final ITripsRepository tripsRepository;
     private long id;
+    private int activityPosition;
     private MutableLiveData<Result> tripLiveData;
 
     public TripViewModel(ITripsRepository tripsRepository) {
@@ -28,7 +31,19 @@ public class TripViewModel extends ViewModel {
         tripLiveData = null;
     }
 
+    public void setActivityPosition(int position) {
+        this.activityPosition = position;
+    }
+
+    public int getActivityPosition() {
+        return activityPosition;
+    }
+
     private void fetchTrip(long id, long lastUpdate) {
         tripLiveData = tripsRepository.fetchTrip(id, lastUpdate);
+    }
+
+    public void updateTrip(Trip trip) {
+        tripsRepository.updateTrip(trip);
     }
 }

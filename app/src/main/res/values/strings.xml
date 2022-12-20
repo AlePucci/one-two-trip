@@ -28,4 +28,7 @@
     <string name="unexpected_error">Unexpected error</string>
     <string name="delete">Delete</string>
     <string name="rename">Rename</string>
+    <string name="activity_where_title">Where</string>
+    <string name="activity_when_title">When</string>
+    <string name="activity_field_error">Field value is not valid.</string>
 </resources>

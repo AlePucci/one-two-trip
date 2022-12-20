@@ -1,8 +1,5 @@
 package it.unimib.sal.one_two_trip.ui.trip;
 
-import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED;
-import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_DRAGGING;
-
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
@@ -10,35 +7,31 @@ import android.Manifest;
 import android.app.Application;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.view.MenuHost;
-import androidx.core.view.MenuProvider;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.preference.PreferenceManager;
-import android.util.TypedValue;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.ProgressBar;
 
-import com.google.android.material.animation.MotionSpec;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -62,13 +55,15 @@ import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
-public class TripFragment extends Fragment {
+public class TripFragment extends Fragment implements MenuProvider{
 
     private ActivityResultLauncher<String[]> multiplePermissionLauncher;
 
     private Application application;
     private TripViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
+
+    private Trip trip;
 
 
     private final String[] PERMISSIONS = {
@@ -80,6 +75,8 @@ public class TripFragment extends Fragment {
     private MapView mapView;
 
     private List<Activity> activityList;
+    private String title;
+
 
     public TripFragment() {
         // Required empty public constructor
@@ -121,28 +118,10 @@ public class TripFragment extends Fragment {
         });
 
         //Toolbar
+        Toolbar toolbar = requireActivity().findViewById(R.id.trip_toolbar);
+
         MenuHost menuHost = requireActivity();
-        menuHost.addMenuProvider(new MenuProvider() {
-            @Override
-            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.trip_appbar_menu, menu);
-            }
-
-            @Override
-            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                if(menuItem.getItemId() == R.id.trip_menu_rename) {
-                    //TODO: rename trip
-                    Snackbar.make(view, "Rename", Snackbar.LENGTH_SHORT).show();
-                    return true;
-                } else if(menuItem.getItemId() == R.id.trip_menu_delete) {
-                    //TODO: delete trip
-                    Snackbar.make(view, "Delete", Snackbar.LENGTH_SHORT).show();
-                    return true;
-                }
-
-                return false;
-            }
-        });
+        menuHost.addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
 
         mapSetup();
 
@@ -155,7 +134,20 @@ public class TripFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.trip_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        TripRecyclerViewAdapter adapter = new TripRecyclerViewAdapter(activityList);
+        TripRecyclerViewAdapter adapter = new TripRecyclerViewAdapter(activityList, new TripRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onActivityClick(int position) {
+                viewModel.setActivityPosition(position);
+                Navigation.findNavController(requireView()).navigate(R.id.action_tripFragment_to_activityFragment);
+            }
+
+            @Override
+            public void onDragClick(int position) {
+                //TODO: drag activity
+                requireView().findViewById(R.id.item_activity_dragbutton).performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                Snackbar.make(requireView(), "Drag " + activityList.get(position).getTitle(), Snackbar.LENGTH_SHORT).show();
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         String lastUpdate = "0";
@@ -169,9 +161,12 @@ public class TripFragment extends Fragment {
             ProgressBar progressBar = requireView().findViewById(R.id.trip_progressbar);
 
             if(result.isSuccess()) {
-                Trip fetchedTrip = ((Result.Success<TripResponse>) result).getData().getTrip();
+                trip = ((Result.Success<TripResponse>) result).getData().getTrip();
 
-                adapter.addData(fetchedTrip.getActivity().activityList);
+                title = trip.getTitle();
+                toolbar.setTitle(title);
+
+                adapter.addData(trip.getActivity().activityList);
 
                 progressBar.setVisibility(View.GONE);
             } else {
@@ -230,5 +225,25 @@ public class TripFragment extends Fragment {
         } else {
             multiplePermissionLauncher.launch(PERMISSIONS);
         }
+    }
+
+    @Override
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.trip_appbar_menu, menu);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        if(menuItem.getItemId() == R.id.trip_menu_rename) {
+            //TODO: rename trip
+            Snackbar.make(requireView(), "Rename", Snackbar.LENGTH_SHORT).show();
+            return true;
+        } else if(menuItem.getItemId() == R.id.trip_menu_delete) {
+            //TODO: delete trip
+            Snackbar.make(requireView(), "Delete", Snackbar.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return false;
     }
 }

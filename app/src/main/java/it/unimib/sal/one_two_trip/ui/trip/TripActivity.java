@@ -6,6 +6,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_
 
 import android.app.Application;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -25,6 +26,9 @@ import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 public class TripActivity extends AppCompatActivity {
+    private Application application;
+    private SharedPreferencesUtil sharedPreferencesUtil;
+    private TripViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,37 +36,18 @@ public class TripActivity extends AppCompatActivity {
         setContentView(R.layout.activity_trip);
 
         Application application = getApplication();
-        SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
+        sharedPreferencesUtil = new SharedPreferencesUtil(application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(application);
-        TripViewModel viewModel = new ViewModelProvider(this,
+        viewModel = new ViewModelProvider(this,
                 new TripViewModelFactory(tripsRepository)).get(TripViewModel.class);
 
 
         long id = getIntent().getLongExtra(SELECTED_TRIP_ID, 0);
         viewModel.setId(id);
 
-        String lastUpdate = "0";
-        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
-                LAST_UPDATE) != null) {
-            lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
-                    LAST_UPDATE);
-        }
-
         //Toolbar
         Toolbar toolbar = findViewById(R.id.trip_toolbar);
-
-        viewModel.getTrip(Long.parseLong(lastUpdate)).observe(this, result -> {
-            if(result.isSuccess()) {
-                Trip fetchedTrip = ((Result.Success<TripResponse>) result).getData().getTrip();
-
-                toolbar.setTitle(fetchedTrip.getTitle());
-            } else {
-                ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(application);
-                Snackbar.make(toolbar, errorMessagesUtil.getErrorMessage(((Result.Error) result)
-                        .getMessage()), Snackbar.LENGTH_SHORT).show();
-            }
-        });
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
