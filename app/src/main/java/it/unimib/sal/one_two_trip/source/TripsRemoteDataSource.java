@@ -59,4 +59,9 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
     public void insertTrips(List<Trip> tripList) {
 
     }
+
+    @Override
+    public void getTrip(long id) {
+
+    }
 }

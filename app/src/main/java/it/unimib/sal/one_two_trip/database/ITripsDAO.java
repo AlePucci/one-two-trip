@@ -24,6 +24,9 @@ public interface ITripsDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> insertTripList(List<Trip> tripList);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insertTrip(Trip trip);
+
     @Insert
     void insertAll(Trip... trips);
 

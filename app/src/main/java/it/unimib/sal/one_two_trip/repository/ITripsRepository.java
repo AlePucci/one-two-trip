@@ -8,6 +8,7 @@ import it.unimib.sal.one_two_trip.model.Trip;
 public interface ITripsRepository {
 
     MutableLiveData<Result> fetchTrips(long lastUpdate);
+    MutableLiveData<Result> fetchTrip(long id, long lastUpdate);
 
     void updateTrip(Trip trip);
 }

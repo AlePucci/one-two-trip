@@ -8,6 +8,8 @@ import java.util.List;
 
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.model.TripApiResponse;
+import it.unimib.sal.one_two_trip.model.TripResponse;
 import it.unimib.sal.one_two_trip.model.TripsApiResponse;
 import it.unimib.sal.one_two_trip.model.TripsResponse;
 import it.unimib.sal.one_two_trip.source.BaseTripsLocalDataSource;
@@ -16,6 +18,7 @@ import it.unimib.sal.one_two_trip.source.TripCallback;
 
 public class TripsRepository implements ITripsRepository, TripCallback {
     private final MutableLiveData<Result> allTripsMutableLiveData;
+    private final MutableLiveData<Result> tripMutableLiveData;
     private final BaseTripsRemoteDataSource tripsRemoteDataSource;
     private final BaseTripsLocalDataSource tripsLocalDataSource;
 
@@ -23,6 +26,7 @@ public class TripsRepository implements ITripsRepository, TripCallback {
                            BaseTripsLocalDataSource tripsLocalDataSource) {
 
         allTripsMutableLiveData = new MutableLiveData<>();
+        tripMutableLiveData = new MutableLiveData<>();
         this.tripsRemoteDataSource = tripsRemoteDataSource;
         this.tripsLocalDataSource = tripsLocalDataSource;
         this.tripsRemoteDataSource.setTripCallback(this);
@@ -44,6 +48,19 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     }
 
     @Override
+    public MutableLiveData<Result> fetchTrip(long id, long lastUpdate) {
+        long currentTime = System.currentTimeMillis();
+
+        if(currentTime - lastUpdate > FRESH_TIMEOUT) {
+            tripsRemoteDataSource.getTrip(id);
+        } else {
+            tripsLocalDataSource.getTrip(id);
+        }
+
+        return tripMutableLiveData;
+    }
+
+    @Override
     public void updateTrip(Trip trip) {
         tripsLocalDataSource.updateTrip(trip);
     }
@@ -54,6 +71,11 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     }
 
     @Override
+    public void onSuccessFromRemote(TripApiResponse tripApiResponse, long lastUpdate) {
+        tripsLocalDataSource.insertTrip(tripApiResponse.getTrip());
+    }
+
+    @Override
     public void onFailureFromRemote(Exception exception) {
         Result.Error result = new Result.Error(exception.getMessage());
         allTripsMutableLiveData.postValue(result);
@@ -61,8 +83,14 @@ public class TripsRepository implements ITripsRepository, TripCallback {
 
     @Override
     public void onSuccessFromLocal(List<Trip> newsList) {
-        Result.Success result = new Result.Success(new TripsResponse(newsList));
+        Result.Success<TripsResponse> result = new Result.Success<>(new TripsResponse(newsList));
         allTripsMutableLiveData.postValue(result);
+    }
+
+    @Override
+    public void onSuccessFromLocal(Trip trip) {
+        Result.Success<TripResponse> result = new Result.Success<>(new TripResponse(trip));
+        tripMutableLiveData.postValue(result);
     }
 
     @Override

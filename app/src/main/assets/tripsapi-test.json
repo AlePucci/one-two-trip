@@ -12,7 +12,7 @@
           {
             "id": 1,
             "title": "Volo #EZY3932",
-            "description": "Volo da Milano a Parigi",
+            "description": "Volo da Milano a Parigi Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
             "start_date": "2023-02-14T09:30:00",
             "end_date": "2023-02-14T11:30:00",
             "location": "MXP",
@@ -135,6 +135,63 @@
             "link": [],
             "type": "activity",
             "everyoneParticipate": true
+          },
+          {
+            "id": 4,
+            "title": "Volo #EZY3942",
+            "description": "Volo da Parigi a Milano Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+            "start_date": "2023-02-19T09:30:00",
+            "end_date": "2023-02-19T11:30:00",
+            "location": "CDG",
+            "end_location": "MXP",
+            "trip_id": 4,
+            "participant": {
+              "personList": [
+                {
+                  "id": 0,
+                  "name": "Mario",
+                  "surname": "Rossi",
+                  "email_address": "test@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                },
+                {
+                  "id": 1,
+                  "name": "Luigi",
+                  "surname": "Rossi",
+                  "email_address": "test1@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                },
+                {
+                  "id": 2,
+                  "name": "Wario",
+                  "surname": "Rossi",
+                  "email_address": "test2@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                },
+                {
+                  "id": 3,
+                  "name": "Toad",
+                  "surname": "Rossi",
+                  "email_address": "test2@test.com",
+                  "password": "test",
+                  "phone_number": "1234567890",
+                  "profile_picture": "null"
+                }
+              ]
+            },
+            "attachment": [
+              "tickets1.pdf",
+              "tickets2.pdf"
+            ],
+            "link": [],
+            "type": "moving",
+            "everyoneParticipate": true
           }
         ]
       },
@@ -161,6 +218,15 @@
           {
             "id": 2,
             "name": "Wario",
+            "surname": "Rossi",
+            "email_address": "test2@test.com",
+            "password": "test",
+            "phone_number": "1234567890",
+            "profile_picture": "null"
+          },
+          {
+            "id": 3,
+            "name": "Toad",
             "surname": "Rossi",
             "email_address": "test2@test.com",
             "password": "test",

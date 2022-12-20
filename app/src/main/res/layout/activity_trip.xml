@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/trip_activity_constraint"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.trip.TripActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/trip_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+        app:navigationIconTint="?colorOnSurface"
+        app:titleCentered="true" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/trip_nav_host"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trip_toolbar"
+        app:navGraph="@navigation/trip_nav_graph" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
