@@ -1,8 +1,10 @@
 package it.unimib.sal.one_two_trip.util.holder;
 
+import androidx.annotation.NonNull;
 import androidx.room.Ignore;
 
 import java.util.List;
+import java.util.Objects;
 
 import it.unimib.sal.one_two_trip.model.Activity;
 
@@ -26,5 +28,26 @@ public class ActivityListHolder {
 
     public void setActivityList(List<Activity> activityList) {
         this.activityList = activityList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ActivityListHolder that = (ActivityListHolder) o;
+        return Objects.equals(activityList, that.activityList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(activityList);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "ActivityListHolder{" +
+                "activityList=" + activityList +
+                '}';
     }
 }

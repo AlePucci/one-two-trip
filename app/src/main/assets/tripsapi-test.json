@@ -13,8 +13,8 @@
             "id": 1,
             "title": "Volo #EZY3932",
             "description": "Volo da Milano a Parigi",
-            "start_date": "2023-02-14T09:30:00",
-            "end_date": "2023-02-14T11:30:00",
+            "start_date": 1676367000000,
+            "end_date": 1676374231000,
             "location": "MXP",
             "end_location": "CDG",
             "trip_id": 1,
@@ -49,10 +49,7 @@
                 }
               ]
             },
-            "attachment": [
-              "tickets1.pdf",
-              "tickets2.pdf"
-            ],
+            "attachment": ["tickets1.pdf", "tickets2.pdf"],
             "link": [],
             "type": "moving",
             "everyoneParticipate": true
@@ -61,7 +58,7 @@
             "id": 2,
             "title": "Museo del Louvre",
             "description": "Museum",
-            "start_date": "2023-02-14T15:00:00",
+            "start_date": 1676386800000,
             "location": "Museo del Louvre Paris",
             "trip_id": 1,
             "participant": {
@@ -86,9 +83,7 @@
                 }
               ]
             },
-            "attachment": [
-              "tickets.pdf"
-            ],
+            "attachment": ["tickets.pdf"],
             "link": [],
             "type": "activity",
             "everyoneParticipate": false
@@ -97,7 +92,7 @@
             "id": 3,
             "title": "Champs Elisées",
             "description": "Passeggiata",
-            "start_date": "2023-02-15T10:00:00",
+            "start_date": 1676455200000,
             "location": "Champs-Elisées",
             "trip_id": 1,
             "participant": {
@@ -176,7 +171,7 @@
       "title": "Amsterdam",
       "description": "Viaggio ad Amsterdam",
       "activity": {
-        "activityList": []
+        "activityList": null
       },
       "participant": {
         "personList": [
@@ -221,8 +216,8 @@
             "id": 1,
             "title": "Volo #EZY3071",
             "description": "Volo da Milano a Parigi",
-            "start_date": "2022-04-16T11:45:00",
-            "end_date": "2022-04-16T13:45:00",
+            "start_date": 1650109500000,
+            "end_date": 1650116700000,
             "location": "LIN",
             "end_location": "STN",
             "trip_id": 3,
@@ -257,10 +252,7 @@
                 }
               ]
             },
-            "attachment": [
-              "tickets1.pdf",
-              "tickets2.pdf"
-            ],
+            "attachment": ["tickets1.pdf", "tickets2.pdf"],
             "link": [],
             "type": "moving",
             "everyoneParticipate": true
@@ -269,7 +261,7 @@
             "id": 2,
             "title": "Buckingham Palace",
             "description": "Palace",
-            "start_date": "2022-04-16T15:00:00",
+            "start_date": 1650121200000,
             "location": "Buckingam Palace London",
             "trip_id": 2,
             "participant": {
@@ -312,7 +304,7 @@
             "id": 3,
             "title": "Harry Potter Studios",
             "description": "",
-            "start_date": "2022-04-16T17:00:00",
+            "start_date": 1650128400000,
             "location": "Harry Potter Studios London",
             "trip_id": 1,
             "participant": {

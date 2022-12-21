@@ -1,6 +1,10 @@
 package it.unimib.sal.one_two_trip.repository;
 
 import static it.unimib.sal.one_two_trip.util.Constants.FRESH_TIMEOUT;
+import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -13,18 +17,22 @@ import it.unimib.sal.one_two_trip.model.TripsResponse;
 import it.unimib.sal.one_two_trip.source.BaseTripsLocalDataSource;
 import it.unimib.sal.one_two_trip.source.BaseTripsRemoteDataSource;
 import it.unimib.sal.one_two_trip.source.TripCallback;
+import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 public class TripsRepository implements ITripsRepository, TripCallback {
     private final MutableLiveData<Result> allTripsMutableLiveData;
     private final BaseTripsRemoteDataSource tripsRemoteDataSource;
     private final BaseTripsLocalDataSource tripsLocalDataSource;
+    private final SharedPreferencesUtil sharedPreferencesUtil;
 
     public TripsRepository(BaseTripsRemoteDataSource tripsRemoteDataSource,
-                           BaseTripsLocalDataSource tripsLocalDataSource) {
+                           BaseTripsLocalDataSource tripsLocalDataSource,
+                           SharedPreferencesUtil sharedPreferencesUtil) {
 
         allTripsMutableLiveData = new MutableLiveData<>();
         this.tripsRemoteDataSource = tripsRemoteDataSource;
         this.tripsLocalDataSource = tripsLocalDataSource;
+        this.sharedPreferencesUtil = sharedPreferencesUtil;
         this.tripsRemoteDataSource.setTripCallback(this);
         this.tripsLocalDataSource.setTripCallback(this);
     }
@@ -35,7 +43,7 @@ public class TripsRepository implements ITripsRepository, TripCallback {
 
         // It gets the trips from the Web Service if the last download
         // of the news has been performed more than FRESH_TIMEOUT value ago
-        if (currentTime - lastUpdate > FRESH_TIMEOUT) {
+        if (currentTime - lastUpdate >= FRESH_TIMEOUT) {
             tripsRemoteDataSource.getTrips();
         } else {
             tripsLocalDataSource.getTrips();
@@ -51,6 +59,9 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     @Override
     public void onSuccessFromRemote(TripsApiResponse tripsApiResponse, long lastUpdate) {
         tripsLocalDataSource.insertTrips(tripsApiResponse.getTrips());
+        Log.d("TripsRepository", "onSuccessFromRemote: " + tripsApiResponse.getTrips());
+        sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE,
+                Long.toString(lastUpdate));
     }
 
     @Override
@@ -62,6 +73,7 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     @Override
     public void onSuccessFromLocal(List<Trip> newsList) {
         Result.Success result = new Result.Success(new TripsResponse(newsList));
+        Log.d("TripsRepository", "onSuccessFromLocal: " + new TripsResponse(newsList).getTripList());
         allTripsMutableLiveData.postValue(result);
     }
 

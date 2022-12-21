@@ -166,7 +166,7 @@ public class Activity {
         this.type = type;
     }
 
-    public boolean doesEveryoneParticipate() {
+    public boolean isEveryoneParticipate() {
         return everyoneParticipate;
     }
 
@@ -197,18 +197,30 @@ public class Activity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Activity activity = (Activity) o;
-        return id == activity.id && trip_id == activity.trip_id;
+        return id == activity.id && start_date == activity.start_date &&
+                end_date == activity.end_date && trip_id == activity.trip_id &&
+                completed == activity.completed &&
+                everyoneParticipate == activity.everyoneParticipate &&
+                Objects.equals(title, activity.title) &&
+                Objects.equals(description, activity.description) &&
+                Objects.equals(location, activity.location) &&
+                Objects.equals(end_location, activity.end_location) &&
+                Objects.equals(participant, activity.participant) &&
+                Objects.equals(attachment, activity.attachment) &&
+                Objects.equals(link, activity.link) && Objects.equals(type, activity.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, trip_id);
+        return Objects.hash(id, title, description, location, end_location, start_date, end_date,
+                participant, trip_id, attachment, link, completed, type, everyoneParticipate);
     }
 
     @NonNull
     @Override
     public String toString() {
         return "Activity{" + "id='" + id + '\'' + ", title='" + title + '\'' +
-                ", location='" + location + '\'' + ", start_date=" + start_date + '}';
+                ", location='" + location + '\'' + ", start_date=" + start_date +
+                ", everyoneParticipate=" + everyoneParticipate + '}';
     }
 }

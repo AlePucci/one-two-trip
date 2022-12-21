@@ -48,11 +48,10 @@ public class ServiceLocator {
         SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
 
         newsRemoteDataSource = new TripsRemoteDataSource("1");
-
         newsLocalDataSource = new TripsLocalDataSource(getTripsDAO(application),
                 sharedPreferencesUtil);
 
-        return new TripsRepository(newsRemoteDataSource, newsLocalDataSource);
+        return new TripsRepository(newsRemoteDataSource, newsLocalDataSource, sharedPreferencesUtil);
     }
 
     /**

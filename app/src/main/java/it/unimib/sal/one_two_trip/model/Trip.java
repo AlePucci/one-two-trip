@@ -126,12 +126,16 @@ public class Trip {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trip trip = (Trip) o;
-        return id == trip.id && tripOwner.equals(trip.tripOwner);
+        return id == trip.id && completed == trip.completed && tripOwner.equals(trip.tripOwner) &&
+                Objects.equals(title, trip.title) &&
+                Objects.equals(description, trip.description) &&
+                Objects.equals(activity, trip.activity) &&
+                Objects.equals(participant, trip.participant);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tripOwner);
+        return Objects.hash(id, tripOwner, title, description, activity, participant, completed);
     }
 
     @NonNull

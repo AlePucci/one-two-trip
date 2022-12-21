@@ -142,7 +142,7 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
             if (activity.getParticipant() == null || activity.getParticipant().personList == null
                     || activity.getParticipant().personList.isEmpty()
-                    || activity.doesEveryoneParticipate()) {
+                    || activity.isEveryoneParticipate()) {
                 participants.setVisibility(View.GONE);
             } else {
                 participants.setText(String.valueOf(activity.getParticipant().personList.size()));
