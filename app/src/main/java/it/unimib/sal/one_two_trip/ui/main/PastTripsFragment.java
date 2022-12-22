@@ -15,7 +15,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -137,7 +136,7 @@ public class PastTripsFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+        this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observeForever(
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> fetchedTrips = ((Result.Success) result).getData().getTripList();
