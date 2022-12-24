@@ -2,7 +2,8 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/past_trips_layout"
@@ -25,35 +26,50 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth="wrap_content" />
 
-        <ImageView
-            android:id="@+id/no_trips_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:adjustViewBounds="true"
-            android:alpha="0.95"
-            android:contentDescription="@string/no_trips_description"
-            android:maxWidth="500dp"
-            android:maxHeight="500dp"
-            android:src="@drawable/no_trips"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/no_trips_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/no_trips_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:visibility="gone"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.6"
-            app:layout_constraintWidth="wrap_content" />
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:id="@+id/no_trips_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="100dp"
+                android:layout_marginBottom="10dp"
+                android:adjustViewBounds="true"
+                android:alpha="0.95"
+                android:contentDescription="@string/no_trips_description"
+                android:maxWidth="500dp"
+                android:maxHeight="500dp"
+                android:src="@drawable/no_trips"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/no_trips_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth="wrap_content" />
+
+            <TextView
+                android:id="@+id/no_trips_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="20sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth="wrap_content" />
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/past_trips_view"

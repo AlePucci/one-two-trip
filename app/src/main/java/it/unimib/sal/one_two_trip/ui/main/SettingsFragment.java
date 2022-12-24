@@ -55,7 +55,6 @@ public class SettingsFragment extends Fragment {
     private ToggleButton two_hours_activity;
 
     public SettingsFragment() {
-        // Required empty public constructor
     }
 
     /**
@@ -64,7 +63,6 @@ public class SettingsFragment extends Fragment {
      *
      * @return A new instance of fragment SettingsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
     }
@@ -77,7 +75,6 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
