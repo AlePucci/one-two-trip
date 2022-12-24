@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.source;
+package it.unimib.sal.one_two_trip.data.source;
 
 import static it.unimib.sal.one_two_trip.util.Constants.TRIPS_API_TEST_JSON_FILE;
 

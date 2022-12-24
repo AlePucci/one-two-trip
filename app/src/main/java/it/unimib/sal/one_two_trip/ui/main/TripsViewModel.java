@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.repository.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 
 public class TripsViewModel extends ViewModel {
 

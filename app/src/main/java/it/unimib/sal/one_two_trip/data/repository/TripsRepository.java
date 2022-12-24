@@ -1,10 +1,8 @@
-package it.unimib.sal.one_two_trip.repository;
+package it.unimib.sal.one_two_trip.data.repository;
 
 import static it.unimib.sal.one_two_trip.util.Constants.FRESH_TIMEOUT;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
-
-import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -14,9 +12,9 @@ import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.model.TripsApiResponse;
 import it.unimib.sal.one_two_trip.model.TripsResponse;
-import it.unimib.sal.one_two_trip.source.BaseTripsLocalDataSource;
-import it.unimib.sal.one_two_trip.source.BaseTripsRemoteDataSource;
-import it.unimib.sal.one_two_trip.source.TripCallback;
+import it.unimib.sal.one_two_trip.data.source.BaseTripsLocalDataSource;
+import it.unimib.sal.one_two_trip.data.source.BaseTripsRemoteDataSource;
+import it.unimib.sal.one_two_trip.data.source.TripCallback;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 public class TripsRepository implements ITripsRepository, TripCallback {

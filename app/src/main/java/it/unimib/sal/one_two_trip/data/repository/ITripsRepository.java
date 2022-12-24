@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.repository;
+package it.unimib.sal.one_two_trip.data.repository;
 
 import androidx.lifecycle.MutableLiveData;
 

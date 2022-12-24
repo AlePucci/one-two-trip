@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.source;
+package it.unimib.sal.one_two_trip.data.source;
 
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_REALTIME_DATABASE;
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_TRIPS_COLLECTION;
