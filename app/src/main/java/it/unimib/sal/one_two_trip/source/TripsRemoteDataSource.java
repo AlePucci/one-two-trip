@@ -57,28 +57,27 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
         databaseReference.child(FIREBASE_USER_COLLECTION).child(idToken)
                 .child(FIREBASE_TRIPS_COLLECTION).addValueEventListener(postListener);
 
-        }
+    }
 
     @Override
     public void getTrips() {
         databaseReference.child(FIREBASE_USER_COLLECTION).child(idToken)
                 .child(FIREBASE_TRIPS_COLLECTION).get().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                Log.d("A", "Error getting data", task.getException());
-            }
-            else {
-                Log.d("A", "Successful read: " + task.getResult().getValue());
+                    if (!task.isSuccessful()) {
+                        Log.d("A", "Error getting data", task.getException());
+                    } else {
+                        Log.d("A", "Successful read: " + task.getResult().getValue());
 
-                List<Trip> tripList = new ArrayList<>();
-                for(DataSnapshot ds : task.getResult().getChildren()) {
-                    Trip trip = ds.getValue(Trip.class);
-                    tripList.add(trip);
-                }
+                        List<Trip> tripList = new ArrayList<>();
+                        for (DataSnapshot ds : task.getResult().getChildren()) {
+                            Trip trip = ds.getValue(Trip.class);
+                            tripList.add(trip);
+                        }
 
-                tripCallback.onSuccessFromRemote(new TripsApiResponse("ok", tripList.size(),
-                        tripList), System.currentTimeMillis());
-            }
-        });
+                        tripCallback.onSuccessFromRemote(new TripsApiResponse("ok",
+                                tripList.size(), tripList), System.currentTimeMillis());
+                    }
+                });
     }
 
     @Override

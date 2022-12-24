@@ -182,10 +182,9 @@ public class Activity {
     public void checkCompleted() {
         boolean completed;
 
-        if(end_date != 0) {
+        if (end_date != 0) {
             completed = end_date < (new Date().getTime());
-        }
-        else{
+        } else {
             completed = start_date < (new Date().getTime());
         }
 

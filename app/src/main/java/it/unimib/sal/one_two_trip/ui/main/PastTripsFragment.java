@@ -167,10 +167,9 @@ public class PastTripsFragment extends Fragment {
                                 noTripsText.setVisibility(View.GONE);
                                 noTripsImage.setVisibility(View.GONE);
 
-                                int initialSize = this.pastTrips.size();
                                 this.pastTrips.clear();
                                 this.pastTrips.addAll(pastTrips);
-                                tripsRecyclerViewAdapter.notifyItemRangeInserted(initialSize,
+                                tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
                                         this.pastTrips.size());
                             }
                         }

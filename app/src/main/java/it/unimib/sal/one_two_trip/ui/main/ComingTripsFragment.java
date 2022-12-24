@@ -5,7 +5,6 @@ import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_
 
 import android.app.Application;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -140,64 +139,6 @@ public class ComingTripsFragment extends Fragment {
         }
 
         progressBar.setVisibility(View.VISIBLE);
-/*
-        this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
-                result -> {
-                    Log.d("AAA", "fetched");
-                    if (result.isSuccess()) {
-                        List<Trip> fetchedTrips = ((Result.Success) result).getData().getTripList();
-
-                        // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
-                        if (fetchedTrips == null || fetchedTrips.isEmpty()) {
-                            noTripsText.setText(R.string.no_trips_added);
-                            noTripsText.setVisibility(View.VISIBLE);
-                            noTripsImage.setVisibility(View.VISIBLE);
-                            comingTripsTitle.setVisibility(View.GONE);
-                        } else {
-                            List<Trip> comingTrips = new ArrayList<>(fetchedTrips);
-
-                            // FILTERS THE TRIPS THAT ARE NOT COMPLETED (COMING TRIPS)
-                            for (Iterator<Trip> i = comingTrips.iterator(); i.hasNext(); ) {
-                                Trip trip = i.next();
-                                if (trip != null && trip.isCompleted()) i.remove();
-                            }
-
-                            // IF THERE ARE NO COMING TRIPS, SHOW THE NO COMING TRIPS IMAGE TEXT
-                            if (comingTrips.isEmpty()) {
-                                noTripsText.setText(R.string.no_past_trips);
-                                noTripsText.setVisibility(View.VISIBLE);
-                                noTripsImage.setVisibility(View.VISIBLE);
-                                comingTripsTitle.setVisibility(View.GONE);
-                            } else {
-                                int comingTripsCount = comingTrips.size();
-                                if (comingTripsCount == 1) {
-                                    comingTripsTitle.setText(R.string.coming_trips_title_single);
-                                } else {
-                                    comingTripsTitle.setText(String
-                                            .format(getString(R.string.coming_trips_title_multiple),
-                                                    comingTripsCount));
-                                }
-
-                                comingTripsTitle.setVisibility(View.VISIBLE);
-                                noTripsText.setVisibility(View.GONE);
-                                noTripsImage.setVisibility(View.GONE);
-
-                                int initialSize = this.comingTrips.size();
-                                this.comingTrips.clear();
-                                this.comingTrips.addAll(comingTrips);
-                                tripsRecyclerViewAdapter.notifyItemRangeInserted(initialSize,
-                                        this.comingTrips.size());
-                            }
-                        }
-
-                        progressBar.setVisibility(View.GONE);
-                    } else {
-                        ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
-                        Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
-                                .getMessage()), Snackbar.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.GONE);
-                    }
-                }); */
 
         this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observeForever(result -> {
 
@@ -227,7 +168,6 @@ public class ComingTripsFragment extends Fragment {
                         comingTripsTitle.setVisibility(View.GONE);
                     } else {
                         int comingTripsCount = comingTrips.size();
-                        Log.d("AAA", comingTrips.size() + "");
                         if (comingTripsCount == 1) {
                             comingTripsTitle.setText(R.string.coming_trips_title_single);
                         } else {
@@ -242,7 +182,8 @@ public class ComingTripsFragment extends Fragment {
 
                         this.comingTrips.clear();
                         this.comingTrips.addAll(comingTrips);
-                        tripsRecyclerViewAdapter.notifyDataSetChanged();
+                        tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
+                                this.comingTrips.size());
                     }
                 }
 

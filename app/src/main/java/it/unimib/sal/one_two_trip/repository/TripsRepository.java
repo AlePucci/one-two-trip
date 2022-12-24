@@ -59,7 +59,6 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     @Override
     public void onSuccessFromRemote(TripsApiResponse tripsApiResponse, long lastUpdate) {
         tripsLocalDataSource.insertTrips(tripsApiResponse.getTrips());
-        Log.d("TripsRepository", "onSuccessFromRemote: " + tripsApiResponse.getTrips());
         sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE,
                 Long.toString(lastUpdate));
     }
@@ -73,7 +72,6 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     @Override
     public void onSuccessFromLocal(List<Trip> newsList) {
         Result.Success result = new Result.Success(new TripsResponse(newsList));
-        Log.d("TripsRepository", "onSuccessFromLocal: " + new TripsResponse(newsList).getTripList());
         allTripsMutableLiveData.postValue(result);
     }
 

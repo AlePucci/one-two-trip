@@ -41,7 +41,7 @@ public class TripsRecyclerViewAdapter
     public TripViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new TripViewHolder(LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.trip_item_home,
-                parent, false));
+                        parent, false));
     }
 
     @Override
@@ -108,7 +108,8 @@ public class TripsRecyclerViewAdapter
 
                                     @Override
                                     public void onActivityClick(Activity activity) {
-                                        Snackbar.make(itemView, activity.getTitle(), Snackbar.LENGTH_SHORT).show();
+                                        Snackbar.make(itemView, activity.getTitle(),
+                                                Snackbar.LENGTH_SHORT).show();
                                     }
                                 });
 
