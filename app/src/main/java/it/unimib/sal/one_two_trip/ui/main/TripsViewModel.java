@@ -18,7 +18,7 @@ public class TripsViewModel extends ViewModel {
 
     /**
      * Returns the LiveData object associated with the
-     * news list to the Fragment/Activity.
+     * trip list to the Fragment/Activity.
      *
      * @return The LiveData object associated with the trip list.
      */

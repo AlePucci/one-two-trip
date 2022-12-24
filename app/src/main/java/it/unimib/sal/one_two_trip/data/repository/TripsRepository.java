@@ -39,8 +39,6 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     public MutableLiveData<Result> fetchTrips(long lastUpdate) {
         long currentTime = System.currentTimeMillis();
 
-        // It gets the trips from the Web Service if the last download
-        // of the news has been performed more than FRESH_TIMEOUT value ago
         if (currentTime - lastUpdate >= FRESH_TIMEOUT) {
             tripsRemoteDataSource.getTrips();
         } else {
@@ -63,13 +61,13 @@ public class TripsRepository implements ITripsRepository, TripCallback {
 
     @Override
     public void onFailureFromRemote(Exception exception) {
-        Result.Error result = new Result.Error(exception.getMessage());
-        allTripsMutableLiveData.postValue(result);
+        Result.Error resultError = new Result.Error(exception.getMessage());
+        allTripsMutableLiveData.postValue(resultError);
     }
 
     @Override
-    public void onSuccessFromLocal(List<Trip> newsList) {
-        Result.Success result = new Result.Success(new TripsResponse(newsList));
+    public void onSuccessFromLocal(List<Trip> tripList) {
+        Result.Success result = new Result.Success(new TripsResponse(tripList));
         allTripsMutableLiveData.postValue(result);
     }
 

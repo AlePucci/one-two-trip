@@ -22,8 +22,8 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
     }
 
     /**
-     * Gets the news from the local database.
-     * The method is executed with an ExecutorService defined in NewsRoomDatabase class
+     * Gets the trips from the local database.
+     * The method is executed with an ExecutorService defined in TripsRoomDatabase class
      * because the database access cannot been executed in the main thread.
      */
     @Override
@@ -40,34 +40,18 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
     @Override
     public void insertTrips(List<Trip> tripList) {
         TripsRoomDatabase.databaseWriteExecutor.execute(() -> {
-            // Reads the news from the database
             List<Trip> allTrips = tripsDAO.getAll();
 
             if (tripList != null) {
-
-                // Checks if the news just downloaded has already been downloaded earlier
-                // in order to preserve the news status (marked as favorite or not)
                 for (Trip trip : allTrips) {
-                    // This check works because News and NewsSource classes have their own
-                    // implementation of equals(Object) and hashCode() methods
                     if (tripList.contains(trip)) {
-                        // The primary key and the favorite status is contained only in the News objects
-                        // retrieved from the database, and not in the News objects downloaded from the
-                        // Web Service. If the same news was already downloaded earlier, the following
-                        // line of code replaces the the News object in newsList with the corresponding
-                        // News object saved in the database, so that it has the primary key and the
-                        // favorite status.
                         tripList.set(tripList.indexOf(trip), trip);
                     }
                 }
 
-                // Writes the news in the database and gets the associated primary keys
-                List<Long> insertedNewsIds = tripsDAO.insertTripList(tripList);
+                List<Long> insertedTripIds = tripsDAO.insertTripList(tripList);
                 for (int i = 0; i < tripList.size(); i++) {
-                    // Adds the primary key to the corresponding object News just downloaded so that
-                    // if the user marks the news as favorite (and vice-versa), we can use its id
-                    // to know which news in the database must be marked as favorite/not favorite
-                    tripList.get(i).setId(insertedNewsIds.get(i));
+                    tripList.get(i).setId(insertedTripIds.get(i));
                 }
 
                 sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE,

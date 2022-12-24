@@ -43,15 +43,16 @@ public class ServiceLocator {
      * @return An instance of ITripsRepository.
      */
     public ITripsRepository getTripsRepository(Application application) {
-        BaseTripsRemoteDataSource newsRemoteDataSource;
-        BaseTripsLocalDataSource newsLocalDataSource;
+        BaseTripsRemoteDataSource tripsRemoteDataSource;
+        BaseTripsLocalDataSource tripsLocalDataSource;
         SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
 
-        newsRemoteDataSource = new TripsRemoteDataSource("1");
-        newsLocalDataSource = new TripsLocalDataSource(getTripsDAO(application),
+        tripsRemoteDataSource = new TripsRemoteDataSource("1");
+        tripsLocalDataSource = new TripsLocalDataSource(getTripsDAO(application),
                 sharedPreferencesUtil);
 
-        return new TripsRepository(newsRemoteDataSource, newsLocalDataSource, sharedPreferencesUtil);
+        return new TripsRepository(tripsRemoteDataSource, tripsLocalDataSource,
+                sharedPreferencesUtil);
     }
 
     /**

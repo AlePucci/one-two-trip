@@ -3,6 +3,7 @@ package it.unimib.sal.one_two_trip.data.source;
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_REALTIME_DATABASE;
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_TRIPS_COLLECTION;
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_USER_COLLECTION;
+import static it.unimib.sal.one_two_trip.util.Constants.STATUS_OK;
 
 import android.util.Log;
 
@@ -27,14 +28,17 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
 
     public TripsRemoteDataSource(String idToken) {
         super();
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
-        databaseReference = firebaseDatabase.getReference().getRef();
         this.idToken = idToken;
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
+        this.databaseReference = firebaseDatabase.getReference().getRef();
 
-        ValueEventListener postListener = new ValueEventListener() {
+        addTripListener();
+    }
+
+    private void addTripListener() {
+        ValueEventListener tripListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
                 List<Trip> tripList = new ArrayList<>();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Trip trip = ds.getValue(Trip.class);
@@ -42,21 +46,18 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
                 }
 
                 Log.d("TripsRemoteDataSource", "trip: " + tripList);
-                tripCallback.onSuccessFromRemote(new TripsApiResponse("ok", tripList.size(),
+                tripCallback.onSuccessFromRemote(new TripsApiResponse(STATUS_OK, tripList.size(),
                         tripList), System.currentTimeMillis());
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Getting Post failed, log a message
-                Log.w("A", "loadPost:onCancelled", error.toException());
-
+                tripCallback.onFailureFromRemote(error.toException());
             }
         };
 
         databaseReference.child(FIREBASE_USER_COLLECTION).child(idToken)
-                .child(FIREBASE_TRIPS_COLLECTION).addValueEventListener(postListener);
-
+                .child(FIREBASE_TRIPS_COLLECTION).addValueEventListener(tripListener);
     }
 
     @Override
@@ -64,7 +65,7 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
         databaseReference.child(FIREBASE_USER_COLLECTION).child(idToken)
                 .child(FIREBASE_TRIPS_COLLECTION).get().addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
-                        Log.d("A", "Error getting data", task.getException());
+                        tripCallback.onFailureFromRemote(task.getException());
                     } else {
                         Log.d("A", "Successful read: " + task.getResult().getValue());
 
@@ -74,7 +75,7 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
                             tripList.add(trip);
                         }
 
-                        tripCallback.onSuccessFromRemote(new TripsApiResponse("ok",
+                        tripCallback.onSuccessFromRemote(new TripsApiResponse(STATUS_OK,
                                 tripList.size(), tripList), System.currentTimeMillis());
                     }
                 });

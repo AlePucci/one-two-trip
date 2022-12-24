@@ -42,4 +42,7 @@ public class Constants {
     public static final String PHOTOS_ENDPOINT = "search/photos";
     public static final String PHOTOS_QUERY = "query";
     public static final String PHOTOS_PER_PAGE = "per_page";
+
+    // Status
+    public static final String STATUS_OK = "OK";
 }
