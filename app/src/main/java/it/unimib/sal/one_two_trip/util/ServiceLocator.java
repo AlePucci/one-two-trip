@@ -5,10 +5,14 @@ import android.app.Application;
 import it.unimib.sal.one_two_trip.database.TripsRoomDatabase;
 import it.unimib.sal.one_two_trip.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.repository.TripsRepository;
+import it.unimib.sal.one_two_trip.service.PictureApiService;
 import it.unimib.sal.one_two_trip.source.BaseTripsLocalDataSource;
 import it.unimib.sal.one_two_trip.source.BaseTripsRemoteDataSource;
+import it.unimib.sal.one_two_trip.source.PhotoRemoteDataSource;
 import it.unimib.sal.one_two_trip.source.TripsLocalDataSource;
 import it.unimib.sal.one_two_trip.source.TripsMockRemoteDataSource;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceLocator {
 
@@ -49,5 +53,25 @@ public class ServiceLocator {
                 sharedPreferencesUtil);
 
         return new TripsRepository(newsRemoteDataSource, newsLocalDataSource);
+    }
+
+    /**
+     * Returns an instance of PictureApiService class using Retrofit.
+     *
+     * @return an instance of PictureApiService.
+     */
+    public PictureApiService getPictureApiService() {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.PHOTOS_BASE_URL).
+                addConverterFactory(GsonConverterFactory.create()).build();
+        return retrofit.create(PictureApiService.class);
+    }
+
+    /**
+     * Returns an instance of PhotoRemoteDataSource.
+     *
+     * @return an instance of PhotoRemoteDataSource.
+     */
+    public PhotoRemoteDataSource getPhotoRemoteDataSource() {
+        return new PhotoRemoteDataSource();
     }
 }

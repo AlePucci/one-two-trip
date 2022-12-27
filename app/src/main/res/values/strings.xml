@@ -25,6 +25,11 @@
     <string name="no_trips_description">There are no trips in this section</string>
     <string name="share_trip_button_description">Share this trip!</string>
 
+    <!-- trip share -->
+    <string name="share_trip_text_coming">See the fantastic places I am going to visit! I just planned the entire trip with 1, 2, Trip app. Download it now!</string>
+    <string name="share_trip_text_past">See the fantastic places I visited! I have planned the entire trip using the 1, 2, Trip app. Download it now!</string>
+    <string name="share_trip_using">Share this trip using…</string>
+
     <!-- dev names -->
     <string name="developer_pucci" translatable="false">Alessandro Pucci (869177)</string>
     <string name="developer_ruiz" translatable="false">Matias Aldo Ruiz (869139)</string>
@@ -68,6 +73,7 @@
     <string name="unexpected_error">Unexpected error</string>
     <string name="error_json_parsing">Error! Please try again</string>
     <string name="error_retrieving_trips">Error while retrieving trips.</string>
+    <string name="no_internet_error">Error! You have no connection at the moment. Please retry later.</string>
 
     <!-- end -->
 </resources>

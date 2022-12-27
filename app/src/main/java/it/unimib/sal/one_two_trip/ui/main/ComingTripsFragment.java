@@ -35,6 +35,7 @@ import it.unimib.sal.one_two_trip.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
+import it.unimib.sal.one_two_trip.util.Utility;
 
 /**
  * A simple {@link Fragment} subclass that shows the coming trips of the user.
@@ -62,14 +63,13 @@ public class ComingTripsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        application = requireActivity().getApplication();
-
-        sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
+        this.application = requireActivity().getApplication();
+        this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(this.application);
-        tripsViewModel = new ViewModelProvider(requireActivity(),
+        this.tripsViewModel = new ViewModelProvider(requireActivity(),
                 new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
-        comingTrips = new ArrayList<>();
+        this.comingTrips = new ArrayList<>();
     }
 
     @Override
@@ -97,13 +97,18 @@ public class ComingTripsFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(),
                 LinearLayoutManager.VERTICAL, false);
 
-        tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(comingTrips,
+        this.tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(comingTrips,
                 this.application,
                 new TripsRecyclerViewAdapter.OnItemClickListener() {
                     @Override
                     public void onTripShare(Trip trip) {
-                        Snackbar.make(view, "Share " + trip.getTitle(),
-                                Snackbar.LENGTH_SHORT).show();
+                        if (Utility.isConnected(requireActivity())) {
+                            Utility.onTripShare(trip, comingTrips, application);
+                        } else {
+                            Snackbar.make(view, requireContext()
+                                            .getString(R.string.no_internet_error),
+                                    Snackbar.LENGTH_LONG).show();
+                        }
                     }
 
                     @Override
@@ -130,7 +135,7 @@ public class ComingTripsFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+        this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> fetchedTrips = ((Result.Success) result).getData().getTripList();

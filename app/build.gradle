@@ -3,6 +3,11 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+
+def propertiesFile = rootProject.file("local.properties")
+def properties = new Properties()
+properties.load(new FileInputStream(propertiesFile))
+
 android {
     namespace 'it.unimib.sal.one_two_trip'
     compileSdk 33
@@ -15,6 +20,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "PHOTOS_KEY", properties['PHOTOS_KEY'])
     }
 
     buildTypes {
@@ -41,6 +47,8 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
     implementation 'com.google.code.gson:gson:2.10'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
     testImplementation 'junit:junit:4.13.2'

@@ -15,7 +15,7 @@ public class Constants {
     // SharedPreferences
     public static final String SHARED_PREFERENCES_FILE_NAME = "it.unimib.sal.one_two_trip.preferences";
     public static final String SHARED_PREFERENCES_NOTIFICATIONS_ON = "notifications_o";
-    public static final String SHARED_PREFERENCES_TRIP_NOTIFICATIONS= "trip_notifications";
+    public static final String SHARED_PREFERENCES_TRIP_NOTIFICATIONS = "trip_notifications";
     public static final String SHARED_PREFERENCES_ACTIVITY_NOTIFICATIONS = "activity_notifications";
     public static final String TWELVE_HOURS = "720";    // Minutes
     public static final String ONE_DAY = "144";
@@ -26,9 +26,15 @@ public class Constants {
 
     // Constants for refresh rate of trips
     public static final String LAST_UPDATE = "last_update";
-    public static final int FRESH_TIMEOUT = 60*1000; // 1 minute (in milliseconds)
+    public static final int FRESH_TIMEOUT = 60 * 1000; // 1 minute (in milliseconds)
 
     public static final String RETROFIT_ERROR = "retrofit_error";
     public static final String API_KEY_ERROR = "api_key_error";
     public static final String UNEXPECTED_ERROR = "unexpected_error";
+
+    // PHOTOS
+    public static final String PHOTOS_BASE_URL = "https://api.unsplash.com/";
+    public static final String PHOTOS_ENDPOINT = "search/photos";
+    public static final String PHOTOS_QUERY = "query";
+    public static final String PHOTOS_PER_PAGE = "per_page";
 }

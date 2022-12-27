@@ -31,8 +31,11 @@ import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.TripsRecyclerViewAdapter;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
+import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
+import it.unimib.sal.one_two_trip.util.Utility;
 
 /**
  * A simple {@link Fragment} subclass that shows the past trips of the user.
@@ -60,10 +63,13 @@ public class PastTripsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        application = requireActivity().getApplication();
-        sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
-        tripsViewModel = new ViewModelProvider(requireActivity()).get(TripsViewModel.class);
-        pastTrips = new ArrayList<>();
+        this.application = requireActivity().getApplication();
+        this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
+        ITripsRepository tripsRepository = ServiceLocator.getInstance()
+                .getTripsRepository(this.application);
+        this.tripsViewModel = new ViewModelProvider(requireActivity(),
+                new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
+        this.pastTrips = new ArrayList<>();
     }
 
     @Override
@@ -91,13 +97,19 @@ public class PastTripsFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(),
                 LinearLayoutManager.VERTICAL, false);
 
-        tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(pastTrips,
+        this.tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(pastTrips,
                 this.application,
                 new TripsRecyclerViewAdapter.OnItemClickListener() {
                     @Override
                     public void onTripShare(Trip trip) {
-                        Snackbar.make(view, "Share " + trip.getTitle(),
-                                Snackbar.LENGTH_SHORT).show();
+                        if (Utility.isConnected(requireActivity())) {
+                            Utility.onTripShare(trip, pastTrips, application);
+                        } else {
+                            Snackbar.make(view, requireContext()
+                                            .getString(R.string.no_internet_error),
+                                    Snackbar.LENGTH_LONG).show();
+                        }
+
                     }
 
                     @Override
@@ -124,7 +136,7 @@ public class PastTripsFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+        this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> fetchedTrips = ((Result.Success) result).getData().getTripList();
