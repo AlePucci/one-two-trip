@@ -62,7 +62,7 @@
             "title": "Museo del Louvre",
             "description": "Museum",
             "start_date": "2023-02-14T15:00:00",
-            "location": "Paris",
+            "location": "Museo del Louvre Paris",
             "trip_id": 1,
             "participant": {
               "personList": [
@@ -98,7 +98,7 @@
             "title": "Champs Elisées",
             "description": "Passeggiata",
             "start_date": "2023-02-15T10:00:00",
-            "location": "Paris",
+            "location": "Champs-Elisées",
             "trip_id": 1,
             "participant": {
               "personList": [
@@ -270,7 +270,7 @@
             "title": "Buckingham Palace",
             "description": "Palace",
             "start_date": "2022-04-16T15:00:00",
-            "location": "London",
+            "location": "Buckingam Palace London",
             "trip_id": 2,
             "participant": {
               "personList": [
@@ -313,7 +313,7 @@
             "title": "Harry Potter Studios",
             "description": "",
             "start_date": "2022-04-16T17:00:00",
-            "location": "Paris",
+            "location": "Harry Potter Studios London",
             "trip_id": 1,
             "participant": {
               "personList": [
