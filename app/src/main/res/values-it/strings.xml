@@ -50,6 +50,7 @@
     <string name="share_trip_text_past">Guarda i posti meravigliosi che ho visitato! Ho pianificato tutto il viaggio con l\'app gratuita 1, 2, Trip. Scaricala ora!</string>
     <string name="share_trip_using">Condividi il viaggio con…</string>
     <string name="no_internet_error">Errore! Al momento non sei connesso. Riprova più tardi</string>
+    <string name="no_shareable_activities">Non ci sono attività da condividere!</string>
 
     <!-- end -->
 </resources>

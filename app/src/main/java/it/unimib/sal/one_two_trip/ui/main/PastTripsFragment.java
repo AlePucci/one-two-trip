@@ -108,7 +108,7 @@ public class PastTripsFragment extends Fragment {
                     @Override
                     public void onTripShare(Trip trip) {
                         if (Utility.isConnected(requireActivity())) {
-                            Utility.onTripShare(trip, pastTrips, application);
+                            Utility.onTripShare(trip, pastTrips, application, view);
                         } else {
                             Snackbar.make(view, requireContext()
                                             .getString(R.string.no_internet_error),

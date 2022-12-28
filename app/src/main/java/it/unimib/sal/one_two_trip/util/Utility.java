@@ -5,11 +5,17 @@ import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.view.View;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
+import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Trip;
 
 /**
@@ -24,7 +30,8 @@ public class Utility {
      * @param tripList    list of trips in which the trip to share is contained
      * @param application the application
      */
-    public static void onTripShare(Trip trip, List<Trip> tripList, Application application) {
+    public static void onTripShare(Trip trip, List<Trip> tripList, Application application,
+                                   View view) {
         int tripPosition = -1;
 
         if (tripList == null) return;
@@ -40,34 +47,39 @@ public class Utility {
                 tripList.get(tripPosition).getActivity() == null ||
                 tripList.get(tripPosition).getActivity().activityList == null ||
                 tripList.get(tripPosition).getActivity().activityList.isEmpty()) {
+            Snackbar.make(view, application.getString(R.string.no_shareable_activities),
+                    Snackbar.LENGTH_SHORT).show();
             return;
         }
 
+        List<it.unimib.sal.one_two_trip.model.Activity> tmp =
+                new ArrayList<>(tripList.get(tripPosition).getActivity().activityList);
+
+        for (Iterator<it.unimib.sal.one_two_trip.model.Activity> i = tmp.iterator(); i.hasNext(); ) {
+            it.unimib.sal.one_two_trip.model.Activity activity = i.next();
+            if (activity == null || activity.getType().equals("moving")) i.remove();
+        }
 
         int r = -1;
 
         do {
-            r = (int) (Math.random() * tripList.get(tripPosition).getActivity().activityList.size());
-            if (tripList.get(tripPosition).getActivity().activityList.get(r) == null) {
-                break;
-            }
-        } while (r == -1 || tripList.get(tripPosition).getActivity().activityList.get(r)
-                .getType().equals("moving"));
+            r = (int) (Math.random() * tmp.size());
+        } while (r == -1 || tmp.get(r) == null);
 
         SharePhotoGenerator sharePhotoGenerator = new SharePhotoGenerator(application,
                 trip.isCompleted());
-        sharePhotoGenerator.execute(tripList.get(tripPosition).getActivity().activityList.get(r)
-                .getLocation());
+        sharePhotoGenerator.execute(tmp.get(r).getLocation());
     }
 
     /**
      * It checks if the device is connected to Internet.
      * See: https://developer.android.com/training/monitoring-device-state/connectivity-status-type#DetermineConnection
+     *
      * @return true if the device is connected to Internet; false otherwise.
      */
     public static boolean isConnected(Activity activity) {
         ConnectivityManager cm =
-                (ConnectivityManager)activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();

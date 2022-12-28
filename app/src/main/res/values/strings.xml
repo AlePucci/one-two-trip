@@ -74,6 +74,7 @@
     <string name="error_json_parsing">Error! Please try again</string>
     <string name="error_retrieving_trips">Error while retrieving trips.</string>
     <string name="no_internet_error">Error! You have no connection at the moment. Please retry later.</string>
+    <string name="no_shareable_activities">There are no activities to share here!</string>
 
     <!-- end -->
 </resources>

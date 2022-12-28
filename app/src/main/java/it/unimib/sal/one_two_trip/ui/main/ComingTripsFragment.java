@@ -29,9 +29,9 @@ import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.TripsRecyclerViewAdapter;
+import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
@@ -108,7 +108,7 @@ public class ComingTripsFragment extends Fragment {
                     @Override
                     public void onTripShare(Trip trip) {
                         if (Utility.isConnected(requireActivity())) {
-                            Utility.onTripShare(trip, comingTrips, application);
+                            Utility.onTripShare(trip, comingTrips, application, view);
                         } else {
                             Snackbar.make(view, requireContext()
                                             .getString(R.string.no_internet_error),
