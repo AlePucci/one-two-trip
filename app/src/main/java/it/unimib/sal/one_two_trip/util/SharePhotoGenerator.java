@@ -20,8 +20,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.source.PhotoCallback;
-import it.unimib.sal.one_two_trip.source.PhotoRemoteDataSource;
+import it.unimib.sal.one_two_trip.data.source.PhotoCallback;
+import it.unimib.sal.one_two_trip.data.source.PhotoRemoteDataSource;
 
 /**
  * This class is used to generate a shareable image from a location name.
