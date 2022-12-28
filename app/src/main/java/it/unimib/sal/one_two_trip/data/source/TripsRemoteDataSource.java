@@ -5,8 +5,6 @@ import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_TRIPS_COLLECTIO
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_USER_COLLECTION;
 import static it.unimib.sal.one_two_trip.util.Constants.STATUS_OK;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
@@ -45,7 +43,6 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
                     tripList.add(trip);
                 }
 
-                Log.d("TripsRemoteDataSource", "trip: " + tripList);
                 tripCallback.onSuccessFromRemote(new TripsApiResponse(STATUS_OK, tripList.size(),
                         tripList), System.currentTimeMillis());
             }
@@ -67,8 +64,6 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
                     if (!task.isSuccessful()) {
                         tripCallback.onFailureFromRemote(task.getException());
                     } else {
-                        Log.d("A", "Successful read: " + task.getResult().getValue());
-
                         List<Trip> tripList = new ArrayList<>();
                         for (DataSnapshot ds : task.getResult().getChildren()) {
                             Trip trip = ds.getValue(Trip.class);
