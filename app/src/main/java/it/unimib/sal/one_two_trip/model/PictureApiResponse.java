@@ -41,7 +41,7 @@ public class PictureApiResponse {
         this.errors = errors;
     }
 
-    public class PictureApiResult {
+    public static class PictureApiResult {
         private Urls urls;
 
         public PictureApiResult() {
@@ -55,7 +55,7 @@ public class PictureApiResponse {
             this.urls = urls;
         }
 
-        public class Urls {
+        public static class Urls {
             private String regular;
 
             public Urls() {

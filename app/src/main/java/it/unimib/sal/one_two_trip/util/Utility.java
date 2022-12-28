@@ -60,11 +60,11 @@ public class Utility {
             if (activity == null || activity.getType().equals("moving")) i.remove();
         }
 
-        int r = -1;
+        int r;
 
         do {
             r = (int) (Math.random() * tmp.size());
-        } while (r == -1 || tmp.get(r) == null);
+        } while (tmp.get(r) == null);
 
         SharePhotoGenerator sharePhotoGenerator = new SharePhotoGenerator(application,
                 trip.isCompleted());

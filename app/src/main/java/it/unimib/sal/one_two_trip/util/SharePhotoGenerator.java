@@ -32,7 +32,7 @@ import it.unimib.sal.one_two_trip.data.source.PhotoRemoteDataSource;
  * **BETA feature**
  */
 public class SharePhotoGenerator extends AsyncTask<String, Void, Bitmap> implements PhotoCallback {
-    private final Context context;
+    private final Application application;
     private final PhotoRemoteDataSource photoRemoteDataSource;
     private final boolean isCompleted;  //about the trip we are generating photos
 
@@ -44,7 +44,7 @@ public class SharePhotoGenerator extends AsyncTask<String, Void, Bitmap> impleme
      * @param isCompleted true if the trip is completed, false otherwise
      */
     public SharePhotoGenerator(Application application, boolean isCompleted) {
-        this.context = application.getApplicationContext();
+        this.application = application;
         this.isCompleted = isCompleted;
         this.photoRemoteDataSource = ServiceLocator.getInstance().getPhotoRemoteDataSource();
         this.photoRemoteDataSource.setPhotoCallback(this);
@@ -150,7 +150,7 @@ public class SharePhotoGenerator extends AsyncTask<String, Void, Bitmap> impleme
 
         // COPY THE BITMAP TO MAKE IT MUTABLE
         Bitmap tmp = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-        drawLogoOnBitmap(tmp, context.getString(R.string.app_name));
+        drawLogoOnBitmap(tmp, application.getString(R.string.app_name));
         drawLocationOnBitmap(tmp, location[0]);
 
         return tmp;
@@ -162,24 +162,24 @@ public class SharePhotoGenerator extends AsyncTask<String, Void, Bitmap> impleme
         }
 
         // GET LOCAL URI OF THE IMAGE
-        Uri imgBitmapUri = getImageUri(context, result);
+        Uri imgBitmapUri = getImageUri(application.getBaseContext(), result);
 
         if (imgBitmapUri == null) {
             return;
         }
 
         String shareText = this.isCompleted ?
-                context.getString(R.string.share_trip_text_past) :
-                context.getString(R.string.share_trip_text_coming);
+                application.getString(R.string.share_trip_text_past) :
+                application.getString(R.string.share_trip_text_coming);
 
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_STREAM, imgBitmapUri);
         shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
         shareIntent.setType("image/*");
         Intent chooserIntent = Intent.createChooser(shareIntent,
-                context.getString(R.string.share_trip_using));
+                application.getString(R.string.share_trip_using));
         chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        context.startActivity(chooserIntent);
+        application.startActivity(chooserIntent);
     }
 }
