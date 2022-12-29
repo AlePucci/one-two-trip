@@ -6,6 +6,7 @@
         <item
             android:id="@+id/fragment_coming_trips"
             android:checkable="true"
+            android:checked="true"
             android:icon="@drawable/ic_baseline_home_24"
             android:title="@string/menu_home" />
     </group>

@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -95,6 +96,9 @@ public class PastTripsFragment extends Fragment {
         BottomNavigationView bottomNavigationView = requireActivity()
                 .findViewById(R.id.bottom_navigation);
         FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
+
+        NavigationView drawerNav = requireActivity().findViewById(R.id.drawer_navigation);
+        drawerNav.getMenu().getItem(0).setChecked(true);
 
         bottomNavigationView.setVisibility(View.VISIBLE);
         fab.setVisibility(View.VISIBLE);
