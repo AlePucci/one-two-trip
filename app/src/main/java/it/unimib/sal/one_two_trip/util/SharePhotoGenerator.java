@@ -116,6 +116,9 @@ public class SharePhotoGenerator extends AsyncTask<String, Void, Bitmap> impleme
             e.printStackTrace();
         }
 
+        if (photo == null || photo.isEmpty()) {
+            return null;
+        }
         // DOWNLOAD THE IMAGE FROM THE FETCHED URL
         Bitmap bitmap;
         InputStream input = null;
