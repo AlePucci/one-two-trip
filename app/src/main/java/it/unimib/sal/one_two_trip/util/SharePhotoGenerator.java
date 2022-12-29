@@ -101,6 +101,7 @@ public class SharePhotoGenerator extends AsyncTask<String, Void, Bitmap> impleme
 
     @Override
     public void onFailure(Exception exception) {
+        this.exception = exception;
     }
 
 
