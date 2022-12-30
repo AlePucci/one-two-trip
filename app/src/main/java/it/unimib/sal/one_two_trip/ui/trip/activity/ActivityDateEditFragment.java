@@ -101,7 +101,7 @@ public class ActivityDateEditFragment extends Fragment {
             new DatePickerDialog(getContext(), (datePicker, i, i1, i2) -> new TimePickerDialog(getContext(), (timePicker, j, j1) -> {
                 Date date = new Date(i, i1, i2, j, j1);
                 dateb1.setText(df.format(date));
-            }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show(),c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE)).show();
+            }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show(), c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE)).show();
         });
 
         dateb2.setOnClickListener(view12 -> {
@@ -110,7 +110,7 @@ public class ActivityDateEditFragment extends Fragment {
             new DatePickerDialog(getContext(), (datePicker, i, i1, i2) -> new TimePickerDialog(getContext(), (timePicker, j, j1) -> {
                 Date date = new Date(i, i1, i2, j, j1);
                 dateb2.setText(df.format(date));
-            }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show(),c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE)).show();
+            }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show(), c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE)).show();
         });
 
         editButton.setOnClickListener(view1 -> {
@@ -118,46 +118,46 @@ public class ActivityDateEditFragment extends Fragment {
             Date date2;
             try {
                 date1 = df.parse(dateb1.getText().toString());
-            } catch(Exception e) {
+            } catch (Exception e) {
                 date1 = activity.getStart_date();
             }
 
             try {
                 date2 = df.parse(dateb2.getText().toString());
-            } catch(Exception e) {
+            } catch (Exception e) {
                 date2 = activity.getType().equals(MOVING_ACTIVITY_TYPE_NAME) ? activity.getEnd_date() : null;
             }
 
             boolean valid = false;
 
-            if(date1 == null) {
+            if (date1 == null) {
                 dateb1.setError(getResources().getString(R.string.unexpected_error));
                 return;
             }
 
-            if(!date1.equals(activity.getStart_date())) {
+            if (!date1.equals(activity.getStart_date())) {
                 activity.setStart_date(date1);
                 valid = true;
             }
 
-            if(activity.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
-                if(date2 == null) {
+            if (activity.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
+                if (date2 == null) {
                     dateb2.setError(getResources().getString(R.string.unexpected_error));
                     return;
                 }
 
-                if(date1.after(date2)) {
+                if (date1.after(date2)) {
                     dateb2.setError(getResources().getString(R.string.activity_field_error));
                     return;
                 }
 
-                if(!date2.equals(activity.getEnd_date())) {
+                if (!date2.equals(activity.getEnd_date())) {
                     activity.setEnd_date(date2);
                     valid = true;
                 }
             }
 
-            if(valid) {
+            if (valid) {
                 viewModel.updateTrip(trip);
             }
 
@@ -172,14 +172,14 @@ public class ActivityDateEditFragment extends Fragment {
         }
 
         viewModel.getTrip(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
-            if(result.isSuccess()) {
+            if (result.isSuccess()) {
                 trip = ((Result.Success<TripResponse>) result).getData().getTrip();
                 activity = trip.getActivity().activityList.get(viewModel.getActivityPosition());
 
 
                 dateb1.setHint(df.format(activity.getStart_date()));
 
-                if(activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
+                if (activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
                     dateb2.setHint(df.format(activity.getEnd_date()));
 
                     dateb2.setVisibility(View.VISIBLE);

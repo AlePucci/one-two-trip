@@ -3,6 +3,9 @@ package it.unimib.sal.one_two_trip.source;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.database.ITripsDAO;
@@ -43,7 +46,7 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
     public void updateTrip(Trip trip) {
         TripsRoomDatabase.databaseWriteExecutor.execute(() -> {
             tripsDAO.updateTrip(trip);
-            tripCallback.onSuccessFromLocal(trip);
+            tripCallback.onSuccessFromLocal(Collections.singletonList(trip));
         });
     }
 

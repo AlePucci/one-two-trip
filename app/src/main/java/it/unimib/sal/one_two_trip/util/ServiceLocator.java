@@ -48,6 +48,6 @@ public class ServiceLocator {
         newsLocalDataSource = new TripsLocalDataSource(getTripsDAO(application),
                 sharedPreferencesUtil);
 
-        return new TripsRepository(newsRemoteDataSource, newsLocalDataSource);
+        return new TripsRepository(newsRemoteDataSource, newsLocalDataSource, sharedPreferencesUtil);
     }
 }

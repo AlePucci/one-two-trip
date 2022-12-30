@@ -31,4 +31,5 @@
     <string name="activity_where_title">Where</string>
     <string name="activity_when_title">When</string>
     <string name="activity_field_error">Field value is not valid.</string>
+    <string name="activity_descr_title">Description</string>
 </resources>

@@ -29,4 +29,5 @@
     <string name="activity_where_title">Dove</string>
     <string name="activity_when_title">Quando</string>
     <string name="activity_field_error">Il valore del campo non è valido.</string>
+    <string name="activity_descr_title">Descrizione</string>
 </resources>
