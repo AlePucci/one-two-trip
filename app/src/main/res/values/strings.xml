@@ -32,4 +32,6 @@
     <string name="activity_when_title">When</string>
     <string name="activity_field_error">Field value is not valid.</string>
     <string name="activity_descr_title">Description</string>
+    <string name="activity_participant_title">Participants</string>
+    <string name="activity_not_participants">Not participating</string>
 </resources>

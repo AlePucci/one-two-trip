@@ -228,7 +228,7 @@
             "id": 3,
             "name": "Toad",
             "surname": "Rossi",
-            "email_address": "test2@test.com",
+            "email_address": "test3@test.com",
             "password": "test",
             "phone_number": "1234567890",
             "profile_picture": "null"

@@ -37,5 +37,14 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/activity_descr_nav_graph" />
 
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragmentContainerView4"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/activity_participant_nav_graph" />
+
     </LinearLayout>
 </ScrollView>

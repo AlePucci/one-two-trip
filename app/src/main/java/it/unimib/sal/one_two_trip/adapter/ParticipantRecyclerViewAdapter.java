@@ -1,6 +1,5 @@
 package it.unimib.sal.one_two_trip.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +7,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -19,9 +16,11 @@ import it.unimib.sal.one_two_trip.model.Person;
 public class ParticipantRecyclerViewAdapter
         extends RecyclerView.Adapter<ParticipantRecyclerViewAdapter.ParticipantHolder> {
     private final List<Person> personList;
+    private final OnItemClickListener onItemClickListener;
 
-    public ParticipantRecyclerViewAdapter(List<Person> personList) {
+    public ParticipantRecyclerViewAdapter(List<Person> personList, OnItemClickListener onItemClickListener) {
         this.personList = personList;
+        this.onItemClickListener = onItemClickListener;
     }
 
     public class ParticipantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -41,10 +40,12 @@ public class ParticipantRecyclerViewAdapter
 
         @Override
         public void onClick(View v) {
-            //TODO: goto user page
-            Snackbar.make(v, "User " + personList.get(getAdapterPosition()).getFullName(),
-                    Snackbar.LENGTH_SHORT).show();
+            onItemClickListener.onClick(getAdapterPosition());
         }
+    }
+
+    public interface OnItemClickListener {
+        void onClick(int position);
     }
 
     @NonNull

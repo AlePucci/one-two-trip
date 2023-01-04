@@ -124,7 +124,12 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
             }
 
             //Participants
-            ParticipantRecyclerViewAdapter adapter = new ParticipantRecyclerViewAdapter(activity.getParticipant().personList);
+            ParticipantRecyclerViewAdapter adapter = new ParticipantRecyclerViewAdapter(activity.getParticipant().personList,
+                    position -> {
+                        //TODO: goto user page
+                        Snackbar.make(itemView, "User " + activity.getParticipant().personList.get(position).getFullName(),
+                                Snackbar.LENGTH_SHORT).show();
+                    });
             LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
             participants.setLayoutManager(layoutManager);
             participants.setAdapter(adapter);
