@@ -7,6 +7,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.View;
 
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -57,7 +62,9 @@ public class Utility {
 
         for (Iterator<it.unimib.sal.one_two_trip.model.Activity> i = tmp.iterator(); i.hasNext(); ) {
             it.unimib.sal.one_two_trip.model.Activity activity = i.next();
-            if (activity == null || activity.getType().equals("moving")) i.remove();
+            if (activity == null || activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
+                i.remove();
+            }
         }
 
         int r;
@@ -66,9 +73,23 @@ public class Utility {
             r = (int) (Math.random() * tmp.size());
         } while (tmp.get(r) == null);
 
-        SharePhotoGenerator sharePhotoGenerator = new SharePhotoGenerator(application,
-                trip.isCompleted());
-        sharePhotoGenerator.execute(tmp.get(r).getLocation());
+        String location = tmp.get(r).getLocation();
+        boolean isCompleted = trip.isCompleted();
+
+        Data inputData = new Data.Builder()
+                .putString(Constants.KEY_LOCATION, location)
+                .putBoolean(Constants.KEY_COMPLETED, isCompleted)
+                .build();
+
+        Constraints constraints = new Constraints.Builder()
+                .setRequiresStorageNotLow(true)
+                .build();
+
+        OneTimeWorkRequest photoRequest = new OneTimeWorkRequest.Builder(PhotoWorker.class)
+                .setInputData(inputData)
+                .setConstraints(constraints)
+                .build();
+        WorkManager.getInstance(application).enqueue(photoRequest);
     }
 
     /**
