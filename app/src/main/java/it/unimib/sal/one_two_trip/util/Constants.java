@@ -45,4 +45,10 @@ public class Constants {
 
     // Status
     public static final String STATUS_OK = "OK";
+
+    public static final String KEY_LOCATION = "location";
+    public static final String KEY_COMPLETED = "completed";
+
+    public static final String IMAGE_MIME = "image/*";
+    public static final String FONT_NAME = "sans-serif-condensed-medium";
 }
