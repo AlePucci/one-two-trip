@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
@@ -99,8 +101,18 @@ public class TripsRecyclerViewAdapter
 
         public void bind(@NonNull Trip trip) {
             if (trip.getActivity() != null && trip.getActivity().getActivityList() != null) {
+                List<Activity> activityList = new ArrayList<>(trip.getActivity().getActivityList());
+
+                if (!trip.isCompleted()) {
+                    for (Iterator<Activity> i = activityList.iterator(); i.hasNext(); ) {
+                        it.unimib.sal.one_two_trip.model.Activity activity = i.next();
+                        if (activity == null || activity.isCompleted()) {
+                            i.remove();
+                        }
+                    }
+                }
                 ActivitiesRecyclerViewAdapter activitiesRecyclerViewAdapter =
-                        new ActivitiesRecyclerViewAdapter(trip.getActivity().activityList,
+                        new ActivitiesRecyclerViewAdapter(activityList,
                                 new ActivitiesRecyclerViewAdapter.OnItemClickListener() {
                                     @Override
                                     public void onAttachmentsClick(Activity activity) {
