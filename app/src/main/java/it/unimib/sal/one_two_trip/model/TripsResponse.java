@@ -3,6 +3,7 @@ package it.unimib.sal.one_two_trip.model;
 import java.util.List;
 
 public class TripsResponse {
+
     private List<Trip> tripList;
 
     public TripsResponse() {

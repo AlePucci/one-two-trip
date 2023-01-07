@@ -5,6 +5,7 @@ import java.util.List;
 import it.unimib.sal.one_two_trip.model.Trip;
 
 public abstract class BaseTripsRemoteDataSource {
+
     protected TripCallback tripCallback;
 
     public void setTripCallback(TripCallback tripCallback) {

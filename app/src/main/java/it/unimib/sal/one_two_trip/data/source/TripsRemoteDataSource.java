@@ -30,13 +30,13 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
         this.databaseReference = firebaseDatabase.getReference().getRef();
 
-        addTripListener();
+        this.addTripListener();
     }
 
     private void addTripListener() {
         ValueEventListener tripListener = new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Trip> tripList = new ArrayList<>();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Trip trip = ds.getValue(Trip.class);
@@ -53,7 +53,7 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
             }
         };
 
-        databaseReference.child(FIREBASE_USER_COLLECTION).child(idToken)
+        this.databaseReference.child(FIREBASE_USER_COLLECTION).child(idToken)
                 .child(FIREBASE_TRIPS_COLLECTION).addValueEventListener(tripListener);
     }
 

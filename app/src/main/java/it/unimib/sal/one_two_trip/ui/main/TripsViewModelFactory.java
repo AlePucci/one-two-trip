@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 
 public class TripsViewModelFactory implements ViewModelProvider.Factory {
+
     private final ITripsRepository tripsRepository;
 
     public TripsViewModelFactory(ITripsRepository tripsRepository) {
@@ -17,6 +18,6 @@ public class TripsViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new TripsViewModel(tripsRepository);
+        return (T) new TripsViewModel(this.tripsRepository);
     }
 }

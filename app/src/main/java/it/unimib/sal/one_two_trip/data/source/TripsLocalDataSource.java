@@ -29,7 +29,7 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
     @Override
     public void getTrips() {
         TripsRoomDatabase.databaseWriteExecutor.execute(
-                () -> tripCallback.onSuccessFromLocal(tripsDAO.getAll()));
+                () -> tripCallback.onSuccessFromLocal(this.tripsDAO.getAll()));
     }
 
     @Override
@@ -40,7 +40,7 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
     @Override
     public void insertTrips(List<Trip> tripList) {
         TripsRoomDatabase.databaseWriteExecutor.execute(() -> {
-            List<Trip> allTrips = tripsDAO.getAll();
+            List<Trip> allTrips = this.tripsDAO.getAll();
 
             if (tripList != null) {
                 for (Trip trip : allTrips) {
@@ -49,12 +49,12 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
                     }
                 }
 
-                List<Long> insertedTripIds = tripsDAO.insertTripList(tripList);
+                List<Long> insertedTripIds = this.tripsDAO.insertTripList(tripList);
                 for (int i = 0; i < tripList.size(); i++) {
                     tripList.get(i).setId(insertedTripIds.get(i));
                 }
 
-                sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE,
+                this.sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE,
                         String.valueOf(System.currentTimeMillis()));
 
                 tripCallback.onSuccessFromLocal(tripList);

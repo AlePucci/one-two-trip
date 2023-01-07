@@ -16,6 +16,7 @@ import it.unimib.sal.one_two_trip.util.holder.PersonListHolder;
  */
 @Entity
 public class Trip {
+
     @PrimaryKey(autoGenerate = true)
     private long id;
 

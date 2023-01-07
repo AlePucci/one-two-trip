@@ -1,5 +1,8 @@
 package it.unimib.sal.one_two_trip.data.source;
 
+import static it.unimib.sal.one_two_trip.util.Constants.PHOTOS_PER_PAGE_VALUE;
+import static it.unimib.sal.one_two_trip.util.Constants.PHOTOS_VERSION;
+
 import java.io.IOException;
 
 import it.unimib.sal.one_two_trip.BuildConfig;
@@ -10,6 +13,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class PhotoRemoteDataSource extends BasePhotoRemoteDataSource {
+
     private final PictureApiService pictureApiService;
     private final String PHOTOS_KEY;
 
@@ -24,10 +28,10 @@ public class PhotoRemoteDataSource extends BasePhotoRemoteDataSource {
             return;
         }
 
-        Call<PictureApiResponse> pictureApiCall = pictureApiService.getPhotos(location.trim(),
-                1,
+        Call<PictureApiResponse> pictureApiCall = this.pictureApiService.getPhotos(location.trim(),
+                PHOTOS_PER_PAGE_VALUE,
                 PHOTOS_KEY,
-                "v1");
+                PHOTOS_VERSION);
 
         Response<PictureApiResponse> response = pictureApiCall.execute();
 

@@ -12,6 +12,7 @@ import java.util.Objects;
  */
 @Entity
 public class Person {
+    
     @PrimaryKey(autoGenerate = true)
     private long id;
     private String name;

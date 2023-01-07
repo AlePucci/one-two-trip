@@ -25,6 +25,9 @@ import it.unimib.sal.one_two_trip.R;
  * create an instance of this fragment.
  */
 public class AboutFragment extends Fragment {
+
+    private static final String TAG = AboutFragment.class.getSimpleName();
+
     public AboutFragment() {
     }
 

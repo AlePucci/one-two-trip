@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.model;
 
 public class PictureApiResponse {
+
     private int total;
     private int total_pages;
     private PictureApiResult[] results;

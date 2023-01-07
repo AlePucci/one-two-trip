@@ -11,6 +11,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Query;
 
 public interface PictureApiService {
+
     @GET(PHOTOS_ENDPOINT)
     Call<PictureApiResponse> getPhotos(
             @Query(PHOTOS_QUERY) String query,

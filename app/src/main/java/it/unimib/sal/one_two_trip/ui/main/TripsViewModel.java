@@ -23,10 +23,10 @@ public class TripsViewModel extends ViewModel {
      * @return The LiveData object associated with the trip list.
      */
     public MutableLiveData<Result> getTrips(long lastUpdate) {
-        if (tripListLiveData == null) {
-            fetchTrips(lastUpdate);
+        if (this.tripListLiveData == null) {
+            this.fetchTrips(lastUpdate);
         }
-        return tripListLiveData;
+        return this.tripListLiveData;
     }
 
     /**
@@ -35,7 +35,7 @@ public class TripsViewModel extends ViewModel {
      * @param trip The trip to be updated.
      */
     public void updateTrip(Trip trip) {
-        tripsRepository.updateTrip(trip);
+        this.tripsRepository.updateTrip(trip);
     }
 
     /**
@@ -43,6 +43,6 @@ public class TripsViewModel extends ViewModel {
      * and to associate it with the LiveData object.
      */
     private void fetchTrips(long lastUpdate) {
-        tripListLiveData = tripsRepository.fetchTrips(lastUpdate);
+        this.tripListLiveData = this.tripsRepository.fetchTrips(lastUpdate);
     }
 }
