@@ -1,12 +1,20 @@
 package it.unimib.sal.one_two_trip.util;
 
+import static it.unimib.sal.one_two_trip.util.Constants.KEY_COMPLETED;
+import static it.unimib.sal.one_two_trip.util.Constants.KEY_LOCATION;
+import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
+
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.work.Constraints;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
@@ -37,9 +45,10 @@ public class Utility {
      */
     public static void onTripShare(Trip trip, List<Trip> tripList, Application application,
                                    View view) {
-        int tripPosition = -1;
-
+        // PRELIMINARY CHECKS
         if (tripList == null) return;
+
+        int tripPosition = -1;
 
         for (Trip mTrip : tripList) {
             if (mTrip.equals(trip)) {
@@ -62,11 +71,12 @@ public class Utility {
 
         for (Iterator<it.unimib.sal.one_two_trip.model.Activity> i = tmp.iterator(); i.hasNext(); ) {
             it.unimib.sal.one_two_trip.model.Activity activity = i.next();
-            if (activity == null || activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
+            if (activity == null || activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                 i.remove();
             }
         }
 
+        // RANDOM ACTIVITY TO SHARE
         int r;
 
         do {
@@ -76,9 +86,10 @@ public class Utility {
         String location = tmp.get(r).getLocation();
         boolean isCompleted = trip.isCompleted();
 
+        // WORKER INITIALIZATION
         Data inputData = new Data.Builder()
-                .putString(Constants.KEY_LOCATION, location)
-                .putBoolean(Constants.KEY_COMPLETED, isCompleted)
+                .putString(KEY_LOCATION, location)
+                .putBoolean(KEY_COMPLETED, isCompleted)
                 .build();
 
         Constraints constraints = new Constraints.Builder()
@@ -98,12 +109,21 @@ public class Utility {
      *
      * @return true if the device is connected to Internet; false otherwise.
      */
-    public static boolean isConnected(Activity activity) {
+    public static boolean isConnected(@NonNull Activity activity) {
         ConnectivityManager cm =
                 (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Network nw = cm.getActiveNetwork();
+            if (nw == null) return false;
+            NetworkCapabilities actNw = cm.getNetworkCapabilities(nw);
+            return actNw != null && (actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                    || actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                    || actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+                    || actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH));
+        } else {
+            NetworkInfo nwInfo = cm.getActiveNetworkInfo();
+            return nwInfo != null && nwInfo.isConnected();
+        }
     }
 
     /**
@@ -123,5 +143,4 @@ public class Utility {
                 && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH)
                 && cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
     }
-
 }
