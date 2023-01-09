@@ -85,5 +85,4 @@
             app:layout_constraintWidth="wrap_content" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.cardview.widget.CardView>

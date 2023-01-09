@@ -42,7 +42,7 @@ public class TripsViewModel extends ViewModel {
      * It uses the Repository to download the trip list
      * and to associate it with the LiveData object.
      */
-    private void fetchTrips(long lastUpdate) {
+    public void fetchTrips(long lastUpdate) {
         this.tripListLiveData = this.tripsRepository.fetchTrips(lastUpdate);
     }
 }

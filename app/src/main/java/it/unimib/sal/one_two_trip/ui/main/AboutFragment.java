@@ -37,6 +37,7 @@ public class AboutFragment extends Fragment {
      *
      * @return A new instance of fragment AboutFragment.
      */
+    @NonNull
     public static AboutFragment newInstance() {
         return new AboutFragment();
     }
@@ -47,7 +48,7 @@ public class AboutFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_about, container, false);
     }

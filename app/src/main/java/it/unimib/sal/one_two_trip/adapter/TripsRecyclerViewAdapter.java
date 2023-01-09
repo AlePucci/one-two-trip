@@ -26,38 +26,63 @@ import it.unimib.sal.one_two_trip.model.Trip;
  * with a RecyclerView.
  */
 public class TripsRecyclerViewAdapter
-        extends RecyclerView.Adapter<TripsRecyclerViewAdapter.TripViewHolder> {
+        extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int HEADER = 0;
+    private static final int TRIP = 1;
 
     private final List<Trip> tripList;
-    private final Application application;
     private final OnItemClickListener onItemClickListener;
+    private final Application application;
+    private final boolean tripsCompleted;
 
-    public TripsRecyclerViewAdapter(List<Trip> tripList, Application application,
+    public TripsRecyclerViewAdapter(List<Trip> tripList, Application application, boolean tripsCompleted,
                                     OnItemClickListener onItemClickListener) {
         this.tripList = tripList;
-        this.application = application;
         this.onItemClickListener = onItemClickListener;
+        this.application = application;
+        this.tripsCompleted = tripsCompleted;
+    }
+
+    private boolean isHeader(int position) {
+        return position == 0;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (isHeader(position)) {
+            return HEADER;
+        }
+        return TRIP;
     }
 
     @NonNull
     @Override
-    public TripViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new TripViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.trip_item_home, parent, false));
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == HEADER) {
+            return new HeaderViewHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.header_home, parent, false));
+        } else {
+            return new TripViewHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.trip_item_home, parent, false));
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TripViewHolder holder, int position) {
-        if (this.tripList.get(position) == null) return;
-        holder.bind(this.tripList.get(position));
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof HeaderViewHolder) {
+            ((HeaderViewHolder) holder).bind(this.tripList.size(), this.tripsCompleted);
+        } else {
+            ((TripViewHolder) holder).bind(this.tripList.get(position - 1));
+        }
     }
 
     @Override
     public int getItemCount() {
         if (this.tripList != null) {
-            return this.tripList.size();
+            return 1 + this.tripList.size();
         }
-        return 0;
+        return 1;
     }
 
     /**
@@ -147,11 +172,43 @@ public class TripsRecyclerViewAdapter
         @Override
         public void onClick(@NonNull View v) {
             if (v.getId() == R.id.share_trip_button) {
-                onItemClickListener.onTripShare(tripList.get(getAdapterPosition()));
+                onItemClickListener.onTripShare(tripList.get(getAdapterPosition() - 1));
             } else if (v.getId() == R.id.more_button) {
-                onItemClickListener.onButtonClick(tripList.get(getAdapterPosition()));
+                onItemClickListener.onButtonClick(tripList.get(getAdapterPosition() - 1));
             } else {
-                onItemClickListener.onTripClick(tripList.get(getAdapterPosition()));
+                onItemClickListener.onTripClick(tripList.get(getAdapterPosition() - 1));
+            }
+        }
+    }
+
+    /**
+     * Custom ViewHolder to bind data to the RecyclerView items (moving activities).
+     */
+    public class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView headerTitle;
+
+        public HeaderViewHolder(@NonNull View itemView) {
+            super(itemView);
+            this.headerTitle = itemView.findViewById(R.id.header_title);
+        }
+
+        public void bind(int tripCount, boolean tripsCompleted) {
+            if (tripCount == 0) {
+                this.headerTitle.setVisibility(View.GONE);
+            } else if (tripCount == 1) {
+                this.headerTitle.setText(tripsCompleted ? R.string.past_trips_title
+                        : R.string.coming_trips_title_single);
+                this.headerTitle.setVisibility(View.VISIBLE);
+            } else {
+                if (tripsCompleted) {
+                    this.headerTitle.setText(R.string.past_trips_title);
+                } else {
+                    this.headerTitle.setText(String
+                            .format(application.getString(R.string.coming_trips_title_multiple),
+                                    tripCount));
+                }
+                this.headerTitle.setVisibility(View.VISIBLE);
             }
         }
     }

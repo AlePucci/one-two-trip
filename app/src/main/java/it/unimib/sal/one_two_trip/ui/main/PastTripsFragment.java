@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -52,10 +53,12 @@ public class PastTripsFragment extends Fragment {
     private TripsRecyclerViewAdapter tripsRecyclerViewAdapter;
     private SharedPreferencesUtil sharedPreferencesUtil;
     private Application application;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public PastTripsFragment() {
     }
 
+    @NonNull
     public static PastTripsFragment newInstance() {
         return new PastTripsFragment();
     }
@@ -79,7 +82,7 @@ public class PastTripsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_past_trips, container, false);
     }
@@ -89,13 +92,13 @@ public class PastTripsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         RecyclerView pastTripsView = view.findViewById(R.id.past_trips_view);
-        TextView pastTripsTitle = view.findViewById(R.id.past_trips_title);
         TextView noTripsText = view.findViewById(R.id.no_trips_text);
         ImageView noTripsImage = view.findViewById(R.id.no_trips_image);
         ProgressBar progressBar = view.findViewById(R.id.progress_bar);
         BottomNavigationView bottomNavigationView = requireActivity()
                 .findViewById(R.id.bottom_navigation);
         FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
+        this.swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
 
         NavigationView drawerNav = requireActivity().findViewById(R.id.drawer_navigation);
         drawerNav.getMenu().getItem(0).setChecked(true);
@@ -103,11 +106,25 @@ public class PastTripsFragment extends Fragment {
         bottomNavigationView.setVisibility(View.VISIBLE);
         fab.setVisibility(View.VISIBLE);
 
+        String lastUpdate = "0";
+        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                LAST_UPDATE) != null) {
+            lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                    LAST_UPDATE);
+        }
+
+        final String finalLastUpdate = lastUpdate;
+        this.swipeRefreshLayout.setOnRefreshListener(() -> {
+            this.refresh(finalLastUpdate);
+            this.swipeRefreshLayout.setRefreshing(false);
+        });
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(),
                 LinearLayoutManager.VERTICAL, false);
 
         this.tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(pastTrips,
                 this.application,
+                true,
                 new TripsRecyclerViewAdapter.OnItemClickListener() {
                     @Override
                     public void onTripShare(Trip trip) {
@@ -118,7 +135,6 @@ public class PastTripsFragment extends Fragment {
                                             .getString(R.string.no_internet_error),
                                     Snackbar.LENGTH_LONG).show();
                         }
-
                     }
 
                     @Override
@@ -132,16 +148,8 @@ public class PastTripsFragment extends Fragment {
                     }
                 });
 
-        pastTripsView.setNestedScrollingEnabled(false);
         pastTripsView.setLayoutManager(layoutManager);
         pastTripsView.setAdapter(tripsRecyclerViewAdapter);
-
-        String lastUpdate = "0";
-        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
-                LAST_UPDATE) != null) {
-            lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
-                    LAST_UPDATE);
-        }
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -155,7 +163,6 @@ public class PastTripsFragment extends Fragment {
                             noTripsText.setText(R.string.no_trips_added);
                             noTripsText.setVisibility(View.VISIBLE);
                             noTripsImage.setVisibility(View.VISIBLE);
-                            pastTripsTitle.setVisibility(View.GONE);
                         } else {
                             List<Trip> pastTrips = new ArrayList<>(fetchedTrips);
 
@@ -170,16 +177,14 @@ public class PastTripsFragment extends Fragment {
                                 noTripsText.setText(R.string.no_past_trips);
                                 noTripsText.setVisibility(View.VISIBLE);
                                 noTripsImage.setVisibility(View.VISIBLE);
-                                pastTripsTitle.setVisibility(View.GONE);
                             } else {
-                                pastTripsTitle.setVisibility(View.VISIBLE);
                                 noTripsText.setVisibility(View.GONE);
                                 noTripsImage.setVisibility(View.GONE);
 
                                 this.pastTrips.clear();
                                 this.pastTrips.addAll(pastTrips);
-                                tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
-                                        this.pastTrips.size());
+                                this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
+                                        this.pastTrips.size() + 1);
                             }
                         }
 
@@ -191,5 +196,10 @@ public class PastTripsFragment extends Fragment {
                         progressBar.setVisibility(View.GONE);
                     }
                 });
+    }
+
+    private void refresh(String lastUpdate) {
+        this.tripsViewModel.fetchTrips(Long.parseLong(lastUpdate));
+        this.swipeRefreshLayout.setRefreshing(false);
     }
 }

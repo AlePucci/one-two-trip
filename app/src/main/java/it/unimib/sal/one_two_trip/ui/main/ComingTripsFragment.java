@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -51,10 +52,12 @@ public class ComingTripsFragment extends Fragment {
     private TripsRecyclerViewAdapter tripsRecyclerViewAdapter;
     private SharedPreferencesUtil sharedPreferencesUtil;
     private Application application;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public ComingTripsFragment() {
     }
 
+    @NonNull
     public static ComingTripsFragment newInstance() {
         return new ComingTripsFragment();
     }
@@ -78,7 +81,7 @@ public class ComingTripsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_coming_trips, container, false);
     }
@@ -88,22 +91,36 @@ public class ComingTripsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         RecyclerView comingTripsView = view.findViewById(R.id.coming_trips_view);
-        TextView comingTripsTitle = view.findViewById(R.id.coming_trips_title);
         TextView noTripsText = view.findViewById(R.id.no_trips_text);
         ImageView noTripsImage = view.findViewById(R.id.no_trips_image);
         ProgressBar progressBar = view.findViewById(R.id.progress_bar);
         BottomNavigationView bottomNavigationView = requireActivity()
                 .findViewById(R.id.bottom_navigation);
         FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
+        this.swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
 
         bottomNavigationView.setVisibility(View.VISIBLE);
         fab.setVisibility(View.VISIBLE);
+
+        String lastUpdate = "0";
+        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                LAST_UPDATE) != null) {
+            lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                    LAST_UPDATE);
+        }
+
+        final String finalLastUpdate = lastUpdate;
+        this.swipeRefreshLayout.setOnRefreshListener(() -> {
+            this.refresh(finalLastUpdate);
+            this.swipeRefreshLayout.setRefreshing(false);
+        });
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(),
                 LinearLayoutManager.VERTICAL, false);
 
         this.tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(comingTrips,
                 this.application,
+                false,
                 new TripsRecyclerViewAdapter.OnItemClickListener() {
                     @Override
                     public void onTripShare(Trip trip) {
@@ -127,73 +144,58 @@ public class ComingTripsFragment extends Fragment {
                     }
                 });
 
-        comingTripsView.setNestedScrollingEnabled(false);
         comingTripsView.setLayoutManager(layoutManager);
         comingTripsView.setAdapter(tripsRecyclerViewAdapter);
 
-        String lastUpdate = "0";
-        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
-                LAST_UPDATE) != null) {
-            lastUpdate = sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
-                    LAST_UPDATE);
-        }
-
         progressBar.setVisibility(View.VISIBLE);
 
-        this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observeForever(result -> {
+        this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observeForever(
+                result -> {
+                    if (result.isSuccess()) {
+                        List<Trip> fetchedTrips = ((Result.Success) result).getData().getTripList();
 
-            if (result.isSuccess()) {
-                List<Trip> fetchedTrips = ((Result.Success) result).getData().getTripList();
-
-                // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
-                if (fetchedTrips == null || fetchedTrips.isEmpty()) {
-                    noTripsText.setText(R.string.no_trips_added);
-                    noTripsText.setVisibility(View.VISIBLE);
-                    noTripsImage.setVisibility(View.VISIBLE);
-                    comingTripsTitle.setVisibility(View.GONE);
-                } else {
-                    List<Trip> comingTrips = new ArrayList<>(fetchedTrips);
-
-                    // FILTERS THE TRIPS THAT ARE NOT COMPLETED (COMING TRIPS)
-                    for (Iterator<Trip> i = comingTrips.iterator(); i.hasNext(); ) {
-                        Trip trip = i.next();
-                        if (trip != null && trip.isCompleted()) i.remove();
-                    }
-
-                    // IF THERE ARE NO COMING TRIPS, SHOW THE NO COMING TRIPS IMAGE TEXT
-                    if (comingTrips.isEmpty()) {
-                        noTripsText.setText(R.string.no_past_trips);
-                        noTripsText.setVisibility(View.VISIBLE);
-                        noTripsImage.setVisibility(View.VISIBLE);
-                        comingTripsTitle.setVisibility(View.GONE);
-                    } else {
-                        int comingTripsCount = comingTrips.size();
-                        if (comingTripsCount == 1) {
-                            comingTripsTitle.setText(R.string.coming_trips_title_single);
+                        // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
+                        if (fetchedTrips == null || fetchedTrips.isEmpty()) {
+                            noTripsText.setText(R.string.no_trips_added);
+                            noTripsText.setVisibility(View.VISIBLE);
+                            noTripsImage.setVisibility(View.VISIBLE);
                         } else {
-                            comingTripsTitle.setText(String
-                                    .format(getString(R.string.coming_trips_title_multiple),
-                                            comingTripsCount));
+                            List<Trip> comingTrips = new ArrayList<>(fetchedTrips);
+
+                            // FILTERS THE TRIPS THAT ARE NOT COMPLETED (COMING TRIPS)
+                            for (Iterator<Trip> i = comingTrips.iterator(); i.hasNext(); ) {
+                                Trip trip = i.next();
+                                if (trip != null && trip.isCompleted()) i.remove();
+                            }
+
+                            // IF THERE ARE NO COMING TRIPS, SHOW THE NO COMING TRIPS IMAGE TEXT
+                            if (comingTrips.isEmpty()) {
+                                noTripsText.setText(R.string.no_past_trips);
+                                noTripsText.setVisibility(View.VISIBLE);
+                                noTripsImage.setVisibility(View.VISIBLE);
+                            } else {
+                                noTripsText.setVisibility(View.GONE);
+                                noTripsImage.setVisibility(View.GONE);
+
+                                this.comingTrips.clear();
+                                this.comingTrips.addAll(comingTrips);
+                                this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
+                                        this.comingTrips.size() + 1);
+                            }
                         }
 
-                        comingTripsTitle.setVisibility(View.VISIBLE);
-                        noTripsText.setVisibility(View.GONE);
-                        noTripsImage.setVisibility(View.GONE);
-
-                        this.comingTrips.clear();
-                        this.comingTrips.addAll(comingTrips);
-                        tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
-                                this.comingTrips.size());
+                        progressBar.setVisibility(View.GONE);
+                    } else {
+                        ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
+                        Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
+                                .getMessage()), Snackbar.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
                     }
-                }
+                });
+    }
 
-                progressBar.setVisibility(View.GONE);
-            } else {
-                ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
-                Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
-                        .getMessage()), Snackbar.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+    private void refresh(String lastUpdate) {
+        this.tripsViewModel.fetchTrips(Long.parseLong(lastUpdate));
+        this.swipeRefreshLayout.setRefreshing(false);
     }
 }
