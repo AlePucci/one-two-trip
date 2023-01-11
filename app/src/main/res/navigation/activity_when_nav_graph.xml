@@ -15,6 +15,12 @@
             app:destination="@id/activityDateEditFragment"
             app:popUpTo="@id/activity_when_nav_graph"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="activityPos"
+            app:argType="integer" />
+        <argument
+            android:name="tripPosition"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/activityDateEditFragment"
@@ -26,5 +32,11 @@
             app:destination="@id/activityDateFragment"
             app:popUpTo="@id/activity_when_nav_graph"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="activityPos"
+            app:argType="integer" />
+        <argument
+            android:name="tripPosition"
+            app:argType="integer" />
     </fragment>
 </navigation>

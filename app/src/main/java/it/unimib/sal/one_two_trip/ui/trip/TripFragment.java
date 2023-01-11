@@ -1,6 +1,8 @@
 package it.unimib.sal.one_two_trip.ui.trip;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_POS;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_POS;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.Manifest;
@@ -51,8 +53,9 @@ import it.unimib.sal.one_two_trip.adapter.TripRecyclerViewAdapter;
 import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.model.TripResponse;
 import it.unimib.sal.one_two_trip.repository.ITripsRepository;
+import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
+import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
@@ -62,7 +65,7 @@ public class TripFragment extends Fragment implements MenuProvider{
     private ActivityResultLauncher<String[]> multiplePermissionLauncher;
 
     private Application application;
-    private TripViewModel viewModel;
+    private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
 
     private Trip trip;
@@ -97,7 +100,7 @@ public class TripFragment extends Fragment implements MenuProvider{
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(application);
         viewModel = new ViewModelProvider(requireActivity(),
-                new TripViewModelFactory(tripsRepository)).get(TripViewModel.class);
+                new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
 
         activityList = new ArrayList<>();
     }
@@ -141,8 +144,10 @@ public class TripFragment extends Fragment implements MenuProvider{
         TripRecyclerViewAdapter adapter = new TripRecyclerViewAdapter(activityList, new TripRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onActivityClick(int position) {
-                viewModel.setActivityPosition(position);
-                Navigation.findNavController(requireView()).navigate(R.id.action_tripFragment_to_activityFragment);
+                Bundle bundle = new Bundle();
+                bundle.putInt(SELECTED_ACTIVITY_POS, position);
+                bundle.putInt(SELECTED_TRIP_POS, getArguments().getInt(SELECTED_TRIP_POS));
+                Navigation.findNavController(requireView()).navigate(R.id.action_tripFragment_to_activityFragment, bundle);
             }
 
             @Override
@@ -161,11 +166,14 @@ public class TripFragment extends Fragment implements MenuProvider{
                     LAST_UPDATE);
         }
 
-        viewModel.getTrip(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
+        viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
             ProgressBar progressBar = requireView().findViewById(R.id.trip_progressbar);
 
             if(result.isSuccess()) {
-                trip = ((Result.Success<TripResponse>) result).getData().getTrip();
+                List<Trip> trips = ((Result.Success) result).getData().getTripList();
+                int tripPos = getArguments().getInt(SELECTED_TRIP_POS);
+
+                trip = trips.get(tripPos);
 
                 title = trip.getTitle();
                 toolbar.setTitle(title);

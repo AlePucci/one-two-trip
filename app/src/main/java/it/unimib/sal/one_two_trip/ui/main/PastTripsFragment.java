@@ -127,7 +127,7 @@ public class PastTripsFragment extends Fragment {
         tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
-                        List<Trip> fetchedTrips = ((Result.Success<TripsResponse>) result).getData().getTripList();
+                        List<Trip> fetchedTrips = ((Result.Success) result).getData().getTripList();
 
                         // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
                         if (fetchedTrips == null || fetchedTrips.isEmpty()) {

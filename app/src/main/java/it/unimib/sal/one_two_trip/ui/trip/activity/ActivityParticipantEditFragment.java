@@ -1,6 +1,8 @@
 package it.unimib.sal.one_two_trip.ui.trip.activity;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_POS;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_POS;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
@@ -21,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
@@ -30,10 +31,9 @@ import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Person;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.model.TripResponse;
 import it.unimib.sal.one_two_trip.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.ui.trip.TripViewModel;
-import it.unimib.sal.one_two_trip.ui.trip.TripViewModelFactory;
+import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
+import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
@@ -41,7 +41,7 @@ import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 public class ActivityParticipantEditFragment extends Fragment {
     private Application application;
-    private TripViewModel viewModel;
+    private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
 
     private Trip trip;
@@ -68,7 +68,7 @@ public class ActivityParticipantEditFragment extends Fragment {
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(application);
         viewModel = new ViewModelProvider(requireActivity(),
-                new TripViewModelFactory(tripsRepository)).get(TripViewModel.class);
+                new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
     }
 
     @Override
@@ -88,7 +88,11 @@ public class ActivityParticipantEditFragment extends Fragment {
 
         confirm.setOnClickListener(view1 -> {
             //TODO: implement the participant editing
-            Navigation.findNavController(view).navigate(R.id.action_activityParticipantEditFragment_to_activityParticipantFragment);
+
+            Bundle bundle = new Bundle();
+            bundle.putInt(SELECTED_TRIP_POS, getArguments().getInt(SELECTED_TRIP_POS));
+            bundle.putInt(SELECTED_ACTIVITY_POS, getArguments().getInt(SELECTED_ACTIVITY_POS));
+            Navigation.findNavController(view).navigate(R.id.action_activityParticipantEditFragment_to_activityParticipantFragment, bundle);
         });
 
 
@@ -100,10 +104,13 @@ public class ActivityParticipantEditFragment extends Fragment {
         }
 
 
-        viewModel.getTrip(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
+        viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
             if(result.isSuccess()) {
-                trip = ((Result.Success<TripResponse>) result).getData().getTrip();
-                activity = trip.getActivity().activityList.get(viewModel.getActivityPosition());
+                List<Trip> trips = ((Result.Success) result).getData().getTripList();
+                int tripPos = getArguments().getInt(SELECTED_TRIP_POS);
+                trip = trips.get(tripPos);
+                int activityPos = getArguments().getInt(SELECTED_ACTIVITY_POS);
+                activity = trip.getActivity().activityList.get(activityPos);
 
                 personList = activity.getParticipant().personList;
                 /* personList contains Activities???

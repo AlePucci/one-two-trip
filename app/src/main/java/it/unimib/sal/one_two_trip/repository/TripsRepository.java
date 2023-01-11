@@ -10,11 +10,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
-import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.model.TripApiResponse;
-import it.unimib.sal.one_two_trip.model.TripResponse;
 import it.unimib.sal.one_two_trip.model.TripsApiResponse;
 import it.unimib.sal.one_two_trip.model.TripsResponse;
 import it.unimib.sal.one_two_trip.source.BaseTripsLocalDataSource;
@@ -59,21 +56,6 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     }
 
     @Override
-    public MutableLiveData<Result> fetchTrip(long id, long lastUpdate) {
-        long currentTime = System.currentTimeMillis();
-
-        if(currentTime - lastUpdate > FRESH_TIMEOUT) {
-            tripsRemoteDataSource.getTrip(id);
-            Log.d("AAA", "REMOTE " + id);
-        } else {
-            tripsLocalDataSource.getTrip(id);
-            Log.d("AAA", "LOCAL " + id);
-        }
-
-        return tripMutableLiveData;
-    }
-
-    @Override
     public void updateTrip(Trip trip) {
         tripsLocalDataSource.updateTrip(trip);
     }
@@ -85,12 +67,6 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     }
 
     @Override
-    public void onSuccessFromRemote(TripApiResponse tripApiResponse, long lastUpdate) {
-        tripsLocalDataSource.insertTrip(tripApiResponse.getTrip());
-        sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE, Long.toString(lastUpdate));
-    }
-
-    @Override
     public void onFailureFromRemote(Exception exception) {
         Result.Error result = new Result.Error(exception.getMessage());
         allTripsMutableLiveData.postValue(result);
@@ -98,15 +74,9 @@ public class TripsRepository implements ITripsRepository, TripCallback {
 
     @Override
     public void onSuccessFromLocal(List<Trip> newsList) {
-        Result.Success<TripsResponse> result = new Result.Success<>(new TripsResponse(newsList));
+        Result.Success result = new Result.Success(new TripsResponse(newsList));
         allTripsMutableLiveData.postValue(result);
         Log.d("AAA", newsList.toString());
-    }
-
-    @Override
-    public void onSuccessFromLocal(Trip trip) {
-        Result.Success<TripResponse> result = new Result.Success<>(new TripResponse(trip));
-        tripMutableLiveData.postValue(result);
     }
 
     @Override

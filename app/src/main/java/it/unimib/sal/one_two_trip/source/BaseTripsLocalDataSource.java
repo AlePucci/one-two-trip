@@ -12,10 +12,8 @@ public abstract class BaseTripsLocalDataSource {
     }
 
     public abstract void getTrips();
-    public abstract void getTrip(long id);
 
     public abstract void updateTrip(Trip trip);
 
     public abstract void insertTrips(List<Trip> tripList);
-    public abstract void insertTrip(Trip trip);
 }

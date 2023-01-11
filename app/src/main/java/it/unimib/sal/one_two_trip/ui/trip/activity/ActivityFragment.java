@@ -1,6 +1,8 @@
 package it.unimib.sal.one_two_trip.ui.trip.activity;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_POS;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_POS;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
@@ -11,23 +13,23 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
-import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.model.TripResponse;
 import it.unimib.sal.one_two_trip.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.ui.trip.TripViewModel;
-import it.unimib.sal.one_two_trip.ui.trip.TripViewModelFactory;
+import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
+import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
@@ -35,7 +37,7 @@ import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 public class ActivityFragment extends Fragment {
     private Application application;
-    private TripViewModel viewModel;
+    private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
 
     public ActivityFragment() {
@@ -53,7 +55,7 @@ public class ActivityFragment extends Fragment {
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(application);
         viewModel = new ViewModelProvider(requireActivity(),
-                new TripViewModelFactory(tripsRepository)).get(TripViewModel.class);
+                new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
     }
 
     @Override
@@ -73,11 +75,23 @@ public class ActivityFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        viewModel.getTrip(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
+        viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
             if(result.isSuccess()) {
                 Toolbar toolbar = requireActivity().findViewById(R.id.trip_toolbar);
-                Trip trip = ((Result.Success<TripResponse>) result).getData().getTrip();
-                Activity activity = trip.getActivity().activityList.get(viewModel.getActivityPosition());
+                List<Trip> trips = ((Result.Success) result).getData().getTripList();
+                int tripPos = getArguments().getInt(SELECTED_TRIP_POS);
+                Trip trip = trips.get(tripPos);
+                int activityPos = getArguments().getInt(SELECTED_ACTIVITY_POS);
+                Activity activity = trip.getActivity().activityList.get(activityPos);
+
+                Bundle bundle = new Bundle();
+                bundle.putInt(SELECTED_TRIP_POS, tripPos);
+                bundle.putInt(SELECTED_ACTIVITY_POS, activityPos);
+
+                Navigation.findNavController(requireView().findViewById(R.id.fcvWhere)).setGraph(R.navigation.activity_where_nav_graph, bundle);
+                Navigation.findNavController(requireView().findViewById(R.id.fcvWhen)).setGraph(R.navigation.activity_when_nav_graph, bundle);
+                Navigation.findNavController(requireView().findViewById(R.id.fcvDescr)).setGraph(R.navigation.activity_descr_nav_graph, bundle);
+                Navigation.findNavController(requireView().findViewById(R.id.fcvParticipants)).setGraph(R.navigation.activity_participant_nav_graph, bundle);
 
                 toolbar.setTitle(activity.getTitle());
             } else {

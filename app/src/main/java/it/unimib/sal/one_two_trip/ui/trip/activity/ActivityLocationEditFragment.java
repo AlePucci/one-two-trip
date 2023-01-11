@@ -2,6 +2,8 @@ package it.unimib.sal.one_two_trip.ui.trip.activity;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_POS;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_POS;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
@@ -22,14 +24,15 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.List;
+
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.model.TripResponse;
 import it.unimib.sal.one_two_trip.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.ui.trip.TripViewModel;
-import it.unimib.sal.one_two_trip.ui.trip.TripViewModelFactory;
+import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
+import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.Constants;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
@@ -38,7 +41,7 @@ import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 public class ActivityLocationEditFragment extends Fragment {
     private Application application;
-    private TripViewModel viewModel;
+    private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
 
     private Trip trip;
@@ -59,7 +62,7 @@ public class ActivityLocationEditFragment extends Fragment {
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(application);
         viewModel = new ViewModelProvider(requireActivity(),
-                new TripViewModelFactory(tripsRepository)).get(TripViewModel.class);
+                new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
     }
 
     @Override
@@ -128,7 +131,10 @@ public class ActivityLocationEditFragment extends Fragment {
                 viewModel.updateTrip(trip);
             }
 
-            Navigation.findNavController(view1).navigate(R.id.action_activityLocationEditFragment_to_activityLocationFragment);
+            Bundle bundle = new Bundle();
+            bundle.putInt(SELECTED_TRIP_POS, getArguments().getInt(SELECTED_TRIP_POS));
+            bundle.putInt(SELECTED_ACTIVITY_POS, trip.getActivity().activityList.indexOf(activity));
+            Navigation.findNavController(view1).navigate(R.id.action_activityLocationEditFragment_to_activityLocationFragment, bundle);
         });
 
         String lastUpdate = "0";
@@ -138,10 +144,13 @@ public class ActivityLocationEditFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        viewModel.getTrip(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
+        viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
             if(result.isSuccess()) {
-                trip = ((Result.Success<TripResponse>) result).getData().getTrip();
-                activity = trip.getActivity().activityList.get(viewModel.getActivityPosition());
+                List<Trip> trips = ((Result.Success) result).getData().getTripList();
+                int tripPos = getArguments().getInt(SELECTED_TRIP_POS);
+                trip = trips.get(tripPos);
+                int activityPos = getArguments().getInt(SELECTED_ACTIVITY_POS);
+                activity = trip.getActivity().activityList.get(activityPos);
 
                 loc1.setHint(activity.getLocation());
 

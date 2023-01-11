@@ -2,8 +2,9 @@ package it.unimib.sal.one_two_trip.ui.trip.activity;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_POS;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_POS;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
-import static it.unimib.sal.one_two_trip.util.Constants.STATIC_ACTIVITY_TYPE_NAME;
 
 import android.app.Application;
 import android.app.DatePickerDialog;
@@ -12,41 +13,32 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.utils.widget.MockView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.model.TripResponse;
 import it.unimib.sal.one_two_trip.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.ui.trip.TripViewModel;
-import it.unimib.sal.one_two_trip.ui.trip.TripViewModelFactory;
+import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
+import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.Constants;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
@@ -55,7 +47,7 @@ import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 public class ActivityDateEditFragment extends Fragment {
     private Application application;
-    private TripViewModel viewModel;
+    private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
 
     private Trip trip;
@@ -76,7 +68,7 @@ public class ActivityDateEditFragment extends Fragment {
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(application);
         viewModel = new ViewModelProvider(requireActivity(),
-                new TripViewModelFactory(tripsRepository)).get(TripViewModel.class);
+                new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
     }
 
     @Override
@@ -164,7 +156,10 @@ public class ActivityDateEditFragment extends Fragment {
                 viewModel.updateTrip(trip);
             }
 
-            Navigation.findNavController(view1).navigate(R.id.action_activityDateEditFragment_to_activityDateFragment);
+            Bundle bundle = new Bundle();
+            bundle.putInt(SELECTED_TRIP_POS, getArguments().getInt(SELECTED_TRIP_POS));
+            bundle.putInt(SELECTED_ACTIVITY_POS, trip.getActivity().activityList.indexOf(activity));
+            Navigation.findNavController(view1).navigate(R.id.action_activityDateEditFragment_to_activityDateFragment, bundle);
         });
 
         String lastUpdate = "0";
@@ -174,10 +169,13 @@ public class ActivityDateEditFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        viewModel.getTrip(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
+        viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
-                trip = ((Result.Success<TripResponse>) result).getData().getTrip();
-                activity = trip.getActivity().activityList.get(viewModel.getActivityPosition());
+                List<Trip> trips = ((Result.Success) result).getData().getTripList();
+                int tripPos = getArguments().getInt(SELECTED_TRIP_POS);
+                trip = trips.get(tripPos);
+                int activityPos = getArguments().getInt(SELECTED_ACTIVITY_POS);
+                activity = trip.getActivity().activityList.get(activityPos);
 
 
                 dateb1.setHint(df.format(activity.getStart_date()));

@@ -25,4 +25,6 @@ public class Constants {
     public static final String UNEXPECTED_ERROR = "unexpected_error";
 
     public static final String SELECTED_TRIP_ID = "tripId";
+    public static final String SELECTED_TRIP_POS = "tripPosition";
+    public static final String SELECTED_ACTIVITY_POS = "activityPos";
 }
