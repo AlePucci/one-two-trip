@@ -1,5 +1,7 @@
 package it.unimib.sal.one_two_trip.ui.main;
 
+import static it.unimib.sal.one_two_trip.util.Constants.KEY_COMPLETED;
+import static it.unimib.sal.one_two_trip.util.Constants.KEY_LOCATION;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
@@ -19,6 +21,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -27,6 +34,8 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.TripsRecyclerViewAdapter;
@@ -34,6 +43,7 @@ import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
+import it.unimib.sal.one_two_trip.util.PhotoWorker;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 import it.unimib.sal.one_two_trip.util.Utility;
@@ -125,7 +135,46 @@ public class ComingTripsFragment extends Fragment {
                     @Override
                     public void onTripShare(Trip trip) {
                         if (Utility.isConnected(requireActivity())) {
-                            Utility.onTripShare(trip, comingTrips, application, view);
+                            AtomicBoolean oneTime = new AtomicBoolean(false);
+                            boolean isCompleted = trip.isCompleted();
+                            String location = Utility.getRandomTripLocation(trip, comingTrips,
+                                    application, view);
+
+                            if (location == null || location.isEmpty()) {
+                                Snackbar.make(view, getString(R.string.share_trip_error),
+                                        Snackbar.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            // WORKER INITIALIZATION
+                            Data inputData = new Data.Builder()
+                                    .putString(KEY_LOCATION, location)
+                                    .putBoolean(KEY_COMPLETED, isCompleted)
+                                    .build();
+
+                            Constraints constraints = new Constraints.Builder()
+                                    .setRequiresStorageNotLow(true)
+                                    .build();
+
+                            OneTimeWorkRequest photoRequest =
+                                    new OneTimeWorkRequest.Builder(PhotoWorker.class)
+                                            .setInputData(inputData)
+                                            .setConstraints(constraints)
+                                            .build();
+                            UUID requestId = photoRequest.getId();
+                            WorkManager.getInstance(application).enqueue(photoRequest);
+
+                            WorkManager.getInstance(application).getWorkInfoByIdLiveData(requestId)
+                                    .observe(getViewLifecycleOwner(), workInfo -> {
+                                        if (!oneTime.get() && workInfo.getState() != null &&
+                                                workInfo.getState() == WorkInfo.State.FAILED) {
+                                            Snackbar.make(view,
+                                                            R.string.share_trip_error,
+                                                            Snackbar.LENGTH_SHORT)
+                                                    .show();
+                                            oneTime.set(true);
+                                        }
+                                    });
                         } else {
                             Snackbar.make(view, requireContext()
                                             .getString(R.string.no_internet_error),

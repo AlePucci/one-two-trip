@@ -1,7 +1,5 @@
 package it.unimib.sal.one_two_trip.util;
 
-import static it.unimib.sal.one_two_trip.util.Constants.KEY_COMPLETED;
-import static it.unimib.sal.one_two_trip.util.Constants.KEY_LOCATION;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 
 import android.app.Activity;
@@ -15,10 +13,6 @@ import android.os.Build;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.work.Constraints;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -43,10 +37,10 @@ public class Utility {
      * @param tripList    list of trips in which the trip to share is contained
      * @param application the application
      */
-    public static void onTripShare(Trip trip, List<Trip> tripList, Application application,
-                                   View view) {
+    public static String getRandomTripLocation(Trip trip, List<Trip> tripList, Application application,
+                                               View view) {
         // PRELIMINARY CHECKS
-        if (tripList == null) return;
+        if (tripList == null) return null;
 
         int tripPosition = -1;
 
@@ -63,7 +57,7 @@ public class Utility {
                 tripList.get(tripPosition).getActivity().activityList.isEmpty()) {
             Snackbar.make(view, application.getString(R.string.no_shareable_activities),
                     Snackbar.LENGTH_SHORT).show();
-            return;
+            return null;
         }
 
         List<it.unimib.sal.one_two_trip.model.Activity> tmp =
@@ -83,24 +77,7 @@ public class Utility {
             r = (int) (Math.random() * tmp.size());
         } while (tmp.get(r) == null);
 
-        String location = tmp.get(r).getLocation();
-        boolean isCompleted = trip.isCompleted();
-
-        // WORKER INITIALIZATION
-        Data inputData = new Data.Builder()
-                .putString(KEY_LOCATION, location)
-                .putBoolean(KEY_COMPLETED, isCompleted)
-                .build();
-
-        Constraints constraints = new Constraints.Builder()
-                .setRequiresStorageNotLow(true)
-                .build();
-
-        OneTimeWorkRequest photoRequest = new OneTimeWorkRequest.Builder(PhotoWorker.class)
-                .setInputData(inputData)
-                .setConstraints(constraints)
-                .build();
-        WorkManager.getInstance(application).enqueue(photoRequest);
+        return tmp.get(r).getLocation();
     }
 
     /**

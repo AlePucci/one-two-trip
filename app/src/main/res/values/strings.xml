@@ -81,6 +81,7 @@
     <string name="error_retrieving_trips">Error while retrieving trips.</string>
     <string name="no_internet_error">Error! You have no connection at the moment. Please retry later.</string>
     <string name="no_shareable_activities">There are no activities to share here!</string>
+    <string name="share_trip_error">Something went wrong! Please try again</string>
 
     <!-- end -->
 </resources>
