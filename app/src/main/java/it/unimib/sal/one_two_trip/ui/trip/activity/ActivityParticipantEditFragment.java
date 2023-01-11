@@ -107,12 +107,12 @@ public class ActivityParticipantEditFragment extends Fragment {
 
                 personList = activity.getParticipant().personList;
                 /* personList contains Activities???
-                TODO: resolve this
+                TODO: resolve this */
                 List<Person> notParticipating = trip.getParticipant().personList;
                 Log.d("BBB", "Trip " + trip.getParticipant().personList);
                 Log.d("BBB", "List " + notParticipating);
                 notParticipating.removeAll(personList);
-                Log.d("BBB", "After " + notParticipating);*/
+                Log.d("BBB", "After " + notParticipating);
 
                 //Participating
                 participantAdapter = new ParticipantRecyclerViewAdapter(personList,

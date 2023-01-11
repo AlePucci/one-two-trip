@@ -94,7 +94,7 @@ public class ActivityDateFragment extends Fragment {
                 date1.setText(df.format(activity.getStart_date()));
 
                 TextView date2 = requireView().findViewById(R.id.activity_when2);
-                ImageButton save2 = requireView().findViewById(R.id.activity_when_save2);
+                MaterialButton save2 = requireView().findViewById(R.id.activity_when_save2);
                 ImageView arrow = requireView().findViewById(R.id.activity_when_arrow);
                 if(activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
                     date2.setText(df.format(activity.getEnd_date()));

@@ -89,8 +89,8 @@ public class ActivityLocationFragment extends Fragment {
                 loc1.setText(activity.getLocation());
 
                 TextView loc2 = requireView().findViewById(R.id.activity_where2);
-                ImageButton locate2 = requireView().findViewById(R.id.activity_where_locate2);
-                ImageButton navigate2 = requireView().findViewById(R.id.activity_where_navigation2);
+                MaterialButton locate2 = requireView().findViewById(R.id.activity_where_locate2);
+                MaterialButton navigate2 = requireView().findViewById(R.id.activity_where_navigation2);
                 ImageView arrow = requireView().findViewById(R.id.activity_where_arrow);
                 if(activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
                     loc2.setText(activity.getEnd_location());

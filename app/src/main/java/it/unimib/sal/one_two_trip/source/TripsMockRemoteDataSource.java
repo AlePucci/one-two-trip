@@ -3,6 +3,8 @@ package it.unimib.sal.one_two_trip.source;
 import static it.unimib.sal.one_two_trip.util.Constants.TRIPS_API_TEST_JSON_FILE;
 import static it.unimib.sal.one_two_trip.util.Constants.UNEXPECTED_ERROR;
 
+import android.util.Log;
+
 import java.io.IOException;
 
 import it.unimib.sal.one_two_trip.model.Trip;
@@ -45,6 +47,7 @@ public class TripsMockRemoteDataSource extends BaseTripsRemoteDataSource {
 
             for(Trip t: tripsApiResponse.getTrips()) {
                 if(t.getId() == id) {
+                    Log.d("BBB", t.getParticipant().personList + "");
                     tripApiResponse = new TripApiResponse();
                     tripApiResponse.setTrip(t);
                     tripApiResponse.setStatus(tripsApiResponse.getStatus());
