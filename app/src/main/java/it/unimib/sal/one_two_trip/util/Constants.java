@@ -42,6 +42,8 @@ public class Constants {
     public static final String PHOTOS_VERSION = "v1";
     public static final String PHOTOS_QUERY = "query";
     public static final String PHOTOS_PER_PAGE = "per_page";
+    public static final String AUTHORIZATION = "Authorization";
+    public static final String ACCEPT_VERSION = "Accept-Version";
     public static final int PHOTOS_PER_PAGE_VALUE = 1;
 
     // SHARE PHOTO CONSTANTS
