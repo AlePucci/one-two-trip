@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 
 import it.unimib.sal.one_two_trip.R;
@@ -158,6 +160,7 @@ public class ActivityDateEditFragment extends Fragment {
             }
 
             if (valid) {
+                trip.getActivity().activityList.sort(Comparator.comparing(Activity::getStart_date));
                 viewModel.updateTrip(trip);
             }
 

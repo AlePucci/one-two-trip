@@ -6,6 +6,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -211,4 +212,5 @@ public class Activity {
         return "Activity{" + "id='" + id + '\'' + ", title='" + title + '\'' +
                 ", location='" + location + '\'' + ", start_date=" + start_date + '}';
     }
+
 }

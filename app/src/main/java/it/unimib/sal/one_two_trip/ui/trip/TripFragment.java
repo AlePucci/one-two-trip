@@ -170,6 +170,7 @@ public class TripFragment extends Fragment implements MenuProvider{
                 title = trip.getTitle();
                 toolbar.setTitle(title);
 
+                activityList.addAll(trip.getActivity().activityList);
                 adapter.addData(trip.getActivity().activityList);
 
                 progressBar.setVisibility(View.GONE);
