@@ -13,6 +13,7 @@
         <!-- Status bar color. -->
         <!-- Customize your theme here. -->
         <item name="android:windowLightStatusBar">true</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 

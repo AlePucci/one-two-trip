@@ -32,10 +32,10 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/appbar"
                 android:minHeight="?attr/actionBarSize"
-                android:theme="@style/Widget.App.Toolbar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:popupTheme="@style/Widget.App.Toolbar"
                 app:title="@string/app_name"
                 app:titleCentered="true" />
 
