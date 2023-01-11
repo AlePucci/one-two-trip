@@ -11,4 +11,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="cardview_light_background">#FBFAF8</color>
     <color name="cardview_dark_background">#353534</color>
+    <color name="google_login_button">#eceff1</color>
+    <color name="google_login_text">#616161</color>
+    <color name="grey_separator">#585F65</color>
 </resources>
