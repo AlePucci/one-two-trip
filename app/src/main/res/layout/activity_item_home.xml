@@ -77,6 +77,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:contentDescription="@string/participants_description"
                 android:textAppearance="@style/Widget.App.TripTimeAppearance"
                 android:textSize="20sp"
                 app:drawableRightCompat="@drawable/ic_outline_group_24"

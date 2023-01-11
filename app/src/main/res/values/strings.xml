@@ -24,6 +24,9 @@
     <string name="attachments_present">There are attachments for this activity</string>
     <string name="no_trips_description">There are no trips in this section</string>
     <string name="share_trip_button_description">Share this trip!</string>
+    <string name="participants_description">Trip participants</string>
+    <string name="loading_description">Loading…</string>
+    <string name="more_button_description">See more activities</string>
 
     <!-- trip share -->
     <string name="share_trip_text_coming">See the fantastic places I am going to visit! I just planned the entire trip with 1, 2, Trip app. Download it now!</string>
@@ -43,7 +46,8 @@
     <string name="contribute">Contribute on</string>
     <string name="github_link" translatable="false">https://github.com/AlePucci/one-two-trip</string>
     <string name="version">Version:</string>
-    <string name="github" translatable="false">github</string>
+    <string name="github" translatable="false">Github</string>
+    <string name="contact_email_description">Contact us at this email address</string>
 
     <!-- settings -->
     <string name="settings_title">Settings</string>
@@ -60,6 +64,8 @@
     <string name="settings_saved">Settings saved successfully</string>
     <string name="save">Save</string>
     <string name="notifications_disabled">Notifications are disabled</string>
+    <string name="notifications_description">Notifications switch</string>
+    <string name="settings_save_description">Save settings</string>
 
     <!-- menu -->
     <string name="menu_home">Home</string>
