@@ -93,11 +93,12 @@
         android:layout_height="92dp"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
+        android:layout_marginTop="32dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toStartOf="@+id/datePicker"
         app:layout_constraintStart_toStartOf="@id/guidelineLog"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="341dp">
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout1"
+        tools:ignore="MissingConstraints">
 
         <RadioButton
             android:id="@+id/firstButton"
@@ -206,11 +207,14 @@
 
     <Button
         android:id="@+id/signin_button"
-        android:layout_width="match_parent"
+        style="@style/Widget.Material3.Button.ElevatedButton"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/sign_in"
         android:textSize="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guidelineLog1"
         app:layout_constraintStart_toStartOf="@+id/guidelineLog"
         app:layout_constraintTop_toBottomOf="@id/textInputLayout4" />

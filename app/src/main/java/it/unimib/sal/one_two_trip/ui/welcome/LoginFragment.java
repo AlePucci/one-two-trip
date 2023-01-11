@@ -50,12 +50,19 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Button buttonLogin = view.findViewById(R.id.button2);
+        Button buttonLogin = view.findViewById(R.id.button3);
         final Button buttonGoogleLogin = view.findViewById(R.id.buttonGoogleLogin);
         final Button buttonRegistration = view.findViewById(R.id.signin_button);
         buttonLogin.setOnClickListener(v ->
                 Navigation.findNavController(requireView()).navigate(R.id.action_welcomeFragment_to_loginFragment));
+
+        Button buttonForgotPassword = view.findViewById(R.id.button);
+        buttonForgotPassword.setOnClickListener(v ->
+                Navigation.findNavController(requireView()).navigate(R.id.action_welcomeFragment_to_forgotPasswordFragment));
     }
+
+
+
 
     ;
 }

@@ -80,6 +80,7 @@
     <string name="name" translatable="false">Name</string>
     <string name="surname" translatable="false">Surname</string>
     <string name="login" translatable="false">Login</string>
+    <string name="submit" translatable="false">Submit</string>
     <string name="email" translatable="false">E-mail</string>
     <string name="password" translatable="false">Password</string>
     <string name="confirm_password" translatable="false">Confirm password</string>
@@ -89,6 +90,9 @@
     <string name="google_login" translatable="false">Login with Google</string>
     <string name="new_account" translatable="false">New to World News?</string>
     <string name="register" translatable="false">Register</string>
+    <string name="forgot_password_text" translatable="false">Enter the email address associated with your account and we will send you a link to reset your password.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
 
 
     <!-- end -->

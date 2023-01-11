@@ -12,10 +12,18 @@
         <action
             android:id="@+id/action_welcomeFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_welcomeFragment_to_forgotPasswordFragment"
+            app:destination="@id/forgotPasswordFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
         android:name="it.unimib.sal.one_two_trip.ui.welcome.SigninFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_signin" />
+    <fragment
+        android:id="@+id/forgotPasswordFragment"
+        android:name="it.unimib.sal.one_two_trip.ForgotPasswordFragment"
+        android:label="fragment_forgot_password"
+        tools:layout="@layout/fragment_forgot_password" />
 </navigation>
