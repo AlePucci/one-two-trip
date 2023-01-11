@@ -141,8 +141,6 @@ public class PastTripsFragment extends Fragment {
                                     application, view);
 
                             if (location == null || location.isEmpty()) {
-                                Snackbar.make(view, getString(R.string.share_trip_error),
-                                        Snackbar.LENGTH_SHORT).show();
                                 return;
                             }
 
