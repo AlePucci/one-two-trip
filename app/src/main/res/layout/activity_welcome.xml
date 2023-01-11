@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/backrground"
     app:layout_constraintStart_toEndOf="parent"
-    tools:context=".WelcomeActivity">
+    tools:context=".ui.welcome.WelcomeActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_view"
