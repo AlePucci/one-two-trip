@@ -88,13 +88,23 @@ public class HomeActivity extends AppCompatActivity {
             /* TO DO: LOGOUT */
             return false;
         });
+
+        // For setting past trip fragment as "Home" in navigation drawer
+        this.navController.addOnDestinationChangedListener((navController, navDestination, bundle)
+                -> {
+            if (navDestination.getId() == R.id.fragment_past_trips) {
+                drawerNav.getMenu().getItem(0).setChecked(true);
+            }
+        });
     }
 
+    @Override
     public boolean onSupportNavigateUp() {
         return NavigationUI.navigateUp(this.navController, this.appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
 
+    @Override
     public void onBackPressed() {
         if (this.drawerLayout != null && this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             this.drawerLayout.closeDrawer(GravityCompat.START);
