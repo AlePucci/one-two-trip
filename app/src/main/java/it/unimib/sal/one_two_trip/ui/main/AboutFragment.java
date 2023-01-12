@@ -25,6 +25,9 @@ import it.unimib.sal.one_two_trip.R;
  * create an instance of this fragment.
  */
 public class AboutFragment extends Fragment {
+
+    private static final String TAG = AboutFragment.class.getSimpleName();
+
     public AboutFragment() {
     }
 
@@ -34,7 +37,7 @@ public class AboutFragment extends Fragment {
      *
      * @return A new instance of fragment AboutFragment.
      */
-    // TODO: Rename and change types and number of parameters
+    @NonNull
     public static AboutFragment newInstance() {
         return new AboutFragment();
     }
@@ -45,9 +48,8 @@ public class AboutFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_about, container, false);
     }
 

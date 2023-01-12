@@ -1,8 +1,9 @@
-package it.unimib.sal.one_two_trip.source;
+package it.unimib.sal.one_two_trip.data.source;
 
 import java.io.IOException;
 
 public abstract class BasePhotoRemoteDataSource {
+
     protected PhotoCallback photoCallback;
 
     public void setPhotoCallback(PhotoCallback photoCallback) {

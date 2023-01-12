@@ -48,27 +48,29 @@ public class HomeActivity extends AppCompatActivity {
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
 
-        assert navHostFragment != null;
-        navController = navHostFragment.getNavController();
+        if (navHostFragment != null) {
+            this.navController = navHostFragment.getNavController();
+        }
 
         NavigationView drawerNav = findViewById(R.id.drawer_navigation);
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
 
-        appBarConfiguration = new AppBarConfiguration
+        this.appBarConfiguration = new AppBarConfiguration
                 .Builder(R.id.fragment_coming_trips, R.id.fragment_past_trips,
                 R.id.fragment_settings, R.id.fragment_about)
-                .setOpenableLayout(drawerLayout).build();
+                .setOpenableLayout(this.drawerLayout).build();
 
         drawerNav.setCheckedItem(R.id.fragment_coming_trips);
 
         // For the Toolbar
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupActionBarWithNavController(this,
+                this.navController, this.appBarConfiguration);
 
         // For the NavigationDrawer
-        NavigationUI.setupWithNavController(drawerNav, navController);
+        NavigationUI.setupWithNavController(drawerNav, this.navController);
 
         // For the BottomNavigationView
-        NavigationUI.setupWithNavController(bottomNav, navController);
+        NavigationUI.setupWithNavController(bottomNav, this.navController);
 
         addMenuProvider(new MenuProvider() {
             @Override
@@ -86,13 +88,23 @@ public class HomeActivity extends AppCompatActivity {
             /* TO DO: LOGOUT */
             return false;
         });
+
+        // For setting past trip fragment as "Home" in navigation drawer
+        this.navController.addOnDestinationChangedListener((navController, navDestination, bundle)
+                -> {
+            if (navDestination.getId() == R.id.fragment_past_trips) {
+                drawerNav.getMenu().getItem(0).setChecked(true);
+            }
+        });
     }
 
+    @Override
     public boolean onSupportNavigateUp() {
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
+        return NavigationUI.navigateUp(this.navController, this.appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
 
+    @Override
     public void onBackPressed() {
         if (this.drawerLayout != null && this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             this.drawerLayout.closeDrawer(GravityCompat.START);

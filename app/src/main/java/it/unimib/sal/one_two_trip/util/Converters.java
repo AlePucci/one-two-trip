@@ -20,7 +20,7 @@ public class Converters {
 
     @TypeConverter
     public static List<Activity> storedStringToActivityList(String data) {
-        Gson gson = new Gson();
+        Gson gson = GsonSingleton.getInstance();
         if (data == null) {
             return Collections.emptyList();
         }
@@ -31,24 +31,24 @@ public class Converters {
 
     @TypeConverter
     public static String activityListToStoredString(List<Activity> myObjects) {
-        Gson gson = new Gson();
+        Gson gson = GsonSingleton.getInstance();
         return gson.toJson(myObjects);
     }
 
     @TypeConverter
     public static List<Person> storedStringToPersonList(String data) {
-        Gson gson = new Gson();
+        Gson gson = GsonSingleton.getInstance();
         if (data == null) {
             return Collections.emptyList();
         }
-        Type listType = new TypeToken<List<Activity>>() {
+        Type listType = new TypeToken<List<Person>>() {
         }.getType();
         return gson.fromJson(data, listType);
     }
 
     @TypeConverter
     public static String personListToStoredString(List<Person> myObjects) {
-        Gson gson = new Gson();
+        Gson gson = GsonSingleton.getInstance();
         return gson.toJson(myObjects);
     }
 }

@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.model;
 
 public class PictureApiResponse {
+
     private int total;
     private int total_pages;
     private PictureApiResult[] results;
@@ -41,7 +42,7 @@ public class PictureApiResponse {
         this.errors = errors;
     }
 
-    public class PictureApiResult {
+    public static class PictureApiResult {
         private Urls urls;
 
         public PictureApiResult() {
@@ -55,7 +56,7 @@ public class PictureApiResponse {
             this.urls = urls;
         }
 
-        public class Urls {
+        public static class Urls {
             private String regular;
 
             public Urls() {

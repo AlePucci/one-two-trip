@@ -55,16 +55,9 @@ public class SettingsFragment extends Fragment {
     private ToggleButton two_hours_activity;
 
     public SettingsFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment SettingsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+    @NonNull
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
     }
@@ -75,9 +68,8 @@ public class SettingsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
@@ -91,58 +83,58 @@ public class SettingsFragment extends Fragment {
         bottomNavigationView.setVisibility(View.GONE);
         fab.setVisibility(View.GONE);
 
-        notifications_switch = view.findViewById(R.id.notifications_switch);
-        notifications_cardview = view.findViewById(R.id.notifications_cardview);
-        notifications_disabled = view.findViewById(R.id.notifications_disabled);
-        twelve_hours_trip = view.findViewById(R.id.trip_twelve_hours);
-        one_day_trip = view.findViewById(R.id.trip_one_day);
-        two_days_trip = view.findViewById(R.id.trip_two_days);
-        half_hour_activity = view.findViewById(R.id.activity_half_hour);
-        one_hour_activity = view.findViewById(R.id.activity_one_hour);
-        two_hours_activity = view.findViewById(R.id.activity_two_hours);
+        this.notifications_switch = view.findViewById(R.id.notifications_switch);
+        this.notifications_cardview = view.findViewById(R.id.notifications_cardview);
+        this.notifications_disabled = view.findViewById(R.id.notifications_disabled);
+        this.twelve_hours_trip = view.findViewById(R.id.trip_twelve_hours);
+        this.one_day_trip = view.findViewById(R.id.trip_one_day);
+        this.two_days_trip = view.findViewById(R.id.trip_two_days);
+        this.half_hour_activity = view.findViewById(R.id.activity_half_hour);
+        this.one_hour_activity = view.findViewById(R.id.activity_one_hour);
+        this.two_hours_activity = view.findViewById(R.id.activity_two_hours);
         MaterialButton save_button = view.findViewById(R.id.save_settings_button);
 
-        restoreSettings();
+        this.restoreSettings();
 
-        notifications_switch
+        this.notifications_switch
                 .setOnCheckedChangeListener((v, isChecked) -> toggleNotificationsList(isChecked));
 
         save_button.setOnClickListener(this::saveSettings);
     }
 
     private void toggleNotificationsList(boolean isVisible) {
-        notifications_cardview.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        notifications_disabled.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+        this.notifications_cardview.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        this.notifications_disabled.setVisibility(isVisible ? View.GONE : View.VISIBLE);
     }
 
     private void saveSettings(View v) {
         SharedPreferencesUtil sharedPreferencesUtil
                 = new SharedPreferencesUtil(requireActivity().getApplication());
-        boolean notifications = notifications_switch.isChecked();
+        boolean notifications = this.notifications_switch.isChecked();
 
         if (notifications) {
             Set<String> trip_notifications = new HashSet<>();
             Set<String> activity_notifications = new HashSet<>();
 
             // TRIP SETTINGS
-            if (twelve_hours_trip.isChecked()) {
+            if (this.twelve_hours_trip.isChecked()) {
                 trip_notifications.add(TWELVE_HOURS);
             }
-            if (one_day_trip.isChecked()) {
+            if (this.one_day_trip.isChecked()) {
                 trip_notifications.add(ONE_DAY);
             }
-            if (two_days_trip.isChecked()) {
+            if (this.two_days_trip.isChecked()) {
                 trip_notifications.add(TWO_DAYS);
             }
 
             // ACTIVITY SETTINGS
-            if (half_hour_activity.isChecked()) {
+            if (this.half_hour_activity.isChecked()) {
                 activity_notifications.add(HALF_HOUR);
             }
-            if (one_hour_activity.isChecked()) {
+            if (this.one_hour_activity.isChecked()) {
                 activity_notifications.add(ONE_HOUR);
             }
-            if (two_hours_activity.isChecked()) {
+            if (this.two_hours_activity.isChecked()) {
                 activity_notifications.add(TWO_HOURS);
             }
 
@@ -169,7 +161,7 @@ public class SettingsFragment extends Fragment {
                 sharedPreferencesUtil.readStringData(
                         SHARED_PREFERENCES_FILE_NAME, SHARED_PREFERENCES_NOTIFICATIONS_ON));
 
-        notifications_switch.setChecked(notifications);
+        this.notifications_switch.setChecked(notifications);
 
         if (notifications) {
             Set<String> trip_notifications = sharedPreferencesUtil.readStringSetData(
@@ -179,29 +171,29 @@ public class SettingsFragment extends Fragment {
 
             if (trip_notifications != null) {
                 if (trip_notifications.contains(TWELVE_HOURS)) {
-                    twelve_hours_trip.setChecked(true);
+                    this.twelve_hours_trip.setChecked(true);
                 }
                 if (trip_notifications.contains(ONE_DAY)) {
-                    one_day_trip.setChecked(true);
+                    this.one_day_trip.setChecked(true);
                 }
                 if (trip_notifications.contains(TWO_DAYS)) {
-                    two_days_trip.setChecked(true);
+                    this.two_days_trip.setChecked(true);
                 }
             }
 
             if (activity_notifications != null) {
                 if (activity_notifications.contains(HALF_HOUR)) {
-                    half_hour_activity.setChecked(true);
+                    this.half_hour_activity.setChecked(true);
                 }
                 if (activity_notifications.contains(ONE_HOUR)) {
-                    one_hour_activity.setChecked(true);
+                    this.one_hour_activity.setChecked(true);
                 }
                 if (activity_notifications.contains(TWO_HOURS)) {
-                    two_hours_activity.setChecked(true);
+                    this.two_hours_activity.setChecked(true);
                 }
             }
         } else {
-            toggleNotificationsList(false);
+            this.toggleNotificationsList(false);
         }
     }
 }

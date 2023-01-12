@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.database;
+package it.unimib.sal.one_two_trip.data.database;
 
 import static it.unimib.sal.one_two_trip.util.Constants.TRIPS_DATABASE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.TRIPS_DATABASE_VERSION;

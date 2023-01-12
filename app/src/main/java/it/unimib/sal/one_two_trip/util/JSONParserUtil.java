@@ -23,9 +23,13 @@ public class JSONParserUtil {
         InputStream inputStream = application.getAssets().open(fileName);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-        return new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+        TripsApiResponse tripsApiResponse = new GsonBuilder()
                 .create()
                 .fromJson(bufferedReader, TripsApiResponse.class);
+
+        bufferedReader.close();
+        inputStream.close();
+
+        return tripsApiResponse;
     }
 }

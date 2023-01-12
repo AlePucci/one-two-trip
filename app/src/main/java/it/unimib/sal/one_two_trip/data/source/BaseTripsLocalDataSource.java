@@ -1,10 +1,11 @@
-package it.unimib.sal.one_two_trip.source;
+package it.unimib.sal.one_two_trip.data.source;
 
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.model.Trip;
 
 public abstract class BaseTripsLocalDataSource {
+    
     protected TripCallback tripCallback;
 
     public void setTripCallback(TripCallback tripCallback) {

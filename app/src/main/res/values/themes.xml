@@ -12,6 +12,7 @@
 
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <!-- Customize your theme here. -->
     </style>
 
@@ -50,6 +51,12 @@
         <item name="titleTextAppearance">@style/Widget.App.ToolbarTextAppearance</item>
         <item name="android:titleTextAppearance">@style/Widget.App.ToolbarTextAppearance</item>
         <item name="android:textColorPrimary">@color/black</item>
+
+    </style>
+
+    <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/black</item>
     </style>
 
 </resources>

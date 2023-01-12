@@ -2,8 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/about_layout"
@@ -136,8 +137,8 @@
                 android:id="@+id/github"
                 android:layout_width="16sp"
                 android:layout_height="16sp"
-                android:src="@drawable/github"
-                android:contentDescription="@string/github" />
+                android:contentDescription="@string/github"
+                android:src="@drawable/github" />
         </LinearLayout>
 
         <TextView
@@ -159,6 +160,7 @@
             android:autoLink="email"
             android:gravity="center"
             android:minHeight="48dp"
+            android:contentDescription="@string/contact_email_description"
             android:text="@string/app_email"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"

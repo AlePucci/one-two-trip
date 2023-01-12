@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import java.util.List;
 
 public class TripsApiResponse {
+
     private String status;
     private int totalResults;
     private List<Trip> trips;

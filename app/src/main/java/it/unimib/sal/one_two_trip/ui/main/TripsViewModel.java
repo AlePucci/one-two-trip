@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.repository.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 
 public class TripsViewModel extends ViewModel {
 
@@ -18,15 +18,15 @@ public class TripsViewModel extends ViewModel {
 
     /**
      * Returns the LiveData object associated with the
-     * news list to the Fragment/Activity.
+     * trip list to the Fragment/Activity.
      *
      * @return The LiveData object associated with the trip list.
      */
     public MutableLiveData<Result> getTrips(long lastUpdate) {
-        if (tripListLiveData == null) {
-            fetchTrips(lastUpdate);
+        if (this.tripListLiveData == null) {
+            this.fetchTrips(lastUpdate);
         }
-        return tripListLiveData;
+        return this.tripListLiveData;
     }
 
     /**
@@ -35,14 +35,14 @@ public class TripsViewModel extends ViewModel {
      * @param trip The trip to be updated.
      */
     public void updateTrip(Trip trip) {
-        tripsRepository.updateTrip(trip);
+        this.tripsRepository.updateTrip(trip);
     }
 
     /**
      * It uses the Repository to download the trip list
      * and to associate it with the LiveData object.
      */
-    private void fetchTrips(long lastUpdate) {
-        tripListLiveData = tripsRepository.fetchTrips(lastUpdate);
+    public void fetchTrips(long lastUpdate) {
+        this.tripListLiveData = this.tripsRepository.fetchTrips(lastUpdate);
     }
 }

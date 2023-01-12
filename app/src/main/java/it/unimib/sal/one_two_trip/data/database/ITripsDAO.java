@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.database;
+package it.unimib.sal.one_two_trip.data.database;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
