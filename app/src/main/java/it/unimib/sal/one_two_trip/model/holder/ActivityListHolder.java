@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.util.holder;
+package it.unimib.sal.one_two_trip.model.holder;
 
 import androidx.annotation.NonNull;
 import androidx.room.Ignore;

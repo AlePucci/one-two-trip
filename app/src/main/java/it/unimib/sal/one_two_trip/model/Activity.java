@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.model;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -10,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import it.unimib.sal.one_two_trip.util.holder.PersonListHolder;
+import it.unimib.sal.one_two_trip.model.holder.PersonListHolder;
 
 /**
  * This class represents an activity.
@@ -19,23 +20,47 @@ import it.unimib.sal.one_two_trip.util.holder.PersonListHolder;
  */
 @Entity
 public class Activity {
-
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     private long id;
 
+    @ColumnInfo(name = "title")
     private String title;
+
+    @ColumnInfo(name = "description")
     private String description;
+
+    @ColumnInfo(name = "location")
     private String location;
+
+    @ColumnInfo(name = "end_location")
     private String end_location;
+
+    @ColumnInfo(name = "start_date")
     private long start_date;
+
+    @ColumnInfo(name = "end_date")
     private long end_date;
+
     @Embedded
     private PersonListHolder participant;
+
+    @ColumnInfo(name = "trip_id")
     private long trip_id;
+
+    @ColumnInfo(name = "attachments")
     private List<Object> attachment;
+
+    @ColumnInfo(name = "links")
     private List<String> link;
+
+    @ColumnInfo(name = "completed")
     private boolean completed;
+
+    @ColumnInfo(name = "type")
     private String type;
+
+    @ColumnInfo(name = "everyoneParticipate")
     private boolean everyoneParticipate;
 
     public Activity() {

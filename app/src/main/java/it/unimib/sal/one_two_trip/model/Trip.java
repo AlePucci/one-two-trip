@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.model;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -8,8 +9,8 @@ import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
-import it.unimib.sal.one_two_trip.util.holder.ActivityListHolder;
-import it.unimib.sal.one_two_trip.util.holder.PersonListHolder;
+import it.unimib.sal.one_two_trip.model.holder.ActivityListHolder;
+import it.unimib.sal.one_two_trip.model.holder.PersonListHolder;
 
 /**
  * This class represents a trip.
@@ -18,15 +19,25 @@ import it.unimib.sal.one_two_trip.util.holder.PersonListHolder;
 public class Trip {
 
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     private long id;
 
+    @ColumnInfo(name = "tripOwner")
     private String tripOwner;
+
+    @ColumnInfo(name = "title")
     private String title;
+
+    @ColumnInfo(name = "description")
     private String description;
+
     @Embedded
     private ActivityListHolder activity;
+
     @Embedded
     private PersonListHolder participant;
+
+    @ColumnInfo(name = "completed")
     private boolean completed;
 
     public Trip() {
