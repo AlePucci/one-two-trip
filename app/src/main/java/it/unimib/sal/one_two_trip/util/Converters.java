@@ -41,7 +41,7 @@ public class Converters {
         if (data == null) {
             return Collections.emptyList();
         }
-        Type listType = new TypeToken<List<Activity>>() {
+        Type listType = new TypeToken<List<Person>>() {
         }.getType();
         return gson.fromJson(data, listType);
     }

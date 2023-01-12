@@ -113,18 +113,13 @@ public class ActivityParticipantEditFragment extends Fragment {
                 activity = trip.getActivity().activityList.get(activityPos);
 
                 personList = activity.getParticipant().personList;
-                /* personList contains Activities???
-                TODO: resolve this */
                 List<Person> notParticipating = trip.getParticipant().personList;
-                Log.d("BBB", "Trip " + trip.getParticipant().personList);
-                Log.d("BBB", "List " + notParticipating);
                 notParticipating.removeAll(personList);
-                Log.d("BBB", "After " + notParticipating);
 
                 //Participating
                 participantAdapter = new ParticipantRecyclerViewAdapter(personList,
                         position -> {
-                            //TODO: goto user page
+                            //TODO: remove from participant list
                             Snackbar.make(requireView(), "User " + personList.get(position).getFullName(),
                                     Snackbar.LENGTH_SHORT).show();
                         });
@@ -135,7 +130,7 @@ public class ActivityParticipantEditFragment extends Fragment {
                 //Not Participating
                 notParticipantAdapter = new ParticipantRecyclerViewAdapter(notParticipating,
                         position -> {
-                            //TODO: goto user page
+                            //TODO: add to participant list
                             Snackbar.make(requireView(), "User " + notParticipating.get(position).getFullName(),
                                     Snackbar.LENGTH_SHORT).show();
                         });
