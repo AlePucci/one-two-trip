@@ -41,7 +41,7 @@ public class PhotoWorker extends Worker implements PhotoCallback {
     public PhotoWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         this.context = context;
-        this.photoRemoteDataSource = ServiceLocator.getInstance().getPhotoRemoteDataSource();
+        this.photoRemoteDataSource = ServiceLocator.getInstance().getPhotoRemoteDataSource(context.getApplicationContext());
         this.photoRemoteDataSource.setPhotoCallback(this);
     }
 

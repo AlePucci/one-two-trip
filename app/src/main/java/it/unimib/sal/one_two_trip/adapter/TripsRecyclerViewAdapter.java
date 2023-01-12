@@ -36,7 +36,8 @@ public class TripsRecyclerViewAdapter
     private final Application application;
     private final boolean tripsCompleted;
 
-    public TripsRecyclerViewAdapter(List<Trip> tripList, Application application, boolean tripsCompleted,
+    public TripsRecyclerViewAdapter(List<Trip> tripList, Application application,
+                                    boolean tripsCompleted,
                                     OnItemClickListener onItemClickListener) {
         this.tripList = tripList;
         this.onItemClickListener = onItemClickListener;

@@ -147,12 +147,15 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 this.activityDate.setVisibility(View.GONE);
             }
 
-            if (activity.getParticipant() == null || activity.getParticipant().getPersonList() == null
+            if (activity.getParticipant() == null
+                    || activity.getParticipant().getPersonList() == null
                     || activity.getParticipant().getPersonList().isEmpty()
                     || activity.isEveryoneParticipate()) {
                 this.participants.setVisibility(View.GONE);
             } else {
-                this.participants.setText(String.valueOf(activity.getParticipant().getPersonList().size()));
+                this.participants.setText(
+                        String.valueOf(activity.getParticipant().getPersonList().size())
+                );
                 this.participants.setVisibility(View.VISIBLE);
             }
 

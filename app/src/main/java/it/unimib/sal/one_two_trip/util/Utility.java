@@ -36,6 +36,7 @@ public class Utility {
      * @param trip        trip to share
      * @param tripList    list of trips in which the trip to share is contained
      * @param application the application
+     * @param view        a view, used to display snackbar in case of errors
      */
     public static String getRandomTripLocation(Trip trip, List<Trip> tripList, Application application,
                                                View view) {

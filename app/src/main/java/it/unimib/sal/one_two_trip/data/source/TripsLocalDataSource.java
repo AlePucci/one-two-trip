@@ -54,8 +54,8 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
                     tripList.get(i).setId(insertedTripIds.get(i));
                 }
 
-                this.sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE,
-                        String.valueOf(System.currentTimeMillis()));
+                this.sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME,
+                        LAST_UPDATE, String.valueOf(System.currentTimeMillis()));
 
                 tripCallback.onSuccessFromLocal(tripList);
             }

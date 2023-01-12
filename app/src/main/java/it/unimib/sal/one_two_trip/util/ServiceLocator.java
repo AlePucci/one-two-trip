@@ -3,6 +3,7 @@ package it.unimib.sal.one_two_trip.util;
 import static it.unimib.sal.one_two_trip.util.Constants.PHOTOS_BASE_URL;
 
 import android.app.Application;
+import android.content.Context;
 
 import it.unimib.sal.one_two_trip.data.database.TripsRoomDatabase;
 import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
@@ -73,7 +74,7 @@ public class ServiceLocator {
      *
      * @return an instance of PhotoRemoteDataSource.
      */
-    public PhotoRemoteDataSource getPhotoRemoteDataSource() {
-        return new PhotoRemoteDataSource();
+    public PhotoRemoteDataSource getPhotoRemoteDataSource(Context context) {
+        return new PhotoRemoteDataSource(context);
     }
 }
