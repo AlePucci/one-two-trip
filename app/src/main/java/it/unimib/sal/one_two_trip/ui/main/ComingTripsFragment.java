@@ -1,12 +1,21 @@
 package it.unimib.sal.one_two_trip.ui.main;
 
+import static android.content.Context.ALARM_SERVICE;
 import static it.unimib.sal.one_two_trip.util.Constants.KEY_COMPLETED;
 import static it.unimib.sal.one_two_trip.util.Constants.KEY_LOCATION;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_NOTIFICATIONS_ON;
+import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_TRIP_NOTIFICATIONS;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,8 +41,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -42,6 +54,7 @@ import it.unimib.sal.one_two_trip.adapter.TripsRecyclerViewAdapter;
 import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.util.AlarmReceiver;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.PhotoWorker;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
@@ -188,6 +201,7 @@ public class ComingTripsFragment extends Fragment {
                     @Override
                     public void onButtonClick(Trip trip) {
                         Snackbar.make(view, trip.getTitle(), Snackbar.LENGTH_SHORT).show();
+                        Utility.scheduleTripNotifications(trip, application);
                     }
                 });
 
@@ -239,10 +253,13 @@ public class ComingTripsFragment extends Fragment {
                         progressBar.setVisibility(View.GONE);
                     }
                 });
+
     }
 
     private void refresh(String lastUpdate) {
         this.tripsViewModel.fetchTrips(Long.parseLong(lastUpdate));
         this.swipeRefreshLayout.setRefreshing(false);
     }
+
+
 }

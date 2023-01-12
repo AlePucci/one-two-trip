@@ -1,15 +1,33 @@
 package it.unimib.sal.one_two_trip.util;
 
+import static android.content.Context.ALARM_SERVICE;
+import static it.unimib.sal.one_two_trip.util.Constants.HALF_HOUR;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ACTIVITY;
+import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ENTITY_ID;
+import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ENTITY_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ENTITY_START_TIME;
+import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_TRIP;
+import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_TYPE;
+import static it.unimib.sal.one_two_trip.util.Constants.ONE_DAY;
+import static it.unimib.sal.one_two_trip.util.Constants.ONE_HOUR;
+import static it.unimib.sal.one_two_trip.util.Constants.TWELVE_HOURS;
+import static it.unimib.sal.one_two_trip.util.Constants.TWO_DAYS;
+import static it.unimib.sal.one_two_trip.util.Constants.TWO_HOURS;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -38,8 +56,8 @@ public class Utility {
      * @param application the application
      * @param view        a view, used to display snackbar in case of errors
      */
-    public static String getRandomTripLocation(Trip trip, List<Trip> tripList, Application application,
-                                               View view) {
+    public static String getRandomTripLocation(Trip trip, List<Trip> tripList,
+                                               Application application, View view) {
         // PRELIMINARY CHECKS
         if (tripList == null) return null;
 
@@ -52,12 +70,11 @@ public class Utility {
             }
         }
 
-        if (tripPosition == -1 || tripList.get(tripPosition) == null ||
-                tripList.get(tripPosition).getActivity() == null ||
-                tripList.get(tripPosition).getActivity().getActivityList() == null ||
-                tripList.get(tripPosition).getActivity().getActivityList().isEmpty()) {
-            Snackbar.make(view, application.getString(R.string.no_shareable_activities),
-                    Snackbar.LENGTH_SHORT).show();
+        if (tripPosition == -1 || tripList.get(tripPosition) == null
+                || tripList.get(tripPosition).getActivity() == null
+                || tripList.get(tripPosition).getActivity().getActivityList() == null
+                || tripList.get(tripPosition).getActivity().getActivityList().isEmpty()) {
+            Snackbar.make(view, application.getString(R.string.no_shareable_activities), Snackbar.LENGTH_SHORT).show();
             return null;
         }
 
@@ -88,8 +105,8 @@ public class Utility {
      * @return true if the device is connected to Internet; false otherwise.
      */
     public static boolean isConnected(@NonNull Activity activity) {
-        ConnectivityManager cm =
-                (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager)
+                activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Network nw = cm.getActiveNetwork();
             if (nw == null) return false;
@@ -117,8 +134,132 @@ public class Utility {
         cal1.setTime(new Date(date1));
         cal2.setTime(new Date(date2));
 
-        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
-                && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH)
-                && cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) && cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
     }
+
+    public static void scheduleTripNotifications(Trip trip, Application application) {
+        if (trip == null) {
+            return;
+        }
+
+        if (trip.getActivity() == null || trip.getActivity().getActivityList() == null
+                || trip.getActivity().getActivityList().get(0) == null) {
+            return;
+        }
+
+        Calendar tripTime = Calendar.getInstance();
+        tripTime.setTime(new Date(trip.getActivity().getActivityList().get(0).getStart_date()));
+
+        long tripId = trip.getId();
+        for (int i = 0; i < 3; i++) {
+            int[] time = {Integer.parseInt(TWO_DAYS), Integer.parseInt(ONE_DAY),
+                    Integer.parseInt(TWELVE_HOURS)};
+            Calendar alarmTime = Calendar.getInstance();
+            alarmTime.setTime(new Date(tripTime.getTimeInMillis() - (time[i] * 60 * 1000)));
+
+            Intent intent = new Intent(application, AlarmReceiver.class);
+            intent.setData(Uri.parse("alarms://trip:" + tripId + ":" + i));
+            intent.putExtra(NOTIFICATION_TYPE, NOTIFICATION_TRIP);
+            intent.putExtra(NOTIFICATION_ENTITY_ID, String.valueOf(tripId));
+            intent.putExtra(NOTIFICATION_ENTITY_NAME, trip.getTitle());
+            intent.putExtra(NOTIFICATION_ENTITY_START_TIME, String.valueOf(tripTime.getTimeInMillis()));
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(application,
+                    (int) tripId, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+            AlarmManager alarmManager = (AlarmManager) application.getSystemService(ALARM_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+                        alarmTime.getTimeInMillis(), pendingIntent);
+            } else {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis(),
+                        pendingIntent);
+            }
+
+            Log.d("Alarm", "Alarm add on " + alarmTime.get(Calendar.YEAR) + "/" +
+                    alarmTime.get(Calendar.MONTH) + "/" + alarmTime.get(Calendar.DAY_OF_MONTH)
+                    + " " + alarmTime.get(Calendar.HOUR_OF_DAY) + ":"
+                    + alarmTime.get(Calendar.MINUTE) + ":" + alarmTime.get(Calendar.SECOND)
+                    + " when trip starts on" + +tripTime.get(Calendar.YEAR) + "/"
+                    + tripTime.get(Calendar.MONTH) + "/" + tripTime.get(Calendar.DAY_OF_MONTH)
+                    + " " + tripTime.get(Calendar.HOUR_OF_DAY) + ":"
+                    + tripTime.get(Calendar.MINUTE) + ":" + tripTime.get(Calendar.SECOND));
+
+        }
+
+/*
+        if (trip.getActivity() == null || trip.getActivity().getActivityList() == null) {
+            break;
+        }
+
+        Set<String> activitiesNotifications = sharedPreferencesUtil.readStringSetData(
+                SHARED_PREFERENCES_FILE_NAME, SHARED_PREFERENCES_ACTIVITY_NOTIFICATIONS);
+        String[] activitiesNotificationsAr = new String[activitiesNotifications.size()];
+        activitiesNotificationsAr = activitiesNotifications.toArray(activitiesNotificationsAr);
+
+        if (activitiesNotificationsAr == null || activitiesNotificationsAr.length == 0) return;
+
+        for (it.unimib.sal.one_two_trip.model.Activity activity : trip.getActivity().getActivityList()) {
+            for (String tripNotification : tripNotificationsAr) {
+                Calendar alarmStartTime = Calendar.getInstance();
+
+                Calendar tripDay = Calendar.getInstance();
+                Calendar tripTime = Calendar.getInstance();
+                tripTime.setTime(new Date(activity.getStart_date()));
+                tripDay.setTime(
+                        new Date(activity.getStart_date()
+                                - (Long.parseLong(tripNotification) * 60 * 1000)));
+            }
+        }*/
+    }
+
+    public static void scheduleActivityNotifications(it.unimib.sal.one_two_trip.model.Activity activity, Application application) {
+        if (activity == null) {
+            return;
+        }
+
+
+        Calendar activityTime = Calendar.getInstance();
+        activityTime.setTime(new Date(activity.getStart_date()));
+
+        long activityId = activity.getId();
+
+        for (int i = 0; i < 3; i++) {
+            int[] time = {Integer.parseInt(TWO_HOURS), Integer.parseInt(ONE_HOUR),
+                    Integer.parseInt(HALF_HOUR)};
+            Calendar alarmTime = Calendar.getInstance();
+            alarmTime.setTime(new Date(activityTime.getTimeInMillis() - (time[i] * 60 * 1000)));
+
+            Intent intent = new Intent(application, AlarmReceiver.class);
+            intent.setData(Uri.parse("alarms://activity:" + activityId + ":" + i));
+            intent.putExtra(NOTIFICATION_TYPE, NOTIFICATION_ACTIVITY);
+            intent.putExtra(NOTIFICATION_ENTITY_ID, String.valueOf(activityId));
+            intent.putExtra(NOTIFICATION_ENTITY_NAME, activity.getTitle());
+            intent.putExtra(NOTIFICATION_ENTITY_START_TIME, String.valueOf(activityTime.getTimeInMillis()));
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(application,
+                    (int) activityId, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+
+            AlarmManager alarmManager = (AlarmManager) application.getSystemService(ALARM_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+                        alarmTime.getTimeInMillis(), pendingIntent);
+            } else {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis(),
+                        pendingIntent);
+            }
+
+            Log.d("Alarm", "Alarm add on " + alarmTime.get(Calendar.YEAR) + "/" +
+                    alarmTime.get(Calendar.MONTH) + "/" + alarmTime.get(Calendar.DAY_OF_MONTH)
+                    + " " + alarmTime.get(Calendar.HOUR_OF_DAY) + ":"
+                    + alarmTime.get(Calendar.MINUTE) + ":" + alarmTime.get(Calendar.SECOND)
+                    + " when activity starts on" + activityTime.get(Calendar.YEAR) + "/"
+                    + activityTime.get(Calendar.MONTH) + "/" + activityTime.get(Calendar.DAY_OF_MONTH)
+                    + " " + activityTime.get(Calendar.HOUR_OF_DAY) + ":"
+                    + activityTime.get(Calendar.MINUTE) + ":" + activityTime.get(Calendar.SECOND));
+        }
+    }
+
 }
+

@@ -74,6 +74,9 @@
     <string name="menu_logout">Logout</string>
     <string name="menu_account">Account</string>
 
+    <!-- notification -->
+    <string name="notification_text">Hey, your %1$s named %2$s with start date set on %3$s is coming!</string>
+
     <!-- errors -->
     <string name="api_key_error">API key not valid or maximum number of requests reached</string>
     <string name="unexpected_error">Unexpected error</string>

@@ -21,8 +21,8 @@ public class Constants {
     public static final String SHARED_PREFERENCES_TRIP_NOTIFICATIONS = "trip_notifications";
     public static final String SHARED_PREFERENCES_ACTIVITY_NOTIFICATIONS = "activity_notifications";
     public static final String TWELVE_HOURS = "720";    // Minutes
-    public static final String ONE_DAY = "144";
-    public static final String TWO_DAYS = "288";
+    public static final String ONE_DAY = "1440";
+    public static final String TWO_DAYS = "2880";
     public static final String HALF_HOUR = "30";
     public static final String ONE_HOUR = "60";
     public static final String TWO_HOURS = "120";
@@ -61,4 +61,11 @@ public class Constants {
     public static final String RETROFIT_ERROR = "retrofit_error";
     public static final String API_KEY_ERROR = "api_key_error";
     public static final String UNEXPECTED_ERROR = "unexpected_error";
+
+    public static final String NOTIFICATION_TYPE = "type";
+    public static final String NOTIFICATION_TRIP = "trip";
+    public static final String NOTIFICATION_ACTIVITY = "activity";
+    public static final String NOTIFICATION_ENTITY_ID = "id";
+    public static final String NOTIFICATION_ENTITY_NAME = "name";
+    public static final String NOTIFICATION_ENTITY_START_TIME = "start_time";
 }

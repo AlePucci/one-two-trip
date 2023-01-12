@@ -58,6 +58,6 @@
     <string name="settings_save_description">Salva impostazioni</string>
     <string name="more_button_description">Vedi altre attività</string>
     <string name="share_trip_error">Qualcosa è andato storto! Riprova più tardi</string>
-
+    <string name="notification_text">Hey, il tuo %1$s chiamato %2$s con data di inizio %3$s è vicino!</string>
     <!-- end -->
 </resources>
