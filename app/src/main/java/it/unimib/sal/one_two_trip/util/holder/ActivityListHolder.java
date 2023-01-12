@@ -13,7 +13,7 @@ import it.unimib.sal.one_two_trip.model.Activity;
  */
 public class ActivityListHolder {
     
-    public List<Activity> activityList;
+    private List<Activity> activityList;
 
     public ActivityListHolder() {
     }

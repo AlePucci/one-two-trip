@@ -53,15 +53,15 @@ public class Utility {
 
         if (tripPosition == -1 || tripList.get(tripPosition) == null ||
                 tripList.get(tripPosition).getActivity() == null ||
-                tripList.get(tripPosition).getActivity().activityList == null ||
-                tripList.get(tripPosition).getActivity().activityList.isEmpty()) {
+                tripList.get(tripPosition).getActivity().getActivityList() == null ||
+                tripList.get(tripPosition).getActivity().getActivityList().isEmpty()) {
             Snackbar.make(view, application.getString(R.string.no_shareable_activities),
                     Snackbar.LENGTH_SHORT).show();
             return null;
         }
 
         List<it.unimib.sal.one_two_trip.model.Activity> tmp =
-                new ArrayList<>(tripList.get(tripPosition).getActivity().activityList);
+                new ArrayList<>(tripList.get(tripPosition).getActivity().getActivityList());
 
         for (Iterator<it.unimib.sal.one_two_trip.model.Activity> i = tmp.iterator(); i.hasNext(); ) {
             it.unimib.sal.one_two_trip.model.Activity activity = i.next();

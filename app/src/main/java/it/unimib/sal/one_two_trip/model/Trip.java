@@ -106,12 +106,12 @@ public class Trip {
      */
     public void checkCompleted() {
         boolean isThereAtLeastOneActivity = false;
-        if (this.getActivity() == null || this.getActivity().activityList == null) {
+        if (this.getActivity() == null || this.getActivity().getActivityList() == null) {
             setCompleted(false);
             return;
         }
 
-        for (Activity a : activity.activityList) {
+        for (Activity a : activity.getActivityList()) {
             isThereAtLeastOneActivity = true;
             if (a == null || !a.isCompleted()) {
                 setCompleted(false);

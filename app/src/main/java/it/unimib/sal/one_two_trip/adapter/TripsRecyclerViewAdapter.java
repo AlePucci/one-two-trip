@@ -158,8 +158,8 @@ public class TripsRecyclerViewAdapter
 
             this.tripTitle.setText(trip.getTitle());
 
-            if (trip.getActivity() == null || trip.getActivity().activityList == null
-                    || trip.getActivity().activityList.isEmpty()) {
+            if (trip.getActivity() == null || trip.getActivity().getActivityList() == null
+                    || trip.getActivity().getActivityList().isEmpty()) {
                 this.moreButton.setText(R.string.start_adding_button_text);
                 this.noActivitiesAddedText.setText(R.string.no_activities_added);
                 this.noActivitiesAddedText.setVisibility(View.VISIBLE);

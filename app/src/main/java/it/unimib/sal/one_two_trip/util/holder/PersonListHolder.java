@@ -13,7 +13,7 @@ import it.unimib.sal.one_two_trip.model.Person;
  */
 public class PersonListHolder {
 
-    public List<Person> personList;
+    private List<Person> personList;
 
     public PersonListHolder() {
     }
