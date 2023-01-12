@@ -164,8 +164,8 @@ public class PastTripsFragment extends Fragment {
 
                             WorkManager.getInstance(application).getWorkInfoByIdLiveData(requestId)
                                     .observe(getViewLifecycleOwner(), workInfo -> {
-                                        if (!oneTime.get() && workInfo.getState() != null &&
-                                                workInfo.getState() == WorkInfo.State.FAILED) {
+                                        if (!oneTime.get()
+                                                && workInfo.getState() == WorkInfo.State.FAILED) {
                                             Snackbar.make(view,
                                                             R.string.share_trip_error,
                                                             Snackbar.LENGTH_SHORT)
