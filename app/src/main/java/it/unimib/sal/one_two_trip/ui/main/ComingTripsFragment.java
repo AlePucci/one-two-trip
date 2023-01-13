@@ -239,10 +239,13 @@ public class ComingTripsFragment extends Fragment {
                         progressBar.setVisibility(View.GONE);
                     }
                 });
+
     }
 
     private void refresh(String lastUpdate) {
         this.tripsViewModel.fetchTrips(Long.parseLong(lastUpdate));
         this.swipeRefreshLayout.setRefreshing(false);
     }
+
+
 }

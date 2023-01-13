@@ -61,6 +61,13 @@
     <string name="twelve_hours">12h</string>
     <string name="one_day">1d</string>
     <string name="two_days">2d</string>
+    <string name="half_hour_extended">30 minutes</string>
+    <string name="one_hour_extended">1 hour</string>
+    <string name="two_hours_extended">2 hours</string>
+    <string name="three_hours_extended">3 hours</string>
+    <string name="twelve_hours_extended">12 hours</string>
+    <string name="one_day_extended">1 day</string>
+    <string name="two_days_extended">2 days</string>
     <string name="settings_saved">Settings saved successfully</string>
     <string name="save">Save</string>
     <string name="notifications_disabled">Notifications are disabled</string>
@@ -73,6 +80,10 @@
     <string name="menu_about">About</string>
     <string name="menu_logout">Logout</string>
     <string name="menu_account">Account</string>
+
+    <!-- notification -->
+    <string name="notification_text_trip">Hey, your trip to %1$s is coming in less than %2$s!</string>
+    <string name="notification_text_activity">Hey, %1$s is coming in less than %2$s!</string>
 
     <!-- errors -->
     <string name="api_key_error">API key not valid or maximum number of requests reached</string>
