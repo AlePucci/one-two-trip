@@ -58,6 +58,14 @@
     <string name="settings_save_description">Salva impostazioni</string>
     <string name="more_button_description">Vedi altre attività</string>
     <string name="share_trip_error">Qualcosa è andato storto! Riprova più tardi</string>
-    <string name="notification_text">Hey, il tuo %1$s chiamato %2$s con data di inizio %3$s è vicino!</string>
+    <string name="notification_text_trip">Hey, il tuo viaggio per %1$s comincia fra meno di %2$s!</string>
+    <string name="notification_text_activity">Hey, %1$s comincia fra meno di %2$s!</string>
+    <string name="half_hour_extended">30 minuti</string>
+    <string name="one_hour_extended">1 ora</string>
+    <string name="two_hours_extended">2 ore</string>
+    <string name="three_hours_extended">3 ore</string>
+    <string name="twelve_hours_extended">12 ore</string>
+    <string name="one_day_extended">1 giorno</string>
+    <string name="two_days_extended">2 giorni</string>
     <!-- end -->
 </resources>

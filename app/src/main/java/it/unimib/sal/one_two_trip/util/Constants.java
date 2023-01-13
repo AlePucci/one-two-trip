@@ -1,5 +1,7 @@
 package it.unimib.sal.one_two_trip.util;
 
+import androidx.core.app.NotificationManagerCompat;
+
 /**
  * Constants used throughout the application.
  */
@@ -26,6 +28,7 @@ public class Constants {
     public static final String HALF_HOUR = "30";
     public static final String ONE_HOUR = "60";
     public static final String TWO_HOURS = "120";
+    public static final int MINUTE_IN_MILLIS = 60000;
 
     // TRIPS REFRESH RATE
     public static final String LAST_UPDATE = "last_update";
@@ -62,10 +65,14 @@ public class Constants {
     public static final String API_KEY_ERROR = "api_key_error";
     public static final String UNEXPECTED_ERROR = "unexpected_error";
 
+    // NOTIFICATIONS
     public static final String NOTIFICATION_TYPE = "type";
     public static final String NOTIFICATION_TRIP = "trip";
     public static final String NOTIFICATION_ACTIVITY = "activity";
     public static final String NOTIFICATION_ENTITY_ID = "id";
     public static final String NOTIFICATION_ENTITY_NAME = "name";
     public static final String NOTIFICATION_ENTITY_START_TIME = "start_time";
+    public static final String NOTIFICATION_CHANNEL_ID = "one_two_trip_channel";
+    public static final int NOTIFICATION_IMPORTANCE = NotificationManagerCompat.IMPORTANCE_HIGH;
+    public static final String NOTIFICATION_TIME = "time";
 }
