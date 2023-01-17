@@ -6,7 +6,9 @@ import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_POS;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Application;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -60,14 +62,14 @@ import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
-public class TripFragment extends Fragment implements MenuProvider{
+public class TripFragment extends Fragment implements MenuProvider {
 
     private ActivityResultLauncher<String[]> multiplePermissionLauncher;
 
     private Application application;
-    private TripsViewModel viewModel;
+    TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
-
+    TripRecyclerViewAdapter adapter;
     private Trip trip;
 
 
@@ -119,7 +121,7 @@ public class TripFragment extends Fragment implements MenuProvider{
         ActivityResultContracts.RequestMultiplePermissions multiplePermissionsContract = new ActivityResultContracts.RequestMultiplePermissions();
 
         multiplePermissionLauncher = registerForActivityResult(multiplePermissionsContract, isGranted -> {
-            if(!isGranted.containsValue(false)) {
+            if (!isGranted.containsValue(false)) {
                 loadMap();
             }
         });
@@ -141,7 +143,7 @@ public class TripFragment extends Fragment implements MenuProvider{
         RecyclerView recyclerView = view.findViewById(R.id.trip_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        TripRecyclerViewAdapter adapter = new TripRecyclerViewAdapter(activityList, new TripRecyclerViewAdapter.OnItemClickListener() {
+         adapter = new TripRecyclerViewAdapter(activityList, new TripRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onActivityClick(int position) {
                 Bundle bundle = new Bundle();
@@ -169,7 +171,7 @@ public class TripFragment extends Fragment implements MenuProvider{
         viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
             ProgressBar progressBar = requireView().findViewById(R.id.trip_progressbar);
 
-            if(result.isSuccess()) {
+            if (result.isSuccess()) {
                 List<Trip> trips = ((Result.Success) result).getData().getTripList();
                 int tripPos = getArguments().getInt(SELECTED_TRIP_POS);
 
@@ -223,7 +225,7 @@ public class TripFragment extends Fragment implements MenuProvider{
         GeoPoint startPoint = new GeoPoint(48.8583, 2.2944);
         mapController.setCenter(startPoint);
 
-        MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getContext()),mapView);
+        MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getContext()), mapView);
         mLocationOverlay.enableMyLocation();
         mapView.getOverlays().add(mLocationOverlay);
 
@@ -232,11 +234,11 @@ public class TripFragment extends Fragment implements MenuProvider{
     private void loadMap() {
         boolean permissionsStatus = true;
 
-        for(String p: PERMISSIONS) {
+        for (String p : PERMISSIONS) {
             permissionsStatus &= ActivityCompat.checkSelfPermission(requireContext(), p) == PackageManager.PERMISSION_GRANTED;
         }
 
-        if(permissionsStatus) {
+        if (permissionsStatus) {
             //Get the Map
             Configuration.getInstance().load(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()));
         } else {
@@ -251,13 +253,24 @@ public class TripFragment extends Fragment implements MenuProvider{
 
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-        if(menuItem.getItemId() == R.id.trip_menu_rename) {
+        if (menuItem.getItemId() == R.id.trip_menu_rename) {
             //TODO: rename trip
-            Snackbar.make(requireView(), "Rename", Snackbar.LENGTH_SHORT).show();
+            //...
+
+            viewModel.updateTrip(trip);
             return true;
-        } else if(menuItem.getItemId() == R.id.trip_menu_delete) {
-            //TODO: delete trip
-            Snackbar.make(requireView(), "Delete", Snackbar.LENGTH_SHORT).show();
+        } else if (menuItem.getItemId() == R.id.trip_menu_delete) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
+            alert.setTitle(getString(R.string.trip_delete_confirmation_title));
+            alert.setMessage(getString(R.string.trip_delete_confirmation));
+            alert.setPositiveButton(getString(R.string.trip_delete_confirmation_positive),
+                    (dialog, whichButton) -> {
+                        viewModel.deleteTrip(trip);
+                        getActivity().finish();
+                    });
+
+            alert.setNegativeButton(getString(R.string.trip_delete_confirmation_negative), null);
+            alert.show();
             return true;
         }
 

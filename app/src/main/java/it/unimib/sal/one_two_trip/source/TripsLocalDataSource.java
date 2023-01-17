@@ -40,7 +40,6 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
     public void updateTrip(Trip trip) {
         TripsRoomDatabase.databaseWriteExecutor.execute(() -> {
             tripsDAO.updateTrip(trip);
-            tripCallback.onSuccessFromLocal(Collections.singletonList(trip));
         });
     }
 
@@ -82,6 +81,14 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
 
                 tripCallback.onSuccessFromLocal(tripList);
             }
+        });
+    }
+
+    @Override
+    public void deleteTrip(Trip trip) {
+        TripsRoomDatabase.databaseWriteExecutor.execute(() -> {
+            tripsDAO.delete(trip);
+            tripCallback.onSuccessFromLocal(Collections.singletonList(trip));
         });
     }
 }

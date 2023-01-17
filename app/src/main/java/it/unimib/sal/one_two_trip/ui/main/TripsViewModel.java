@@ -45,4 +45,8 @@ public class TripsViewModel extends ViewModel {
     private void fetchTrips(long lastUpdate) {
         tripListLiveData = tripsRepository.fetchTrips(lastUpdate);
     }
+
+    public void deleteTrip(Trip trip) {
+        tripsRepository.deleteTrip(trip);
+    }
 }

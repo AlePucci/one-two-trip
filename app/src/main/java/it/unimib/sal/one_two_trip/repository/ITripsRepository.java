@@ -10,4 +10,6 @@ public interface ITripsRepository {
     MutableLiveData<Result> fetchTrips(long lastUpdate);
 
     void updateTrip(Trip trip);
+
+    void deleteTrip(Trip trip);
 }

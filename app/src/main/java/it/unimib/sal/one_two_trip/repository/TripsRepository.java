@@ -58,6 +58,13 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     @Override
     public void updateTrip(Trip trip) {
         tripsLocalDataSource.updateTrip(trip);
+        tripsRemoteDataSource.updateTrip(trip);
+    }
+
+    @Override
+    public void deleteTrip(Trip trip) {
+        tripsLocalDataSource.deleteTrip(trip);
+        tripsRemoteDataSource.deleteTrip(trip);
     }
 
     @Override

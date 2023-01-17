@@ -36,4 +36,14 @@ public class TripsMockRemoteDataSource extends BaseTripsRemoteDataSource {
             tripCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
         }
     }
+
+    @Override
+    public void updateTrip(Trip trip) {
+
+    }
+
+    @Override
+    public void deleteTrip(Trip trip) {
+
+    }
 }
