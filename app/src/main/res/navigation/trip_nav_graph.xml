@@ -18,8 +18,8 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <argument
-            android:name="tripPosition"
-            app:argType="integer" />
+            android:name="tripId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/activityFragment"
@@ -27,10 +27,10 @@
         android:label="fragment_activity"
         tools:layout="@layout/fragment_activity" >
         <argument
-            android:name="activityPos"
-            app:argType="integer" />
+            android:name="activityId"
+            app:argType="long" />
         <argument
-            android:name="tripPosition"
-            app:argType="integer" />
+            android:name="tripId"
+            app:argType="long" />
     </fragment>
 </navigation>

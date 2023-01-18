@@ -19,8 +19,8 @@
             android:name="activityPos"
             app:argType="integer" />
         <argument
-            android:name="tripPosition"
-            app:argType="integer" />
+            android:name="tripId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/activityDateEditFragment"
@@ -36,7 +36,7 @@
             android:name="activityPos"
             app:argType="integer" />
         <argument
-            android:name="tripPosition"
-            app:argType="integer" />
+            android:name="tripId"
+            app:argType="long" />
     </fragment>
 </navigation>

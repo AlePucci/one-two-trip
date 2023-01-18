@@ -1,24 +1,22 @@
 package it.unimib.sal.one_two_trip.ui.trip.activity;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
-import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_POS;
-import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_POS;
+import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -28,39 +26,41 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
+import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
-import it.unimib.sal.one_two_trip.util.Constants;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 
 public class ActivityDateFragment extends Fragment {
+
     private Application application;
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
 
     public ActivityDateFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        application = requireActivity().getApplication();
-
-        sharedPreferencesUtil = new SharedPreferencesUtil(application);
-
+        this.application = requireActivity().getApplication();
+        this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
-                .getTripsRepository(application);
-        viewModel = new ViewModelProvider(requireActivity(),
-                new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
+                .getTripsRepository(this.application);
+        if (tripsRepository != null) {
+            this.viewModel = new ViewModelProvider(requireActivity(),
+                    new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
+        } else {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -73,11 +73,18 @@ public class ActivityDateFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MaterialButton editButton = requireView().findViewById(R.id.activity_when_edit);
-        Bundle bundle = new Bundle();
-        bundle.putInt(SELECTED_TRIP_POS, getArguments().getInt(SELECTED_TRIP_POS));
-        bundle.putInt(SELECTED_ACTIVITY_POS, getArguments().getInt(SELECTED_ACTIVITY_POS));
-        editButton.setOnClickListener(view1 -> Navigation.findNavController(view1).navigate(R.id.action_activityDateFragment_to_activityDateEditFragment, bundle));
+        if (getParentFragment() == null || getParentFragment().getParentFragment() == null) {
+            return;
+        }
+
+        long tripId = ((ActivityFragment) getParentFragment().getParentFragment()).getTripId();
+        long activityId = ((ActivityFragment) getParentFragment().getParentFragment()).getActivityId();
+
+        MaterialButton editButton = view.findViewById(R.id.activity_when_edit);
+
+        editButton.setOnClickListener(btn ->
+                Navigation.findNavController(btn).navigate(
+                        R.id.action_activityDateFragment_to_activityDateEditFragment));
 
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
@@ -86,37 +93,59 @@ public class ActivityDateFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
-            if(result.isSuccess()) {
-                List<Trip> trips = ((Result.Success) result).getData().getTripList();
-                int tripPos = getArguments().getInt(SELECTED_TRIP_POS);
-                Trip trip = trips.get(tripPos);
-                int activityPos = getArguments().getInt(SELECTED_ACTIVITY_POS);
-                Activity activity = trip.getActivity().activityList.get(activityPos);
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+                result -> {
+                    if (result.isSuccess()) {
+                        List<Trip> trips = ((Result.Success) result).getData().getTripList();
 
-                TextView date1 = requireView().findViewById(R.id.activity_when1);
-                DateFormat df = SimpleDateFormat.getInstance();
-                date1.setText(df.format(activity.getStart_date()));
+                        Trip trip = null;
+                        for (Trip mTrip : trips) {
+                            if (mTrip.getId() == tripId) {
+                                trip = mTrip;
+                                break;
+                            }
+                        }
 
-                TextView date2 = requireView().findViewById(R.id.activity_when2);
-                MaterialButton save2 = requireView().findViewById(R.id.activity_when_save2);
-                ImageView arrow = requireView().findViewById(R.id.activity_when_arrow);
-                if(activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
-                    date2.setText(df.format(activity.getEnd_date()));
+                        if (trip == null || trip.getActivity() == null
+                                || trip.getActivity().getActivityList() == null) {
+                            return;
+                        }
 
-                    date2.setVisibility(View.VISIBLE);
-                    save2.setVisibility(View.VISIBLE);
-                    arrow.setVisibility(View.VISIBLE);
-                } else {
-                    date2.setVisibility(View.GONE);
-                    save2.setVisibility(View.GONE);
-                    arrow.setVisibility(View.GONE);
-                }
-            } else {
-                ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
-                Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
-                        .getMessage()), Snackbar.LENGTH_SHORT).show();
-            }
-        });
+                        Activity activity = null;
+
+                        for (Activity mActivity : trip.getActivity().getActivityList()) {
+                            if (mActivity.getId() == activityId) {
+                                activity = mActivity;
+                                break;
+                            }
+                        }
+
+                        if (activity == null) return;
+
+                        TextView date1 = view.findViewById(R.id.activity_when1);
+                        DateFormat df = SimpleDateFormat.getInstance();
+                        date1.setText(df.format(activity.getStart_date()));
+
+                        TextView date2 = view.findViewById(R.id.activity_when2);
+                        MaterialButton save2 = view.findViewById(R.id.activity_when_save2);
+                        ImageView arrow = view.findViewById(R.id.activity_when_arrow);
+                        if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
+                            date2.setText(df.format(activity.getEnd_date()));
+
+                            date2.setVisibility(View.VISIBLE);
+                            save2.setVisibility(View.VISIBLE);
+                            arrow.setVisibility(View.VISIBLE);
+                        } else {
+                            date2.setVisibility(View.GONE);
+                            save2.setVisibility(View.GONE);
+                            arrow.setVisibility(View.GONE);
+                        }
+                    } else {
+                        ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
+                        Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
+                                .getMessage()), Snackbar.LENGTH_SHORT).show();
+                        requireActivity().finish();
+                    }
+                });
     }
 }

@@ -1,22 +1,19 @@
 package it.unimib.sal.one_two_trip.ui.trip.activity;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
-import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_POS;
-import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_POS;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -25,10 +22,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
+import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -37,30 +34,31 @@ import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 
 public class ActivityDescriptionEditFragment extends Fragment {
+
     private Application application;
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
-
     private Trip trip;
     private Activity activity;
 
     public ActivityDescriptionEditFragment() {
-       // Required empty public constructor
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        application = requireActivity().getApplication();
-
-        sharedPreferencesUtil = new SharedPreferencesUtil(application);
-
+        this.application = requireActivity().getApplication();
+        this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
-                .getTripsRepository(application);
-        viewModel = new ViewModelProvider(requireActivity(),
-                new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
+                .getTripsRepository(this.application);
+        if (tripsRepository != null) {
+            this.viewModel = new ViewModelProvider(requireActivity(),
+                    new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
+        } else {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -72,20 +70,25 @@ public class ActivityDescriptionEditFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MaterialButton editButton = requireView().findViewById(R.id.activity_descr_confirm);
-        TextInputEditText description = requireView().findViewById(R.id.activity_descr_edittext);
+        if (getParentFragment() == null || getParentFragment().getParentFragment() == null) {
+            return;
+        }
+
+        long tripId = ((ActivityFragment) getParentFragment().getParentFragment()).getTripId();
+        long activityId = ((ActivityFragment) getParentFragment().getParentFragment()).getActivityId();
+
+        MaterialButton editButton = view.findViewById(R.id.activity_descr_confirm);
+        TextInputEditText description = view.findViewById(R.id.activity_descr_edittext);
 
         editButton.setOnClickListener(view1 -> {
-            if(description.getText() != null && !description.getText().toString().equals(activity.getDescription())) {
-                activity.setDescription(description.getText().toString());
-                viewModel.updateTrip(trip);
+            if (description.getText() != null && !description.getText().toString().equalsIgnoreCase(
+                    activity.getDescription())) {
+                this.activity.setDescription(description.getText().toString());
+                this.viewModel.updateTrip(trip);
             }
 
-
-            Bundle bundle = new Bundle();
-            bundle.putInt(SELECTED_TRIP_POS, getArguments().getInt(SELECTED_TRIP_POS));
-            bundle.putInt(SELECTED_ACTIVITY_POS, getArguments().getInt(SELECTED_ACTIVITY_POS));
-            Navigation.findNavController(view).navigate(R.id.action_activityDescriptionEditFragment_to_activityDescriptionFragment, bundle);
+            Navigation.findNavController(view).navigate(
+                    R.id.action_activityDescriptionEditFragment_to_activityDescriptionFragment);
         });
 
         String lastUpdate = "0";
@@ -95,20 +98,38 @@ public class ActivityDescriptionEditFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
-            if(result.isSuccess()) {
-                List<Trip> trips = ((Result.Success) result).getData().getTripList();
-                int tripPos = getArguments().getInt(SELECTED_TRIP_POS);
-                trip = trips.get(tripPos);
-                int activityPos = getArguments().getInt(SELECTED_ACTIVITY_POS);
-                activity = trip.getActivity().activityList.get(activityPos);
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+                result -> {
+                    if (result.isSuccess()) {
+                        List<Trip> trips = ((Result.Success) result).getData().getTripList();
+                        for (Trip mTrip : trips) {
+                            if (mTrip.getId() == tripId) {
+                                trip = mTrip;
+                                break;
+                            }
+                        }
 
-                description.setText(activity.getDescription());
-            } else {
-                ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
-                Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
-                        .getMessage()), Snackbar.LENGTH_SHORT).show();
-            }
-        });
+                        if (trip == null || trip.getActivity() == null
+                                || trip.getActivity().getActivityList() == null) {
+                            return;
+                        }
+
+                        for (Activity mActivity : trip.getActivity().getActivityList()) {
+                            if (mActivity.getId() == activityId) {
+                                this.activity = mActivity;
+                                break;
+                            }
+                        }
+
+                        if (this.activity == null) return;
+
+                        description.setText(this.activity.getDescription());
+                    } else {
+                        ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
+                        Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
+                                .getMessage()), Snackbar.LENGTH_SHORT).show();
+                        requireActivity().finish();
+                    }
+                });
     }
 }

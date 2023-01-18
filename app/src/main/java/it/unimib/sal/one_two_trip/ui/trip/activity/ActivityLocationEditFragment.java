@@ -2,13 +2,10 @@ package it.unimib.sal.one_two_trip.ui.trip.activity;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
-import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_POS;
-import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_POS;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,42 +24,42 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
+import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
-import it.unimib.sal.one_two_trip.util.Constants;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
-
 public class ActivityLocationEditFragment extends Fragment {
+
     private Application application;
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
-
     private Trip trip;
     private Activity activity;
 
     public ActivityLocationEditFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        application = requireActivity().getApplication();
-
-        sharedPreferencesUtil = new SharedPreferencesUtil(application);
-
+        this.application = requireActivity().getApplication();
+        this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
-                .getTripsRepository(application);
-        viewModel = new ViewModelProvider(requireActivity(),
-                new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
+                .getTripsRepository(this.application);
+        if (tripsRepository != null) {
+            this.viewModel = new ViewModelProvider(requireActivity(),
+                    new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
+        } else {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -75,66 +72,68 @@ public class ActivityLocationEditFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TextInputLayout loc1 = requireView().findViewById(R.id.activity_where1_edit);
-        TextInputLayout loc2 = requireView().findViewById(R.id.activity_where2_edit);
-        MaterialButton confirmButton = requireView().findViewById(R.id.activity_where_confirm);
-        ImageView arrow = requireView().findViewById(R.id.activity_where_arrow_edit);
+        if (getParentFragment() == null || getParentFragment().getParentFragment() == null) {
+            return;
+        }
+
+        long tripId = ((ActivityFragment) getParentFragment().getParentFragment()).getTripId();
+        long activityId = ((ActivityFragment) getParentFragment().getParentFragment()).getActivityId();
+
+        TextInputLayout loc1 = view.findViewById(R.id.activity_where1_edit);
+        TextInputLayout loc2 = view.findViewById(R.id.activity_where2_edit);
+        MaterialButton confirmButton = view.findViewById(R.id.activity_where_confirm);
+        ImageView arrow = view.findViewById(R.id.activity_where_arrow_edit);
 
         //Confirm Edit
         confirmButton.setOnClickListener(view1 -> {
             String location1 = null;
             String location2 = null;
 
-            if(loc1.getEditText() != null) {
+            if (loc1.getEditText() != null) {
                 location1 = loc1.getEditText().getText().toString();
             }
 
-            if(loc2.getEditText() != null) {
+            if (loc2.getEditText() != null) {
                 location2 = loc2.getEditText().getText().toString();
             }
 
-            Log.d("AAA", location1 + " " + location2);
-
             boolean valid = false;
 
-            if(location1 == null) {
+            if (location1 == null) {
                 loc1.setError(getResources().getString(R.string.activity_field_error));
                 return;
             }
 
-            if(location1.equals("")) {
-                location1 = activity.getLocation();
+            if (location1.isEmpty()) {
+                location1 = this.activity.getLocation();
             }
 
-            if(!activity.getLocation().equals(location1)) {
-                activity.setLocation(location1);
+            if (!this.activity.getLocation().equalsIgnoreCase(location1)) {
+                this.activity.setLocation(location1);
                 valid = true;
             }
 
-            if(activity.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
-                if(location2 == null) {
+            if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
+                if (location2 == null) {
                     loc2.setError(getResources().getString(R.string.activity_field_error));
                     return;
                 }
 
-                if(location2.equals("")) {
-                    location2 = activity.getEnd_location();
+                if (location2.isEmpty()) {
+                    location2 = this.activity.getEnd_location();
                 }
 
-                if(!activity.getEnd_location().equals(location2)) {
-                    activity.setEnd_location(location2);
+                if (!this.activity.getEnd_location().equalsIgnoreCase(location2)) {
+                    this.activity.setEnd_location(location2);
                     valid = true;
                 }
             }
 
-            if(valid) {
-                viewModel.updateTrip(trip);
+            if (valid) {
+                this.viewModel.updateTrip(trip);
             }
-
-            Bundle bundle = new Bundle();
-            bundle.putInt(SELECTED_TRIP_POS, getArguments().getInt(SELECTED_TRIP_POS));
-            bundle.putInt(SELECTED_ACTIVITY_POS, trip.getActivity().activityList.indexOf(activity));
-            Navigation.findNavController(view1).navigate(R.id.action_activityLocationEditFragment_to_activityLocationFragment, bundle);
+            Navigation.findNavController(view1).navigate(
+                    R.id.action_activityLocationEditFragment_to_activityLocationFragment);
         });
 
         String lastUpdate = "0";
@@ -144,18 +143,35 @@ public class ActivityLocationEditFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
-            if(result.isSuccess()) {
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
+            if (result.isSuccess()) {
                 List<Trip> trips = ((Result.Success) result).getData().getTripList();
-                int tripPos = getArguments().getInt(SELECTED_TRIP_POS);
-                trip = trips.get(tripPos);
-                int activityPos = getArguments().getInt(SELECTED_ACTIVITY_POS);
-                activity = trip.getActivity().activityList.get(activityPos);
 
-                loc1.setHint(activity.getLocation());
+                for (Trip mTrip : trips) {
+                    if (mTrip.getId() == tripId) {
+                        trip = mTrip;
+                        break;
+                    }
+                }
 
-                if(activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
-                    loc2.setHint(activity.getEnd_location());
+                if (trip == null || trip.getActivity() == null
+                        || trip.getActivity().getActivityList() == null) {
+                    return;
+                }
+
+                for (Activity mActivity : trip.getActivity().getActivityList()) {
+                    if (mActivity.getId() == activityId) {
+                        this.activity = mActivity;
+                        break;
+                    }
+                }
+
+                if (this.activity == null) return;
+
+                loc1.setHint(this.activity.getLocation());
+
+                if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
+                    loc2.setHint(this.activity.getEnd_location());
 
                     loc2.setVisibility(View.VISIBLE);
                     arrow.setVisibility(View.VISIBLE);
@@ -167,6 +183,7 @@ public class ActivityLocationEditFragment extends Fragment {
                 ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                 Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
                         .getMessage()), Snackbar.LENGTH_SHORT).show();
+                requireActivity().finish();
             }
         });
     }

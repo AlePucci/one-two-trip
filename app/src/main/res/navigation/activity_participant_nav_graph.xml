@@ -9,7 +9,7 @@
         android:id="@+id/activityParticipantFragment"
         android:name="it.unimib.sal.one_two_trip.ui.trip.activity.ActivityParticipantFragment"
         android:label="fragment_activity_participant"
-        tools:layout="@layout/fragment_activity_participant" >
+        tools:layout="@layout/fragment_activity_participant">
         <action
             android:id="@+id/action_activityParticipantFragment_to_activityParticipantEditFragment"
             app:destination="@id/activityParticipantEditFragment"
@@ -19,14 +19,14 @@
             android:name="activityPos"
             app:argType="integer" />
         <argument
-            android:name="tripPosition"
-            app:argType="integer" />
+            android:name="tripId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/activityParticipantEditFragment"
         android:name="it.unimib.sal.one_two_trip.ui.trip.activity.ActivityParticipantEditFragment"
         android:label="fragment_activity_participant_edit"
-        tools:layout="@layout/fragment_activity_participant_edit" >
+        tools:layout="@layout/fragment_activity_participant_edit">
         <action
             android:id="@+id/action_activityParticipantEditFragment_to_activityParticipantFragment"
             app:destination="@id/activityParticipantFragment"
@@ -36,7 +36,7 @@
             android:name="activityPos"
             app:argType="integer" />
         <argument
-            android:name="tripPosition"
-            app:argType="integer" />
+            android:name="tripId"
+            app:argType="long" />
     </fragment>
 </navigation>

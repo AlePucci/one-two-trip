@@ -1,17 +1,17 @@
 package it.unimib.sal.one_two_trip.ui.trip;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
-import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_POS;
-import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_POS;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Application;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.InputType;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,13 +19,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
@@ -36,6 +36,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -43,19 +44,21 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.TripRecyclerViewAdapter;
+import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -64,15 +67,6 @@ import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 public class TripFragment extends Fragment implements MenuProvider {
 
-    private ActivityResultLauncher<String[]> multiplePermissionLauncher;
-
-    private Application application;
-    TripsViewModel viewModel;
-    private SharedPreferencesUtil sharedPreferencesUtil;
-    TripRecyclerViewAdapter adapter;
-    private Trip trip;
-
-
     private final String[] PERMISSIONS = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.INTERNET,
@@ -80,31 +74,35 @@ public class TripFragment extends Fragment implements MenuProvider {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
     };
-
+    TripsViewModel viewModel;
+    TripRecyclerViewAdapter adapter;
+    MyLocationNewOverlay mLocationOverlay;
+    private ActivityResultLauncher<String[]> multiplePermissionLauncher;
+    private Application application;
+    private SharedPreferencesUtil sharedPreferencesUtil;
+    private Trip trip;
     private MapView mapView;
-
     private List<Activity> activityList;
-    private String title;
-
 
     public TripFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        application = requireActivity().getApplication();
-
-        sharedPreferencesUtil = new SharedPreferencesUtil(application);
-
+        this.application = requireActivity().getApplication();
+        this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
-                .getTripsRepository(application);
-        viewModel = new ViewModelProvider(requireActivity(),
-                new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
-
-        activityList = new ArrayList<>();
+                .getTripsRepository(this.application);
+        if (tripsRepository != null) {
+            this.viewModel = new ViewModelProvider(requireActivity(),
+                    new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
+        } else {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
+        this.activityList = new ArrayList<>();
     }
 
     @Override
@@ -116,49 +114,62 @@ public class TripFragment extends Fragment implements MenuProvider {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (getArguments() == null) {
+            return;
+        }
+        long tripId = getArguments().getLong(SELECTED_TRIP_ID);
+        MaterialToolbar toolbar = requireActivity().findViewById(R.id.trip_toolbar);
 
         //Ask for permissions
-        ActivityResultContracts.RequestMultiplePermissions multiplePermissionsContract = new ActivityResultContracts.RequestMultiplePermissions();
+        ActivityResultContracts.RequestMultiplePermissions multiplePermissionsContract =
+                new ActivityResultContracts.RequestMultiplePermissions();
 
-        multiplePermissionLauncher = registerForActivityResult(multiplePermissionsContract, isGranted -> {
-            if (!isGranted.containsValue(false)) {
-                loadMap();
-            }
-        });
-
-        //Toolbar
-        Toolbar toolbar = requireActivity().findViewById(R.id.trip_toolbar);
+        multiplePermissionLauncher = registerForActivityResult(multiplePermissionsContract,
+                isGranted -> {
+                    if (!isGranted.containsValue(false)) {
+                        // to do
+                    }
+                });
 
         MenuHost menuHost = requireActivity();
         menuHost.addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
 
         mapSetup();
 
-        //FAB
         FloatingActionButton fab = view.findViewById(R.id.trip_fab);
         //TODO: add activity
-        fab.setOnClickListener(v -> Snackbar.make(v, "Add Activity", Snackbar.LENGTH_SHORT).show());
+        fab.setOnClickListener(v -> Snackbar.make(v, "Add Activity", Snackbar.LENGTH_SHORT)
+                .show());
 
         //RecyclerView
         RecyclerView recyclerView = view.findViewById(R.id.trip_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-         adapter = new TripRecyclerViewAdapter(activityList, new TripRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onActivityClick(int position) {
-                Bundle bundle = new Bundle();
-                bundle.putInt(SELECTED_ACTIVITY_POS, position);
-                bundle.putInt(SELECTED_TRIP_POS, getArguments().getInt(SELECTED_TRIP_POS));
-                Navigation.findNavController(requireView()).navigate(R.id.action_tripFragment_to_activityFragment, bundle);
-            }
 
-            @Override
-            public void onDragClick(int position) {
-                //TODO: drag activity
-                requireView().findViewById(R.id.item_activity_dragbutton).performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                Snackbar.make(requireView(), "Drag " + activityList.get(position).getTitle(), Snackbar.LENGTH_SHORT).show();
-            }
-        });
+        ProgressBar progressBar = view.findViewById(R.id.trip_progressbar);
+        progressBar.setVisibility(View.VISIBLE);
+
+        this.adapter = new TripRecyclerViewAdapter(this.activityList,
+                new TripRecyclerViewAdapter.OnItemClickListener() {
+                    @Override
+                    public void onActivityClick(int position) {
+                        long activityId = activityList.get(position).getId();
+                        Bundle bundle = new Bundle();
+                        bundle.putLong(SELECTED_TRIP_ID, tripId);
+                        bundle.putLong(SELECTED_ACTIVITY_ID, activityId);
+                        Navigation.findNavController(view).navigate(
+                                R.id.action_tripFragment_to_activityFragment, bundle);
+                    }
+
+                    @Override
+                    public void onDragClick(int position) {
+                        //TODO: drag activity
+                        view.findViewById(R.id.item_activity_dragbutton)
+                                .performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                        Snackbar.make(view, "Drag " + activityList.get(position).getTitle(),
+                                Snackbar.LENGTH_SHORT).show();
+                    }
+                });
         recyclerView.setAdapter(adapter);
 
         String lastUpdate = "0";
@@ -168,21 +179,30 @@ public class TripFragment extends Fragment implements MenuProvider {
                     LAST_UPDATE);
         }
 
-        viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
-            ProgressBar progressBar = requireView().findViewById(R.id.trip_progressbar);
-
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observeForever(result -> {
             if (result.isSuccess()) {
                 List<Trip> trips = ((Result.Success) result).getData().getTripList();
-                int tripPos = getArguments().getInt(SELECTED_TRIP_POS);
 
-                trip = trips.get(tripPos);
+                for (Trip trip : trips) {
+                    if (trip.getId() == tripId) {
+                        this.trip = trip;
+                        break;
+                    }
+                }
 
-                title = trip.getTitle();
-                toolbar.setTitle(title);
+                if (this.trip == null) {
+                    return;
+                }
 
-                activityList.addAll(trip.getActivity().activityList);
-                adapter.addData(trip.getActivity().activityList);
+                if (this.trip.getActivity() != null
+                        && this.trip.getActivity().getActivityList() != null
+                        && !this.trip.getActivity().getActivityList().isEmpty()) {
+                    List<Activity> activityList = this.trip.getActivity().getActivityList();
+                    activityList.sort(Comparator.comparing(Activity::getStart_date));
+                    adapter.addData(activityList);
+                }
 
+                toolbar.setTitle(trip.getTitle());
                 progressBar.setVisibility(View.GONE);
             } else {
                 ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
@@ -190,6 +210,7 @@ public class TripFragment extends Fragment implements MenuProvider {
                         .getMessage()), Snackbar.LENGTH_SHORT).show();
 
                 progressBar.setVisibility(View.GONE);
+                requireActivity().finish();
             }
         });
     }
@@ -197,13 +218,23 @@ public class TripFragment extends Fragment implements MenuProvider {
     @Override
     public void onResume() {
         super.onResume();
-        mapView.onResume();
+        if (mLocationOverlay != null) {
+            mLocationOverlay.enableMyLocation();
+        }
+        if (mapView != null) {
+            mapView.onResume();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mapView.onPause();
+        if (mLocationOverlay != null) {
+            mLocationOverlay.disableMyLocation();
+        }
+        if (mapView != null) {
+            mapView.onPause();
+        }
     }
 
     private void mapSetup() {
@@ -214,7 +245,7 @@ public class TripFragment extends Fragment implements MenuProvider {
         mapView = requireView().findViewById(R.id.mapView);
         mapView.setTileSource(TileSourceFactory.MAPNIK);
         mapView.setMultiTouchControls(true);
-        mapView.setBuiltInZoomControls(false);
+        mapView.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
 
         //TODO: draw the travel route
         //TODO: zoom in the trip next activity
@@ -225,21 +256,23 @@ public class TripFragment extends Fragment implements MenuProvider {
         GeoPoint startPoint = new GeoPoint(48.8583, 2.2944);
         mapController.setCenter(startPoint);
 
-        MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getContext()), mapView);
+        mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this.application),
+                mapView);
         mLocationOverlay.enableMyLocation();
         mapView.getOverlays().add(mLocationOverlay);
-
     }
 
     private void loadMap() {
-        boolean permissionsStatus = true;
-
-        for (String p : PERMISSIONS) {
-            permissionsStatus &= ActivityCompat.checkSelfPermission(requireContext(), p) == PackageManager.PERMISSION_GRANTED;
-        }
+        boolean permissionsStatus = ActivityCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED;
 
         if (permissionsStatus) {
-            //Get the Map
             Configuration.getInstance().load(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()));
         } else {
             multiplePermissionLauncher.launch(PERMISSIONS);
@@ -254,10 +287,26 @@ public class TripFragment extends Fragment implements MenuProvider {
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.trip_menu_rename) {
-            //TODO: rename trip
-            //...
+            AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
+            String oldTitle = this.trip.getTitle();
+            EditText input = new EditText(requireContext());
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            input.setHint(oldTitle);
 
-            viewModel.updateTrip(trip);
+            alert.setTitle(getString(R.string.trip_title_change_title));
+            alert.setMessage(getString(R.string.trip_title_change));
+            alert.setView(input);
+            alert.setPositiveButton(getString(R.string.trip_title_change_positive),
+                    (dialog, which) -> {
+                        String newTitle = input.getText().toString();
+                        if (!newTitle.isEmpty() && !newTitle.equals(oldTitle)) {
+                            this.trip.setTitle(newTitle);
+                            this.viewModel.updateTrip(this.trip);
+                        }
+                    });
+            alert.setNegativeButton(getString(R.string.trip_title_change_negative), null);
+            alert.show();
+
             return true;
         } else if (menuItem.getItemId() == R.id.trip_menu_delete) {
             AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
@@ -265,11 +314,12 @@ public class TripFragment extends Fragment implements MenuProvider {
             alert.setMessage(getString(R.string.trip_delete_confirmation));
             alert.setPositiveButton(getString(R.string.trip_delete_confirmation_positive),
                     (dialog, whichButton) -> {
-                        viewModel.deleteTrip(trip);
-                        getActivity().finish();
+                        this.viewModel.deleteTrip(this.trip);
+                        requireActivity().onBackPressed();
                     });
 
-            alert.setNegativeButton(getString(R.string.trip_delete_confirmation_negative), null);
+            alert.setNegativeButton(getString(R.string.trip_delete_confirmation_negative),
+                    null);
             alert.show();
             return true;
         }

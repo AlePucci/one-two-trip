@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.model;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -12,13 +13,27 @@ import java.util.Objects;
  */
 @Entity
 public class Person {
+    
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     private long id;
+
+    @ColumnInfo(name = "name")
     private String name;
+
+    @ColumnInfo(name = "surname")
     private String surname;
+
+    @ColumnInfo(name = "email_address")
     private String email_address;
+
+    @ColumnInfo(name = "password")
     private String password;
+
+    @ColumnInfo(name = "phone_number")
     private String phone_number;
+
+    @ColumnInfo(name = "profile_picture")
     private String profile_picture;
 
     public Person() {
@@ -56,6 +71,7 @@ public class Person {
         return surname;
     }
 
+    @Ignore
     public String getFullName() {
         return getName() + " " + getSurname();
     }

@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.model;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -11,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import it.unimib.sal.one_two_trip.util.holder.PersonListHolder;
+import it.unimib.sal.one_two_trip.model.holder.PersonListHolder;
 
 /**
  * This class represents an activity.
@@ -21,21 +22,46 @@ import it.unimib.sal.one_two_trip.util.holder.PersonListHolder;
 @Entity
 public class Activity {
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     private long id;
 
+    @ColumnInfo(name = "title")
     private String title;
+
+    @ColumnInfo(name = "description")
     private String description;
+
+    @ColumnInfo(name = "location")
     private String location;
+
+    @ColumnInfo(name = "end_location")
     private String end_location;
-    private Date start_date;
-    private Date end_date;
+
+    @ColumnInfo(name = "start_date")
+    private long start_date;
+
+    @ColumnInfo(name = "end_date")
+    private long end_date;
+
     @Embedded
     private PersonListHolder participant;
+
+    @ColumnInfo(name = "trip_id")
     private long trip_id;
+
+    @ColumnInfo(name = "attachments")
     private List<Object> attachment;
+
+    @ColumnInfo(name = "links")
     private List<String> link;
+
+    @ColumnInfo(name = "completed")
     private boolean completed;
+
+    @ColumnInfo(name = "type")
     private String type;
+
+    @ColumnInfo(name = "everyoneParticipate")
     private boolean everyoneParticipate;
 
     public Activity() {
@@ -43,7 +69,7 @@ public class Activity {
 
     @Ignore
     public Activity(long id, String title, String description, String location, String end_location,
-                    Date start_date, Date end_date, PersonListHolder participant, long trip_id,
+                    long start_date, long end_date, PersonListHolder participant, long trip_id,
                     List<Object> attachment, List<String> link, boolean completed, String type,
                     boolean everyoneParticipate) {
         this.id = id;
@@ -102,19 +128,19 @@ public class Activity {
         this.end_location = end_location;
     }
 
-    public Date getStart_date() {
+    public long getStart_date() {
         return start_date;
     }
 
-    public void setStart_date(Date start_date) {
+    public void setStart_date(long start_date) {
         this.start_date = start_date;
     }
 
-    public Date getEnd_date() {
+    public long getEnd_date() {
         return end_date;
     }
 
-    public void setEnd_date(Date end_date) {
+    public void setEnd_date(long end_date) {
         this.end_date = end_date;
     }
 
@@ -167,7 +193,7 @@ public class Activity {
         this.type = type;
     }
 
-    public boolean doesEveryoneParticipate() {
+    public boolean isEveryoneParticipate() {
         return everyoneParticipate;
     }
 
@@ -183,11 +209,10 @@ public class Activity {
     public void checkCompleted() {
         boolean completed;
 
-        if(end_date != null) {
-            completed = end_date.before(new Date());
-        }
-        else{
-            completed = start_date.before(new Date());
+        if (end_date != 0) {
+            completed = end_date < (new Date().getTime());
+        } else {
+            completed = start_date < (new Date().getTime());
         }
 
         setCompleted(completed);
@@ -198,19 +223,31 @@ public class Activity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Activity activity = (Activity) o;
-        return id == activity.id && trip_id == activity.trip_id;
+        return id == activity.id && start_date == activity.start_date &&
+                end_date == activity.end_date && trip_id == activity.trip_id &&
+                completed == activity.completed &&
+                everyoneParticipate == activity.everyoneParticipate &&
+                Objects.equals(title, activity.title) &&
+                Objects.equals(description, activity.description) &&
+                Objects.equals(location, activity.location) &&
+                Objects.equals(end_location, activity.end_location) &&
+                Objects.equals(participant, activity.participant) &&
+                Objects.equals(attachment, activity.attachment) &&
+                Objects.equals(link, activity.link) && Objects.equals(type, activity.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, trip_id);
+        return Objects.hash(id, title, description, location, end_location, start_date, end_date,
+                participant, trip_id, attachment, link, completed, type, everyoneParticipate);
     }
 
     @NonNull
     @Override
     public String toString() {
         return "Activity{" + "id='" + id + '\'' + ", title='" + title + '\'' +
-                ", location='" + location + '\'' + ", start_date=" + start_date + '}';
+                ", location='" + location + '\'' + ", start_date=" + start_date +
+                ", everyoneParticipate=" + everyoneParticipate + '}';
     }
 
 }

@@ -20,8 +20,8 @@
             app:popUpTo="@id/activity_where_nav_graph"
             app:popUpToInclusive="true" />
         <argument
-            android:name="tripPosition"
-            app:argType="integer" />
+            android:name="tripId"
+            app:argType="long" />
         <argument
             android:name="activityPos"
             app:argType="integer" />
@@ -40,7 +40,7 @@
             android:name="activityPos"
             app:argType="integer" />
         <argument
-            android:name="tripPosition"
-            app:argType="integer" />
+            android:name="tripId"
+            app:argType="long" />
     </fragment>
 </navigation>

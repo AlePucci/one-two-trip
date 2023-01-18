@@ -30,8 +30,8 @@ import it.unimib.sal.one_two_trip.R;
 public class HomeActivity extends AppCompatActivity {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
-    private DrawerLayout drawerLayout;
 
+    private DrawerLayout drawerLayout;
     private AppBarConfiguration appBarConfiguration;
     private NavController navController;
 
@@ -45,28 +45,32 @@ public class HomeActivity extends AppCompatActivity {
 
         this.drawerLayout = findViewById(R.id.drawer_layout);
 
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().
-                findFragmentById(R.id.nav_host_fragment);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment);
 
-        assert navHostFragment != null;
-        navController = navHostFragment.getNavController();
+        if (navHostFragment != null) {
+            this.navController = navHostFragment.getNavController();
+        }
 
-        NavigationView topNav = findViewById(R.id.top_navigation);
+        NavigationView drawerNav = findViewById(R.id.drawer_navigation);
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
 
-        appBarConfiguration = new AppBarConfiguration.
-                Builder(R.id.fragment_coming_trips, R.id.fragment_past_trips)
-                .setOpenableLayout(drawerLayout).build();
+        this.appBarConfiguration = new AppBarConfiguration
+                .Builder(R.id.fragment_coming_trips, R.id.fragment_past_trips,
+                R.id.fragment_settings, R.id.fragment_about)
+                .setOpenableLayout(this.drawerLayout).build();
+
+        drawerNav.setCheckedItem(R.id.fragment_coming_trips);
 
         // For the Toolbar
-        NavigationUI.setupActionBarWithNavController(this, navController,
-                appBarConfiguration);
+        NavigationUI.setupActionBarWithNavController(this,
+                this.navController, this.appBarConfiguration);
 
-        // For the Toolbar Menu
-        NavigationUI.setupWithNavController(topNav, navController);
+        // For the NavigationDrawer
+        NavigationUI.setupWithNavController(drawerNav, this.navController);
 
         // For the BottomNavigationView
-        NavigationUI.setupWithNavController(bottomNav, navController);
+        NavigationUI.setupWithNavController(bottomNav, this.navController);
 
         addMenuProvider(new MenuProvider() {
             @Override
@@ -79,13 +83,28 @@ public class HomeActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        drawerNav.getMenu().findItem(R.id.logout).setOnMenuItemClickListener(item -> {
+            /* TO DO: LOGOUT */
+            return false;
+        });
+
+        // For setting past trip fragment as "Home" in navigation drawer
+        this.navController.addOnDestinationChangedListener((navController, navDestination, bundle)
+                -> {
+            if (navDestination.getId() == R.id.fragment_past_trips) {
+                drawerNav.getMenu().getItem(0).setChecked(true);
+            }
+        });
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        return NavigationUI.navigateUp(navController, appBarConfiguration);
+        return NavigationUI.navigateUp(this.navController, this.appBarConfiguration)
+                || super.onSupportNavigateUp();
     }
 
+    @Override
     public void onBackPressed() {
         if (this.drawerLayout != null && this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             this.drawerLayout.closeDrawer(GravityCompat.START);
@@ -93,4 +112,6 @@ public class HomeActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+
 }

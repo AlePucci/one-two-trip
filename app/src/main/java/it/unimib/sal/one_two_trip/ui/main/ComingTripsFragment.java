@@ -1,7 +1,10 @@
 package it.unimib.sal.one_two_trip.ui.main;
 
+import static it.unimib.sal.one_two_trip.util.Constants.KEY_COMPLETED;
+import static it.unimib.sal.one_two_trip.util.Constants.KEY_LOCATION;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
@@ -20,23 +23,34 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.TripsRecyclerViewAdapter;
+import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.model.TripsResponse;
-import it.unimib.sal.one_two_trip.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.trip.TripActivity;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
+import it.unimib.sal.one_two_trip.util.PhotoWorker;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
+import it.unimib.sal.one_two_trip.util.Utility;
 
 /**
  * A simple {@link Fragment} subclass that shows the coming trips of the user.
@@ -52,10 +66,12 @@ public class ComingTripsFragment extends Fragment {
     private TripsRecyclerViewAdapter tripsRecyclerViewAdapter;
     private SharedPreferencesUtil sharedPreferencesUtil;
     private Application application;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public ComingTripsFragment() {
     }
 
+    @NonNull
     public static ComingTripsFragment newInstance() {
         return new ComingTripsFragment();
     }
@@ -64,18 +80,22 @@ public class ComingTripsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        application = requireActivity().getApplication();
-
-        sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
+        this.application = requireActivity().getApplication();
+        this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(this.application);
-        tripsViewModel = new ViewModelProvider(requireActivity(),
-                new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
-        comingTrips = new ArrayList<>();
+        if (tripsRepository != null) {
+            this.tripsViewModel = new ViewModelProvider(requireActivity(),
+                    new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
+        } else {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
+        this.comingTrips = new ArrayList<>();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_coming_trips, container, false);
     }
@@ -85,41 +105,16 @@ public class ComingTripsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         RecyclerView comingTripsView = view.findViewById(R.id.coming_trips_view);
-        TextView comingTripsTitle = view.findViewById(R.id.coming_trips_title);
         TextView noTripsText = view.findViewById(R.id.no_trips_text);
         ImageView noTripsImage = view.findViewById(R.id.no_trips_image);
         ProgressBar progressBar = view.findViewById(R.id.progress_bar);
+        BottomNavigationView bottomNavigationView = requireActivity()
+                .findViewById(R.id.bottom_navigation);
+        FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
+        this.swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(),
-                LinearLayoutManager.VERTICAL, false);
-
-        tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(comingTrips,
-                this.application,
-                new TripsRecyclerViewAdapter.OnItemClickListener() {
-                    @Override
-                    public void onTripShare(Trip trip) {
-                        Snackbar.make(view, "Share " + trip.getTitle(),
-                                Snackbar.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onTripClick(Trip trip) {
-                        Intent intent = new Intent(requireContext(), TripActivity.class);
-                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
-                        requireContext().startActivity(intent);
-                    }
-
-                    @Override
-                    public void onButtonClick(Trip trip) {
-                        Intent intent = new Intent(requireContext(), TripActivity.class);
-                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
-                        requireContext().startActivity(intent);
-                    }
-                });
-
-        comingTripsView.setNestedScrollingEnabled(false);
-        comingTripsView.setLayoutManager(layoutManager);
-        comingTripsView.setAdapter(tripsRecyclerViewAdapter);
+        bottomNavigationView.setVisibility(View.VISIBLE);
+        fab.setVisibility(View.VISIBLE);
 
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
@@ -128,9 +123,90 @@ public class ComingTripsFragment extends Fragment {
                     LAST_UPDATE);
         }
 
+        final String finalLastUpdate = lastUpdate;
+        this.swipeRefreshLayout.setOnRefreshListener(() -> {
+            this.refresh(finalLastUpdate);
+            this.swipeRefreshLayout.setRefreshing(false);
+        });
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(),
+                LinearLayoutManager.VERTICAL, false);
+
+        this.tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(comingTrips,
+                this.application,
+                false,
+                new TripsRecyclerViewAdapter.OnItemClickListener() {
+                    @Override
+                    public void onTripShare(Trip trip) {
+                        if (Utility.isConnected(requireActivity())) {
+                            AtomicBoolean oneTime = new AtomicBoolean(false);
+                            boolean isCompleted = trip.isCompleted();
+                            String location = Utility.getRandomTripLocation(trip, comingTrips,
+                                    application, view);
+
+                            if (location == null || location.isEmpty()) {
+                                return;
+                            }
+
+                            // WORKER INITIALIZATION
+                            Data inputData = new Data.Builder()
+                                    .putString(KEY_LOCATION, location)
+                                    .putBoolean(KEY_COMPLETED, isCompleted)
+                                    .build();
+
+                            Constraints constraints = new Constraints.Builder()
+                                    .setRequiresStorageNotLow(true)
+                                    .build();
+
+                            OneTimeWorkRequest photoRequest =
+                                    new OneTimeWorkRequest.Builder(PhotoWorker.class)
+                                            .setInputData(inputData)
+                                            .setConstraints(constraints)
+                                            .build();
+                            UUID requestId = photoRequest.getId();
+                            WorkManager.getInstance(application).enqueue(photoRequest);
+
+                            WorkManager.getInstance(application).getWorkInfoByIdLiveData(requestId)
+                                    .observe(getViewLifecycleOwner(), workInfo -> {
+                                        if (!oneTime.get()
+                                                && workInfo.getState() == WorkInfo.State.FAILED) {
+                                            Snackbar.make(view,
+                                                            R.string.share_trip_error,
+                                                            Snackbar.LENGTH_SHORT)
+                                                    .show();
+                                            oneTime.set(true);
+                                        }
+                                    });
+                        } else {
+                            Snackbar.make(view, requireContext()
+                                            .getString(R.string.no_internet_error),
+                                    Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onTripClick(Trip trip) {
+                        Intent intent = new Intent(requireContext(), TripActivity.class);
+                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
+                        intent.putExtra(SELECTED_TRIP_NAME, trip.getTitle());
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onButtonClick(Trip trip) {
+                        Intent intent = new Intent(requireContext(), TripActivity.class);
+                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
+                        intent.putExtra(SELECTED_TRIP_NAME, trip.getTitle());
+                        startActivity(intent);
+                    }
+                });
+
+        comingTripsView.setLayoutManager(layoutManager);
+        comingTripsView.setAdapter(tripsRecyclerViewAdapter);
+
         progressBar.setVisibility(View.VISIBLE);
 
-        tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observeForever(
+        this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observeForever(
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> fetchedTrips = ((Result.Success) result).getData().getTripList();
@@ -140,41 +216,26 @@ public class ComingTripsFragment extends Fragment {
                             noTripsText.setText(R.string.no_trips_added);
                             noTripsText.setVisibility(View.VISIBLE);
                             noTripsImage.setVisibility(View.VISIBLE);
-                            comingTripsTitle.setVisibility(View.GONE);
                         } else {
                             List<Trip> comingTrips = new ArrayList<>(fetchedTrips);
 
                             // FILTERS THE TRIPS THAT ARE NOT COMPLETED (COMING TRIPS)
-                            for (Iterator<Trip> i = comingTrips.iterator(); i.hasNext(); ) {
-                                Trip trip = i.next();
-                                if (trip != null && trip.isCompleted()) i.remove();
-                            }
+                            comingTrips.removeIf(trip -> trip != null && trip.isCompleted());
 
                             // IF THERE ARE NO COMING TRIPS, SHOW THE NO COMING TRIPS IMAGE TEXT
                             if (comingTrips.isEmpty()) {
                                 noTripsText.setText(R.string.no_past_trips);
                                 noTripsText.setVisibility(View.VISIBLE);
                                 noTripsImage.setVisibility(View.VISIBLE);
-                                comingTripsTitle.setVisibility(View.GONE);
                             } else {
-                                int comingTripsCount = comingTrips.size();
-                                if (comingTripsCount == 1) {
-                                    comingTripsTitle.setText(R.string.coming_trips_title_single);
-                                } else {
-                                    comingTripsTitle.setText(String
-                                            .format(getString(R.string.coming_trips_title_multiple),
-                                                    comingTripsCount));
-                                }
-
-                                comingTripsTitle.setVisibility(View.VISIBLE);
                                 noTripsText.setVisibility(View.GONE);
                                 noTripsImage.setVisibility(View.GONE);
 
-                                int initialSize = this.comingTrips.size();
                                 this.comingTrips.clear();
                                 this.comingTrips.addAll(comingTrips);
-                                tripsRecyclerViewAdapter.notifyItemRangeInserted(initialSize,
-                                        this.comingTrips.size());
+                                this.comingTrips.sort(Comparator.comparing(Trip::getStart_date));
+                                this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
+                                        this.comingTrips.size() + 1);
                             }
                         }
 
@@ -186,5 +247,10 @@ public class ComingTripsFragment extends Fragment {
                         progressBar.setVisibility(View.GONE);
                     }
                 });
+    }
+
+    private void refresh(String lastUpdate) {
+        this.tripsViewModel.fetchTrips(Long.parseLong(lastUpdate));
+        this.swipeRefreshLayout.setRefreshing(false);
     }
 }

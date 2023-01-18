@@ -5,6 +5,7 @@ package it.unimib.sal.one_two_trip.model;
  * the use of a Web Service or a local database.
  */
 public abstract class Result {
+
     private Result() {
     }
 

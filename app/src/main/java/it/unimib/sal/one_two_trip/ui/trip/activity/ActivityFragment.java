@@ -1,61 +1,94 @@
 package it.unimib.sal.one_two_trip.ui.trip.activity;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
-import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_POS;
-import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_POS;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
+import android.app.AlertDialog;
 import android.app.Application;
 import android.os.Bundle;
+import android.text.InputType;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
+import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
+public class ActivityFragment extends Fragment implements MenuProvider {
 
-public class ActivityFragment extends Fragment {
+    private long tripId;
+    private long activityId;
     private Application application;
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
+    private Trip trip;
+
+    private Activity activity;
 
     public ActivityFragment() {
-        // Required empty public constructor
+    }
+
+    public long getTripId() {
+        return tripId;
+    }
+
+    public void setTripId(long tripId) {
+        this.tripId = tripId;
+    }
+
+    public long getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(long activityId) {
+        this.activityId = activityId;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        application = requireActivity().getApplication();
-
-        sharedPreferencesUtil = new SharedPreferencesUtil(application);
-
+        this.application = requireActivity().getApplication();
+        this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
-                .getTripsRepository(application);
-        viewModel = new ViewModelProvider(requireActivity(),
-                new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
+                .getTripsRepository(this.application);
+        if (tripsRepository != null) {
+            this.viewModel = new ViewModelProvider(requireActivity(),
+                    new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
+        } else {
+            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
+        this.tripId = getArguments().getLong(SELECTED_TRIP_ID);
+        this.activityId = getArguments().getLong(SELECTED_ACTIVITY_ID);
     }
 
     @Override
@@ -68,6 +101,10 @@ public class ActivityFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        MaterialToolbar toolbar = requireActivity().findViewById(R.id.trip_toolbar);
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
                 LAST_UPDATE) != null) {
@@ -75,30 +112,90 @@ public class ActivityFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
-            if(result.isSuccess()) {
-                Toolbar toolbar = requireActivity().findViewById(R.id.trip_toolbar);
-                List<Trip> trips = ((Result.Success) result).getData().getTripList();
-                int tripPos = getArguments().getInt(SELECTED_TRIP_POS);
-                Trip trip = trips.get(tripPos);
-                int activityPos = getArguments().getInt(SELECTED_ACTIVITY_POS);
-                Activity activity = trip.getActivity().activityList.get(activityPos);
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+                result -> {
+                    if (result.isSuccess()) {
+                        List<Trip> trips = ((Result.Success) result).getData().getTripList();
 
-                Bundle bundle = new Bundle();
-                bundle.putInt(SELECTED_TRIP_POS, tripPos);
-                bundle.putInt(SELECTED_ACTIVITY_POS, activityPos);
+                        for (Trip mTrip : trips) {
+                            if (mTrip.getId() == this.tripId) {
+                                trip = mTrip;
+                                break;
+                            }
+                        }
 
-                Navigation.findNavController(requireView().findViewById(R.id.fcvWhere)).setGraph(R.navigation.activity_where_nav_graph, bundle);
-                Navigation.findNavController(requireView().findViewById(R.id.fcvWhen)).setGraph(R.navigation.activity_when_nav_graph, bundle);
-                Navigation.findNavController(requireView().findViewById(R.id.fcvDescr)).setGraph(R.navigation.activity_descr_nav_graph, bundle);
-                Navigation.findNavController(requireView().findViewById(R.id.fcvParticipants)).setGraph(R.navigation.activity_participant_nav_graph, bundle);
+                        if (trip == null || trip.getActivity() == null
+                                || trip.getActivity().getActivityList() == null) {
+                            Log.d("ActivityFragment", "null");
+                            return;
+                        }
 
-                toolbar.setTitle(activity.getTitle());
-            } else {
-                ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
-                Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
-                        .getMessage()), Snackbar.LENGTH_SHORT).show();
-            }
-        });
+                        for (Activity mActivity : trip.getActivity().getActivityList()) {
+                            if (mActivity.getId() == this.activityId) {
+                                this.activity = mActivity;
+                                break;
+                            }
+                        }
+
+                        if (this.activity == null) return;
+
+                        toolbar.setTitle(this.activity.getTitle());
+                    } else {
+                        ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
+                        Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
+                                .getMessage()), Snackbar.LENGTH_SHORT).show();
+                        requireActivity().finish();
+                    }
+                });
+    }
+
+    @Override
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.trip_appbar_menu, menu);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        if (menuItem.getItemId() == R.id.trip_menu_rename) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
+            String oldTitle = this.activity.getTitle();
+            EditText input = new EditText(requireContext());
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            input.setHint(oldTitle);
+
+            alert.setTitle(getString(R.string.activity_title_change_title));
+            alert.setMessage(getString(R.string.activity_title_change));
+            alert.setView(input);
+            alert.setPositiveButton(getString(R.string.activity_title_change_positive),
+                    (dialog, which) -> {
+                        String newTitle = input.getText().toString();
+                        if (!newTitle.isEmpty() && !newTitle.equals(oldTitle)) {
+                            this.activity.setTitle(newTitle);
+                            this.viewModel.updateTrip(this.trip);
+                        }
+                    });
+            alert.setNegativeButton(getString(R.string.activity_title_change_negative), null);
+            alert.show();
+
+            return true;
+        } else if (menuItem.getItemId() == R.id.trip_menu_delete) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
+            alert.setTitle(getString(R.string.activity_delete_confirmation_title));
+            alert.setMessage(getString(R.string.activity_delete_confirmation));
+            alert.setPositiveButton(getString(R.string.activity_delete_confirmation_positive),
+                    (dialog, whichButton) -> {
+                        this.trip.getActivity().getActivityList().removeIf(activity ->
+                                activity.getId() == activityId);
+                        this.viewModel.updateTrip(this.trip);
+                        requireActivity().onBackPressed();
+                    });
+
+            alert.setNegativeButton(getString(R.string.activity_delete_confirmation_negative),
+                    null);
+            alert.show();
+            return true;
+        }
+
+        return false;
     }
 }

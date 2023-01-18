@@ -1,32 +1,48 @@
 package it.unimib.sal.one_two_trip.model;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.Comparator;
 import java.util.Objects;
 
-import it.unimib.sal.one_two_trip.util.holder.ActivityListHolder;
-import it.unimib.sal.one_two_trip.util.holder.PersonListHolder;
+import it.unimib.sal.one_two_trip.model.holder.ActivityListHolder;
+import it.unimib.sal.one_two_trip.model.holder.PersonListHolder;
 
 /**
  * This class represents a trip.
  */
 @Entity
 public class Trip {
+
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     private long id;
 
+    @ColumnInfo(name = "tripOwner")
     private String tripOwner;
+
+    @ColumnInfo(name = "title")
     private String title;
+
+    @ColumnInfo(name = "description")
     private String description;
+
     @Embedded
     private ActivityListHolder activity;
+
     @Embedded
     private PersonListHolder participant;
+
+    @ColumnInfo(name = "completed")
     private boolean completed;
+
+    @Ignore
+    private long start_date;
 
     public Trip() {
     }
@@ -41,6 +57,12 @@ public class Trip {
         this.activity = activity;
         this.participant = participant;
         this.completed = completed;
+
+        if (this.activity != null && this.activity.getActivityList() != null
+                && !this.activity.getActivityList().isEmpty()) {
+            this.activity.getActivityList().sort(Comparator.comparing(Activity::getStart_date));
+            this.start_date = this.activity.getActivityList().get(0).getStart_date();
+        }
     }
 
     public long getId() {
@@ -81,6 +103,17 @@ public class Trip {
 
     public void setActivity(ActivityListHolder activity) {
         this.activity = activity;
+        if (this.activity != null && this.activity.getActivityList() != null
+                && !this.activity.getActivityList().isEmpty()
+                && this.activity.getActivityList().get(0) != null) {
+            this.activity.getActivityList().sort(Comparator.comparing(Activity::getStart_date));
+            this.start_date = this.activity.getActivityList().get(0).getStart_date();
+        }
+    }
+
+    @Ignore
+    public long getStart_date() {
+        return start_date;
     }
 
     public PersonListHolder getParticipant() {
@@ -105,12 +138,12 @@ public class Trip {
      */
     public void checkCompleted() {
         boolean isThereAtLeastOneActivity = false;
-        if (this.getActivity() == null || this.getActivity().activityList == null) {
+        if (this.getActivity() == null || this.getActivity().getActivityList() == null) {
             setCompleted(false);
             return;
         }
 
-        for (Activity a : activity.activityList) {
+        for (Activity a : activity.getActivityList()) {
             isThereAtLeastOneActivity = true;
             if (a == null || !a.isCompleted()) {
                 setCompleted(false);
@@ -126,12 +159,16 @@ public class Trip {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trip trip = (Trip) o;
-        return id == trip.id && completed == trip.completed && Objects.equals(tripOwner, trip.tripOwner) && Objects.equals(title, trip.title) && Objects.equals(description, trip.description) && Objects.equals(activity, trip.activity) && Objects.equals(participant, trip.participant);
+        return id == trip.id && completed == trip.completed && tripOwner.equals(trip.tripOwner) &&
+                Objects.equals(title, trip.title) &&
+                Objects.equals(description, trip.description) &&
+                Objects.equals(activity, trip.activity) &&
+                Objects.equals(participant, trip.participant);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tripOwner);
+        return Objects.hash(id, tripOwner, title, description, activity, participant, completed);
     }
 
     @NonNull

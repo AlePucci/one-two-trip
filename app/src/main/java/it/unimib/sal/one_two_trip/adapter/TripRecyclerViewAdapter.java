@@ -2,18 +2,13 @@ package it.unimib.sal.one_two_trip.adapter;
 
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 
-import android.os.Bundle;
-import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,15 +17,13 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.Person;
 
 public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerViewAdapter.TripHolder> {
+
     private final List<Activity> activities;
     private final OnItemClickListener onClickListener;
 
@@ -39,50 +32,51 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
         this.onClickListener = onClickListener;
     }
 
-    public interface OnItemClickListener {
-        void onActivityClick(int position);
-        void onDragClick(int position);
-    }
-
     @NonNull
     @Override
     public TripHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.trip_item, parent, false);
-
-        return new TripHolder(view);
+        return new TripHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.trip_item,
+                parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull TripHolder holder, int position) {
-        Activity activity = activities.get(position);
-        holder.bind(activity);
+        holder.bind(this.activities.get(position));
     }
 
     @Override
     public int getItemCount() {
-        if(activities == null) {
+        if (this.activities == null) {
             return 0;
         }
 
-        return activities.size();
+        return this.activities.size();
     }
 
-    private boolean isSameDay(Date date1, Date date2) {
+    private boolean isSameDay(long date1, long date2) {
         DateFormat df = DateFormat.getDateInstance();
         String day1 = df.format(date1);
         String day2 = df.format(date2);
 
-        return day1.equals(day2);
+        return day1.equalsIgnoreCase(day2);
     }
 
     public void addData(List<Activity> activities) {
         int initialSize = this.activities.size();
         this.activities.clear();
         this.activities.addAll(activities);
-        notifyItemRangeInserted(initialSize, activities.size());
+        int actualSize = this.activities.size();
+        notifyItemRangeInserted(initialSize, actualSize);
+    }
+
+    public interface OnItemClickListener {
+        void onActivityClick(int position);
+
+        void onDragClick(int position);
     }
 
     public class TripHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
         private final TextView item_title;
         private final TextView item_header;
         private final TextView item_descr;
@@ -114,23 +108,29 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
         public void bind(Activity activity) {
             //Check if it is the first activity of the day
             int index = activities.indexOf(activity);
-            if(index == 0 || !isSameDay(activities.get(index - 1).getStart_date(), activity.getStart_date())){
+            long startDate = activity.getStart_date();
+            if (index == 0 || activities.get(index - 1) == null
+                    || !isSameDay(activities.get(index - 1).getStart_date(), startDate)) {
+                item_header.setText(DateFormat.getDateInstance(DateFormat.LONG)
+                        .format(startDate));
                 item_header.setVisibility(View.VISIBLE);
-
-                String date = DateFormat.getDateInstance().format(activity.getStart_date());
-                item_header.setText(date);
             } else {
                 item_header.setVisibility(View.GONE);
             }
 
             //Participants
-            ParticipantRecyclerViewAdapter adapter = new ParticipantRecyclerViewAdapter(activity.getParticipant().personList,
+            ParticipantRecyclerViewAdapter adapter = new ParticipantRecyclerViewAdapter(
+                    activity.getParticipant().getPersonList(),
                     position -> {
                         //TODO: goto user page
-                        Snackbar.make(itemView, "User " + activity.getParticipant().personList.get(position).getFullName(),
+                        Snackbar.make(itemView, "User " +
+                                        activity.getParticipant().getPersonList()
+                                                .get(position).getFullName(),
                                 Snackbar.LENGTH_SHORT).show();
                     });
-            LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
+
+            LinearLayoutManager layoutManager = new LinearLayoutManager(
+                    itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
             participants.setLayoutManager(layoutManager);
             participants.setAdapter(adapter);
 
@@ -138,11 +138,12 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
             item_title.setText(activity.getTitle());
 
             //Description
-            if(activity.getDescription().equals("")) {
+            String descr = activity.getDescription();
+            if (descr.isEmpty()) {
                 item_descr.setVisibility(View.GONE);
             } else {
+                item_descr.setText(descr);
                 item_descr.setVisibility(View.VISIBLE);
-                item_descr.setText(activity.getDescription());
             }
 
             //Time and Place
@@ -152,13 +153,13 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
             String date = df.format(activity.getStart_date());
             item_time1.setText(date);
 
-            if(activity.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
-                item_pos2.setVisibility(View.VISIBLE);
+            if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                 item_pos2.setText(activity.getEnd_location());
+                item_pos2.setVisibility(View.VISIBLE);
 
                 String end_date = df.format(activity.getEnd_date());
-                item_time2.setVisibility(View.VISIBLE);
                 item_time2.setText(end_date);
+                item_time2.setVisibility(View.VISIBLE);
 
                 item_separator.setVisibility(View.VISIBLE);
             } else {
@@ -179,9 +180,9 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
 
         @Override
         public void onClick(View v) {
-            if(v.getId() == R.id.item_activity_dragbutton) {
+            if (v.getId() == R.id.item_activity_dragbutton) {
                 onClickListener.onDragClick(getAdapterPosition());
-            } else if(v.getId() == R.id.item_activity_cardview){
+            } else if (v.getId() == R.id.item_activity_cardview) {
                 onClickListener.onActivityClick(getAdapterPosition());
             }
         }
