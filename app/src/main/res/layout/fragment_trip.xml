@@ -28,7 +28,7 @@
         android:orientation="vertical"
         app:behavior_fitToContents="false"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="48dp"
+        app:behavior_peekHeight="64dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <com.google.android.material.bottomsheet.BottomSheetDragHandleView

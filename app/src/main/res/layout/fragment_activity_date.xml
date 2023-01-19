@@ -9,6 +9,7 @@
     tools:context=".ui.trip.activity.ActivityDateFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/activity_when_constraint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp">
@@ -39,7 +40,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_when_title"
-            tools:text="14 feb 2022 9:30"/>
+            tools:text="14 feb 2022 9:30" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/activity_when_save1"
@@ -68,7 +69,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_when_arrow"
-            tools:text="14 feb 2022 11:30"/>
+            tools:text="14 feb 2022 11:30" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/activity_when_save2"
@@ -89,5 +90,4 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_when_save2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </com.google.android.material.card.MaterialCardView>

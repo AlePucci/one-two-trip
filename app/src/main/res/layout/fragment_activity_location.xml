@@ -9,6 +9,7 @@
     tools:context=".ui.trip.activity.ActivityLocationFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/activity_where_constraint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp">
@@ -115,5 +116,4 @@
             app:layout_constraintTop_toBottomOf="@+id/activity_where_navigation2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </com.google.android.material.card.MaterialCardView>

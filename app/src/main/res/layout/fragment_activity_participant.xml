@@ -2,12 +2,14 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_participant_card"
     style="@style/Widget.Material3.CardView.Elevated"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".ui.trip.activity.ActivityParticipantFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/activity_participant_constraint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp">
@@ -49,5 +51,4 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_participant_recycler" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </com.google.android.material.card.MaterialCardView>

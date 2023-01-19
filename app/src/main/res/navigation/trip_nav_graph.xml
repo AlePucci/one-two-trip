@@ -9,7 +9,7 @@
         android:id="@+id/tripFragment"
         android:name="it.unimib.sal.one_two_trip.ui.trip.TripFragment"
         android:label="fragment_trip"
-        tools:layout="@layout/fragment_trip" >
+        tools:layout="@layout/fragment_trip">
         <action
             android:id="@+id/action_tripFragment_to_activityFragment"
             app:destination="@id/activityFragment"
@@ -33,7 +33,7 @@
         android:id="@+id/activityFragment"
         android:name="it.unimib.sal.one_two_trip.ui.trip.activity.ActivityFragment"
         android:label="fragment_activity"
-        tools:layout="@layout/fragment_activity" >
+        tools:layout="@layout/fragment_activity">
         <argument
             android:name="activityId"
             app:argType="long" />

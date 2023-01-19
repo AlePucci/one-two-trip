@@ -9,7 +9,7 @@
         android:id="@+id/activityLocationFragment"
         android:name="it.unimib.sal.one_two_trip.ui.trip.activity.ActivityLocationFragment"
         android:label="fragment_activity_location"
-        tools:layout="@layout/fragment_activity_location" >
+        tools:layout="@layout/fragment_activity_location">
         <action
             android:id="@+id/action_activityLocationFragment_to_activityLocationEditFragment"
             app:destination="@id/activityLocationEditFragment"
@@ -30,7 +30,7 @@
         android:id="@+id/activityLocationEditFragment"
         android:name="it.unimib.sal.one_two_trip.ui.trip.activity.ActivityLocationEditFragment"
         android:label="fragment_activity_location_edit"
-        tools:layout="@layout/fragment_activity_location_edit" >
+        tools:layout="@layout/fragment_activity_location_edit">
         <action
             android:id="@+id/action_activityLocationEditFragment_to_activityLocationFragment"
             app:destination="@id/activityLocationFragment"

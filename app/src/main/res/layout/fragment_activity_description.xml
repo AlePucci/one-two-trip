@@ -2,12 +2,14 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_descr_card"
     style="@style/Widget.Material3.CardView.Elevated"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".ui.trip.activity.ActivityDescriptionFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/activity_descr_constraint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp">
@@ -36,10 +38,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            tools:text="Veni Vidi Vici"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_descr_title" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_descr_title"
+            tools:text="Veni Vidi Vici" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/activity_descr_edit"
@@ -50,5 +52,4 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_descr" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </com.google.android.material.card.MaterialCardView>

@@ -2,11 +2,13 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_participant_card_edit"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".ui.trip.activity.ActivityParticipantEditFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/activity_participant_constraint_edit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp">
@@ -37,7 +39,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" >
+            app:layout_constraintTop_toBottomOf="@+id/textView">
 
         </androidx.recyclerview.widget.RecyclerView>
 
@@ -69,5 +71,4 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_not_participant_recycler_edit" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </com.google.android.material.card.MaterialCardView>
