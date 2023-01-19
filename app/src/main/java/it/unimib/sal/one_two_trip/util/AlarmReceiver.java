@@ -1,19 +1,21 @@
 package it.unimib.sal.one_two_trip.util;
 
+import static it.unimib.sal.one_two_trip.util.Constants.MOVE_TO_ACTIVITY;
+import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ACTIVITY;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_CHANNEL_ID;
-import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ENTITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ENTITY_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_IMPORTANCE;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_TIME;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_TRIP;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_TYPE;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_ACTIVITY_NOTIFICATIONS;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_NOTIFICATIONS_ON;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_TRIP_NOTIFICATIONS;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -28,10 +30,9 @@ import androidx.core.app.NotificationManagerCompat;
 import java.util.Set;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.ui.main.HomeActivity;
+import it.unimib.sal.one_two_trip.ui.trip.TripActivity;
 
 public class AlarmReceiver extends BroadcastReceiver {
-    @SuppressLint("UnspecifiedImmutableFlag")
     @Override
     public void onReceive(Context context, Intent incomingIntent) {
         SharedPreferencesUtil sharedPreferencesUtil =
@@ -44,10 +45,18 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
 
         String type = incomingIntent.getStringExtra(NOTIFICATION_TYPE);
-        long id = Long.parseLong(incomingIntent.getStringExtra(NOTIFICATION_ENTITY_ID));
+        long tripId = Long.parseLong(incomingIntent.getStringExtra(SELECTED_TRIP_ID));
         String name = incomingIntent.getStringExtra(NOTIFICATION_ENTITY_NAME);
         int notificationTime = Integer.parseInt(incomingIntent.getStringExtra(NOTIFICATION_TIME));
-        int notificationId = type.equals(NOTIFICATION_TRIP) ? (int) (id * -1) : (int) id;
+
+        long activityId = 0;
+
+        if (type.equalsIgnoreCase(NOTIFICATION_ACTIVITY)) {
+            activityId = Long.parseLong(incomingIntent.getStringExtra(SELECTED_ACTIVITY_ID));
+        }
+
+        int notificationId = type.equalsIgnoreCase(NOTIFICATION_ACTIVITY)
+                ? (int) activityId : (int) tripId;
 
         String notificationTimeString;
         switch (notificationTime) {
@@ -97,13 +106,23 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
 
         if (!found) {
+            // The notification is not enabled so we return
             return;
         }
 
-        Intent intent = new Intent(context, HomeActivity.class); // TO DO, CHANGE TO TRIP/ACTIVITY activity
-        PendingIntent pendingIntent;
+        Intent intent = new Intent(context, TripActivity.class);
 
-        pendingIntent = PendingIntent.getActivity(context, 0, intent,
+        if (type.equalsIgnoreCase(NOTIFICATION_TRIP)) {
+            intent = new Intent(context, TripActivity.class);
+            intent.putExtra(MOVE_TO_ACTIVITY, false);
+            intent.putExtra(SELECTED_TRIP_ID, tripId);
+        } else {
+            intent.putExtra(MOVE_TO_ACTIVITY, true);
+            intent.putExtra(SELECTED_TRIP_ID, tripId);
+            intent.putExtra(SELECTED_ACTIVITY_ID, activityId);
+        }
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         String notificationText = type.equals(NOTIFICATION_TRIP) ?
@@ -128,7 +147,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
                 == PackageManager.PERMISSION_GRANTED) {
-            // TO DO: fix this
+            // TO DO: call permission request in the onboarding activity and check it when turning
+            // on notifications
             notificationManager.notify(notificationId, builder.build());
         }
     }

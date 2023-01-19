@@ -4,6 +4,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
@@ -76,6 +78,8 @@ public class ActivityParticipantEditFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Context context = requireContext();
+
         if (getParentFragment() == null || getParentFragment().getParentFragment() == null) {
             return;
         }
@@ -126,10 +130,17 @@ public class ActivityParticipantEditFragment extends Fragment {
                             }
                         }
 
-                        if (this.activity == null) return;
+                        if (this.activity == null || this.activity.getParticipant() == null
+                                || this.activity.getParticipant().getPersonList() == null)
+                            return;
 
                         this.personList = this.activity.getParticipant().getPersonList();
-                        List<Person> notParticipating = trip.getParticipant().getPersonList();
+
+                        if (trip.getParticipant() == null || trip.getParticipant().getPersonList() == null) {
+                            return;
+                        }
+
+                        List<Person> notParticipating = new ArrayList<>(trip.getParticipant().getPersonList());
                         notParticipating.removeAll(this.personList);
 
                         //Participating
@@ -139,7 +150,7 @@ public class ActivityParticipantEditFragment extends Fragment {
                                     Snackbar.make(view, "User " + personList.get(position).getFullName(),
                                             Snackbar.LENGTH_SHORT).show();
                                 });
-                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),
+                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context,
                                 LinearLayoutManager.HORIZONTAL, false);
                         participant_recycler.setLayoutManager(layoutManager);
                         participant_recycler.setAdapter(participantAdapter);
@@ -151,7 +162,7 @@ public class ActivityParticipantEditFragment extends Fragment {
                                     Snackbar.make(view, "User " + notParticipating.get(position).getFullName(),
                                             Snackbar.LENGTH_SHORT).show();
                                 });
-                        RecyclerView.LayoutManager layoutManager2 = new LinearLayoutManager(getContext(),
+                        RecyclerView.LayoutManager layoutManager2 = new LinearLayoutManager(context,
                                 LinearLayoutManager.HORIZONTAL, false);
                         not_participant_recycler.setLayoutManager(layoutManager2);
                         not_participant_recycler.setAdapter(notParticipantAdapter);

@@ -19,6 +19,7 @@ import java.util.List;
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.util.Utility;
 
 /**
  * Custom adapter that extends RecyclerView.Adapter to show an ArrayList of Trips
@@ -142,8 +143,8 @@ public class TripsRecyclerViewAdapter
 
                                     @Override
                                     public void onActivityClick(Activity activity) {
-                                        Snackbar.make(itemView, activity.getTitle(),
-                                                Snackbar.LENGTH_SHORT).show();
+                                        Utility.scheduleActivityNotifications(activity,
+                                                application, trip.getId());
                                     }
                                 });
 

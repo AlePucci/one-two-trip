@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.ui.trip;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.MOVE_TO_ACTIVITY;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
@@ -117,7 +118,11 @@ public class TripFragment extends Fragment implements MenuProvider {
         if (getArguments() == null) {
             return;
         }
+        
         long tripId = getArguments().getLong(SELECTED_TRIP_ID);
+        boolean moveToActivity = getArguments().getBoolean(MOVE_TO_ACTIVITY);
+        long activityId = getArguments().getLong(SELECTED_ACTIVITY_ID);
+
         MaterialToolbar toolbar = requireActivity().findViewById(R.id.trip_toolbar);
 
         //Ask for permissions
@@ -145,6 +150,15 @@ public class TripFragment extends Fragment implements MenuProvider {
         RecyclerView recyclerView = view.findViewById(R.id.trip_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        if (moveToActivity) {
+            Bundle bundle = new Bundle();
+            bundle.putLong(SELECTED_TRIP_ID, tripId);
+
+            bundle.putLong(SELECTED_ACTIVITY_ID, activityId);
+            Navigation.findNavController(view).navigate(R.id.action_tripFragment_to_activityFragment,
+                    bundle);
+        }
 
         ProgressBar progressBar = view.findViewById(R.id.trip_progressbar);
         progressBar.setVisibility(View.VISIBLE);
@@ -256,7 +270,7 @@ public class TripFragment extends Fragment implements MenuProvider {
         GeoPoint startPoint = new GeoPoint(48.8583, 2.2944);
         mapController.setCenter(startPoint);
 
-        mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this.application),
+        mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this.requireContext()),
                 mapView);
         mLocationOverlay.enableMyLocation();
         mapView.getOverlays().add(mLocationOverlay);
@@ -273,7 +287,8 @@ public class TripFragment extends Fragment implements MenuProvider {
                 Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED;
 
         if (permissionsStatus) {
-            Configuration.getInstance().load(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()));
+            Configuration.getInstance().load(requireContext(),
+                    PreferenceManager.getDefaultSharedPreferences(requireContext()));
         } else {
             multiplePermissionLauncher.launch(PERMISSIONS);
         }

@@ -69,12 +69,12 @@ public class Constants {
     public static final String SELECTED_TRIP_ID = "tripId";
     public static final String SELECTED_TRIP_NAME = "tripName";
     public static final String SELECTED_ACTIVITY_ID = "activityId";
+    public static final String MOVE_TO_ACTIVITY = "moveToActivity";
 
     // NOTIFICATIONS
     public static final String NOTIFICATION_TYPE = "type";
     public static final String NOTIFICATION_TRIP = "trip";
     public static final String NOTIFICATION_ACTIVITY = "activity";
-    public static final String NOTIFICATION_ENTITY_ID = "id";
     public static final String NOTIFICATION_ENTITY_NAME = "name";
     public static final String NOTIFICATION_CHANNEL_ID = "one_two_trip_channel";
     public static final int NOTIFICATION_IMPORTANCE = NotificationManagerCompat.IMPORTANCE_HIGH;

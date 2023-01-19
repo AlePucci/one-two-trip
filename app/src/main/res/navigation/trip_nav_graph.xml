@@ -16,9 +16,17 @@
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/tripFragment"
+            app:popUpToInclusive="true" />
         <argument
             android:name="tripId"
+            app:argType="long" />
+        <argument
+            android:name="moveToActivity"
+            app:argType="boolean" />
+        <argument
+            android:name="activityId"
             app:argType="long" />
     </fragment>
     <fragment

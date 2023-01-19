@@ -1,5 +1,7 @@
 package it.unimib.sal.one_two_trip.ui.trip;
 
+import static it.unimib.sal.one_two_trip.util.Constants.MOVE_TO_ACTIVITY;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_NAME;
 
@@ -25,6 +27,11 @@ public class TripActivity extends AppCompatActivity {
         setContentView(R.layout.activity_trip);
 
         long tripId = getIntent().getLongExtra(SELECTED_TRIP_ID, 0);
+        boolean moveToActivity = getIntent().getBooleanExtra(MOVE_TO_ACTIVITY, false);
+        long activityId = 0;
+        if (moveToActivity) {
+            activityId = getIntent().getLongExtra(SELECTED_ACTIVITY_ID, 0);
+        }
         String tripName = getIntent().getStringExtra(SELECTED_TRIP_NAME);
 
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
@@ -34,14 +41,18 @@ public class TripActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(tripName);
 
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.setTitle(tripName);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().
                 findFragmentById(R.id.trip_nav_host);
 
         Bundle bundle = new Bundle();
         bundle.putLong(SELECTED_TRIP_ID, tripId);
+        bundle.putBoolean(MOVE_TO_ACTIVITY, moveToActivity);
+        bundle.putLong(SELECTED_ACTIVITY_ID, activityId);
 
         if (navHostFragment != null) {
             NavController navController = navHostFragment.getNavController();

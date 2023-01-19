@@ -194,10 +194,11 @@ public class ComingTripsFragment extends Fragment {
 
                     @Override
                     public void onButtonClick(Trip trip) {
-                        Intent intent = new Intent(requireContext(), TripActivity.class);
-                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
-                        intent.putExtra(SELECTED_TRIP_NAME, trip.getTitle());
-                        startActivity(intent);
+//                        Intent intent = new Intent(requireContext(), TripActivity.class);
+//                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
+//                        intent.putExtra(SELECTED_TRIP_NAME, trip.getTitle());
+//                        startActivity(intent);
+                        Utility.scheduleTripNotifications(trip, application);
                     }
                 });
 

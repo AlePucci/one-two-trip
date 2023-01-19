@@ -5,18 +5,18 @@ import static it.unimib.sal.one_two_trip.util.Constants.HALF_HOUR;
 import static it.unimib.sal.one_two_trip.util.Constants.MINUTE_IN_MILLIS;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ACTIVITY;
-import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ENTITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ENTITY_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_TIME;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_TRIP;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_TYPE;
 import static it.unimib.sal.one_two_trip.util.Constants.ONE_DAY;
 import static it.unimib.sal.one_two_trip.util.Constants.ONE_HOUR;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.TWELVE_HOURS;
 import static it.unimib.sal.one_two_trip.util.Constants.TWO_DAYS;
 import static it.unimib.sal.one_two_trip.util.Constants.TWO_HOURS;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
@@ -130,7 +130,6 @@ public class Utility {
                 && cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
     public static void scheduleTripNotifications(Trip trip, Application application) {
         if (trip == null) {
             return;
@@ -164,13 +163,11 @@ public class Utility {
             intent.setData(Uri.parse("alarms://trip:" + tripId + ":" + i));
 
             intent.putExtra(NOTIFICATION_TYPE, NOTIFICATION_TRIP);
-            intent.putExtra(NOTIFICATION_ENTITY_ID, String.valueOf(tripId));
+            intent.putExtra(SELECTED_TRIP_ID, String.valueOf(tripId));
             intent.putExtra(NOTIFICATION_ENTITY_NAME, trip.getTitle());
             intent.putExtra(NOTIFICATION_TIME, String.valueOf(time[i]));
 
-            PendingIntent pendingIntent;
-
-            pendingIntent = PendingIntent.getBroadcast(application,
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(application,
                     (int) tripId * -1, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
@@ -181,8 +178,8 @@ public class Utility {
         }
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
-    public static void scheduleActivityNotifications(it.unimib.sal.one_two_trip.model.Activity activity, Application application) {
+    public static void scheduleActivityNotifications(it.unimib.sal.one_two_trip.model.Activity activity,
+                                                     Application application, long tripId) {
         if (activity == null) {
             return;
         }
@@ -210,15 +207,15 @@ public class Utility {
             alarmTime.setTime(notificationTime);
 
             Intent intent = new Intent(application, AlarmReceiver.class);
-            intent.setData(Uri.parse("alarms://activity:" + activityId + ":" + i));
+            intent.setData(Uri.parse("alarms://trip:" + tripId + "/activity:"
+                    + activityId + ":" + i));
             intent.putExtra(NOTIFICATION_TYPE, NOTIFICATION_ACTIVITY);
-            intent.putExtra(NOTIFICATION_ENTITY_ID, String.valueOf(activityId));
+            intent.putExtra(SELECTED_TRIP_ID, String.valueOf(tripId));
+            intent.putExtra(SELECTED_ACTIVITY_ID, String.valueOf(activityId));
             intent.putExtra(NOTIFICATION_ENTITY_NAME, activity.getTitle());
             intent.putExtra(NOTIFICATION_TIME, String.valueOf(time[i]));
 
-            PendingIntent pendingIntent;
-
-            pendingIntent = PendingIntent.getBroadcast(application,
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(application,
                     (int) activityId, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
@@ -229,4 +226,3 @@ public class Utility {
         }
     }
 }
-
