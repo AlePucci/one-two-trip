@@ -65,10 +65,12 @@ import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
+import it.unimib.sal.one_two_trip.util.GeocodingUtility;
+import it.unimib.sal.one_two_trip.util.GeocodingUtilityCallback;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
-public class TripFragment extends Fragment implements MenuProvider {
+public class TripFragment extends Fragment implements MenuProvider, GeocodingUtilityCallback {
 
     private final String[] PERMISSIONS = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -143,6 +145,7 @@ public class TripFragment extends Fragment implements MenuProvider {
         ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(),
                 Lifecycle.State.RESUMED);
 
+
         mapSetup();
 
         FloatingActionButton fab = view.findViewById(R.id.trip_fab);
@@ -212,6 +215,13 @@ public class TripFragment extends Fragment implements MenuProvider {
                     return;
                 }
 
+                // todo check if saved
+
+
+                GeocodingUtility geocodingUtility = new GeocodingUtility(this.application);
+                geocodingUtility.setGeocodingUtilityCallback(this);
+                geocodingUtility.search(this.trip.getTitle(), 1);
+
                 if (this.trip.getActivity() != null
                         && this.trip.getActivity().getActivityList() != null
                         && !this.trip.getActivity().getActivityList().isEmpty()) {
@@ -271,7 +281,9 @@ public class TripFragment extends Fragment implements MenuProvider {
         //Move to location
         IMapController mapController = mapView.getController();
         mapController.setZoom(9.5);
-        GeoPoint startPoint = new GeoPoint(48.8583, 2.2944);
+
+//        GeoPoint startPoint = new GeoPoint(48.8583, 2.2944);
+        GeoPoint startPoint = new GeoPoint(0.0, 0.0);
         mapController.setCenter(startPoint);
 
         mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this.requireContext()),
@@ -346,5 +358,21 @@ public class TripFragment extends Fragment implements MenuProvider {
         }
 
         return false;
+    }
+
+    @Override
+    public void onGeocodingSuccess(String lat, String lon) {
+        requireActivity().runOnUiThread(() -> {
+            GeoPoint startPoint = new GeoPoint(Double.parseDouble(lat), Double.parseDouble(lon));
+            IMapController mapController = mapView.getController();
+            mapController.setCenter(startPoint);
+
+            //TO DO: limit bounds
+        });
+    }
+
+    @Override
+    public void onGeocodingFailure(Exception exception) {
+        Snackbar.make(requireView(), exception.getMessage(), Snackbar.LENGTH_SHORT).show();
     }
 }

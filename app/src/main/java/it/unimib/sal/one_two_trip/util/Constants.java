@@ -49,6 +49,15 @@ public class Constants {
     public static final String ACCEPT_VERSION = "Accept-Version";
     public static final int PHOTOS_PER_PAGE_VALUE = 1;
 
+    // GEOCODING API CONSTANTS
+    public static final String GEOCODING_BASE_URL = "https://nominatim.openstreetmap.org/";
+    public static final String GEOCODING_ENDPOINT = "search";
+    public static final String GEOCODING_FORMAT = "format";
+    public static final String GEOCODING_FORMAT_VALUE = "json";
+    public static final String GEOCODING_QUERY = "q";
+    public static final String GEOCODING_LIMIT = "limit";
+    public static final String GEOCODING_LANGUAGE = "accept-language";
+
     // SHARE PHOTO CONSTANTS
     public static final String IMAGE_MIME = "image/*";
     public static final String FONT_NAME = "sans-serif-condensed-medium";

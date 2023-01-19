@@ -1,5 +1,6 @@
 package it.unimib.sal.one_two_trip.util;
 
+import static it.unimib.sal.one_two_trip.util.Constants.GEOCODING_BASE_URL;
 import static it.unimib.sal.one_two_trip.util.Constants.PHOTOS_BASE_URL;
 
 import android.app.Application;
@@ -10,9 +11,11 @@ import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.repository.TripsRepository;
 import it.unimib.sal.one_two_trip.data.source.BaseTripsLocalDataSource;
 import it.unimib.sal.one_two_trip.data.source.BaseTripsRemoteDataSource;
+import it.unimib.sal.one_two_trip.data.source.GeocodingRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.PhotoRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.TripsLocalDataSource;
 import it.unimib.sal.one_two_trip.data.source.TripsRemoteDataSource;
+import it.unimib.sal.one_two_trip.service.GeocodingApiService;
 import it.unimib.sal.one_two_trip.service.PictureApiService;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -76,5 +79,15 @@ public class ServiceLocator {
      */
     public PhotoRemoteDataSource getPhotoRemoteDataSource(Context context) {
         return new PhotoRemoteDataSource(context);
+    }
+
+    public GeocodingApiService getGeocodingApiService() {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(GEOCODING_BASE_URL).
+                addConverterFactory(GsonConverterFactory.create()).build();
+        return retrofit.create(GeocodingApiService.class);
+    }
+
+    public GeocodingRemoteDataSource getGeocodingRemoteDataSource(Context context) {
+        return new GeocodingRemoteDataSource(context);
     }
 }
