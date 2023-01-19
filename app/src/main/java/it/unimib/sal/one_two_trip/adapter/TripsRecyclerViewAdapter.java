@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +94,10 @@ public class TripsRecyclerViewAdapter
         void onTripClick(Trip trip);
 
         void onButtonClick(Trip trip);
+
+        void onAttachmentsClick(Trip trip, Activity activity);
+
+        void onActivityClick(Trip trip, Activity activity);
     }
 
     /**
@@ -136,14 +139,13 @@ public class TripsRecyclerViewAdapter
                                 new ActivitiesRecyclerViewAdapter.OnItemClickListener() {
                                     @Override
                                     public void onAttachmentsClick(Activity activity) {
-                                        Snackbar.make(itemView, activity.getAttachment().toString(),
-                                                Snackbar.LENGTH_SHORT).show();
+                                        onItemClickListener.onAttachmentsClick(trip, activity);
+
                                     }
 
                                     @Override
                                     public void onActivityClick(Activity activity) {
-                                        Snackbar.make(itemView, activity.getTitle(),
-                                                Snackbar.LENGTH_SHORT).show();
+                                        onItemClickListener.onActivityClick(trip, activity);
                                     }
                                 });
 
@@ -170,7 +172,7 @@ public class TripsRecyclerViewAdapter
                 onItemClickListener.onTripShare(tripList.get(getAdapterPosition() - 1));
             } else if (v.getId() == R.id.more_button) {
                 onItemClickListener.onButtonClick(tripList.get(getAdapterPosition() - 1));
-            } else {
+            } else if (v.getId() == R.id.trip_card_view) {
                 onItemClickListener.onTripClick(tripList.get(getAdapterPosition() - 1));
             }
         }

@@ -3,8 +3,9 @@ package it.unimib.sal.one_two_trip.ui.main;
 import static it.unimib.sal.one_two_trip.util.Constants.KEY_COMPLETED;
 import static it.unimib.sal.one_two_trip.util.Constants.KEY_LOCATION;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.MOVE_TO_ACTIVITY;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
-import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
@@ -42,6 +43,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.TripsRecyclerViewAdapter;
 import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
+import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.ui.trip.TripActivity;
@@ -194,6 +196,22 @@ public class PastTripsFragment extends Fragment {
                     public void onButtonClick(Trip trip) {
                         Intent intent = new Intent(requireContext(), TripActivity.class);
                         intent.putExtra(SELECTED_TRIP_ID, trip.getId());
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onAttachmentsClick(Trip trip, Activity activity) {
+                        // TO DO: implement this
+                        Snackbar.make(view, activity.getAttachment().toString(),
+                                Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onActivityClick(Trip trip, Activity activity) {
+                        Intent intent = new Intent(requireContext(), TripActivity.class);
+                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
+                        intent.putExtra(MOVE_TO_ACTIVITY, true);
+                        intent.putExtra(SELECTED_ACTIVITY_ID, activity.getId());
                         startActivity(intent);
                     }
                 });
