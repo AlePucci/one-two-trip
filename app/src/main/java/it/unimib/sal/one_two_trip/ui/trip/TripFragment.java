@@ -9,6 +9,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Application;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -31,6 +32,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -115,15 +117,17 @@ public class TripFragment extends Fragment implements MenuProvider {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         if (getArguments() == null) {
             return;
         }
-        
+
         long tripId = getArguments().getLong(SELECTED_TRIP_ID);
         boolean moveToActivity = getArguments().getBoolean(MOVE_TO_ACTIVITY);
         long activityId = getArguments().getLong(SELECTED_ACTIVITY_ID);
 
-        MaterialToolbar toolbar = requireActivity().findViewById(R.id.trip_toolbar);
+        FragmentActivity activity = requireActivity();
+        MaterialToolbar toolbar = activity.findViewById(R.id.trip_toolbar);
 
         //Ask for permissions
         ActivityResultContracts.RequestMultiplePermissions multiplePermissionsContract =
@@ -136,8 +140,8 @@ public class TripFragment extends Fragment implements MenuProvider {
                     }
                 });
 
-        MenuHost menuHost = requireActivity();
-        menuHost.addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+        ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(),
+                Lifecycle.State.RESUMED);
 
         mapSetup();
 
@@ -154,7 +158,6 @@ public class TripFragment extends Fragment implements MenuProvider {
         if (moveToActivity) {
             Bundle bundle = new Bundle();
             bundle.putLong(SELECTED_TRIP_ID, tripId);
-
             bundle.putLong(SELECTED_ACTIVITY_ID, activityId);
             Navigation.findNavController(view).navigate(R.id.action_tripFragment_to_activityFragment,
                     bundle);
@@ -184,6 +187,7 @@ public class TripFragment extends Fragment implements MenuProvider {
                                 Snackbar.LENGTH_SHORT).show();
                     }
                 });
+
         recyclerView.setAdapter(adapter);
 
         String lastUpdate = "0";
@@ -277,18 +281,19 @@ public class TripFragment extends Fragment implements MenuProvider {
     }
 
     private void loadMap() {
-        boolean permissionsStatus = ActivityCompat.checkSelfPermission(requireContext(),
+        Context context = requireContext();
+        boolean permissionsStatus = ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(requireContext(),
+                && ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(requireContext(),
+                && ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(requireContext(),
+                && ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED;
 
         if (permissionsStatus) {
-            Configuration.getInstance().load(requireContext(),
-                    PreferenceManager.getDefaultSharedPreferences(requireContext()));
+            Configuration.getInstance().load(context,
+                    PreferenceManager.getDefaultSharedPreferences(context));
         } else {
             multiplePermissionLauncher.launch(PERMISSIONS);
         }
@@ -301,10 +306,11 @@ public class TripFragment extends Fragment implements MenuProvider {
 
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        Context context = requireContext();
         if (menuItem.getItemId() == R.id.trip_menu_rename) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
             String oldTitle = this.trip.getTitle();
-            EditText input = new EditText(requireContext());
+            EditText input = new EditText(context);
             input.setInputType(InputType.TYPE_CLASS_TEXT);
             input.setHint(oldTitle);
 
@@ -324,7 +330,7 @@ public class TripFragment extends Fragment implements MenuProvider {
 
             return true;
         } else if (menuItem.getItemId() == R.id.trip_menu_delete) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
             alert.setTitle(getString(R.string.trip_delete_confirmation_title));
             alert.setMessage(getString(R.string.trip_delete_confirmation));
             alert.setPositiveButton(getString(R.string.trip_delete_confirmation_positive),

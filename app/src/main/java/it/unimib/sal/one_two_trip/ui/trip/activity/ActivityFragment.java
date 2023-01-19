@@ -7,6 +7,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_
 
 import android.app.AlertDialog;
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -87,7 +88,7 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
 
-        if(getArguments() == null){
+        if (getArguments() == null) {
             return;
         }
         this.tripId = getArguments().getLong(SELECTED_TRIP_ID);
@@ -158,10 +159,11 @@ public class ActivityFragment extends Fragment implements MenuProvider {
 
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+        Context context = requireContext();
         if (menuItem.getItemId() == R.id.trip_menu_rename) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
             String oldTitle = this.activity.getTitle();
-            EditText input = new EditText(requireContext());
+            EditText input = new EditText(context);
             input.setInputType(InputType.TYPE_CLASS_TEXT);
             input.setHint(oldTitle);
 
@@ -181,7 +183,7 @@ public class ActivityFragment extends Fragment implements MenuProvider {
 
             return true;
         } else if (menuItem.getItemId() == R.id.trip_menu_delete) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
             alert.setTitle(getString(R.string.activity_delete_confirmation_title));
             alert.setMessage(getString(R.string.activity_delete_confirmation));
             alert.setPositiveButton(getString(R.string.activity_delete_confirmation_positive),

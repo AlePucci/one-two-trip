@@ -13,7 +13,7 @@ import java.util.Objects;
  */
 @Entity
 public class Person {
-    
+
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private long id;
@@ -69,11 +69,6 @@ public class Person {
 
     public String getSurname() {
         return surname;
-    }
-
-    @Ignore
-    public String getFullName() {
-        return getName() + " " + getSurname();
     }
 
     public void setSurname(String surname) {

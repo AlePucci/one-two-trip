@@ -147,7 +147,9 @@ public class ActivityParticipantEditFragment extends Fragment {
                         participantAdapter = new ParticipantRecyclerViewAdapter(this.personList,
                                 position -> {
                                     //TODO: remove from participant list
-                                    Snackbar.make(view, "User " + personList.get(position).getFullName(),
+                                    Snackbar.make(view, "User "
+                                                    + personList.get(position).getName()
+                                                    + " " + personList.get(position).getName(),
                                             Snackbar.LENGTH_SHORT).show();
                                 });
                         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context,
@@ -159,7 +161,9 @@ public class ActivityParticipantEditFragment extends Fragment {
                         notParticipantAdapter = new ParticipantRecyclerViewAdapter(notParticipating,
                                 position -> {
                                     //TODO: add to participant list
-                                    Snackbar.make(view, "User " + notParticipating.get(position).getFullName(),
+                                    Snackbar.make(view, "User "
+                                                    + notParticipating.get(position).getName()
+                                                    + " " + notParticipating.get(position).getSurname(),
                                             Snackbar.LENGTH_SHORT).show();
                                 });
                         RecyclerView.LayoutManager layoutManager2 = new LinearLayoutManager(context,

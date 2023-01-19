@@ -125,7 +125,9 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
                         //TODO: goto user page
                         Snackbar.make(itemView, "User " +
                                         activity.getParticipant().getPersonList()
-                                                .get(position).getFullName(),
+                                                .get(position).getName() + " " +
+                                        activity.getParticipant().getPersonList()
+                                                .get(position).getSurname(),
                                 Snackbar.LENGTH_SHORT).show();
                     });
 
