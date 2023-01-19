@@ -9,7 +9,6 @@ import android.app.AlertDialog;
 import android.app.Application;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -87,6 +86,10 @@ public class ActivityFragment extends Fragment implements MenuProvider {
             Snackbar.make(requireActivity().findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
+
+        if(getArguments() == null){
+            return;
+        }
         this.tripId = getArguments().getLong(SELECTED_TRIP_ID);
         this.activityId = getArguments().getLong(SELECTED_ACTIVITY_ID);
     }
@@ -101,9 +104,9 @@ public class ActivityFragment extends Fragment implements MenuProvider {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MaterialToolbar toolbar = requireActivity().findViewById(R.id.trip_toolbar);
-        MenuHost menuHost = requireActivity();
-        menuHost.addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        MaterialToolbar toolbar = activity.findViewById(R.id.trip_toolbar);
+        ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
 
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
@@ -126,7 +129,6 @@ public class ActivityFragment extends Fragment implements MenuProvider {
 
                         if (trip == null || trip.getActivity() == null
                                 || trip.getActivity().getActivityList() == null) {
-                            Log.d("ActivityFragment", "null");
                             return;
                         }
 
