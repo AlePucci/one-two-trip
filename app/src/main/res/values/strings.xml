@@ -44,6 +44,10 @@
     <string name="trip_title_change_title">Change trip name</string>
     <string name="trip_title_change_positive">CHANGE</string>
     <string name="trip_title_change_negative">@android:string/cancel</string>
+    <string name="trip_description_change">Description:</string>
+    <string name="trip_description_title">Change trip description</string>
+    <string name="trip_description_positive">CHANGE</string>
+    <string name="trip_description_negative">@android:string/cancel</string>
 
     <!-- activity -->
     <string name="activity_where_title">Where</string>
@@ -123,5 +127,13 @@
     <string name="no_internet_error">Error! You have no connection at the moment. Please retry later.</string>
     <string name="no_shareable_activities">There are no activities to share here!</string>
     <string name="share_trip_error">Something went wrong! Please try again</string>
+
+    <string name="trip_logo_upload_failure">Something went wrong during uploading! Please try again</string>
+    <string name="trip_logo_download_failure">Something went wrong during downloading! Please try again</string>
+    <string name="trip_logo_pick_photo">Pick a photo for your trip</string>
+    <string name="trip_participants">%1$d participants</string>
+    <string name="trip_activities">%1$d activities added</string>
+    <string name="trip_add_description">Add description…</string>
+    <string name="trip_participants_list">Participants:</string>
     <!-- end -->
 </resources>

@@ -154,7 +154,7 @@ public class ActivityFragment extends Fragment implements MenuProvider {
 
     @Override
     public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.trip_appbar_menu, menu);
+        menuInflater.inflate(R.menu.activity_appbar_menu, menu);
     }
 
     @Override

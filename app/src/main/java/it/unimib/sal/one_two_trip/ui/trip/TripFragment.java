@@ -65,7 +65,6 @@ import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
-import it.unimib.sal.one_two_trip.util.GeocodingUtility;
 import it.unimib.sal.one_two_trip.util.GeocodingUtilityCallback;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
@@ -126,6 +125,7 @@ public class TripFragment extends Fragment implements MenuProvider, GeocodingUti
 
         long tripId = getArguments().getLong(SELECTED_TRIP_ID);
         boolean moveToActivity = getArguments().getBoolean(MOVE_TO_ACTIVITY);
+        getArguments().remove(MOVE_TO_ACTIVITY);
         long activityId = getArguments().getLong(SELECTED_ACTIVITY_ID);
 
         FragmentActivity activity = requireActivity();
@@ -218,9 +218,9 @@ public class TripFragment extends Fragment implements MenuProvider, GeocodingUti
                 // todo check if saved
 
 
-                GeocodingUtility geocodingUtility = new GeocodingUtility(this.application);
-                geocodingUtility.setGeocodingUtilityCallback(this);
-                geocodingUtility.search(this.trip.getTitle(), 1);
+//                GeocodingUtility geocodingUtility = new GeocodingUtility(this.application);
+//                geocodingUtility.setGeocodingUtilityCallback(this);
+//                geocodingUtility.search(this.trip.getTitle(), 1);
 
                 if (this.trip.getActivity() != null
                         && this.trip.getActivity().getActivityList() != null
@@ -355,6 +355,11 @@ public class TripFragment extends Fragment implements MenuProvider, GeocodingUti
                     null);
             alert.show();
             return true;
+        } else if (menuItem.getItemId() == R.id.trip_menu_settings) {
+            Bundle bundle = new Bundle();
+            bundle.putLong(SELECTED_TRIP_ID, this.trip.getId());
+            Navigation.findNavController(requireView())
+                    .navigate(R.id.action_tripFragment_to_tripSettingsFragment, bundle);
         }
 
         return false;

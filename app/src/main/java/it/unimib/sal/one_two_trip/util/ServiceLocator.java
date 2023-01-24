@@ -15,6 +15,7 @@ import it.unimib.sal.one_two_trip.data.source.GeocodingRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.PhotoRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.TripsLocalDataSource;
 import it.unimib.sal.one_two_trip.data.source.TripsRemoteDataSource;
+import it.unimib.sal.one_two_trip.data.storage.RemoteStorage;
 import it.unimib.sal.one_two_trip.service.GeocodingApiService;
 import it.unimib.sal.one_two_trip.service.PictureApiService;
 import retrofit2.Retrofit;
@@ -89,5 +90,9 @@ public class ServiceLocator {
 
     public GeocodingRemoteDataSource getGeocodingRemoteDataSource(Context context) {
         return new GeocodingRemoteDataSource(context);
+    }
+
+    public RemoteStorage getRemoteStorage(Application application) {
+        return new RemoteStorage(application);
     }
 }

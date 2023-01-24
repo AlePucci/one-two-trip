@@ -38,6 +38,7 @@ public class Constants {
     public static final String FIREBASE_REALTIME_DATABASE = "https://trip-b29d1-default-rtdb.europe-west1.firebasedatabase.app/";
     public static final String FIREBASE_TRIPS_COLLECTION = "trips";
     public static final String FIREBASE_USER_COLLECTION = "users";
+    public static final String TRIP_LOGO_NAME = "logo.jpg";
 
     // UNSPLASH PHOTOS API CONSTANTS
     public static final String PHOTOS_BASE_URL = "https://api.unsplash.com/";
@@ -88,4 +89,7 @@ public class Constants {
     public static final String NOTIFICATION_CHANNEL_ID = "one_two_trip_channel";
     public static final int NOTIFICATION_IMPORTANCE = NotificationManagerCompat.IMPORTANCE_HIGH;
     public static final String NOTIFICATION_TIME = "time";
+
+    public static final String REMOTE_STORAGE_UPLOAD = "upload";
+    public static final String REMOTE_STORAGE_DOWNLOAD = "download";
 }

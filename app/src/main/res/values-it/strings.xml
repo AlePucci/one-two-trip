@@ -93,6 +93,16 @@
     <string name="activity_title_change">Nuovo nome:</string>
     <string name="menu_delete">Elimina</string>
     <string name="menu_rename">Rinomina</string>
-
+    <string name="trip_logo_upload_failure">Errore nel caricamento dell\'immagine. Riprova più tardi</string>
+    <string name="trip_logo_pick_photo">Seleziona un\'immagine per il viaggio</string>
+    <string name="trip_participants">%1$d partecipanti</string>
+    <string name="trip_activities">%1$d attività aggiunte</string>
+    <string name="trip_add_description">Aggiungi descrizione…</string>
+    <string name="trip_participants_list">Partecipanti:</string>
+    <string name="trip_description_change">Descrizione:</string>
+    <string name="trip_description_title">Cambia la descrizione del viaggio</string>
+    <string name="trip_description_positive">CAMBIA</string>
+    <string name="trip_description_negative">@android:string/cancel</string>
+    <string name="trip_logo_download_failure">Errore nel caricamento dell\'immagine. Riprova più tardi</string>
     <!-- end -->
 </resources>
