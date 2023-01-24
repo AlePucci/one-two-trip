@@ -41,6 +41,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .readStringData(SHARED_PREFERENCES_FILE_NAME, SHARED_PREFERENCES_NOTIFICATIONS_ON));
 
         if (!isNotificationEnabled) {
+            // Notifications disabled. Nothing to show.
             return;
         }
 
@@ -94,6 +95,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         notificationsAr = notificationsSet.toArray(notificationsAr);
 
         if (notificationsAr.length == 0) {
+            // Notifications enabled but no notifications set. Nothing to show.
             return;
         }
 
@@ -106,7 +108,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
 
         if (!found) {
-            // The notification is not enabled so we return
+            // The notification we received the alarm for is not set. Nothing to show.
             return;
         }
 
@@ -125,7 +127,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        String notificationText = type.equals(NOTIFICATION_TRIP) ?
+        String notificationText = type.equalsIgnoreCase(NOTIFICATION_TRIP) ?
                 String.format(context.getString(R.string.notification_text_trip),
                         name,
                         notificationTimeString) :
@@ -135,7 +137,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context,
                 NOTIFICATION_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_baseline_notifications_active_24) // TO DO CHANGE ICON
+                .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(notificationText)
                 .setPriority(NOTIFICATION_IMPORTANCE)
@@ -147,7 +149,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
                 == PackageManager.PERMISSION_GRANTED) {
-            // TO DO: call permission request in the onboarding activity and check it when turning
+            // TODO: call permission request in the onboarding activity and check it when turning
             // on notifications
             notificationManager.notify(notificationId, builder.build());
         }

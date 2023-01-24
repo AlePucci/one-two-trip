@@ -138,7 +138,7 @@ public class TripFragment extends Fragment implements MenuProvider, GeocodingUti
         multiplePermissionLauncher = registerForActivityResult(multiplePermissionsContract,
                 isGranted -> {
                     if (!isGranted.containsValue(false)) {
-                        // to do
+                        // todo
                     }
                 });
 
@@ -367,7 +367,7 @@ public class TripFragment extends Fragment implements MenuProvider, GeocodingUti
             IMapController mapController = mapView.getController();
             mapController.setCenter(startPoint);
 
-            //TO DO: limit bounds
+            //TODO: limit bounds
         });
     }
 

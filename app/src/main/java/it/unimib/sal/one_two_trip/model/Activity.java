@@ -7,7 +7,6 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -249,5 +248,4 @@ public class Activity {
                 ", location='" + location + '\'' + ", start_date=" + start_date +
                 ", everyoneParticipate=" + everyoneParticipate + '}';
     }
-
 }

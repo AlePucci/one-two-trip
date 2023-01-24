@@ -53,7 +53,7 @@ public class ServiceLocator {
         BaseTripsLocalDataSource tripsLocalDataSource;
         SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
 
-        tripsRemoteDataSource = new TripsRemoteDataSource("1"); // TO DO - get user id from shared preferences
+        tripsRemoteDataSource = new TripsRemoteDataSource("1"); // TODO - get user id from shared preferences
         tripsLocalDataSource = new TripsLocalDataSource(getTripsDAO(application),
                 sharedPreferencesUtil);
 

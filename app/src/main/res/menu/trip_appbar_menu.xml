@@ -5,12 +5,12 @@
         android:id="@+id/trip_menu_rename"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_edit_24"
-        android:title="@string/rename"
+        android:title="@string/menu_rename"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/trip_menu_delete"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_delete_24"
-        android:title="@string/delete"
+        android:title="@string/menu_delete"
         app:showAsAction="ifRoom" />
 </menu>
