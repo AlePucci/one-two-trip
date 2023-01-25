@@ -72,22 +72,12 @@
             tools:text="14 feb 2022 11:30" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/activity_when_save2"
-            style="@style/Widget.Material3.Button.IconButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:icon="@drawable/ic_baseline_calendar_addon_24"
-            app:layout_constraintBottom_toBottomOf="@+id/activity_when2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/activity_when2" />
-
-        <com.google.android.material.button.MaterialButton
             android:id="@+id/activity_when_edit"
             style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@drawable/ic_baseline_edit_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_when_save2" />
+            app:layout_constraintTop_toBottomOf="@+id/activity_when2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
