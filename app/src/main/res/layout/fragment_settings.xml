@@ -30,9 +30,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:button="@color/yellow_500"
+            android:contentDescription="@string/notifications_description"
             android:minHeight="48dp"
             android:text="@string/notifications_switch"
-            android:contentDescription="@string/notifications_description"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,6 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/coming_trip_notifications_title"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -126,6 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="@string/activity_notifications_title"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/trip_notifications_layout" />
 
@@ -187,20 +189,20 @@
             android:id="@+id/save_settings_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="336dp"
+            android:layout_marginTop="32dp"
             android:backgroundTint="@color/yellow_500"
+            android:contentDescription="@string/settings_save_description"
             android:paddingLeft="44dp"
             android:paddingTop="16dp"
             android:paddingRight="44dp"
             android:paddingBottom="16dp"
-            android:contentDescription="@string/settings_save_description"
             android:text="@string/save"
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/notifications_switch" />
+            app:layout_constraintTop_toBottomOf="@+id/theme_cardview" />
 
         <TextView
             android:id="@+id/notifications_disabled"
@@ -214,5 +216,84 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/notifications_switch" />
 
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/theme_cardview"
+            style="@style/Widget.App.CardView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/notifications_cardview">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/theme_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="16dp">
+
+                <TextView
+                    android:id="@+id/theme_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/theme"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/dark_theme"
+                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/toggle_button"
+                    android:checkable="true"
+                    android:gravity="center"
+                    app:icon="@drawable/ic_moon_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/theme_text"
+                    tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/system_theme"
+                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="92dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="92dp"
+                    android:background="@drawable/toggle_button"
+                    android:checkable="true"
+                    android:gravity="center"
+                    app:icon="@drawable/ic_routine_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/light_theme"
+                    app:layout_constraintStart_toEndOf="@+id/dark_theme"
+                    app:layout_constraintTop_toBottomOf="@id/theme_text"
+                    tools:ignore="TextContrastCheck" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/light_theme"
+                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/toggle_button"
+                    android:checkable="true"
+                    app:icon="@drawable/ic_sunny_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/theme_text"
+                    tools:ignore="TextContrastCheck" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
