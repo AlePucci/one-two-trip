@@ -16,6 +16,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.InputType;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -297,8 +298,8 @@ public class TripFragment extends Fragment implements MenuProvider {
             mapView.onResume();
         }
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
-        Configuration.getInstance().load(requireContext(), prefs);
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        //Configuration.getInstance().load(requireContext(), prefs);
     }
 
     @Override
@@ -311,8 +312,8 @@ public class TripFragment extends Fragment implements MenuProvider {
             mapView.onPause();
         }
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
-        Configuration.getInstance().save(requireContext(), prefs);
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        //Configuration.getInstance().save(requireContext(), prefs);
     }
 
     private void mapSetup() {
