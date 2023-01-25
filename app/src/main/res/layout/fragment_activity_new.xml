@@ -22,6 +22,12 @@
             android:textStyle="bold"
             tools:text="Activity Title" />
 
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/activity_new_moving"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/activity_new_moving" />
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/activity_new_where_card_edit"
             style="@style/Widget.Material3.CardView.Outlined"
@@ -61,6 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:src="@drawable/ic_baseline_arrow_downward_24"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/activity_new_where1_edit" />
@@ -89,6 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:singleLine="true"
+                    android:visibility="gone"
                     app:endIconDrawable="@drawable/ic_baseline_cancel_24"
                     app:endIconMode="clear_text"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -155,6 +163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:src="@drawable/ic_baseline_arrow_downward_24"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/activity_new_when1_edit" />
@@ -166,6 +175,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="start|center_vertical"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/activity_new_when_arrow_edit" />
