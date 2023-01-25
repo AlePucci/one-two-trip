@@ -111,5 +111,6 @@
     <string name="trip_logo_download_failure">Errore nel caricamento dell\'immagine. Riprova più tardi</string>
     <string name="theme_system">Sistema</string>
     <string name="theme">Tema:</string>
+    <string name="activity_new_moving">È un viaggio? (es. volo)</string>
     <!-- end -->
 </resources>

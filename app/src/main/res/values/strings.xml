@@ -144,5 +144,6 @@
     <string name="trip_activities">%1$d activities added</string>
     <string name="trip_add_description">Add description…</string>
     <string name="trip_participants_list">Participants:</string>
+    <string name="activity_new_moving">Is this a journey? (i.e. flight)</string>
     <!-- end -->
 </resources>

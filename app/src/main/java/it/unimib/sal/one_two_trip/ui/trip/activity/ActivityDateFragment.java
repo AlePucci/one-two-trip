@@ -99,18 +99,6 @@ public class ActivityDateFragment extends Fragment {
             startActivity(intent);
         });
 
-        MaterialButton calendarButton2 = view.findViewById(R.id.activity_when_save2);
-        calendarButton2.setOnClickListener(view1 -> {
-            Intent intent = new Intent(Intent.ACTION_INSERT)
-                    .setData(CalendarContract.Events.CONTENT_URI)
-                    .putExtra(CalendarContract.Events.TITLE, activity.getTitle())
-                    .putExtra(CalendarContract.Events.EVENT_LOCATION, activity.getLocation())
-                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, activity.getStart_date())
-                    .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, activity.getEnd_date());
-
-            startActivity(intent);
-        });
-
         MaterialButton editButton = view.findViewById(R.id.activity_when_edit);
 
         editButton.setOnClickListener(btn ->
@@ -162,11 +150,9 @@ public class ActivityDateFragment extends Fragment {
                             date2.setText(df.format(activity.getEnd_date()));
 
                             date2.setVisibility(View.VISIBLE);
-                            calendarButton2.setVisibility(View.VISIBLE);
                             arrow.setVisibility(View.VISIBLE);
                         } else {
                             date2.setVisibility(View.GONE);
-                            calendarButton2.setVisibility(View.GONE);
                             arrow.setVisibility(View.GONE);
                         }
                     } else {
