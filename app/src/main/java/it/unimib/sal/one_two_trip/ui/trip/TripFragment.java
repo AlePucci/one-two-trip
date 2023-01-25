@@ -276,7 +276,8 @@ public class TripFragment extends Fragment implements MenuProvider {
                 toolbar.setTitle(trip.getTitle());
                 progressBar.setVisibility(View.GONE);
 
-                mapSetup();
+                if(isVisible())
+                    mapSetup();
             } else {
                 ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                 Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
