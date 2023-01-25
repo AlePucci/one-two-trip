@@ -70,6 +70,12 @@ public class Activity {
     @ColumnInfo(name = "longitude")
     private double longitude;
 
+    @ColumnInfo(name = "endLatitude")
+    private double endLatitude;
+
+    @ColumnInfo(name = "endLongitute")
+    private double endLongitude;
+
 
     public Activity() {
         title = "";
@@ -213,6 +219,22 @@ public class Activity {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public double getEndLatitude() {
+        return endLatitude;
+    }
+
+    public void setEndLatitude(double endLatitude) {
+        this.endLatitude = endLatitude;
+    }
+
+    public double getEndLongitude() {
+        return endLongitude;
+    }
+
+    public void setEndLongitude(double endLongitude) {
+        this.endLongitude = endLongitude;
     }
 
     public boolean isCompleted() {

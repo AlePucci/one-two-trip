@@ -3,6 +3,7 @@ package it.unimib.sal.one_two_trip.ui.trip;
 import static it.unimib.sal.one_two_trip.util.Constants.ACTIVITY_TITLE;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVE_TO_ACTIVITY;
+import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
@@ -57,6 +58,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -121,7 +123,16 @@ public class TripFragment extends Fragment implements MenuProvider {
         }
         this.activityList = new ArrayList<>();
 
-        loadMap();
+        ActivityResultContracts.RequestMultiplePermissions multiplePermissionsContract =
+                new ActivityResultContracts.RequestMultiplePermissions();
+
+        multiplePermissionLauncher = registerForActivityResult(multiplePermissionsContract,
+                isGranted -> {
+                    if (!isGranted.containsValue(false)) {
+                        loadMap();
+                    }
+                });
+
     }
 
     @Override
@@ -157,15 +168,7 @@ public class TripFragment extends Fragment implements MenuProvider {
         mapView.getOverlays().add(mLocationOverlay);
 
         //Ask for permissions
-        /*ActivityResultContracts.RequestMultiplePermissions multiplePermissionsContract =
-                new ActivityResultContracts.RequestMultiplePermissions();
-
-        multiplePermissionLauncher = registerForActivityResult(multiplePermissionsContract,
-                isGranted -> {
-                    if (!isGranted.containsValue(false)) {
-                        // todo
-                    }
-                });*/
+        /**/
 
         ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(),
                 Lifecycle.State.RESUMED);
@@ -320,9 +323,11 @@ public class TripFragment extends Fragment implements MenuProvider {
         //TODO: draw the travel route
 
         //Markers
+        List<GeoPoint> points = new ArrayList<>();
         for (Activity a : trip.getActivity().getActivityList()) {
             Marker marker = new Marker(mapView);
             GeoPoint point = new GeoPoint(a.getLatitude(), a.getLongitude());
+            points.add(point);
 
             marker.setTitle(a.getTitle());
             marker.setSubDescription(a.getDescription());
@@ -330,7 +335,23 @@ public class TripFragment extends Fragment implements MenuProvider {
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
             mapView.getOverlays().add(marker);
             markers.add(marker);
+
+            if(a.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
+                Marker endMarker = new Marker(mapView);
+                GeoPoint endPoint = new GeoPoint(a.getEndLatitude(), a.getEndLongitude());
+                points.add(endPoint);
+
+                endMarker.setTitle(a.getTitle());
+                endMarker.setSubDescription(a.getDescription());
+                endMarker.setPosition(endPoint);
+                endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                mapView.getOverlays().add(endMarker);
+                markers.add(endMarker);
+            }
         }
+        Polyline line = new Polyline();
+        line.setPoints(points);
+        mapView.getOverlayManager().add(line);
         mapView.invalidate();
 
         //Move to location

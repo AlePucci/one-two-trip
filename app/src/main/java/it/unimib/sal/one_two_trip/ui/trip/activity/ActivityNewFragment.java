@@ -218,7 +218,7 @@ public class ActivityNewFragment extends Fragment implements GeocodingUtilityCal
     public void onGeocodingSuccess(String lat, String lon) {
         activity.setLatitude(Double.parseDouble(lat));
         activity.setLongitude(Double.parseDouble(lon));
-        Log.d("MAP", "called " + lat + " " + lon);
+
         viewModel.updateTrip(trip);
     }
 
