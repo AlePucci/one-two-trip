@@ -31,7 +31,7 @@
             android:id="@+id/action_tripFragment_to_tripSettingsFragment"
             app:destination="@id/tripSettingsFragment" />
         <action
-            android:id="@+id/action_tripFragment_to_activityNewFragment2"
+            android:id="@+id/action_tripFragment_to_activityNewFragment"
             app:destination="@id/activityNewFragment" />
     </fragment>
     <fragment
