@@ -1,6 +1,5 @@
 package it.unimib.sal.one_two_trip.util;
 
-import java.io.IOException;
 
 public abstract class BaseGeocodingUtility {
 
@@ -10,5 +9,5 @@ public abstract class BaseGeocodingUtility {
         this.geocodingUtilityCallback = geocodingUtilityCallback;
     }
 
-    public abstract void search(String query, int limit) throws IOException;
+    public abstract void search(String query, int limit);
 }

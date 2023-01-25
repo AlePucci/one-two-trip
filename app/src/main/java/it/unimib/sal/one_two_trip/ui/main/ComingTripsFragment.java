@@ -205,7 +205,7 @@ public class ComingTripsFragment extends Fragment {
 
                     @Override
                     public void onAttachmentsClick(Trip trip, Activity activity) {
-                        // TO DO: implement this
+                        // TODO: implement this
                         Snackbar.make(view, activity.getAttachment().toString(),
                                 Snackbar.LENGTH_SHORT).show();
                     }

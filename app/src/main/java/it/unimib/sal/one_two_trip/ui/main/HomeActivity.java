@@ -85,7 +85,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         drawerNav.getMenu().findItem(R.id.logout).setOnMenuItemClickListener(item -> {
-            /* TO DO: LOGOUT */
+            /* TODO: LOGOUT */
             return false;
         });
 
@@ -112,6 +112,4 @@ public class HomeActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
-
 }

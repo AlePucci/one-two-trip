@@ -21,8 +21,6 @@
     <string name="past_trips_title">Past trips ⌛</string>
     <string name="no_activities_added">Currently there are no activities yet.</string>
     <string name="start_adding_button_text">Start adding!</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="default_trip_title">Awesome new trip</string>
     <string name="default_activity_name">Activity</string>
     <string name="attachments_present">There are attachments for this activity</string>
@@ -37,11 +35,40 @@
     <string name="share_trip_text_past">See the fantastic places I visited! I have planned the entire trip using the 1, 2, Trip app. Download it now!</string>
     <string name="share_trip_using">Share this trip using…</string>
 
-    <!-- dev names -->
-    <string name="developer_pucci" translatable="false">Alessandro Pucci (869177)</string>
-    <string name="developer_ruiz" translatable="false">Matias Aldo Ruiz (869139)</string>
-    <string name="developer_disaro" translatable="false">Alessio Disarò (866247)</string>
-    <string name="developer_saad" translatable="false">Ebraam Saad (856096)</string>
+    <!-- trip -->
+    <string name="trip_delete_confirmation">Are you sure you want to delete this trip?</string>
+    <string name="trip_delete_confirmation_title">Delete trip</string>
+    <string name="trip_delete_confirmation_positive">DELETE</string>
+    <string name="trip_delete_confirmation_negative">@android:string/cancel</string>
+    <string name="trip_title_change">New name:</string>
+    <string name="trip_title_change_title">Change trip name</string>
+    <string name="trip_title_change_positive">CHANGE</string>
+    <string name="trip_title_change_negative">@android:string/cancel</string>
+    <string name="trip_description_change">Description:</string>
+    <string name="trip_description_title">Change trip description</string>
+    <string name="trip_description_positive">CHANGE</string>
+    <string name="trip_description_negative">@android:string/cancel</string>
+
+    <!-- activity -->
+    <string name="activity_where_title">Where</string>
+    <string name="activity_when_title">When</string>
+    <string name="activity_field_error">Field value is not valid.</string>
+    <string name="activity_descr_title">Description</string>
+    <string name="activity_participant_title">Participants</string>
+    <string name="activity_not_participants">Not participating</string>
+    <string name="activity_delete_confirmation">Are you sure you want to delete this activity?</string>
+    <string name="activity_delete_confirmation_title">Delete activity</string>
+    <string name="activity_delete_confirmation_positive">DELETE</string>
+    <string name="activity_delete_confirmation_negative">@android:string/cancel</string>
+    <string name="activity_title_change">New name:</string>
+    <string name="activity_title_change_title">Change activity name</string>
+    <string name="activity_title_change_positive">CHANGE</string>
+    <string name="activity_title_change_negative">@android:string/cancel</string>
+    <string name="activity_new_title">Create new activity</string>
+    <string name="activity_new_title_descr">Name:</string>
+    <string name="activity_new_title_hint">Name</string>
+    <string name="activity_new_confirmation_positive">Confirm</string>
+    <string name="activity_new_confirmation_negative">Cancel</string>
 
     <!-- about -->
     <string name="made_by">Made with 💛 by:</string>
@@ -52,6 +79,12 @@
     <string name="version">Version:</string>
     <string name="github" translatable="false">Github</string>
     <string name="contact_email_description">Contact us at this email address</string>
+
+    <!-- dev names -->
+    <string name="developer_pucci" translatable="false">Alessandro Pucci (869177)</string>
+    <string name="developer_ruiz" translatable="false">Matias Aldo Ruiz (869139)</string>
+    <string name="developer_disaro" translatable="false">Alessio Disarò (866247)</string>
+    <string name="developer_saad" translatable="false">Ebraam Saad (856096)</string>
 
     <!-- settings -->
     <string name="settings_title">Settings</string>
@@ -65,13 +98,6 @@
     <string name="twelve_hours">12h</string>
     <string name="one_day">1d</string>
     <string name="two_days">2d</string>
-    <string name="half_hour_extended">30 minutes</string>
-    <string name="one_hour_extended">1 hour</string>
-    <string name="two_hours_extended">2 hours</string>
-    <string name="three_hours_extended">3 hours</string>
-    <string name="twelve_hours_extended">12 hours</string>
-    <string name="one_day_extended">1 day</string>
-    <string name="two_days_extended">2 days</string>
     <string name="settings_saved">Settings saved successfully</string>
     <string name="save">Save</string>
     <string name="notifications_disabled">Notifications are disabled</string>
@@ -84,47 +110,35 @@
     <string name="menu_about">About</string>
     <string name="menu_logout">Logout</string>
     <string name="menu_account">Account</string>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_rename">Rename</string>
 
-    <!-- notification -->
+    <!-- notification text-->
     <string name="notification_text_trip">Hey, your trip to %1$s is coming in less than %2$s!</string>
     <string name="notification_text_activity">Hey, %1$s is coming in less than %2$s!</string>
+    <string name="half_hour_extended">30 minutes</string>
+    <string name="one_hour_extended">1 hour</string>
+    <string name="two_hours_extended">2 hours</string>
+    <string name="three_hours_extended">3 hours</string>
+    <string name="twelve_hours_extended">12 hours</string>
+    <string name="one_day_extended">1 day</string>
+    <string name="two_days_extended">2 days</string>
 
     <!-- errors -->
     <string name="api_key_error">API key not valid or maximum number of requests reached</string>
-    <string name="unexpected_error">Unexpected error</string>
-    <string name="delete">Delete</string>
-    <string name="rename">Rename</string>
-    <string name="activity_where_title">Where</string>
-    <string name="activity_when_title">When</string>
-    <string name="activity_field_error">Field value is not valid.</string>
-    <string name="activity_descr_title">Description</string>
-    <string name="activity_participant_title">Participants</string>
-    <string name="activity_not_participants">Not participating</string>
-    <string name="trip_delete_confirmation">Are you sure you want to delete this trip?</string>
-    <string name="trip_delete_confirmation_title">Delete trip</string>
-    <string name="trip_delete_confirmation_positive">DELETE</string>
-    <string name="trip_delete_confirmation_negative">@android:string/cancel</string>
-    <string name="trip_title_change_positive">CHANGE</string>
-    <string name="trip_title_change_negative">@android:string/cancel</string>
-    <string name="activity_delete_confirmation">Are you sure you want to delete this activity?</string>
-    <string name="activity_delete_confirmation_title">Delete activity</string>
-    <string name="activity_delete_confirmation_positive">DELETE</string>
-    <string name="activity_delete_confirmation_negative">@android:string/cancel</string>
-    <string name="activity_title_change_positive">CHANGE</string>
-    <string name="activity_title_change_negative">@android:string/cancel</string>
+    <string name="unexpected_error">Unexpected error. Please retry later.</string>
     <string name="error_json_parsing">Error! Please try again</string>
     <string name="error_retrieving_trips">Error while retrieving trips.</string>
     <string name="no_internet_error">Error! You have no connection at the moment. Please retry later.</string>
     <string name="no_shareable_activities">There are no activities to share here!</string>
     <string name="share_trip_error">Something went wrong! Please try again</string>
-    <string name="trip_title_change">New name:</string>
-    <string name="activity_title_change">New name:</string>
-    <string name="trip_title_change_title">Change trip name</string>
-    <string name="activity_title_change_title">Change activity name</string>
-    <string name="activity_new_title">Create new activity</string>
-    <string name="activity_new_title_descr">Name:</string>
-    <string name="activity_new_title_hint">Name</string>
-    <string name="activity_new_confirmation_positive">Confirm</string>
-    <string name="activity_new_confirmation_negative">Cancel</string>
+
+    <string name="trip_logo_upload_failure">Something went wrong during uploading! Please try again</string>
+    <string name="trip_logo_download_failure">Something went wrong during downloading! Please try again</string>
+    <string name="trip_logo_pick_photo">Pick a photo for your trip</string>
+    <string name="trip_participants">%1$d participants</string>
+    <string name="trip_activities">%1$d activities added</string>
+    <string name="trip_add_description">Add description…</string>
+    <string name="trip_participants_list">Participants:</string>
     <!-- end -->
 </resources>

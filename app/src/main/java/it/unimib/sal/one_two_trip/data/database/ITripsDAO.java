@@ -29,7 +29,7 @@ public interface ITripsDAO {
     long insertTrip(Trip trip);
 
     @Update
-    int updateTrip(Trip trip);
+    void updateTrip(Trip trip);
 
     @Insert
     void insertAll(Trip... trips);

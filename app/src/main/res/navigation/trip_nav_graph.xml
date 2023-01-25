@@ -16,7 +16,8 @@
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpToInclusive="false" />
         <argument
             android:name="tripId"
             app:argType="long" />
@@ -27,9 +28,11 @@
             android:name="activityId"
             app:argType="long" />
         <action
-            android:id="@+id/action_tripFragment_to_activityNewFragment"
-            app:destination="@id/activityNewFragment"
-            app:popUpToInclusive="false" />
+            android:id="@+id/action_tripFragment_to_tripSettingsFragment"
+            app:destination="@id/tripSettingsFragment" />
+        <action
+            android:id="@+id/action_tripFragment_to_activityNewFragment2"
+            app:destination="@id/activityNewFragment" />
     </fragment>
     <fragment
         android:id="@+id/activityFragment"
@@ -59,5 +62,14 @@
         <argument
             android:name="activityTitle"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/tripSettingsFragment"
+        android:name="it.unimib.sal.one_two_trip.ui.trip.TripSettingsFragment"
+        android:label="fragment_trip_settings"
+        tools:layout="@layout/fragment_trip_settings">
+        <argument
+            android:name="tripId"
+            app:argType="long" />
     </fragment>
 </navigation>

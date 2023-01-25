@@ -26,7 +26,7 @@ import it.unimib.sal.one_two_trip.util.Utility;
  */
 public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int ACTIVITY = 0;
+    private static final int STATIC_ACTIVITY = 0;
     private static final int MOVING_ACTIVITY = 1;
 
     private final List<Activity> activityList;
@@ -46,7 +46,7 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 .equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
             return MOVING_ACTIVITY;
         }
-        return ACTIVITY;
+        return STATIC_ACTIVITY;
     }
 
     @NonNull
@@ -111,7 +111,7 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     }
 
     /**
-     * Custom ViewHolder to bind data to the RecyclerView items (activities).
+     * Custom ViewHolder to bind data to the RecyclerView items (static activities).
      */
     public class ActivityViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {

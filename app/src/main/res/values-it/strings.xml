@@ -23,7 +23,7 @@
     <string name="share_trip_button_description">Condividi il tuo viaggio!</string>
     <string name="error_retrieving_trips">Errore nello scaricamento dei viaggi</string>
     <string name="api_key_error">API key non valida o massimo numero di richieste raggiunto</string>
-    <string name="unexpected_error">Errore generico</string>
+    <string name="unexpected_error">Errore generico. Riprova più tardi.</string>
     <string name="made_by">Realizzata con tanto 💛 da:</string>
     <string name="menu_settings">Impostazioni</string>
     <string name="menu_about">Info</string>
@@ -69,9 +69,6 @@
     <string name="twelve_hours_extended">12 ore</string>
     <string name="one_day_extended">1 giorno</string>
     <string name="two_days_extended">2 giorni</string>
-    <!-- end -->
-    <string name="delete">Elimina</string>
-    <string name="rename">Rinomina</string>
     <string name="activity_where_title">Dove</string>
     <string name="activity_when_title">Quando</string>
     <string name="activity_field_error">Il valore del campo non è valido.</string>
@@ -87,9 +84,9 @@
     <string name="activity_delete_confirmation_positive">ELIMINA</string>
     <string name="activity_delete_confirmation_negative">ANNULLA</string>
     <string name="activity_title_change_positive">CAMBIA</string>
-    <string name="activity_title_change_negative">@android:string/cancel</string>
+    <string name="activity_title_change_negative">ANNULLA</string>
     <string name="trip_title_change_positive">CAMBIA</string>
-    <string name="trip_title_change_negative">@android:string/cancel</string>
+    <string name="trip_title_change_negative">ANNULLA</string>
     <string name="trip_title_change_title">Cambia il nome del viaggio</string>
     <string name="activity_title_change_title">Cambia il nome dell\'attività</string>
     <string name="trip_title_change">Nuovo nome:</string>
@@ -99,4 +96,18 @@
     <string name="activity_new_title_hint">Nome</string>
     <string name="activity_new_confirmation_positive">Conferma</string>
     <string name="activity_new_confirmation_negative">Annulla</string>
+    <string name="menu_delete">Elimina</string>
+    <string name="menu_rename">Rinomina</string>
+    <string name="trip_logo_upload_failure">Errore nel caricamento dell\'immagine. Riprova più tardi</string>
+    <string name="trip_logo_pick_photo">Seleziona un\'immagine per il viaggio</string>
+    <string name="trip_participants">%1$d partecipanti</string>
+    <string name="trip_activities">%1$d attività aggiunte</string>
+    <string name="trip_add_description">Aggiungi descrizione…</string>
+    <string name="trip_participants_list">Partecipanti:</string>
+    <string name="trip_description_change">Descrizione:</string>
+    <string name="trip_description_title">Cambia la descrizione del viaggio</string>
+    <string name="trip_description_positive">CAMBIA</string>
+    <string name="trip_description_negative">@android:string/cancel</string>
+    <string name="trip_logo_download_failure">Errore nel caricamento dell\'immagine. Riprova più tardi</string>
+    <!-- end -->
 </resources>

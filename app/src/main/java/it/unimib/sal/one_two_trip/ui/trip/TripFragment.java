@@ -74,7 +74,6 @@ import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
-import it.unimib.sal.one_two_trip.util.GeocodingUtility;
 import it.unimib.sal.one_two_trip.util.GeocodingUtilityCallback;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
@@ -141,6 +140,7 @@ public class TripFragment extends Fragment implements MenuProvider {
 
         long tripId = getArguments().getLong(SELECTED_TRIP_ID);
         boolean moveToActivity = getArguments().getBoolean(MOVE_TO_ACTIVITY);
+        getArguments().remove(MOVE_TO_ACTIVITY);
         long activityId = getArguments().getLong(SELECTED_ACTIVITY_ID);
 
         FragmentActivity activity = requireActivity();
@@ -163,7 +163,7 @@ public class TripFragment extends Fragment implements MenuProvider {
         multiplePermissionLauncher = registerForActivityResult(multiplePermissionsContract,
                 isGranted -> {
                     if (!isGranted.containsValue(false)) {
-                        // to do
+                        // todo
                     }
                 });*/
 
@@ -262,7 +262,6 @@ public class TripFragment extends Fragment implements MenuProvider {
 
                 // todo check if saved
 
-
                 if (this.trip.getActivity() != null
                         && this.trip.getActivity().getActivityList() != null
                         && !this.trip.getActivity().getActivityList().isEmpty()) {
@@ -321,7 +320,7 @@ public class TripFragment extends Fragment implements MenuProvider {
         //TODO: draw the travel route
 
         //Markers
-        for(Activity a: trip.getActivity().getActivityList()) {
+        for (Activity a : trip.getActivity().getActivityList()) {
             Marker marker = new Marker(mapView);
             GeoPoint point = new GeoPoint(a.getLatitude(), a.getLongitude());
 
@@ -340,9 +339,9 @@ public class TripFragment extends Fragment implements MenuProvider {
 
         GeoPoint startPoint = new GeoPoint(0.0, 0.0);
 
-        if(!trip.getActivity().getActivityList().isEmpty()) {
+        if (!trip.getActivity().getActivityList().isEmpty()) {
             Activity startActivity = trip.getActivity().getActivityList().stream().filter(Activity::isCompleted).findFirst().orElse(null);
-            if(startActivity == null) {
+            if (startActivity == null) {
                 startActivity = trip.getActivity().getActivityList().get(0);
             }
 
@@ -408,6 +407,11 @@ public class TripFragment extends Fragment implements MenuProvider {
                     null);
             alert.show();
             return true;
+        } else if (menuItem.getItemId() == R.id.trip_menu_settings) {
+            Bundle bundle = new Bundle();
+            bundle.putLong(SELECTED_TRIP_ID, this.trip.getId());
+            Navigation.findNavController(requireView())
+                    .navigate(R.id.action_tripFragment_to_tripSettingsFragment, bundle);
         }
 
         return false;
