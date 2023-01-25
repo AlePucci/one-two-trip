@@ -5,6 +5,8 @@ import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAM
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,8 @@ public class ActivityLocationFragment extends Fragment {
     private Application application;
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
+
+    private Activity activity;
 
     public ActivityLocationFragment() {
     }
@@ -78,6 +82,20 @@ public class ActivityLocationFragment extends Fragment {
         long tripId = ((ActivityFragment) getParentFragment().getParentFragment()).getTripId();
         long activityId = ((ActivityFragment) getParentFragment().getParentFragment()).getActivityId();
 
+        MaterialButton navButton1 = view.findViewById(R.id.activity_where_navigation1);
+        navButton1.setOnClickListener(view12 -> {
+            Uri query = Uri.parse("google.navigation:q=" + activity.getLatitude() + "," + activity.getLongitude());
+            Intent intent = new Intent(Intent.ACTION_VIEW, query);
+            startActivity(intent);
+        });
+
+        MaterialButton navButton2 = view.findViewById(R.id.activity_where_navigation2);
+        navButton2.setOnClickListener(view12 -> {
+            Uri query = Uri.parse("google.navigation:q=" + activity.getEndLatitude() + "," + activity.getEndLongitude());
+            Intent intent = new Intent(Intent.ACTION_VIEW, query);
+            startActivity(intent);
+        });
+
         MaterialButton editButton = view.findViewById(R.id.activity_where_edit);
         editButton.setOnClickListener(view1 ->
                 Navigation.findNavController(view1).navigate
@@ -107,8 +125,6 @@ public class ActivityLocationFragment extends Fragment {
                     return;
                 }
 
-                Activity activity = null;
-
                 for (Activity mActivity : trip.getActivity().getActivityList()) {
                     if (mActivity.getId() == activityId) {
                         activity = mActivity;
@@ -123,19 +139,18 @@ public class ActivityLocationFragment extends Fragment {
 
                 TextView loc2 = view.findViewById(R.id.activity_where2);
                 MaterialButton locate2 = view.findViewById(R.id.activity_where_locate2);
-                MaterialButton navigate2 = view.findViewById(R.id.activity_where_navigation2);
                 ImageView arrow = view.findViewById(R.id.activity_where_arrow);
 
                 if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                     loc2.setText(activity.getEnd_location());
                     loc2.setVisibility(View.VISIBLE);
                     locate2.setVisibility(View.VISIBLE);
-                    navigate2.setVisibility(View.VISIBLE);
+                    navButton2.setVisibility(View.VISIBLE);
                     arrow.setVisibility(View.VISIBLE);
                 } else {
                     loc2.setVisibility(View.GONE);
                     locate2.setVisibility(View.GONE);
-                    navigate2.setVisibility(View.GONE);
+                    navButton2.setVisibility(View.GONE);
                     arrow.setVisibility(View.GONE);
                 }
             } else {
