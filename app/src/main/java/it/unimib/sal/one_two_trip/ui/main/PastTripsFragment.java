@@ -248,8 +248,9 @@ public class PastTripsFragment extends Fragment {
 
                                 this.pastTrips.clear();
                                 this.pastTrips.addAll(pastTrips);
-                                this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
-                                        this.pastTrips.size() + 1);
+                                //this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
+                                //        this.pastTrips.size() + 1);
+                                this.tripsRecyclerViewAdapter.notifyDataSetChanged();
                             }
                         }
 

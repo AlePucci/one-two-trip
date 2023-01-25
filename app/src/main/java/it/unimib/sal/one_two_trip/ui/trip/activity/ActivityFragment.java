@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.ui.trip.activity;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.MOVE_TO_ACTIVITY;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
@@ -25,6 +26,7 @@ import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
@@ -191,7 +193,11 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                         this.trip.getActivity().getActivityList().removeIf(activity ->
                                 activity.getId() == activityId);
                         this.viewModel.updateTrip(this.trip);
-                        requireActivity().onBackPressed();
+                        Bundle bundle = new Bundle();
+                        bundle.putLong(SELECTED_TRIP_ID, trip.getId());
+                        bundle.putBoolean(MOVE_TO_ACTIVITY, false);
+                        bundle.putLong(SELECTED_ACTIVITY_ID, 0);
+                        Navigation.findNavController(requireView()).navigate(R.id.action_activityFragment_to_tripFragment, bundle);
                     });
 
             alert.setNegativeButton(getString(R.string.activity_delete_confirmation_negative),

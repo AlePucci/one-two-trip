@@ -16,6 +16,7 @@ public class Constants {
     // ACTIVITY CONSTANTS
     public static final int MAX_ACTIVITIES_PER_TRIP_HOME = 3;
     public static final String MOVING_ACTIVITY_TYPE_NAME = "moving";
+    public static final String STATIC_ACTIVITY_TYPE_NAME = "static";
 
     // SHARED PREFERENCES CONSTANTS
     public static final String SHARED_PREFERENCES_FILE_NAME = "it.unimib.sal.one_two_trip.preferences";
@@ -79,6 +80,7 @@ public class Constants {
     public static final String SELECTED_TRIP_NAME = "tripName";
     public static final String SELECTED_ACTIVITY_ID = "activityId";
     public static final String MOVE_TO_ACTIVITY = "moveToActivity";
+    public static final String ACTIVITY_TITLE = "activityTitle";
 
     // NOTIFICATIONS
     public static final String NOTIFICATION_TYPE = "type";

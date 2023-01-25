@@ -1,5 +1,6 @@
 package it.unimib.sal.one_two_trip.ui.trip;
 
+import static it.unimib.sal.one_two_trip.util.Constants.ACTIVITY_TITLE;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVE_TO_ACTIVITY;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
@@ -10,10 +11,13 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.InputType;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -49,10 +54,14 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedOverlay;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -70,7 +79,7 @@ import it.unimib.sal.one_two_trip.util.GeocodingUtilityCallback;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
-public class TripFragment extends Fragment implements MenuProvider, GeocodingUtilityCallback {
+public class TripFragment extends Fragment implements MenuProvider {
 
     private final String[] PERMISSIONS = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -79,14 +88,18 @@ public class TripFragment extends Fragment implements MenuProvider, GeocodingUti
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
     };
-    TripsViewModel viewModel;
-    TripRecyclerViewAdapter adapter;
-    MyLocationNewOverlay mLocationOverlay;
-    private ActivityResultLauncher<String[]> multiplePermissionLauncher;
+
+    private TripsViewModel viewModel;
+    private TripRecyclerViewAdapter adapter;
     private Application application;
     private SharedPreferencesUtil sharedPreferencesUtil;
-    private Trip trip;
+
     private MapView mapView;
+    private MyLocationNewOverlay mLocationOverlay;
+    private ActivityResultLauncher<String[]> multiplePermissionLauncher;
+    List<Marker> markers = new ArrayList<>();
+
+    private Trip trip;
     private List<Activity> activityList;
 
     public TripFragment() {
@@ -108,6 +121,8 @@ public class TripFragment extends Fragment implements MenuProvider, GeocodingUti
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
         this.activityList = new ArrayList<>();
+
+        loadMap();
     }
 
     @Override
@@ -131,8 +146,18 @@ public class TripFragment extends Fragment implements MenuProvider, GeocodingUti
         FragmentActivity activity = requireActivity();
         MaterialToolbar toolbar = activity.findViewById(R.id.trip_toolbar);
 
+        mapView = view.findViewById(R.id.mapView);
+        mapView.setTileSource(TileSourceFactory.MAPNIK);
+        mapView.setMultiTouchControls(true);
+        mapView.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
+
+        mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this.requireContext()),
+                mapView);
+        mLocationOverlay.enableMyLocation();
+        mapView.getOverlays().add(mLocationOverlay);
+
         //Ask for permissions
-        ActivityResultContracts.RequestMultiplePermissions multiplePermissionsContract =
+        /*ActivityResultContracts.RequestMultiplePermissions multiplePermissionsContract =
                 new ActivityResultContracts.RequestMultiplePermissions();
 
         multiplePermissionLauncher = registerForActivityResult(multiplePermissionsContract,
@@ -140,18 +165,36 @@ public class TripFragment extends Fragment implements MenuProvider, GeocodingUti
                     if (!isGranted.containsValue(false)) {
                         // to do
                     }
-                });
+                });*/
 
         ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(),
                 Lifecycle.State.RESUMED);
 
-
-        mapSetup();
-
         FloatingActionButton fab = view.findViewById(R.id.trip_fab);
         //TODO: add activity
-        fab.setOnClickListener(v -> Snackbar.make(v, "Add Activity", Snackbar.LENGTH_SHORT)
-                .show());
+        fab.setOnClickListener(v -> {
+            AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
+            EditText input = new EditText(requireContext());
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            input.setHint(R.string.activity_new_title_hint);
+
+            alert.setTitle(getString(R.string.activity_new_title));
+            alert.setMessage(getString(R.string.activity_new_title_descr));
+            alert.setView(input);
+            alert.setPositiveButton(getString(R.string.activity_new_confirmation_positive),
+                    (dialog, which) -> {
+                        String title = input.getText().toString();
+                        if (!title.isEmpty()) {
+                            Bundle bundle = new Bundle();
+                            bundle.putLong(SELECTED_TRIP_ID, tripId);
+                            bundle.putString(ACTIVITY_TITLE, title);
+                            Navigation.findNavController(v).navigate(R.id.action_tripFragment_to_activityNewFragment, bundle);
+                        }
+                    });
+            alert.setNegativeButton(getString(R.string.activity_new_confirmation_negative), null);
+            alert.show();
+
+        });
 
         //RecyclerView
         RecyclerView recyclerView = view.findViewById(R.id.trip_recyclerview);
@@ -159,6 +202,8 @@ public class TripFragment extends Fragment implements MenuProvider, GeocodingUti
         recyclerView.setLayoutManager(linearLayoutManager);
 
         if (moveToActivity) {
+            getArguments().remove(MOVE_TO_ACTIVITY);
+
             Bundle bundle = new Bundle();
             bundle.putLong(SELECTED_TRIP_ID, tripId);
             bundle.putLong(SELECTED_ACTIVITY_ID, activityId);
@@ -218,10 +263,6 @@ public class TripFragment extends Fragment implements MenuProvider, GeocodingUti
                 // todo check if saved
 
 
-                GeocodingUtility geocodingUtility = new GeocodingUtility(this.application);
-                geocodingUtility.setGeocodingUtilityCallback(this);
-                geocodingUtility.search(this.trip.getTitle(), 1);
-
                 if (this.trip.getActivity() != null
                         && this.trip.getActivity().getActivityList() != null
                         && !this.trip.getActivity().getActivityList().isEmpty()) {
@@ -232,6 +273,8 @@ public class TripFragment extends Fragment implements MenuProvider, GeocodingUti
 
                 toolbar.setTitle(trip.getTitle());
                 progressBar.setVisibility(View.GONE);
+
+                mapSetup();
             } else {
                 ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                 Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
@@ -251,7 +294,11 @@ public class TripFragment extends Fragment implements MenuProvider, GeocodingUti
         }
         if (mapView != null) {
             mapView.onResume();
+        } else {
+            mapView = requireView().findViewById(R.id.mapView);
         }
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        //Configuration.getInstance().load(requireContext(), prefs);
     }
 
     @Override
@@ -263,49 +310,55 @@ public class TripFragment extends Fragment implements MenuProvider, GeocodingUti
         if (mapView != null) {
             mapView.onPause();
         }
+
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        //Configuration.getInstance().save(requireContext(), prefs);
     }
 
     private void mapSetup() {
-        //Load the map
-        loadMap();
-
-        //Set the controls
-        mapView = requireView().findViewById(R.id.mapView);
-        mapView.setTileSource(TileSourceFactory.MAPNIK);
-        mapView.setMultiTouchControls(true);
-        mapView.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
+        mapView.getOverlays().clear();
 
         //TODO: draw the travel route
-        //TODO: zoom in the trip next activity
+
+        //Markers
+        for(Activity a: trip.getActivity().getActivityList()) {
+            Marker marker = new Marker(mapView);
+            GeoPoint point = new GeoPoint(a.getLatitude(), a.getLongitude());
+
+            marker.setTitle(a.getTitle());
+            marker.setSubDescription(a.getDescription());
+            marker.setPosition(point);
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            mapView.getOverlays().add(marker);
+            markers.add(marker);
+        }
+        mapView.invalidate();
 
         //Move to location
         IMapController mapController = mapView.getController();
         mapController.setZoom(9.5);
 
-//        GeoPoint startPoint = new GeoPoint(48.8583, 2.2944);
         GeoPoint startPoint = new GeoPoint(0.0, 0.0);
-        mapController.setCenter(startPoint);
 
-        mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this.requireContext()),
-                mapView);
-        mLocationOverlay.enableMyLocation();
-        mapView.getOverlays().add(mLocationOverlay);
+        if(!trip.getActivity().getActivityList().isEmpty()) {
+            Activity startActivity = trip.getActivity().getActivityList().stream().filter(Activity::isCompleted).findFirst().orElse(null);
+            if(startActivity == null) {
+                startActivity = trip.getActivity().getActivityList().get(0);
+            }
+
+            startPoint = new GeoPoint(startActivity.getLatitude(), startActivity.getLongitude());
+        }
+        mapController.setCenter(startPoint);
     }
 
     private void loadMap() {
-        Context context = requireContext();
-        boolean permissionsStatus = ActivityCompat.checkSelfPermission(context,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context,
-                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context,
-                Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED;
+        boolean permissionsStatus =
+                Arrays.stream(PERMISSIONS).allMatch(p ->
+                        ActivityCompat.checkSelfPermission(application, p) == PackageManager.PERMISSION_GRANTED);
 
         if (permissionsStatus) {
-            Configuration.getInstance().load(context,
-                    PreferenceManager.getDefaultSharedPreferences(context));
+            Configuration.getInstance().load(application,
+                    PreferenceManager.getDefaultSharedPreferences(application));
         } else {
             multiplePermissionLauncher.launch(PERMISSIONS);
         }
@@ -358,21 +411,5 @@ public class TripFragment extends Fragment implements MenuProvider, GeocodingUti
         }
 
         return false;
-    }
-
-    @Override
-    public void onGeocodingSuccess(String lat, String lon) {
-        requireActivity().runOnUiThread(() -> {
-            GeoPoint startPoint = new GeoPoint(Double.parseDouble(lat), Double.parseDouble(lon));
-            IMapController mapController = mapView.getController();
-            mapController.setCenter(startPoint);
-
-            //TO DO: limit bounds
-        });
-    }
-
-    @Override
-    public void onGeocodingFailure(Exception exception) {
-        Snackbar.make(requireView(), exception.getMessage(), Snackbar.LENGTH_SHORT).show();
     }
 }

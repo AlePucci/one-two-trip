@@ -121,5 +121,10 @@
     <string name="activity_title_change">New name:</string>
     <string name="trip_title_change_title">Change trip name</string>
     <string name="activity_title_change_title">Change activity name</string>
+    <string name="activity_new_title">Create new activity</string>
+    <string name="activity_new_title_descr">Name:</string>
+    <string name="activity_new_title_hint">Name</string>
+    <string name="activity_new_confirmation_positive">Confirm</string>
+    <string name="activity_new_confirmation_negative">Cancel</string>
     <!-- end -->
 </resources>

@@ -253,8 +253,9 @@ public class ComingTripsFragment extends Fragment {
                                 this.comingTrips.clear();
                                 this.comingTrips.addAll(comingTrips);
                                 this.comingTrips.sort(Comparator.comparing(Trip::getStart_date));
-                                this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
-                                        this.comingTrips.size() + 1);
+                                //this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
+                                 //       this.comingTrips.size() + 1);
+                                this.tripsRecyclerViewAdapter.notifyDataSetChanged();
                             }
                         }
 

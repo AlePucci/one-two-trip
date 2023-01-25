@@ -7,6 +7,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -64,14 +65,35 @@ public class Activity {
     @ColumnInfo(name = "everyoneParticipate")
     private boolean everyoneParticipate;
 
+    @ColumnInfo(name = "latitude")
+    private double latitude;
+
+    @ColumnInfo(name = "longitude")
+    private double longitude;
+
+
     public Activity() {
+        title = "";
+        description = "";
+        location = "";
+        end_location = "";
+        start_date = 0;
+        end_date = 0;
+        participant = new PersonListHolder(new ArrayList<>());
+        attachment = new ArrayList<>();
+        link = new ArrayList<>();
+        completed = false;
+        type = "";
+        everyoneParticipate = false;
+        longitude = 0;
+        latitude = 0;
     }
 
     @Ignore
     public Activity(long id, String title, String description, String location, String end_location,
                     long start_date, long end_date, PersonListHolder participant, long trip_id,
                     List<Object> attachment, List<String> link, boolean completed, String type,
-                    boolean everyoneParticipate) {
+                    boolean everyoneParticipate, double latitude, double longitude) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -86,6 +108,8 @@ public class Activity {
         this.completed = completed;
         this.type = type;
         this.everyoneParticipate = everyoneParticipate;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public long getId() {
@@ -174,6 +198,22 @@ public class Activity {
 
     public void setLink(List<String> link) {
         this.link = link;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public boolean isCompleted() {

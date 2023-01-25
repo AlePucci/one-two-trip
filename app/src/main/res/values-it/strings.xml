@@ -94,4 +94,9 @@
     <string name="activity_title_change_title">Cambia il nome dell\'attività</string>
     <string name="trip_title_change">Nuovo nome:</string>
     <string name="activity_title_change">Nuove nome:</string>
+    <string name="activity_new_title">Crea nuova attività</string>
+    <string name="activity_new_title_descr">Nome:</string>
+    <string name="activity_new_title_hint">Nome</string>
+    <string name="activity_new_confirmation_positive">Conferma</string>
+    <string name="activity_new_confirmation_negative">Annulla</string>
 </resources>

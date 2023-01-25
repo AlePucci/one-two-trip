@@ -62,11 +62,10 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
     }
 
     public void addData(List<Activity> activities) {
-        int initialSize = this.activities.size();
         this.activities.clear();
         this.activities.addAll(activities);
         int actualSize = this.activities.size();
-        notifyItemRangeInserted(initialSize, actualSize);
+        notifyItemRangeChanged(0, actualSize);
     }
 
     public interface OnItemClickListener {

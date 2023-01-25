@@ -150,18 +150,18 @@ public class ActivityDateEditFragment extends Fragment {
             }
 
             if (date1 == 0) {
-                dateb1.setError(getResources().getString(R.string.unexpected_error));
+                dateb1.setError(getString(R.string.unexpected_error));
                 return;
             }
 
             if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                 if (date2 == 0) {
-                    dateb2.setError(getResources().getString(R.string.unexpected_error));
+                    dateb2.setError(getString(R.string.unexpected_error));
                     return;
                 }
 
                 if (date1 > date2) {
-                    dateb2.setError(getResources().getString(R.string.activity_field_error));
+                    dateb2.setError(getString(R.string.activity_field_error));
                     return;
                 }
 

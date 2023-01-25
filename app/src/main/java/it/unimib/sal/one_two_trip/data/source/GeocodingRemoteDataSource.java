@@ -38,7 +38,7 @@ public class GeocodingRemoteDataSource extends BaseGeocodingRemoteDataSource {
 
         Response<GeocodingApiResponse[]> response = geocodingApiCall.execute();
 
-        if (response.body() != null && response.isSuccessful()) {
+        if (response.body() != null && response.isSuccessful() && response.body().length > 0) {
             geocodingCallback.onSuccess(response.body()[0].getLat(), response.body()[0].getLon());
         } else {
             geocodingCallback.onFailure(new Exception(response.code() + " " + response.message()));

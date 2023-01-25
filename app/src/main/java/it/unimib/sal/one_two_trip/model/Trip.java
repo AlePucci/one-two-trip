@@ -7,6 +7,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -45,6 +46,12 @@ public class Trip {
     private long start_date;
 
     public Trip() {
+        tripOwner = "";
+        title = "";
+        description = "";
+        activity = new ActivityListHolder(new ArrayList<>());
+        participant = new PersonListHolder(new ArrayList<>());
+        completed = false;
     }
 
     @Ignore
