@@ -31,10 +31,12 @@ import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
+import it.unimib.sal.one_two_trip.util.GeocodingUtility;
+import it.unimib.sal.one_two_trip.util.GeocodingUtilityCallback;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
-public class ActivityLocationEditFragment extends Fragment {
+public class ActivityLocationEditFragment extends Fragment implements GeocodingUtilityCallback {
 
     private Application application;
     private TripsViewModel viewModel;
@@ -89,6 +91,9 @@ public class ActivityLocationEditFragment extends Fragment {
             String location1 = null;
             String location2 = null;
 
+            GeocodingUtility utility = new GeocodingUtility(application);
+            utility.setGeocodingUtilityCallback(this);
+
             if (loc1.getEditText() != null) {
                 location1 = loc1.getEditText().getText().toString();
             }
@@ -110,6 +115,7 @@ public class ActivityLocationEditFragment extends Fragment {
 
             if (!this.activity.getLocation().equalsIgnoreCase(location1)) {
                 this.activity.setLocation(location1);
+                utility.search(location1, 1);
                 valid = true;
             }
 
@@ -125,6 +131,7 @@ public class ActivityLocationEditFragment extends Fragment {
 
                 if (!this.activity.getEnd_location().equalsIgnoreCase(location2)) {
                     this.activity.setEnd_location(location2);
+                    utility.search(location2, 1);
                     valid = true;
                 }
             }
@@ -186,5 +193,21 @@ public class ActivityLocationEditFragment extends Fragment {
                 requireActivity().finish();
             }
         });
+    }
+
+    @Override
+    public void onGeocodingSuccess(String lat, String lon) {
+        activity.setLatitude(Double.parseDouble(lat));
+        activity.setLongitude(Double.parseDouble(lon));
+
+        viewModel.updateTrip(trip);
+    }
+
+    @Override
+    public void onGeocodingFailure(Exception exception) {
+        Snackbar.make(requireView(), exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
+        activity.setLatitude(0);
+        activity.setLongitude(0);
+        viewModel.updateTrip(trip);
     }
 }
