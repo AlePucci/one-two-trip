@@ -36,7 +36,7 @@ import it.unimib.sal.one_two_trip.util.GeocodingUtilityCallback;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
-public class ActivityLocationEditFragment extends Fragment implements GeocodingUtilityCallback {
+public class ActivityLocationEditFragment extends Fragment {
 
     private Application application;
     private TripsViewModel viewModel;
@@ -91,8 +91,48 @@ public class ActivityLocationEditFragment extends Fragment implements GeocodingU
             String location1 = null;
             String location2 = null;
 
+            GeocodingUtility endUtility = new GeocodingUtility(application);
+            endUtility.setGeocodingUtilityCallback(new GeocodingUtilityCallback() {
+                @Override
+                public void onGeocodingSuccess(String lat, String lon) {
+                    activity.setEndLatitude(Double.parseDouble(lat));
+                    activity.setEndLongitude(Double.parseDouble(lon));
+
+                    viewModel.updateTrip(trip);
+                }
+
+                @Override
+                public void onGeocodingFailure(Exception exception) {
+                    Snackbar.make(requireView(), exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
+                    activity.setLatitude(0);
+                    activity.setLongitude(0);
+                    viewModel.updateTrip(trip);
+                }
+            });
+
+
             GeocodingUtility utility = new GeocodingUtility(application);
-            utility.setGeocodingUtilityCallback(this);
+            utility.setGeocodingUtilityCallback(new GeocodingUtilityCallback() {
+                @Override
+                public void onGeocodingSuccess(String lat, String lon) {
+                    activity.setLatitude(Double.parseDouble(lat));
+                    activity.setLongitude(Double.parseDouble(lon));
+
+                    if(activity.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
+                        endUtility.search(activity.getEnd_location(), 1);
+                    } else {
+                        viewModel.updateTrip(trip);
+                    }
+                }
+
+                @Override
+                public void onGeocodingFailure(Exception exception) {
+                    Snackbar.make(requireView(), exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
+                    activity.setLatitude(0);
+                    activity.setLongitude(0);
+                    viewModel.updateTrip(trip);
+                }
+            });
 
             if (loc1.getEditText() != null) {
                 location1 = loc1.getEditText().getText().toString();
@@ -115,7 +155,6 @@ public class ActivityLocationEditFragment extends Fragment implements GeocodingU
 
             if (!this.activity.getLocation().equalsIgnoreCase(location1)) {
                 this.activity.setLocation(location1);
-                utility.search(location1, 1);
                 valid = true;
             }
 
@@ -131,13 +170,12 @@ public class ActivityLocationEditFragment extends Fragment implements GeocodingU
 
                 if (!this.activity.getEnd_location().equalsIgnoreCase(location2)) {
                     this.activity.setEnd_location(location2);
-                    utility.search(location2, 1);
                     valid = true;
                 }
             }
 
             if (valid) {
-                this.viewModel.updateTrip(trip);
+                utility.search(this.activity.getLocation(), 1);
             }
             Navigation.findNavController(view1).navigate(
                     R.id.action_activityLocationEditFragment_to_activityLocationFragment);
@@ -193,21 +231,5 @@ public class ActivityLocationEditFragment extends Fragment implements GeocodingU
                 requireActivity().finish();
             }
         });
-    }
-
-    @Override
-    public void onGeocodingSuccess(String lat, String lon) {
-        activity.setLatitude(Double.parseDouble(lat));
-        activity.setLongitude(Double.parseDouble(lon));
-
-        viewModel.updateTrip(trip);
-    }
-
-    @Override
-    public void onGeocodingFailure(Exception exception) {
-        Snackbar.make(requireView(), exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
-        activity.setLatitude(0);
-        activity.setLongitude(0);
-        viewModel.updateTrip(trip);
     }
 }

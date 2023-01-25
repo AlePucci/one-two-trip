@@ -296,9 +296,8 @@ public class TripFragment extends Fragment implements MenuProvider {
         }
         if (mapView != null) {
             mapView.onResume();
-        } else {
-            mapView = requireView().findViewById(R.id.mapView);
         }
+
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
         //Configuration.getInstance().load(requireContext(), prefs);
     }
@@ -319,8 +318,6 @@ public class TripFragment extends Fragment implements MenuProvider {
 
     private void mapSetup() {
         mapView.getOverlays().clear();
-
-        //TODO: draw the travel route
 
         //Markers
         List<GeoPoint> points = new ArrayList<>();
