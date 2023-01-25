@@ -5,7 +5,9 @@ import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAM
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,8 @@ public class ActivityDateFragment extends Fragment {
     private Application application;
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
+
+    private Activity activity;
 
     public ActivityDateFragment() {
     }
@@ -80,6 +84,33 @@ public class ActivityDateFragment extends Fragment {
         long tripId = ((ActivityFragment) getParentFragment().getParentFragment()).getTripId();
         long activityId = ((ActivityFragment) getParentFragment().getParentFragment()).getActivityId();
 
+        MaterialButton calendarButton1 = view.findViewById(R.id.activity_when_save1);
+        calendarButton1.setOnClickListener(view1 -> {
+            Intent intent = new Intent(Intent.ACTION_INSERT)
+                    .setData(CalendarContract.Events.CONTENT_URI)
+                    .putExtra(CalendarContract.Events.TITLE, activity.getTitle())
+                    .putExtra(CalendarContract.Events.EVENT_LOCATION, activity.getLocation())
+                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, activity.getStart_date());
+
+            if(activity.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
+                intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, activity.getEnd_date());
+            }
+
+            startActivity(intent);
+        });
+
+        MaterialButton calendarButton2 = view.findViewById(R.id.activity_when_save2);
+        calendarButton2.setOnClickListener(view1 -> {
+            Intent intent = new Intent(Intent.ACTION_INSERT)
+                    .setData(CalendarContract.Events.CONTENT_URI)
+                    .putExtra(CalendarContract.Events.TITLE, activity.getTitle())
+                    .putExtra(CalendarContract.Events.EVENT_LOCATION, activity.getLocation())
+                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, activity.getStart_date())
+                    .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, activity.getEnd_date());
+
+            startActivity(intent);
+        });
+
         MaterialButton editButton = view.findViewById(R.id.activity_when_edit);
 
         editButton.setOnClickListener(btn ->
@@ -111,7 +142,6 @@ public class ActivityDateFragment extends Fragment {
                             return;
                         }
 
-                        Activity activity = null;
 
                         for (Activity mActivity : trip.getActivity().getActivityList()) {
                             if (mActivity.getId() == activityId) {
@@ -127,17 +157,16 @@ public class ActivityDateFragment extends Fragment {
                         date1.setText(df.format(activity.getStart_date()));
 
                         TextView date2 = view.findViewById(R.id.activity_when2);
-                        MaterialButton save2 = view.findViewById(R.id.activity_when_save2);
                         ImageView arrow = view.findViewById(R.id.activity_when_arrow);
                         if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                             date2.setText(df.format(activity.getEnd_date()));
 
                             date2.setVisibility(View.VISIBLE);
-                            save2.setVisibility(View.VISIBLE);
+                            calendarButton2.setVisibility(View.VISIBLE);
                             arrow.setVisibility(View.VISIBLE);
                         } else {
                             date2.setVisibility(View.GONE);
-                            save2.setVisibility(View.GONE);
+                            calendarButton2.setVisibility(View.GONE);
                             arrow.setVisibility(View.GONE);
                         }
                     } else {
