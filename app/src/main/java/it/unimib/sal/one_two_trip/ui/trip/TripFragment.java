@@ -105,9 +105,12 @@ public class TripFragment extends Fragment implements MenuProvider {
     public TripFragment() {
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Configuration.getInstance().load(getContext(), PreferenceManager.getDefaultSharedPreferences(getContext()));
 
         this.application = requireActivity().getApplication();
         this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
@@ -128,9 +131,11 @@ public class TripFragment extends Fragment implements MenuProvider {
         multiplePermissionLauncher = registerForActivityResult(multiplePermissionsContract,
                 isGranted -> {
                     if (!isGranted.containsValue(false)) {
-                        loadMap();
+                        //loadMap();
                     }
                 });
+
+        loadMap();
 
     }
 
@@ -144,6 +149,7 @@ public class TripFragment extends Fragment implements MenuProvider {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Log.d("AAA", "onViewCreated");
         if (getArguments() == null) {
             return;
         }
@@ -298,8 +304,8 @@ public class TripFragment extends Fragment implements MenuProvider {
             mapView.onResume();
         }
 
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
-        //Configuration.getInstance().load(requireContext(), prefs);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        Configuration.getInstance().load(requireContext(), prefs);
     }
 
     @Override
@@ -312,11 +318,12 @@ public class TripFragment extends Fragment implements MenuProvider {
             mapView.onPause();
         }
 
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
-        //Configuration.getInstance().save(requireContext(), prefs);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        Configuration.getInstance().save(requireContext(), prefs);
     }
 
     private void mapSetup() {
+        Log.d("AAA", "called map setup");
         mapView.getOverlays().clear();
 
         //Markers

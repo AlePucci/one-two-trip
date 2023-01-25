@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -41,6 +42,8 @@ public class TripActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
         ActionBar actionBar = getSupportActionBar();
+
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.yellow_500));
 
         if (actionBar != null) {
             actionBar.setTitle(tripName);

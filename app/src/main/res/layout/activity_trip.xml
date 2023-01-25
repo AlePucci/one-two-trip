@@ -5,13 +5,14 @@
     android:id="@+id/trip_activity_constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/yellow_500"
     tools:context=".ui.trip.TripActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/trip_appbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurface"
+        android:background="@android:color/transparent"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,14 +22,17 @@
             android:id="@+id/trip_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/yellow_500"
+            android:background="@color/yellow_500"
             android:minHeight="?attr/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
             app:navigationIconTint="?attr/colorOnSurface"
-            app:titleCentered="true" />
+            app:popupTheme="@style/Widget.App.Toolbar"
+            app:title="efefe"
+            app:titleCentered="true"
+            app:titleTextColor="?colorOnSurface" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
