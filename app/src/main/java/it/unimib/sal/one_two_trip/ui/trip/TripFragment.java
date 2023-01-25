@@ -98,7 +98,6 @@ public class TripFragment extends Fragment implements MenuProvider {
     private MapView mapView;
     private MyLocationNewOverlay mLocationOverlay;
     private ActivityResultLauncher<String[]> multiplePermissionLauncher;
-    List<Marker> markers = new ArrayList<>();
 
     private Trip trip;
     private List<Activity> activityList;
@@ -322,6 +321,7 @@ public class TripFragment extends Fragment implements MenuProvider {
 
         //Markers
         List<GeoPoint> points = new ArrayList<>();
+        List<Marker> markers = new ArrayList<>();
         for (Activity a : trip.getActivity().getActivityList()) {
             Marker marker = new Marker(mapView);
             GeoPoint point = new GeoPoint(a.getLatitude(), a.getLongitude());
@@ -331,7 +331,6 @@ public class TripFragment extends Fragment implements MenuProvider {
             marker.setSubDescription(a.getDescription());
             marker.setPosition(point);
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            mapView.getOverlays().add(marker);
             markers.add(marker);
 
             if(a.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
@@ -343,7 +342,6 @@ public class TripFragment extends Fragment implements MenuProvider {
                 endMarker.setSubDescription(a.getDescription());
                 endMarker.setPosition(endPoint);
                 endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                mapView.getOverlays().add(endMarker);
                 markers.add(endMarker);
             }
         }
@@ -351,6 +349,10 @@ public class TripFragment extends Fragment implements MenuProvider {
         line.setPoints(points);
         mapView.getOverlayManager().add(line);
         mapView.invalidate();
+
+        //Add the markers after the line so that the line is in background
+        //TODO: order the markers so that they don't overlap
+        mapView.getOverlays().addAll(markers);
 
         //Move to location
         IMapController mapController = mapView.getController();
