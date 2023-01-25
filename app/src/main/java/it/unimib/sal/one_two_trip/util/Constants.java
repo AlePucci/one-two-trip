@@ -23,6 +23,10 @@ public class Constants {
     public static final String SHARED_PREFERENCES_NOTIFICATIONS_ON = "notifications_on";
     public static final String SHARED_PREFERENCES_TRIP_NOTIFICATIONS = "trip_notifications";
     public static final String SHARED_PREFERENCES_ACTIVITY_NOTIFICATIONS = "activity_notifications";
+    public static final String SHARED_PREFERENCES_THEME = "theme";
+    public static final String LIGHT_THEME = "light";
+    public static final String DARK_THEME = "dark";
+    public static final String SYSTEM_THEME = "system";
     public static final String TWELVE_HOURS = "720";    // Minutes
     public static final String ONE_DAY = "1440";
     public static final String TWO_DAYS = "2880";
@@ -91,7 +95,4 @@ public class Constants {
     public static final String NOTIFICATION_CHANNEL_ID = "one_two_trip_channel";
     public static final int NOTIFICATION_IMPORTANCE = NotificationManagerCompat.IMPORTANCE_HIGH;
     public static final String NOTIFICATION_TIME = "time";
-
-    public static final String REMOTE_STORAGE_UPLOAD = "upload";
-    public static final String REMOTE_STORAGE_DOWNLOAD = "download";
 }

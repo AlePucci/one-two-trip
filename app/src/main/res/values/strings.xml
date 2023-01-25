@@ -103,6 +103,10 @@
     <string name="notifications_disabled">Notifications are disabled</string>
     <string name="notifications_description">Notifications switch</string>
     <string name="settings_save_description">Save settings</string>
+    <string name="theme">Theme:</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light" translatable="false">☀</string>
+    <string name="theme_dark" translatable="false">🌙</string>
 
     <!-- menu -->
     <string name="menu_home">Home</string>

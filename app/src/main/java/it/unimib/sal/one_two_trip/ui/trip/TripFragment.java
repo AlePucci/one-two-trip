@@ -12,13 +12,10 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.InputType;
-import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -55,9 +51,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.CustomZoomButtonsController;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.ItemizedOverlay;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
@@ -76,7 +70,6 @@ import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
-import it.unimib.sal.one_two_trip.util.GeocodingUtilityCallback;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
@@ -275,7 +268,7 @@ public class TripFragment extends Fragment implements MenuProvider {
                 toolbar.setTitle(trip.getTitle());
                 progressBar.setVisibility(View.GONE);
 
-                if(isVisible())
+                if (isVisible())
                     mapSetup();
             } else {
                 ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
@@ -333,7 +326,7 @@ public class TripFragment extends Fragment implements MenuProvider {
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
             markers.add(marker);
 
-            if(a.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
+            if (a.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
                 Marker endMarker = new Marker(mapView);
                 GeoPoint endPoint = new GeoPoint(a.getEndLatitude(), a.getEndLongitude());
                 points.add(endPoint);
