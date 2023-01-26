@@ -19,6 +19,7 @@ import it.unimib.sal.one_two_trip.R;
  * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment {
+    private static final String TAG = LoginFragment.class.getSimpleName();
 
     private static final boolean USE_NAVIGATION_COMPONENT = true;
 

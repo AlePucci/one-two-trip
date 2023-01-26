@@ -31,10 +31,17 @@ public class Constants {
     public static final String RETROFIT_ERROR = "retrofit_error";
     public static final String API_KEY_ERROR = "api_key_error";
     public static final String UNEXPECTED_ERROR = "unexpected_error";
+    public static final String INVALID_USER_ERROR = "invalidUserError";
+    public static final String INVALID_CREDENTIALS_ERROR = "invalidCredentials";
+    public static final String USER_COLLISION_ERROR = "userCollisionError";
+    public static final String WEAK_PASSWORD_ERROR = "passwordIsWeak";
 
     // PHOTOS
     public static final String PHOTOS_BASE_URL = "https://api.unsplash.com/";
     public static final String PHOTOS_ENDPOINT = "search/photos";
     public static final String PHOTOS_QUERY = "query";
     public static final String PHOTOS_PER_PAGE = "per_page";
+
+    public static final String FIREBASE_REALTIME_DATABASE = "https://console.firebase.google.com/u/0/project/trip-b29d1/database/trip-b29d1-default-rtdb/data/~2F";
+    public static final String FIREBASE_USERS_COLLECTION = "users";
 }
