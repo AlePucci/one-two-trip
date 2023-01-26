@@ -29,4 +29,12 @@
     <string name="activity_where_title">Dove</string>
     <string name="activity_when_title">Quando</string>
     <string name="activity_field_error">Il valore del campo non è valido.</string>
+    //da qui le mie
+    <string name="settings">impostazioni</string>
+    <string name="name_surname">Nome Cognome</string>
+    <string name="email">nome.cognome@gmail.com</string>
+    <string name="account">account</string>
+    <string name="notifications">notifiche</string>
+    <string name="info">info</string>
+    <string name="logout">disconnessione</string>
 </resources>

@@ -31,4 +31,12 @@
     <string name="activity_where_title">Where</string>
     <string name="activity_when_title">When</string>
     <string name="activity_field_error">Field value is not valid.</string>
+    //da qui le mie
+    <string name="settings">settings</string>
+    <string name="name_surname">Name Surname</string>
+    <string name="email">name.surname@gmail.com</string>
+    <string name="account">account</string>
+    <string name="notifications">notifications</string>
+    <string name="info">info</string>
+    <string name="logout">logout</string>
 </resources>
