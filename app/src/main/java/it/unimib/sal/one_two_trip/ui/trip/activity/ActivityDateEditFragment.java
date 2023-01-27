@@ -135,7 +135,11 @@ public class ActivityDateEditFragment extends Fragment {
                 date1 = activity.getStart_date();
             } else {
                 Date temp = df.parse(dateb1.getText().toString().trim(), new ParsePosition(0));
-                date1 = temp.getTime();
+                if (temp != null) {
+                    date1 = temp.getTime();
+                } else {
+                    date1 = 0;
+                }
             }
 
             if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
@@ -143,7 +147,11 @@ public class ActivityDateEditFragment extends Fragment {
                     date2 = activity.getEnd_date();
                 } else {
                     Date temp2 = df.parse(dateb2.getText().toString().trim(), new ParsePosition(0));
-                    date2 = temp2.getTime();
+                    if (temp2 != null) {
+                        date2 = temp2.getTime();
+                    } else {
+                        date2 = 0;
+                    }
                 }
             } else {
                 date2 = 0;

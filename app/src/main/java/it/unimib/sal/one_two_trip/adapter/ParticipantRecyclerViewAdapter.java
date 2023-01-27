@@ -58,7 +58,8 @@ public class ParticipantRecyclerViewAdapter
         }
 
         public void bind(Person person) {
-            itemName.setText(person.getName() + " " + person.getSurname());
+            String fullName = person.getName() + " " + person.getSurname();
+            itemName.setText(fullName);
             itemView.setOnClickListener(this);
         }
 

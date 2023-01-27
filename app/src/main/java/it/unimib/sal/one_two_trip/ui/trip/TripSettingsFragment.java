@@ -135,9 +135,9 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
         this.tripLogo = view.findViewById(R.id.trip_logo);
 
         this.tripLogo.setOnClickListener(v -> {
-            Intent pickIntent = new Intent(Intent.ACTION_PICK,
-                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            pickIntent.setType("image/*");
+            Intent pickIntent = new Intent(Intent.ACTION_PICK);
+            pickIntent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    "image/*");
 
             //TODO replace deprecated method
             startActivityForResult(Intent.createChooser(pickIntent,
@@ -146,10 +146,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
 
         });
 
-        addParticipant.setOnClickListener(v -> {
-            Snackbar.make(view,
-                    "Add participant", Snackbar.LENGTH_SHORT).show();
-        });
+        addParticipant.setOnClickListener(v -> Snackbar.make(view,
+                "Add participant", Snackbar.LENGTH_SHORT).show());
 
         descriptionCardview.setOnClickListener(v -> {
             AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
@@ -280,13 +278,13 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
 
     @Override
     public void onUploadFailure(Exception exception) {
-        Snackbar.make(getView(), R.string.trip_logo_upload_failure,
+        Snackbar.make(requireView(), R.string.trip_logo_upload_failure,
                 Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void onDownloadFailure(Exception exception) {
-        Snackbar.make(getView(), R.string.trip_logo_download_failure, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(requireView(), R.string.trip_logo_download_failure, Snackbar.LENGTH_LONG).show();
     }
 
     @Override

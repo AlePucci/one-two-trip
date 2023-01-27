@@ -1,7 +1,5 @@
 package it.unimib.sal.one_two_trip.data.storage;
 
-import java.io.File;
-
 public interface RemoteStorageCallback {
 
     void onUploadSuccess();
