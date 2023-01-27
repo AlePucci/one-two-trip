@@ -9,6 +9,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="gray_300">#CACACA</color>
     <color name="cardview_light_background">#FBFAF8</color>
     <color name="cardview_dark_background">#353534</color>
 </resources>

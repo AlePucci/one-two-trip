@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,12 +49,12 @@ public class SettingsFragment extends Fragment {
 
     private MaterialCardView notifications_cardview;
     private SwitchMaterial notifications_switch;
-    private ToggleButton twelve_hours_trip;
-    private ToggleButton one_day_trip;
-    private ToggleButton two_days_trip;
-    private ToggleButton half_hour_activity;
-    private ToggleButton one_hour_activity;
-    private ToggleButton two_hours_activity;
+    private MaterialButton twelve_hours_trip;
+    private MaterialButton one_day_trip;
+    private MaterialButton two_days_trip;
+    private MaterialButton half_hour_activity;
+    private MaterialButton one_hour_activity;
+    private MaterialButton two_hours_activity;
     private MaterialButton theme_system;
     private MaterialButton theme_light;
     private MaterialButton theme_dark;
