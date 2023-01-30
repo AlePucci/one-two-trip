@@ -28,10 +28,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
-            app:navigationIconTint="#ff1c1b1f"
+            app:navigationIconTint="@color/gray_700"
             app:popupTheme="@style/Widget.App.Toolbar"
             app:titleCentered="true"
-            app:titleTextColor="#ff1c1b1f"
+            app:titleTextColor="@color/gray_700"
             tools:title="test" />
 
     </com.google.android.material.appbar.AppBarLayout>

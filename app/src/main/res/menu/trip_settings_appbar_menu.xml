@@ -7,12 +7,14 @@
             android:enabled="true"
             android:icon="@drawable/ic_baseline_edit_24"
             android:title="@string/menu_rename"
+            app:iconTint="@color/gray_700"
             app:showAsAction="ifRoom" />
         <item
             android:id="@+id/trip_menu_delete"
             android:enabled="true"
             android:icon="@drawable/ic_baseline_delete_24"
             android:title="@string/menu_delete"
+            app:iconTint="@color/gray_700"
             app:showAsAction="ifRoom" />
     </group>
 </menu>
