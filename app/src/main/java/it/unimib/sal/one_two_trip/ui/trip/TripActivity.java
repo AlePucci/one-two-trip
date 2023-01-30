@@ -43,7 +43,7 @@ public class TripActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
         ActionBar actionBar = getSupportActionBar();
 
-        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.yellow_500));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
 
         if (actionBar != null) {
             actionBar.setTitle(tripName);
