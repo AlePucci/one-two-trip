@@ -43,6 +43,7 @@ import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
+import it.unimib.sal.one_two_trip.util.Utility;
 
 public class ActivityFragment extends Fragment implements MenuProvider {
 
@@ -193,11 +194,13 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                         this.trip.getActivity().getActivityList().removeIf(activity ->
                                 activity.getId() == activityId);
                         this.viewModel.updateTrip(this.trip);
+                        Utility.onActivityDelete(this.trip, this.activity, this.application);
                         Bundle bundle = new Bundle();
-                        bundle.putLong(SELECTED_TRIP_ID, trip.getId());
+                        bundle.putLong(SELECTED_TRIP_ID, this.trip.getId());
                         bundle.putBoolean(MOVE_TO_ACTIVITY, false);
-                        bundle.putLong(SELECTED_ACTIVITY_ID, 0);
-                        Navigation.findNavController(requireView()).navigate(R.id.action_activityFragment_to_tripFragment, bundle);
+                        bundle.putLong(SELECTED_ACTIVITY_ID, this.activityId);
+                        Navigation.findNavController(requireView()).navigate(R.id.action_activityFragment_to_tripFragment,
+                                bundle);
                     });
 
             alert.setNegativeButton(getString(R.string.activity_delete_confirmation_negative),

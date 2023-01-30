@@ -40,6 +40,7 @@ import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
+import it.unimib.sal.one_two_trip.util.Utility;
 
 public class ActivityDateEditFragment extends Fragment {
 
@@ -185,6 +186,7 @@ public class ActivityDateEditFragment extends Fragment {
 
             if (valid) {
                 this.viewModel.updateTrip(this.trip);
+                Utility.onActivityCreate(this.trip, this.activity, this.application);
             }
 
             Navigation.findNavController(view1).navigate(

@@ -73,6 +73,7 @@ import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
+import it.unimib.sal.one_two_trip.util.Utility;
 
 public class TripFragment extends Fragment implements MenuProvider {
 
@@ -422,6 +423,10 @@ public class TripFragment extends Fragment implements MenuProvider {
             alert.setPositiveButton(getString(R.string.trip_delete_confirmation_positive),
                     (dialog, whichButton) -> {
                         this.viewModel.deleteTrip(this.trip);
+                        Utility.deleteNotifications(this.trip, this.application);
+                        for (Activity a : this.trip.getActivity().getActivityList()) {
+                            Utility.deleteNotifications(a, this.application, this.trip.getId());
+                        }
                         requireActivity().onBackPressed();
                     });
 

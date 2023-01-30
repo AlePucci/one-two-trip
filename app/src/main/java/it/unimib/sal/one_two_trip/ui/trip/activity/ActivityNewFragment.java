@@ -49,6 +49,7 @@ import it.unimib.sal.one_two_trip.util.GeocodingUtility;
 import it.unimib.sal.one_two_trip.util.GeocodingUtilityCallback;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
+import it.unimib.sal.one_two_trip.util.Utility;
 
 
 public class ActivityNewFragment extends Fragment {
@@ -99,8 +100,7 @@ public class ActivityNewFragment extends Fragment {
             public void onGeocodingSuccess(String lat, String lon) {
                 activity.setEndLatitude(Double.parseDouble(lat));
                 activity.setEndLongitude(Double.parseDouble(lon));
-
-                viewModel.updateTrip(trip);
+                onCreate();
             }
 
             @Override
@@ -108,7 +108,7 @@ public class ActivityNewFragment extends Fragment {
                 //Snackbar.make(requireView(), exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
                 activity.setLatitude(0);
                 activity.setLongitude(0);
-                viewModel.updateTrip(trip);
+                onCreate();
             }
         });
 
@@ -120,10 +120,10 @@ public class ActivityNewFragment extends Fragment {
                 activity.setLatitude(Double.parseDouble(lat));
                 activity.setLongitude(Double.parseDouble(lon));
 
-                if(activity.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
+                if (activity.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
                     endUtility.search(activity.getEnd_location(), 1);
                 } else {
-                    viewModel.updateTrip(trip);
+                    onCreate();
                 }
             }
 
@@ -132,12 +132,12 @@ public class ActivityNewFragment extends Fragment {
                 //Snackbar.make(requireView(), exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
                 activity.setLatitude(0);
                 activity.setLongitude(0);
-                viewModel.updateTrip(trip);
+                onCreate();
             }
         });
 
         TextView activity_title = view.findViewById(R.id.activity_new_title);
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             String title = getArguments().getString(ACTIVITY_TITLE);
             activity_title.setText(title);
         }
@@ -152,7 +152,7 @@ public class ActivityNewFragment extends Fragment {
         ImageView whenArrow = view.findViewById(R.id.activity_new_when_arrow_edit);
 
         moving.setOnCheckedChangeListener((compoundButton, b) -> {
-            if(b) {
+            if (b) {
                 where2.setVisibility(View.VISIBLE);
                 when2.setVisibility(View.VISIBLE);
                 whereArrow.setVisibility(View.VISIBLE);
@@ -192,25 +192,25 @@ public class ActivityNewFragment extends Fragment {
         MaterialButton materialButton = view.findViewById(R.id.activity_new_confirm);
         materialButton.setOnClickListener(view1 -> {
 
-            if(where1.getEditText() != null && where1.getEditText().getText().toString().isEmpty()) {
+            if (where1.getEditText() != null && where1.getEditText().getText().toString().isEmpty()) {
                 where1.setError(getString(R.string.activity_field_error));
                 return;
             } else {
                 where1.setErrorEnabled(false);
             }
 
-            if(when1.getText().toString().isEmpty()) {
+            if (when1.getText().toString().isEmpty()) {
                 when1.setError(getString(R.string.unexpected_error));
                 return;
             } else {
                 where1.setErrorEnabled(false);
             }
 
-            if(descr.getEditText() == null) {
+            if (descr.getEditText() == null) {
                 return;
             }
 
-            if(getArguments() == null) {
+            if (getArguments() == null) {
                 return;
             }
 
@@ -218,7 +218,7 @@ public class ActivityNewFragment extends Fragment {
             String location = where1.getEditText().getText().toString();
 
             Date parsed = df.parse(when1.getText().toString(), new ParsePosition(0));
-            if(parsed == null) {
+            if (parsed == null) {
                 when1.setError(getString(R.string.unexpected_error));
                 return;
             } else {
@@ -238,15 +238,15 @@ public class ActivityNewFragment extends Fragment {
             personList.add(new Person(80, "test", "aa", "sage", "seg", "afge", "asef"));
             activity.setParticipant(new PersonListHolder(personList));
 
-            if(moving.isChecked()) {
-                if(where2.getEditText() != null && where2.getEditText().getText().toString().isEmpty()) {
+            if (moving.isChecked()) {
+                if (where2.getEditText() != null && where2.getEditText().getText().toString().isEmpty()) {
                     where2.setError(getString(R.string.activity_field_error));
                     return;
                 } else {
                     where2.setErrorEnabled(false);
                 }
 
-                if(when2.getText().toString().isEmpty()) {
+                if (when2.getText().toString().isEmpty()) {
                     when2.setError(getString(R.string.unexpected_error));
                     return;
                 } else {
@@ -258,7 +258,7 @@ public class ActivityNewFragment extends Fragment {
                 String location2 = where2.getEditText().getText().toString();
 
                 parsed = df.parse(when2.getText().toString(), new ParsePosition(0));
-                if(parsed == null) {
+                if (parsed == null) {
                     when2.setError(getString(R.string.unexpected_error));
                     return;
                 } else {
@@ -272,7 +272,7 @@ public class ActivityNewFragment extends Fragment {
                 activity.setType(Constants.STATIC_ACTIVITY_TYPE_NAME);
             }
 
-            if(trip != null) {
+            if (trip != null) {
                 utility.search(location, 1);
 
                 trip.getActivity().getActivityList().add(activity);
@@ -291,7 +291,7 @@ public class ActivityNewFragment extends Fragment {
 
         this.viewModel.getTrips(Long.parseLong(lastUpdate)).observeForever(result -> {
             if (result.isSuccess()) {
-                if(getArguments() == null) {
+                if (getArguments() == null) {
                     return;
                 }
 
@@ -313,5 +313,10 @@ public class ActivityNewFragment extends Fragment {
             }
 
         });
+    }
+
+    private void onCreate() {
+        viewModel.updateTrip(this.trip);
+        Utility.onActivityCreate(this.trip, this.activity, this.application);
     }
 }
