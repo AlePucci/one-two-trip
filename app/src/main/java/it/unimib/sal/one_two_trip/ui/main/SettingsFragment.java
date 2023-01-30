@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,12 +49,12 @@ public class SettingsFragment extends Fragment {
 
     private MaterialCardView notifications_cardview;
     private SwitchMaterial notifications_switch;
-    private ToggleButton twelve_hours_trip;
-    private ToggleButton one_day_trip;
-    private ToggleButton two_days_trip;
-    private ToggleButton half_hour_activity;
-    private ToggleButton one_hour_activity;
-    private ToggleButton two_hours_activity;
+    private MaterialButton twelve_hours_trip;
+    private MaterialButton one_day_trip;
+    private MaterialButton two_days_trip;
+    private MaterialButton half_hour_activity;
+    private MaterialButton one_hour_activity;
+    private MaterialButton two_hours_activity;
     private MaterialButton theme_system;
     private MaterialButton theme_light;
     private MaterialButton theme_dark;
@@ -102,16 +101,19 @@ public class SettingsFragment extends Fragment {
         this.theme_dark = view.findViewById(R.id.dark_theme);
 
         this.theme_system.setOnClickListener(v -> {
+            this.theme_system.setChecked(true);
             this.theme_light.setChecked(false);
             this.theme_dark.setChecked(false);
         });
 
         this.theme_light.setOnClickListener(v -> {
+            this.theme_light.setChecked(true);
             this.theme_system.setChecked(false);
             this.theme_dark.setChecked(false);
         });
 
         this.theme_dark.setOnClickListener(v -> {
+            this.theme_dark.setChecked(true);
             this.theme_system.setChecked(false);
             this.theme_light.setChecked(false);
         });
@@ -159,7 +161,6 @@ public class SettingsFragment extends Fragment {
             if (this.two_hours_activity.isChecked()) {
                 activity_notifications.add(TWO_HOURS);
             }
-
 
             sharedPreferencesUtil.writeStringSetData(
                     SHARED_PREFERENCES_FILE_NAME, SHARED_PREFERENCES_TRIP_NOTIFICATIONS,
@@ -256,7 +257,7 @@ public class SettingsFragment extends Fragment {
             this.theme_system.setChecked(false);
         } else if (theme.equals(DARK_THEME)) {
             this.theme_dark.setChecked(true);
-            this.theme_system.setChecked(true);
+            this.theme_system.setChecked(false);
             this.theme_light.setChecked(false);
         }
     }

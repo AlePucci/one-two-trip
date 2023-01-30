@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -198,11 +197,10 @@ public class ComingTripsFragment extends Fragment {
 
                     @Override
                     public void onButtonClick(Trip trip) {
-//                        Intent intent = new Intent(requireContext(), TripActivity.class);
-//                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
-//                        intent.putExtra(SELECTED_TRIP_NAME, trip.getTitle());
-//                        startActivity(intent);
-
+                        Intent intent = new Intent(requireContext(), TripActivity.class);
+                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
+                        intent.putExtra(SELECTED_TRIP_NAME, trip.getTitle());
+                        startActivity(intent);
                     }
 
                     @Override
@@ -257,6 +255,7 @@ public class ComingTripsFragment extends Fragment {
                                 this.comingTrips.sort(Comparator.comparing(Trip::getStart_date));
                                 //this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
                                  //       this.comingTrips.size() + 1);
+                                // TODO FIX THIS
                                 this.tripsRecyclerViewAdapter.notifyDataSetChanged();
                             }
                         }
