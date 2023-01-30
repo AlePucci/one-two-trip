@@ -23,6 +23,7 @@
         style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:contentDescription="@string/activity_drag_button"
         android:hapticFeedbackEnabled="true"
         app:icon="@drawable/ic_baseline_drag_indicator_24"
         app:iconTint="?colorOnSurface"
@@ -106,8 +107,10 @@
                     android:id="@+id/item_activity_separator"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:contentDescription=""
                     app:srcCompat="@drawable/ic_baseline_horizontal_rule_24"
-                    app:tint="?colorOnSurface" />
+                    app:tint="?colorOnSurface"
+                    tools:ignore="ContentDescription" />
 
                 <LinearLayout
                     android:id="@+id/item_activity_end_ll"

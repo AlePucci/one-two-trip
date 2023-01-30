@@ -17,6 +17,7 @@
             android:id="@+id/activity_descr_icon_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/activity_descr_description"
             android:src="@drawable/ic_baseline_notes_24"
             app:layout_constraintBottom_toBottomOf="@+id/activity_descr_title_edit"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,6 +57,7 @@
             style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/activity_confirm_button"
             app:icon="@drawable/ic_baseline_check_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_descr_textlayout" />

@@ -46,6 +46,7 @@
                     android:id="@+id/activity_new_where_icon_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/activity_new_where_description"
                     app:layout_constraintBottom_toBottomOf="@+id/activity_new_where_label_edit"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -66,6 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:contentDescription="@string/activity_new_where_arrow_description"
                     android:src="@drawable/ic_baseline_arrow_downward_24"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -131,6 +133,7 @@
                     android:id="@+id/activity_new_when_icon_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/activity_new_when_description"
                     android:src="@drawable/ic_baseline_calendar_month_24"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -152,6 +155,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:contentDescription="@string/activity_edit_button"
                     android:gravity="start|center_vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -162,6 +166,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:contentDescription="@string/activity_new_when_arrow_description"
                     android:src="@drawable/ic_baseline_arrow_downward_24"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -200,6 +205,7 @@
                     android:id="@+id/activity_new_descr_icon_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/activity_new_descr_description"
                     android:src="@drawable/ic_baseline_notes_24"
                     app:layout_constraintBottom_toBottomOf="@+id/activity_new_descr_title_edit"
                     app:layout_constraintStart_toStartOf="parent"
@@ -242,6 +248,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
+            android:contentDescription="@string/activity_confirm_button"
             app:icon="@drawable/ic_baseline_check_24" />
 
     </LinearLayout>
