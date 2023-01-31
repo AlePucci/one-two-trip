@@ -124,8 +124,10 @@ public class ActivityParticipantFragment extends Fragment {
                         Activity finalActivity = activity;
 
                         ParticipantRecyclerViewAdapter adapter =
-                                new ParticipantRecyclerViewAdapter(activity.getParticipant()
-                                        .getPersonList(),
+                                new ParticipantRecyclerViewAdapter(
+                                        activity.getParticipant()
+                                                .getPersonList(),
+                                        application,
                                         position -> {
                                             //TODO: goto user page
                                             Snackbar.make(view, "User "

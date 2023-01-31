@@ -269,6 +269,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                         SettingsParticipantRecyclerViewAdapter adapter =
                                 new SettingsParticipantRecyclerViewAdapter(
                                         this.trip.getParticipant().getPersonList(),
+                                        this.application,
                                         new SettingsParticipantRecyclerViewAdapter.OnItemClickListener() {
                                             @Override
                                             public void onClick(int position) {

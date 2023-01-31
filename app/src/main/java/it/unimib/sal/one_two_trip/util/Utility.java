@@ -24,6 +24,7 @@ import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Trip;
@@ -316,5 +318,11 @@ public class Utility {
                                         Application application) {
         deleteNotifications(activity, application, trip.getId());
         scheduleNotifications(trip, application);
+    }
+
+    public static int getRandomColor() {
+        Random random = new Random();
+        return Color.argb(255, random.nextInt(256), random.nextInt(256),
+                random.nextInt(256));
     }
 }

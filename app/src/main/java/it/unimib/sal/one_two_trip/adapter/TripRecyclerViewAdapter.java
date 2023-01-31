@@ -2,6 +2,7 @@ package it.unimib.sal.one_two_trip.adapter;
 
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 
+import android.app.Application;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +27,13 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
 
     private final List<Activity> activities;
     private final OnItemClickListener onClickListener;
+    private final Application application;
 
-    public TripRecyclerViewAdapter(List<Activity> activities, OnItemClickListener onClickListener) {
+    public TripRecyclerViewAdapter(List<Activity> activities, Application application,
+                                   OnItemClickListener onClickListener) {
         this.activities = activities;
         this.onClickListener = onClickListener;
+        this.application = application;
     }
 
     @NonNull
@@ -120,6 +124,7 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
             //Participants
             ParticipantRecyclerViewAdapter adapter = new ParticipantRecyclerViewAdapter(
                     activity.getParticipant().getPersonList(),
+                    application,
                     position -> {
                         //TODO: goto user page
                         Snackbar.make(itemView, "User " +

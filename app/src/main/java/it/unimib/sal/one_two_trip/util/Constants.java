@@ -95,4 +95,7 @@ public class Constants {
 
     // TRIP LOGO
     public static final String LAST_LOGO_UPDATE = "lastLogoUpdate";
+
+    // USER COLOR
+    public static final String USER_COLOR = "userColor";
 }

@@ -148,6 +148,7 @@ public class ActivityParticipantEditFragment extends Fragment {
 
                         //Participating
                         participantAdapter = new ParticipantRecyclerViewAdapter(this.personList,
+                                application,
                                 position -> {
                                     //TODO: remove from participant list
                                     Snackbar.make(view, "User "
@@ -162,6 +163,7 @@ public class ActivityParticipantEditFragment extends Fragment {
 
                         //Not Participating
                         notParticipantAdapter = new ParticipantRecyclerViewAdapter(notParticipating,
+                                application,
                                 position -> {
                                     //TODO: add to participant list
                                     Snackbar.make(view, "User "

@@ -216,6 +216,7 @@ public class TripFragment extends Fragment implements MenuProvider {
         progressBar.setVisibility(View.VISIBLE);
 
         this.adapter = new TripRecyclerViewAdapter(this.activityList,
+                this.application,
                 new TripRecyclerViewAdapter.OnItemClickListener() {
                     @Override
                     public void onActivityClick(int position) {
