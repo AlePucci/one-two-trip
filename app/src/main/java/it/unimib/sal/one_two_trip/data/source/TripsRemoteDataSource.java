@@ -22,13 +22,14 @@ import it.unimib.sal.one_two_trip.model.TripsApiResponse;
 public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
 
     private final DatabaseReference databaseReference;
-    private final String idToken;
+    private final DatabaseReference tripsCollectionReference;
 
     public TripsRemoteDataSource(String idToken) {
         super();
-        this.idToken = idToken;
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
         this.databaseReference = firebaseDatabase.getReference().getRef();
+        this.tripsCollectionReference = this.databaseReference.child(FIREBASE_USER_COLLECTION)
+                .child(idToken).child(FIREBASE_TRIPS_COLLECTION);
 
         this.addTripListener();
     }
@@ -53,42 +54,41 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
             }
         };
 
-        this.databaseReference.child(FIREBASE_USER_COLLECTION).child(idToken)
-                .child(FIREBASE_TRIPS_COLLECTION).addValueEventListener(tripListener);
+        this.tripsCollectionReference.addValueEventListener(tripListener);
     }
 
     @Override
     public void getTrips() {
-        databaseReference.child(FIREBASE_USER_COLLECTION).child(idToken)
-                .child(FIREBASE_TRIPS_COLLECTION).get().addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) {
-                        tripCallback.onFailureFromRemote(task.getException());
-                    } else {
-                        List<Trip> tripList = new ArrayList<>();
-                        for (DataSnapshot ds : task.getResult().getChildren()) {
-                            Trip trip = ds.getValue(Trip.class);
-                            tripList.add(trip);
-                        }
+        this.tripsCollectionReference.get().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                tripCallback.onFailureFromRemote(task.getException());
+            } else {
+                List<Trip> tripList = new ArrayList<>();
+                for (DataSnapshot ds : task.getResult().getChildren()) {
+                    Trip trip = ds.getValue(Trip.class);
+                    tripList.add(trip);
+                }
 
-                        tripCallback.onSuccessFromRemote(new TripsApiResponse(STATUS_OK,
-                                tripList.size(), tripList), System.currentTimeMillis());
-                    }
-                });
+                tripCallback.onSuccessFromRemote(new TripsApiResponse(STATUS_OK,
+                        tripList.size(), tripList), System.currentTimeMillis());
+            }
+        });
     }
 
     @Override
     public void updateTrip(Trip trip) {
-        databaseReference.child(FIREBASE_USER_COLLECTION).child(idToken)
-                .child(FIREBASE_TRIPS_COLLECTION).child(String.valueOf(trip.getId() - 1)).setValue(trip);
+        // TODO fix path (trip id)
+        this.tripsCollectionReference.child(String.valueOf(trip.getId() - 1)).setValue(trip);
     }
 
     @Override
-    public void insertTrips(List<Trip> tripList) {
-
+    public void insertTrip(Trip trip) {
+        this.tripsCollectionReference.setValue(trip);
     }
 
     @Override
     public void deleteTrip(Trip trip) {
-
+        // TODO fix path (trip id)
+        this.tripsCollectionReference.child(String.valueOf(trip.getId() - 1)).removeValue();
     }
 }
