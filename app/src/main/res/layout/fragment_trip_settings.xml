@@ -29,7 +29,7 @@
             android:layout_marginTop="32dp"
             android:adjustViewBounds="true"
             android:cropToPadding="false"
-            android:maxWidth="500dp"
+            android:maxWidth="320dp"
             android:maxHeight="320dp"
             android:minHeight="240dp"
             android:scaleType="centerInside"
