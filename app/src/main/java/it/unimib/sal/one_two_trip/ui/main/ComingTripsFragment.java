@@ -225,7 +225,7 @@ public class ComingTripsFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observeForever(
+        this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> fetchedTrips = ((Result.Success) result).getData().getTripList();

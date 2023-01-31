@@ -35,6 +35,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.snackbar.Snackbar;
@@ -123,6 +124,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
         CardView descriptionCardview = view.findViewById(R.id.trip_description_cardview);
 
         androidx.fragment.app.FragmentActivity activity = requireActivity();
+        MaterialToolbar toolbar = activity.findViewById(R.id.trip_toolbar);
         ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(),
                 Lifecycle.State.RESUMED);
 
@@ -192,7 +194,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                     LAST_UPDATE);
         }
 
-        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(
+                getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
@@ -217,7 +220,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                                     0));
                         }
 
-                        if (this.trip.getActivity() != null && this.trip.getActivity().getActivityList() != null) {
+                        if (this.trip.getActivity() != null
+                                && this.trip.getActivity().getActivityList() != null) {
                             activities.setText(String.format(getString(R.string.trip_activities),
                                     this.trip.getActivity().getActivityList().size()));
                         } else {
@@ -225,34 +229,41 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                                     0));
                         }
 
-                        if (this.trip.getDescription() != null && !this.trip.getDescription().isEmpty()) {
+                        if (this.trip.getDescription() != null
+                                && !this.trip.getDescription().isEmpty()) {
                             description.setText(this.trip.getDescription());
                         } else {
                             description.setText(getString(R.string.trip_add_description));
                         }
-                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.application);
+                        LinearLayoutManager linearLayoutManager =
+                                new LinearLayoutManager(this.application);
                         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
                         SettingsParticipantRecyclerViewAdapter adapter =
-                                new SettingsParticipantRecyclerViewAdapter(this.trip.getParticipant().getPersonList(), new SettingsParticipantRecyclerViewAdapter.OnItemClickListener() {
-                                    @Override
-                                    public void onClick(int position) {
-                                        // TODO open participant profile
-                                        Snackbar.make(view,
-                                                "Open participant profile", Snackbar.LENGTH_SHORT).show();
-                                    }
+                                new SettingsParticipantRecyclerViewAdapter(
+                                        this.trip.getParticipant().getPersonList(),
+                                        new SettingsParticipantRecyclerViewAdapter.OnItemClickListener() {
+                                            @Override
+                                            public void onClick(int position) {
+                                                // TODO open participant profile
+                                                Snackbar.make(view,
+                                                        "Open participant profile",
+                                                        Snackbar.LENGTH_SHORT).show();
+                                            }
 
-                                    @Override
-                                    public void onRemoveClick(int position) {
-                                        // TODO remove participant
-                                        Snackbar.make(view,
-                                                "Remove participant", Snackbar.LENGTH_SHORT).show();
-                                    }
-                                });
+                                            @Override
+                                            public void onRemoveClick(int position) {
+                                                // TODO remove participant
+                                                Snackbar.make(view,
+                                                        "Remove participant",
+                                                        Snackbar.LENGTH_SHORT).show();
+                                            }
+                                        });
                         recyclerView.setLayoutManager(linearLayoutManager);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setNestedScrollingEnabled(false);
 
+                        toolbar.setTitle(this.trip.getTitle());
                     } else {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
@@ -331,7 +342,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
             alert.setView(input);
             alert.setPositiveButton(getString(R.string.trip_title_change_positive),
                     (dialog, which) -> {
-                        String newTitle = input.getText().toString();
+                        String newTitle = input.getText().toString().trim();
                         if (!newTitle.isEmpty() && !newTitle.equals(oldTitle)) {
                             this.trip.setTitle(newTitle);
                             this.viewModel.updateTrip(this.trip);

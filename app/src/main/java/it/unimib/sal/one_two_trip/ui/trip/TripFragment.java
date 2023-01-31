@@ -248,7 +248,8 @@ public class TripFragment extends Fragment implements MenuProvider {
                     LAST_UPDATE);
         }
 
-        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observeForever(result -> {
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+                result -> {
             if (result.isSuccess()) {
                 List<Trip> trips = ((Result.Success) result).getData().getTripList();
 

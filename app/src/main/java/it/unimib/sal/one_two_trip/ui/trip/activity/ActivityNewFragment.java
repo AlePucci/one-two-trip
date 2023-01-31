@@ -289,30 +289,31 @@ public class ActivityNewFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observeForever(result -> {
-            if (result.isSuccess()) {
-                if (getArguments() == null) {
-                    return;
-                }
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+                result -> {
+                    if (result.isSuccess()) {
+                        if (getArguments() == null) {
+                            return;
+                        }
 
-                long tripId = getArguments().getLong(SELECTED_TRIP_ID);
-                List<Trip> trips = ((Result.Success) result).getData().getTripList();
+                        long tripId = getArguments().getLong(SELECTED_TRIP_ID);
+                        List<Trip> trips = ((Result.Success) result).getData().getTripList();
 
-                for (Trip trip : trips) {
-                    if (trip.getId() == tripId) {
-                        this.trip = trip;
-                        break;
+                        for (Trip trip : trips) {
+                            if (trip.getId() == tripId) {
+                                this.trip = trip;
+                                break;
+                            }
+                        }
+                    } else {
+                        ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
+                        Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
+                                .getMessage()), Snackbar.LENGTH_SHORT).show();
+
+                        requireActivity().onBackPressed();
                     }
-                }
-            } else {
-                ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
-                Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
-                        .getMessage()), Snackbar.LENGTH_SHORT).show();
 
-                requireActivity().onBackPressed();
-            }
-
-        });
+                });
     }
 
     private void onCreate() {

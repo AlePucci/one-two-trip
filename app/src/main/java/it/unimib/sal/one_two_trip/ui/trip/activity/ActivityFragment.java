@@ -110,7 +110,8 @@ public class ActivityFragment extends Fragment implements MenuProvider {
 
         androidx.fragment.app.FragmentActivity activity = requireActivity();
         MaterialToolbar toolbar = activity.findViewById(R.id.trip_toolbar);
-        ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+        ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(),
+                Lifecycle.State.RESUMED);
 
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
@@ -119,7 +120,8 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                     LAST_UPDATE);
         }
 
-        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(
+                getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
@@ -175,7 +177,7 @@ public class ActivityFragment extends Fragment implements MenuProvider {
             alert.setView(input);
             alert.setPositiveButton(getString(R.string.activity_title_change_positive),
                     (dialog, which) -> {
-                        String newTitle = input.getText().toString();
+                        String newTitle = input.getText().toString().trim();
                         if (!newTitle.isEmpty() && !newTitle.equals(oldTitle)) {
                             this.activity.setTitle(newTitle);
                             this.viewModel.updateTrip(this.trip);
