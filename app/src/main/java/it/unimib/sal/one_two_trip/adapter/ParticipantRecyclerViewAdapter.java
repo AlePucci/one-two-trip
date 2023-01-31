@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -50,17 +51,22 @@ public class ParticipantRecyclerViewAdapter
     }
 
     public class ParticipantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final TextView itemName;
+        private final TextView participantName;
+        private final TextView participantImage;
+        private final ConstraintLayout participantLayout;
 
         public ParticipantHolder(@NonNull View itemView) {
             super(itemView);
-            itemName = itemView.findViewById(R.id.participant_name);
+            participantName = itemView.findViewById(R.id.participant_name);
+            participantImage = itemView.findViewById(R.id.participant_image);
+            participantLayout = itemView.findViewById(R.id.participant_constraint);
         }
 
         public void bind(Person person) {
             String fullName = person.getName() + " " + person.getSurname();
-            itemName.setText(fullName);
-            itemView.setOnClickListener(this);
+            participantName.setText(fullName);
+            participantImage.setText(fullName.substring(0, 1));
+            participantLayout.setOnClickListener(this);
         }
 
         @Override

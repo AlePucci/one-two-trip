@@ -70,7 +70,7 @@ public class SettingsParticipantRecyclerViewAdapter
         public void bind(Person person) {
             String fullName = person.getName() + " " + person.getSurname();
             participantName.setText(fullName);
-            participantImage.setText(person.getName().substring(0, 1));
+            participantImage.setText(fullName.substring(0, 1));
             participantEmail.setText(person.getEmail_address());
             removeParticipant.setOnClickListener(this);
             itemView.setOnClickListener(this);

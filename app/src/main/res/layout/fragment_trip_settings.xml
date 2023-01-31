@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/trip_settings_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -23,15 +24,20 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/trip_logo"
-            android:layout_width="0dp"
-            android:layout_height="256dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:adjustViewBounds="true"
             android:cropToPadding="false"
+            android:maxWidth="500dp"
+            android:maxHeight="320dp"
+            android:minHeight="240dp"
+            android:scaleType="centerInside"
             android:src="@drawable/default_trip_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearance="@style/roundedImageView"
+            app:shapeAppearanceOverlay="@style/roundedImageView"
             tools:src="@tools:sample/avatars" />
 
         <TextView
