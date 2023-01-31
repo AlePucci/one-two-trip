@@ -21,14 +21,13 @@ import it.unimib.sal.one_two_trip.model.TripsApiResponse;
 
 public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
 
-    private final DatabaseReference databaseReference;
     private final DatabaseReference tripsCollectionReference;
 
     public TripsRemoteDataSource(String idToken) {
         super();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
-        this.databaseReference = firebaseDatabase.getReference().getRef();
-        this.tripsCollectionReference = this.databaseReference.child(FIREBASE_USER_COLLECTION)
+        DatabaseReference databaseReference = firebaseDatabase.getReference().getRef();
+        this.tripsCollectionReference = databaseReference.child(FIREBASE_USER_COLLECTION)
                 .child(idToken).child(FIREBASE_TRIPS_COLLECTION);
 
         this.addTripListener();

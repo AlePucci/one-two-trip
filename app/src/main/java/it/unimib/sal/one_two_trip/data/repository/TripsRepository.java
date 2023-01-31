@@ -77,9 +77,4 @@ public class TripsRepository implements ITripsRepository, TripCallback {
         this.allTripsMutableLiveData.postValue(result);
     }
 
-    @Override
-    public void onFailureFromLocal(Exception exception) {
-        Result.Error resultError = new Result.Error(exception.getMessage());
-        this.allTripsMutableLiveData.postValue(resultError);
-    }
 }
