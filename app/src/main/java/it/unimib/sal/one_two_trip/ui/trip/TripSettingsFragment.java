@@ -1,10 +1,12 @@
 package it.unimib.sal.one_two_trip.ui.trip;
 
+import static it.unimib.sal.one_two_trip.util.Constants.IMAGE_MIME;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.TRIP_LOGO_NAME;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
@@ -24,6 +26,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -63,7 +67,6 @@ import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
  */
 public class TripSettingsFragment extends Fragment implements RemoteStorageCallback, MenuProvider {
 
-    public static final int PICK_IMAGE = 1;
     private Application application;
     private Trip trip;
     private RemoteStorage remoteStorage;
@@ -104,6 +107,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
             Snackbar.make(activity.findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
+
         this.remoteStorage = ServiceLocator.getInstance().getRemoteStorage(this.application);
         this.remoteStorage.setRemoteStorageCallback(this);
     }
@@ -135,21 +139,42 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
         }
         this.remoteStorage.tripLogoExists(tripId);
 
+        //TODO FIX USER ID
         this.imagePath = application.getFilesDir() + "/1-" + tripId + "-" + TRIP_LOGO_NAME;
         this.tripLogo = view.findViewById(R.id.trip_logo);
+
+        ActivityResultLauncher<Intent> photoPickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            Uri imageUri = data.getData();
+                            try {
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(
+                                        this.application.getContentResolver(),
+                                        imageUri);
+                                this.tripLogo.setImageBitmap(bitmap);
+                                this.uploading = true;
+                                this.remoteStorage.uploadTripLogo(bitmap, tripId);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                });
 
         this.tripLogo.setOnClickListener(v -> {
             Intent pickIntent = new Intent(Intent.ACTION_PICK);
             pickIntent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    "image/*");
+                    IMAGE_MIME);
 
-            //TODO replace deprecated method
-            startActivityForResult(Intent.createChooser(pickIntent,
-                            getString(R.string.trip_logo_pick_photo)),
-                    PICK_IMAGE);
+            photoPickerLauncher.launch(Intent.createChooser(pickIntent,
+                    getString(R.string.trip_logo_pick_photo)));
 
         });
 
+        //TODO ADD PARTICIPANT
         addParticipant.setOnClickListener(v -> Snackbar.make(view,
                 "Add participant", Snackbar.LENGTH_SHORT).show());
 
@@ -303,25 +328,6 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
     @Override
     public void onExistsResponse(boolean exists) {
         this.tripLogoUploaded = exists;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PICK_IMAGE) {
-            if (data != null) {
-                Uri imageUri = data.getData();
-                try {
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(
-                            this.application.getContentResolver(),
-                            imageUri);
-                    this.tripLogo.setImageBitmap(bitmap);
-                    this.uploading = true;
-                    this.remoteStorage.uploadTripLogo(bitmap, tripId);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
     }
 
     @Override
