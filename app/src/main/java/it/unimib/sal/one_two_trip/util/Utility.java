@@ -320,9 +320,14 @@ public class Utility {
         scheduleNotifications(trip, application);
     }
 
+    /**
+     * This method generates a random color for a participant who doesn't have a picture
+     *
+     * @return the color
+     */
     public static int getRandomColor() {
         Random random = new Random();
-        return Color.argb(255, random.nextInt(256), random.nextInt(256),
-                random.nextInt(256));
+        return Color.argb(255, (random.nextInt(240) + 30), (random.nextInt(240) + 30),
+                (random.nextInt(240) + 30));
     }
 }
