@@ -47,15 +47,16 @@ public class ActivityParticipantFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.application = requireActivity().getApplication();
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        this.application = activity.getApplication();
         this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(this.application);
         if (tripsRepository != null) {
-            this.viewModel = new ViewModelProvider(requireActivity(),
+            this.viewModel = new ViewModelProvider(activity,
                     new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
         } else {
-            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+            Snackbar.make(activity.findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -74,8 +75,9 @@ public class ActivityParticipantFragment extends Fragment {
             return;
         }
 
-        long tripId = ((ActivityFragment) getParentFragment().getParentFragment()).getTripId();
-        long activityId = ((ActivityFragment) getParentFragment().getParentFragment()).getActivityId();
+        ActivityFragment parentFragment = (ActivityFragment) getParentFragment().getParentFragment();
+        long tripId = parentFragment.getTripId();
+        long activityId = parentFragment.getActivityId();
 
         RecyclerView recyclerView = view.findViewById(R.id.activity_participant_recycler);
         MaterialButton editButton = view.findViewById(R.id.activity_participant_edit);
@@ -90,8 +92,8 @@ public class ActivityParticipantFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-
-        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(
+                getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
@@ -142,7 +144,6 @@ public class ActivityParticipantFragment extends Fragment {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
                                 .getMessage()), Snackbar.LENGTH_SHORT).show();
-                        requireActivity().finish();
                     }
                 });
     }

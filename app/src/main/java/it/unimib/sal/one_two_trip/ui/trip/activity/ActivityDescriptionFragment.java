@@ -45,15 +45,16 @@ public class ActivityDescriptionFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.application = requireActivity().getApplication();
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        this.application = activity.getApplication();
         this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(this.application);
         if (tripsRepository != null) {
-            this.viewModel = new ViewModelProvider(requireActivity(),
+            this.viewModel = new ViewModelProvider(activity,
                     new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
         } else {
-            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+            Snackbar.make(activity.findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -71,8 +72,9 @@ public class ActivityDescriptionFragment extends Fragment {
             return;
         }
 
-        long tripId = ((ActivityFragment) getParentFragment().getParentFragment()).getTripId();
-        long activityId = ((ActivityFragment) getParentFragment().getParentFragment()).getActivityId();
+        ActivityFragment parentFragment = (ActivityFragment) getParentFragment().getParentFragment();
+        long tripId = parentFragment.getTripId();
+        long activityId = parentFragment.getActivityId();
 
         MaterialButton editButton = view.findViewById(R.id.activity_descr_edit);
 
@@ -122,7 +124,6 @@ public class ActivityDescriptionFragment extends Fragment {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
                                 .getMessage()), Snackbar.LENGTH_SHORT).show();
-                        requireActivity().finish();
                     }
                 });
     }

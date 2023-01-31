@@ -44,7 +44,6 @@ public class ActivityDateFragment extends Fragment {
     private Application application;
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
-
     private Activity activity;
 
     public ActivityDateFragment() {
@@ -54,15 +53,16 @@ public class ActivityDateFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.application = requireActivity().getApplication();
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        this.application = activity.getApplication();
         this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(this.application);
         if (tripsRepository != null) {
-            this.viewModel = new ViewModelProvider(requireActivity(),
+            this.viewModel = new ViewModelProvider(activity,
                     new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
         } else {
-            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+            Snackbar.make(activity.findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -81,8 +81,9 @@ public class ActivityDateFragment extends Fragment {
             return;
         }
 
-        long tripId = ((ActivityFragment) getParentFragment().getParentFragment()).getTripId();
-        long activityId = ((ActivityFragment) getParentFragment().getParentFragment()).getActivityId();
+        ActivityFragment parentFragment = (ActivityFragment) getParentFragment().getParentFragment();
+        long tripId = parentFragment.getTripId();
+        long activityId = parentFragment.getActivityId();
 
         MaterialButton calendarButton1 = view.findViewById(R.id.activity_when_save1);
         calendarButton1.setOnClickListener(view1 -> {
@@ -92,7 +93,7 @@ public class ActivityDateFragment extends Fragment {
                     .putExtra(CalendarContract.Events.EVENT_LOCATION, activity.getLocation())
                     .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, activity.getStart_date());
 
-            if(activity.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
+            if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                 intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, activity.getEnd_date());
             }
 
@@ -112,7 +113,8 @@ public class ActivityDateFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(
+                getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
@@ -133,12 +135,12 @@ public class ActivityDateFragment extends Fragment {
 
                         for (Activity mActivity : trip.getActivity().getActivityList()) {
                             if (mActivity.getId() == activityId) {
-                                activity = mActivity;
+                                this.activity = mActivity;
                                 break;
                             }
                         }
 
-                        if (activity == null) return;
+                        if (this.activity == null) return;
 
                         TextView date1 = view.findViewById(R.id.activity_when1);
                         DateFormat df = SimpleDateFormat.getInstance();
@@ -148,7 +150,6 @@ public class ActivityDateFragment extends Fragment {
                         ImageView arrow = view.findViewById(R.id.activity_when_arrow);
                         if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                             date2.setText(df.format(activity.getEnd_date()));
-
                             date2.setVisibility(View.VISIBLE);
                             arrow.setVisibility(View.VISIBLE);
                         } else {
@@ -159,7 +160,6 @@ public class ActivityDateFragment extends Fragment {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
                                 .getMessage()), Snackbar.LENGTH_SHORT).show();
-                        requireActivity().finish();
                     }
                 });
     }

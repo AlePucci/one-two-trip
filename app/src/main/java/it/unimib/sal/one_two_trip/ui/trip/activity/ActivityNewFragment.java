@@ -5,6 +5,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.STATIC_ACTIVITY_TYPE_NAME;
 
 import android.app.Application;
 import android.app.DatePickerDialog;
@@ -57,27 +58,26 @@ public class ActivityNewFragment extends Fragment {
     private Application application;
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
-
     private Trip trip;
     private Activity activity;
 
     public ActivityNewFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.application = requireActivity().getApplication();
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        this.application = activity.getApplication();
         this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(this.application);
         if (tripsRepository != null) {
-            this.viewModel = new ViewModelProvider(requireActivity(),
+            this.viewModel = new ViewModelProvider(activity,
                     new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
         } else {
-            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+            Snackbar.make(activity.findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -94,7 +94,7 @@ public class ActivityNewFragment extends Fragment {
 
         DateFormat df = SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 
-        GeocodingUtility endUtility = new GeocodingUtility(application);
+        GeocodingUtility endUtility = new GeocodingUtility(this.application);
         endUtility.setGeocodingUtilityCallback(new GeocodingUtilityCallback() {
             @Override
             public void onGeocodingSuccess(String lat, String lon) {
@@ -113,14 +113,14 @@ public class ActivityNewFragment extends Fragment {
         });
 
 
-        GeocodingUtility utility = new GeocodingUtility(application);
+        GeocodingUtility utility = new GeocodingUtility(this.application);
         utility.setGeocodingUtilityCallback(new GeocodingUtilityCallback() {
             @Override
             public void onGeocodingSuccess(String lat, String lon) {
                 activity.setLatitude(Double.parseDouble(lat));
                 activity.setLongitude(Double.parseDouble(lon));
 
-                if (activity.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
+                if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                     endUtility.search(activity.getEnd_location(), 1);
                 } else {
                     onCreate();
@@ -215,7 +215,7 @@ public class ActivityNewFragment extends Fragment {
             }
 
             String title = getArguments().getString(ACTIVITY_TITLE);
-            String location = where1.getEditText().getText().toString();
+            String location = where1.getEditText().getText().toString().trim();
 
             Date parsed = df.parse(when1.getText().toString(), new ParsePosition(0));
             if (parsed == null) {
@@ -226,7 +226,7 @@ public class ActivityNewFragment extends Fragment {
             }
             long date = parsed.getTime();
 
-            String description = descr.getEditText().getText().toString();
+            String description = descr.getEditText().getText().toString().trim();
 
             activity = new Activity();
             activity.setId(System.currentTimeMillis());
@@ -255,7 +255,7 @@ public class ActivityNewFragment extends Fragment {
 
                 activity.setType(Constants.MOVING_ACTIVITY_TYPE_NAME);
 
-                String location2 = where2.getEditText().getText().toString();
+                String location2 = where2.getEditText().getText().toString().trim();
 
                 parsed = df.parse(when2.getText().toString(), new ParsePosition(0));
                 if (parsed == null) {
@@ -269,7 +269,7 @@ public class ActivityNewFragment extends Fragment {
                 activity.setEnd_location(location2);
                 activity.setEnd_date(date);
             } else {
-                activity.setType(Constants.STATIC_ACTIVITY_TYPE_NAME);
+                activity.setType(STATIC_ACTIVITY_TYPE_NAME);
             }
 
             if (trip != null) {
@@ -309,7 +309,6 @@ public class ActivityNewFragment extends Fragment {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
                                 .getMessage()), Snackbar.LENGTH_SHORT).show();
-
                         requireActivity().onBackPressed();
                     }
 
@@ -317,7 +316,7 @@ public class ActivityNewFragment extends Fragment {
     }
 
     private void onCreate() {
-        viewModel.updateTrip(this.trip);
+        this.viewModel.updateTrip(this.trip);
         Utility.onActivityCreate(this.trip, this.activity, this.application);
     }
 }

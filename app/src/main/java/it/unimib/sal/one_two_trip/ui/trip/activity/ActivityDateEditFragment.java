@@ -57,15 +57,16 @@ public class ActivityDateEditFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.application = requireActivity().getApplication();
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        this.application = activity.getApplication();
         this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(this.application);
         if (tripsRepository != null) {
-            this.viewModel = new ViewModelProvider(requireActivity(),
+            this.viewModel = new ViewModelProvider(activity,
                     new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
         } else {
-            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+            Snackbar.make(activity.findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -79,13 +80,16 @@ public class ActivityDateEditFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Context context = requireContext();
+
         if (getParentFragment() == null || getParentFragment().getParentFragment() == null) {
             return;
         }
 
-        long tripId = ((ActivityFragment) getParentFragment().getParentFragment()).getTripId();
-        long activityId = ((ActivityFragment) getParentFragment().getParentFragment()).getActivityId();
+        ActivityFragment parentFragment = (ActivityFragment) getParentFragment().getParentFragment();
+        Context context = requireContext();
+
+        long tripId = parentFragment.getTripId();
+        long activityId = parentFragment.getActivityId();
 
         DateFormat df = SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 
@@ -135,7 +139,8 @@ public class ActivityDateEditFragment extends Fragment {
             if (dateb1.getText().toString().trim().isEmpty()) {
                 date1 = activity.getStart_date();
             } else {
-                Date temp = df.parse(dateb1.getText().toString().trim(), new ParsePosition(0));
+                Date temp = df.parse(dateb1.getText().toString().trim(),
+                        new ParsePosition(0));
                 if (temp != null) {
                     date1 = temp.getTime();
                 } else {
@@ -147,7 +152,8 @@ public class ActivityDateEditFragment extends Fragment {
                 if (dateb2.getText().toString().trim().isEmpty()) {
                     date2 = activity.getEnd_date();
                 } else {
-                    Date temp2 = df.parse(dateb2.getText().toString().trim(), new ParsePosition(0));
+                    Date temp2 = df.parse(dateb2.getText().toString().trim(),
+                            new ParsePosition(0));
                     if (temp2 != null) {
                         date2 = temp2.getTime();
                     } else {
@@ -201,7 +207,8 @@ public class ActivityDateEditFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(
+                getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
@@ -231,7 +238,6 @@ public class ActivityDateEditFragment extends Fragment {
 
                         if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                             dateb2.setHint(df.format(activity.getEnd_date()));
-
                             dateb2.setVisibility(View.VISIBLE);
                             arrow.setVisibility(View.VISIBLE);
                         } else {
@@ -242,7 +248,6 @@ public class ActivityDateEditFragment extends Fragment {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
                                 .getMessage()), Snackbar.LENGTH_SHORT).show();
-                        requireActivity().finish();
                     }
                 });
     }

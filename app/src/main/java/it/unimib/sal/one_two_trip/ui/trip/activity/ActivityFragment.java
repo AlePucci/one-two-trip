@@ -79,15 +79,16 @@ public class ActivityFragment extends Fragment implements MenuProvider {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.application = requireActivity().getApplication();
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        this.application = activity.getApplication();
         this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(this.application);
         if (tripsRepository != null) {
-            this.viewModel = new ViewModelProvider(requireActivity(),
+            this.viewModel = new ViewModelProvider(activity,
                     new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
         } else {
-            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+            Snackbar.make(activity.findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
 
@@ -128,17 +129,17 @@ public class ActivityFragment extends Fragment implements MenuProvider {
 
                         for (Trip mTrip : trips) {
                             if (mTrip.getId() == this.tripId) {
-                                trip = mTrip;
+                                this.trip = mTrip;
                                 break;
                             }
                         }
 
-                        if (trip == null || trip.getActivity() == null
-                                || trip.getActivity().getActivityList() == null) {
+                        if (this.trip == null || this.trip.getActivity() == null
+                                || this.trip.getActivity().getActivityList() == null) {
                             return;
                         }
 
-                        for (Activity mActivity : trip.getActivity().getActivityList()) {
+                        for (Activity mActivity : this.trip.getActivity().getActivityList()) {
                             if (mActivity.getId() == this.activityId) {
                                 this.activity = mActivity;
                                 break;
@@ -152,7 +153,6 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
                                 .getMessage()), Snackbar.LENGTH_SHORT).show();
-                        requireActivity().finish();
                     }
                 });
     }
@@ -177,6 +177,8 @@ public class ActivityFragment extends Fragment implements MenuProvider {
             alert.setView(input);
             alert.setPositiveButton(getString(R.string.activity_title_change_positive),
                     (dialog, which) -> {
+                        if (input.getText() == null) return;
+
                         String newTitle = input.getText().toString().trim();
                         if (!newTitle.isEmpty() && !newTitle.equals(oldTitle)) {
                             this.activity.setTitle(newTitle);
@@ -197,11 +199,13 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                                 activity.getId() == activityId);
                         this.viewModel.updateTrip(this.trip);
                         Utility.onActivityDelete(this.trip, this.activity, this.application);
+
                         Bundle bundle = new Bundle();
                         bundle.putLong(SELECTED_TRIP_ID, this.trip.getId());
                         bundle.putBoolean(MOVE_TO_ACTIVITY, false);
                         bundle.putLong(SELECTED_ACTIVITY_ID, this.activityId);
-                        Navigation.findNavController(requireView()).navigate(R.id.action_activityFragment_to_tripFragment,
+                        Navigation.findNavController(
+                                requireView()).navigate(R.id.action_activityFragment_to_tripFragment,
                                 bundle);
                     });
 
