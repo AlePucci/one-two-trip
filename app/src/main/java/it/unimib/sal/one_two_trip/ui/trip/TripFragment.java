@@ -184,7 +184,7 @@ public class TripFragment extends Fragment implements MenuProvider {
             alert.setView(input);
             alert.setPositiveButton(getString(R.string.activity_new_confirmation_positive),
                     (dialog, which) -> {
-                        String title = input.getText().toString();
+                        String title = input.getText().toString().trim();
                         if (!title.isEmpty()) {
                             Bundle bundle = new Bundle();
                             bundle.putLong(SELECTED_TRIP_ID, tripId);
@@ -247,7 +247,8 @@ public class TripFragment extends Fragment implements MenuProvider {
                     LAST_UPDATE);
         }
 
-        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(
+                getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
@@ -405,7 +406,7 @@ public class TripFragment extends Fragment implements MenuProvider {
             alert.setView(input);
             alert.setPositiveButton(getString(R.string.trip_title_change_positive),
                     (dialog, which) -> {
-                        String newTitle = input.getText().toString();
+                        String newTitle = input.getText().toString().trim();
                         if (!newTitle.isEmpty() && !newTitle.equals(oldTitle)) {
                             this.trip.setTitle(newTitle);
                             this.viewModel.updateTrip(this.trip);

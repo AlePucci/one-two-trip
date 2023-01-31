@@ -192,14 +192,14 @@ public class ActivityNewFragment extends Fragment {
         MaterialButton materialButton = view.findViewById(R.id.activity_new_confirm);
         materialButton.setOnClickListener(view1 -> {
 
-            if (where1.getEditText() != null && where1.getEditText().getText().toString().isEmpty()) {
+            if (where1.getEditText() != null && where1.getEditText().getText().toString().trim().isEmpty()) {
                 where1.setError(getString(R.string.activity_field_error));
                 return;
             } else {
                 where1.setErrorEnabled(false);
             }
 
-            if (when1.getText().toString().isEmpty()) {
+            if (when1.getText().toString().trim().isEmpty()) {
                 when1.setError(getString(R.string.unexpected_error));
                 return;
             } else {
@@ -239,14 +239,14 @@ public class ActivityNewFragment extends Fragment {
             activity.setParticipant(new PersonListHolder(personList));
 
             if (moving.isChecked()) {
-                if (where2.getEditText() != null && where2.getEditText().getText().toString().isEmpty()) {
+                if (where2.getEditText() != null && where2.getEditText().getText().toString().trim().isEmpty()) {
                     where2.setError(getString(R.string.activity_field_error));
                     return;
                 } else {
                     where2.setErrorEnabled(false);
                 }
 
-                if (when2.getText().toString().isEmpty()) {
+                if (when2.getText().toString().trim().isEmpty()) {
                     when2.setError(getString(R.string.unexpected_error));
                     return;
                 } else {
@@ -289,7 +289,8 @@ public class ActivityNewFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(
+                getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         if (getArguments() == null) {
