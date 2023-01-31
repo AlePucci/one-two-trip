@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.ui.trip;
 
 import static it.unimib.sal.one_two_trip.util.Constants.IMAGE_MIME;
+import static it.unimib.sal.one_two_trip.util.Constants.LAST_LOGO_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
@@ -24,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -59,6 +61,7 @@ import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
+import jp.wasabeef.blurry.Blurry;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -71,12 +74,12 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
     private Trip trip;
     private RemoteStorage remoteStorage;
     private String imagePath;
-    private boolean tripLogoUploaded = false;
     private ShapeableImageView tripLogo;
     private long tripId;
-    private boolean uploading = false;
+    private boolean isUploading = false;
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
+    private ProgressBar progressBar;
 
     public TripSettingsFragment() {
     }
@@ -128,6 +131,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
         RecyclerView recyclerView = view.findViewById(R.id.trip_participants_recycler_view);
         MaterialButton addParticipant = view.findViewById(R.id.trip_add_participant_button);
         CardView descriptionCardview = view.findViewById(R.id.trip_description_cardview);
+        this.progressBar = view.findViewById(R.id.trip_settings_progress_bar);
 
         androidx.fragment.app.FragmentActivity activity = requireActivity();
         MaterialToolbar toolbar = activity.findViewById(R.id.trip_toolbar);
@@ -137,7 +141,6 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
         if (getArguments() != null) {
             this.tripId = getArguments().getLong(SELECTED_TRIP_ID);
         }
-        this.remoteStorage.tripLogoExists(tripId);
 
         //TODO FIX USER ID
         this.imagePath = application.getFilesDir() + "/1-" + tripId + "-" + TRIP_LOGO_NAME;
@@ -155,7 +158,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                                         this.application.getContentResolver(),
                                         imageUri);
                                 this.tripLogo.setImageBitmap(bitmap);
-                                this.uploading = true;
+                                this.isUploading = true;
                                 this.remoteStorage.uploadTripLogo(bitmap, tripId);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -189,8 +192,11 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
             alert.setView(input);
             alert.setPositiveButton(getString(R.string.trip_description_positive),
                     (dialog, which) -> {
+                        if (input.getText() == null) return;
+
                         String descriptionMessage = input.getText().toString();
-                        if (!descriptionMessage.isEmpty() && !descriptionMessage.equals(oldDescription)) {
+                        if (!descriptionMessage.isEmpty()
+                                && !descriptionMessage.equals(oldDescription)) {
                             this.trip.setDescription(descriptionMessage);
                             this.viewModel.updateTrip(this.trip);
                         }
@@ -200,19 +206,13 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
         });
 
         Bitmap bitmap = BitmapFactory.decodeFile(this.imagePath);
-
-        if (bitmap == null) {
-            if (this.tripLogoUploaded) {
-                this.remoteStorage.downloadTripLogo(this.tripId);
-            } else {
-                Bitmap defaultLogo = BitmapFactory.decodeResource(this.application.getResources(),
-                        R.drawable.default_trip_image);
-                this.tripLogo.setImageBitmap(defaultLogo);
-
-            }
-        } else {
+        if (bitmap != null) {
             this.tripLogo.setImageBitmap(bitmap);
+        } else {
+            this.tripLogo.setImageBitmap(BitmapFactory.decodeResource(getResources(),
+                    R.drawable.default_trip_image));
         }
+        this.remoteStorage.tripLogoExists(tripId);
 
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
@@ -300,17 +300,30 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
     }
 
     @Override
-    public void onUploadSuccess() {
+    public void onUploadSuccess(long lastUpdate) {
+        this.sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME,
+                LAST_LOGO_UPDATE + "_" + this.tripId, String.valueOf(lastUpdate));
         Bitmap bitmap = BitmapFactory.decodeFile(this.imagePath);
-        this.tripLogo.setImageBitmap(bitmap);
-        this.uploading = false;
+        if (bitmap == null) {
+            tripLogo.setImageBitmap(BitmapFactory.decodeResource(getResources(),
+                    R.drawable.default_trip_image));
+        } else {
+            tripLogo.setImageBitmap(bitmap);
+        }
+        this.isUploading = false;
     }
 
     @Override
     public void onDownloadSuccess() {
-        if (!this.uploading) {
+        this.progressBar.setVisibility(View.GONE);
+        if (!this.isUploading) {
             Bitmap bitmap = BitmapFactory.decodeFile(this.imagePath);
-            tripLogo.setImageBitmap(bitmap);
+            if (bitmap == null) {
+                this.tripLogo.setImageBitmap(
+                        BitmapFactory.decodeResource(getResources(), R.drawable.default_trip_image));
+            } else {
+                this.tripLogo.setImageBitmap(bitmap);
+            }
         }
     }
 
@@ -318,16 +331,48 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
     public void onUploadFailure(Exception exception) {
         Snackbar.make(requireView(), R.string.trip_logo_upload_failure,
                 Snackbar.LENGTH_LONG).show();
+        this.isUploading = false;
     }
 
     @Override
     public void onDownloadFailure(Exception exception) {
+        this.progressBar.setVisibility(View.GONE);
         Snackbar.make(requireView(), R.string.trip_logo_download_failure, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
-    public void onExistsResponse(boolean exists) {
-        this.tripLogoUploaded = exists;
+    public void onExistsResponse(long lastUpdate) {
+        long savedLastUpdate = 0;
+
+        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                LAST_LOGO_UPDATE + "_" + this.tripId) != null) {
+            savedLastUpdate = Long.parseLong(
+                    sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                            LAST_LOGO_UPDATE + "_" + this.tripId));
+        }
+
+        if (lastUpdate > 0 && savedLastUpdate != lastUpdate) {
+            // NEED TO DOWNLOAD
+            this.progressBar.setVisibility(View.VISIBLE);
+            Blurry.with(this.application)
+                    .radius(25)
+                    .sampling(2)
+                    .async()
+                    .capture(this.tripLogo)
+                    .into(this.tripLogo);
+            this.remoteStorage.downloadTripLogo(this.tripId);
+            sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME,
+                    LAST_LOGO_UPDATE + "_" + this.tripId, String.valueOf(lastUpdate));
+        } else {
+            // NO NEED TO DOWNLOAD
+            Bitmap bitmap = BitmapFactory.decodeFile(this.imagePath);
+            if (bitmap == null) {
+                this.tripLogo.setImageBitmap(
+                        BitmapFactory.decodeResource(getResources(), R.drawable.default_trip_image));
+            } else {
+                this.tripLogo.setImageBitmap(bitmap);
+            }
+        }
     }
 
     @Override

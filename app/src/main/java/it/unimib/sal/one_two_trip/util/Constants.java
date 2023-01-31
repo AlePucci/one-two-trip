@@ -10,9 +10,6 @@ public class Constants {
     public static final String TRIPS_DATABASE_NAME = "TripsDatabase";
     public static final int TRIPS_DATABASE_VERSION = 1;
 
-    // MOCK REMOTE CONSTANTS
-    public static final String TRIPS_API_TEST_JSON_FILE = "tripsapi-test.json";
-
     // ACTIVITY CONSTANTS
     public static final int MAX_ACTIVITIES_PER_TRIP_HOME = 3;
     public static final String MOVING_ACTIVITY_TYPE_NAME = "moving";
@@ -78,7 +75,6 @@ public class Constants {
     // ERRORS
     public static final String RETROFIT_ERROR = "retrofit_error";
     public static final String API_KEY_ERROR = "api_key_error";
-    public static final String UNEXPECTED_ERROR = "unexpected_error";
 
     // ACTIVITY BUNDLE NAMES
     public static final String SELECTED_TRIP_ID = "tripId";
@@ -96,4 +92,7 @@ public class Constants {
     public static final String NOTIFICATION_DELETED = "deleted";
     public static final int NOTIFICATION_IMPORTANCE = NotificationManagerCompat.IMPORTANCE_HIGH;
     public static final String NOTIFICATION_TIME = "time";
+
+    // TRIP LOGO
+    public static final String LAST_LOGO_UPDATE = "lastLogoUpdate";
 }

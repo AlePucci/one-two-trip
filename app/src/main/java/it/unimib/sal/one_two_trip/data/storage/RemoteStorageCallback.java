@@ -2,7 +2,7 @@ package it.unimib.sal.one_two_trip.data.storage;
 
 public interface RemoteStorageCallback {
 
-    void onUploadSuccess();
+    void onUploadSuccess(long lastUpdate);
 
     void onDownloadSuccess();
 
@@ -10,5 +10,5 @@ public interface RemoteStorageCallback {
 
     void onDownloadFailure(Exception exception);
 
-    void onExistsResponse(boolean exists);
+    void onExistsResponse(long lastUpdate);
 }
