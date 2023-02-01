@@ -112,5 +112,26 @@
     <string name="theme_system">Sistema</string>
     <string name="theme">Tema:</string>
     <string name="activity_new_moving">È un viaggio? (es. volo)</string>
+    <string name="activity_new_when_description">Scegli la data o le date per l\'attività</string>
+    <string name="activity_new_where_description">Scegli il luogo o i luoghi per l\'attività</string>
+    <string name="activity_new_participant_description">Seleziona i partecipanti dell\'attività</string>
+    <string name="activity_new_when_arrow_description">Seconda data:</string>
+    <string name="activity_new_where_arrow_description">Secondo luogo:</string>
+    <string name="activity_new_descr_description">Scrivi una descrizione per l\'attività</string>
+    <string name="activity_when_description">Modifica la data o le date per l\'attività</string>
+    <string name="activity_where_description">Modifica il luogo o i luoghi per l\'attività</string>
+    <string name="activity_participant_description">Modifica i partecipanti dell\'attività</string>
+    <string name="activity_when_arrow_description">Seconda data:</string>
+    <string name="activity_where_arrow_description">Secondo luogo:</string>
+    <string name="activity_descr_description">Modifica la descrizione dell\'attività</string>
+    <string name="participant_item_description">Partecipante</string>
+    <string name="activity_drag_button">Trascina</string>
+    <string name="activity_edit_button">Modifica</string>
+    <string name="activity_confirm_button">Conferma</string>
+    <string name="activity_locate_button">Localizza sulla mappa</string>
+    <string name="activity_navigate_button">Naviga</string>
+    <string name="activity_add_to_calendar_button">Aggiungi al calendario</string>
+    <string name="add_participants">Aggiungi partecipanti</string>
+    <string name="remove_participant">Rimuovi partecipante</string>
     <!-- end -->
 </resources>

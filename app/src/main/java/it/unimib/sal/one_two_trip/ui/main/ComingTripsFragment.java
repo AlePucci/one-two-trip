@@ -225,7 +225,8 @@ public class ComingTripsFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observeForever(
+        this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(
+                getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> fetchedTrips = ((Result.Success) result).getData().getTripList();
@@ -241,6 +242,24 @@ public class ComingTripsFragment extends Fragment {
                             // FILTERS THE TRIPS THAT ARE NOT COMPLETED (COMING TRIPS)
                             comingTrips.removeIf(trip -> trip != null && trip.isCompleted());
 
+                            for (Trip trip : comingTrips) {
+                                if (trip == null) {
+                                    continue;
+                                }
+
+                                Utility.scheduleNotifications(trip, this.application);
+
+                                if (trip.getActivity() == null
+                                        || trip.getActivity().getActivityList() == null) {
+                                    continue;
+                                }
+                                for (Activity activity : trip.getActivity().getActivityList()) {
+                                    Utility.scheduleNotifications(activity, this.application,
+                                            trip.getId());
+                                }
+                            }
+
+
                             // IF THERE ARE NO COMING TRIPS, SHOW THE NO COMING TRIPS IMAGE TEXT
                             if (comingTrips.isEmpty()) {
                                 noTripsText.setText(R.string.no_past_trips);
@@ -254,7 +273,7 @@ public class ComingTripsFragment extends Fragment {
                                 this.comingTrips.addAll(comingTrips);
                                 this.comingTrips.sort(Comparator.comparing(Trip::getStart_date));
                                 //this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
-                                 //       this.comingTrips.size() + 1);
+                                //       this.comingTrips.size() + 1);
                                 // TODO FIX THIS
                                 this.tripsRecyclerViewAdapter.notifyDataSetChanged();
                             }

@@ -5,6 +5,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.HALF_HOUR;
 import static it.unimib.sal.one_two_trip.util.Constants.MINUTE_IN_MILLIS;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ACTIVITY;
+import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_DELETED;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ENTITY_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_TIME;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_TRIP;
@@ -23,6 +24,7 @@ import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -37,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Trip;
@@ -130,17 +133,113 @@ public class Utility {
                 && cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
     }
 
-    public static void scheduleTripNotifications(Trip trip, Application application) {
+
+    /**
+     * This method should be called when an activity is added or its dates are updated.
+     * It (re)schedules the notifications for the trip (aka the first activity of the trip)
+     *
+     * @param trip        the trip to schedule the notifications for (already updated)
+     * @param application the application context
+     */
+    public static void scheduleNotifications(Trip trip, Application application) {
+        scheduleTripNotifications(trip, application, false);
+    }
+
+    /**
+     * This method should be called when an activity is added or its dates are updated.
+     * It (re)schedules the notifications for the activity
+     *
+     * @param activity    the activity to schedule the notifications for (already updated)
+     * @param application the application context
+     */
+    public static void scheduleNotifications(it.unimib.sal.one_two_trip.model.Activity activity,
+                                             Application application, long tripId) {
+        scheduleActivityNotifications(activity, application, tripId, false);
+    }
+
+    /**
+     * This method should be called when the trip is deleted. It allows to delete the
+     * notifications for the trip (i.e. the first activity of the trip)
+     *
+     * @param trip        the trip deleted
+     * @param application the application context
+     */
+    public static void deleteNotifications(Trip trip, Application application) {
+        scheduleTripNotifications(trip, application, true);
+    }
+
+    /**
+     * This method should be called when an activity is deleted.
+     * It doesn't reschedule the notifications for the trip (i.e. the first activity of the trip).
+     * Useful to call when a trip is deleted.
+     *
+     * @param activity    the activity deleted
+     * @param application the application context
+     * @param tripId      the id of the trip the activity belongs to
+     */
+    public static void deleteNotifications(it.unimib.sal.one_two_trip.model.Activity activity,
+                                           Application application, long tripId) {
+        scheduleActivityNotifications(activity, application, tripId, true);
+    }
+
+    /**
+     * This method should be called when an activity is either created or updated.
+     * It (re)schedules the notifications for the trip (i.e. the first activity of the trip) and
+     * the activity itself.
+     *
+     * @param trip        the trip to schedule the notifications for (already updated)
+     * @param activity    the activity to schedule the notifications for (already updated)
+     * @param application the application context
+     */
+    public static void onActivityCreate(Trip trip, it.unimib.sal.one_two_trip.model.Activity activity,
+                                        Application application) {
+        scheduleTripNotifications(trip, application, false);
+        scheduleActivityNotifications(activity, application, trip.getId(), false);
+    }
+
+    /**
+     * This method should be called when an activity is deleted.
+     * It reschedules the notifications for the trip (i.e. the first activity of the trip)
+     *
+     * @param trip        the trip to schedule the notifications for (already updated)
+     * @param activity    the activity deleted
+     * @param application the application context
+     */
+    public static void onActivityDelete(Trip trip, it.unimib.sal.one_two_trip.model.Activity activity,
+                                        Application application) {
+        deleteNotifications(activity, application, trip.getId());
+        scheduleNotifications(trip, application);
+    }
+
+    /**
+     * This method generates a random color for a participant who doesn't have a picture
+     *
+     * @return the color
+     */
+    public static int getRandomColor() {
+        Random random = new Random();
+        return Color.argb(255, (random.nextInt(240) + 30),
+                (random.nextInt(240) + 30), (random.nextInt(240) + 30));
+    }
+
+    /**
+     * Schedule notifications for a trip (i.e. for the first activity of the trip).
+     *
+     * @param trip        trip to schedule notifications for
+     * @param application application context
+     * @param deleted     true if the trip is deleted (used to cancel notifications), false otherwise
+     */
+    private static void scheduleTripNotifications(Trip trip, Application application,
+                                                  boolean deleted) {
         if (trip == null) {
             return;
         }
 
-        if (trip.getActivity() == null || trip.getActivity().getActivityList() == null
-                || trip.getActivity().getActivityList().get(0) == null) {
+        if (trip.getActivity() == null || trip.getActivity().getActivityList() == null) {
             return;
         }
 
-        long tripStartTime = trip.getActivity().getActivityList().get(0).getStart_date();
+
         long tripId = trip.getId();
 
         for (int i = 0; i < 3; i++) {
@@ -150,13 +249,27 @@ public class Utility {
             Calendar alarmTime = Calendar.getInstance();
 
             long timeInMillis = ((long) time[i] * MINUTE_IN_MILLIS);
-            Date notificationTime = new Date(tripStartTime - timeInMillis);
             Date now = new Date();
+            Date notificationTime = null;
+            it.unimib.sal.one_two_trip.model.Activity firstComingActivity = null;
 
-            if (now.after(notificationTime)) {
-                continue;
+            for (it.unimib.sal.one_two_trip.model.Activity activity :
+                    trip.getActivity().getActivityList()) {
+                if (activity == null) {
+                    continue;
+                }
+
+                long tripStartTime = activity.getStart_date();
+                notificationTime = new Date(tripStartTime - timeInMillis);
+                if (!now.after(notificationTime)) {
+                    firstComingActivity = activity;
+                    break;
+                }
             }
 
+            if (firstComingActivity == null) {
+                continue;
+            }
             alarmTime.setTime(notificationTime);
 
             Intent intent = new Intent(application, AlarmReceiver.class);
@@ -166,6 +279,7 @@ public class Utility {
             intent.putExtra(SELECTED_TRIP_ID, String.valueOf(tripId));
             intent.putExtra(NOTIFICATION_ENTITY_NAME, trip.getTitle());
             intent.putExtra(NOTIFICATION_TIME, String.valueOf(time[i]));
+            intent.putExtra(NOTIFICATION_DELETED, deleted);
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(application,
                     (int) tripId * -1, intent,
@@ -178,8 +292,17 @@ public class Utility {
         }
     }
 
-    public static void scheduleActivityNotifications(it.unimib.sal.one_two_trip.model.Activity activity,
-                                                     Application application, long tripId) {
+    /**
+     * Schedules the notifications for the activities of a trip.
+     *
+     * @param activity    the activity to schedule the notifications for
+     * @param application the application context
+     * @param tripId      the id of the trip the activity belongs to
+     * @param deleted     true if the activity is deleted (used to cancel the notifications), false otherwise
+     */
+    private static void scheduleActivityNotifications(it.unimib.sal.one_two_trip.model.Activity activity,
+                                                      Application application, long tripId,
+                                                      boolean deleted) {
         if (activity == null) {
             return;
         }
@@ -214,6 +337,7 @@ public class Utility {
             intent.putExtra(SELECTED_ACTIVITY_ID, String.valueOf(activityId));
             intent.putExtra(NOTIFICATION_ENTITY_NAME, activity.getTitle());
             intent.putExtra(NOTIFICATION_TIME, String.valueOf(time[i]));
+            intent.putExtra(NOTIFICATION_DELETED, deleted);
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(application,
                     (int) activityId, intent,

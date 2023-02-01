@@ -3,6 +3,7 @@ package it.unimib.sal.one_two_trip.util;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVE_TO_ACTIVITY;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ACTIVITY;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_CHANNEL_ID;
+import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_DELETED;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ENTITY_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_IMPORTANCE;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_TIME;
@@ -42,6 +43,13 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         if (!isNotificationEnabled) {
             // Notifications disabled. Nothing to show.
+            return;
+        }
+
+        boolean deleted = incomingIntent.getBooleanExtra(NOTIFICATION_DELETED, false);
+
+        if (deleted) {
+            // Activity/trip deleted. Nothing to show.
             return;
         }
 

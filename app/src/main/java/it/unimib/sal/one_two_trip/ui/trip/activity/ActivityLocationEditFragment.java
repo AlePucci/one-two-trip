@@ -51,15 +51,16 @@ public class ActivityLocationEditFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.application = requireActivity().getApplication();
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        this.application = activity.getApplication();
         this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(this.application);
         if (tripsRepository != null) {
-            this.viewModel = new ViewModelProvider(requireActivity(),
+            this.viewModel = new ViewModelProvider(activity,
                     new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
         } else {
-            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+            Snackbar.make(activity.findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -78,8 +79,9 @@ public class ActivityLocationEditFragment extends Fragment {
             return;
         }
 
-        long tripId = ((ActivityFragment) getParentFragment().getParentFragment()).getTripId();
-        long activityId = ((ActivityFragment) getParentFragment().getParentFragment()).getActivityId();
+        ActivityFragment parentFragment = (ActivityFragment) getParentFragment().getParentFragment();
+        long tripId = parentFragment.getTripId();
+        long activityId = parentFragment.getActivityId();
 
         TextInputLayout loc1 = view.findViewById(R.id.activity_where1_edit);
         TextInputLayout loc2 = view.findViewById(R.id.activity_where2_edit);
@@ -91,7 +93,7 @@ public class ActivityLocationEditFragment extends Fragment {
             String location1 = null;
             String location2 = null;
 
-            GeocodingUtility endUtility = new GeocodingUtility(application);
+            GeocodingUtility endUtility = new GeocodingUtility(this.application);
             endUtility.setGeocodingUtilityCallback(new GeocodingUtilityCallback() {
                 @Override
                 public void onGeocodingSuccess(String lat, String lon) {
@@ -103,7 +105,8 @@ public class ActivityLocationEditFragment extends Fragment {
 
                 @Override
                 public void onGeocodingFailure(Exception exception) {
-                    Snackbar.make(requireView(), exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
+                    //TODO string must be in strings.xml
+                    Snackbar.make(view, exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
                     activity.setLatitude(0);
                     activity.setLongitude(0);
                     viewModel.updateTrip(trip);
@@ -111,14 +114,14 @@ public class ActivityLocationEditFragment extends Fragment {
             });
 
 
-            GeocodingUtility utility = new GeocodingUtility(application);
+            GeocodingUtility utility = new GeocodingUtility(this.application);
             utility.setGeocodingUtilityCallback(new GeocodingUtilityCallback() {
                 @Override
                 public void onGeocodingSuccess(String lat, String lon) {
                     activity.setLatitude(Double.parseDouble(lat));
                     activity.setLongitude(Double.parseDouble(lon));
 
-                    if(activity.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
+                    if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                         endUtility.search(activity.getEnd_location(), 1);
                     } else {
                         viewModel.updateTrip(trip);
@@ -127,7 +130,7 @@ public class ActivityLocationEditFragment extends Fragment {
 
                 @Override
                 public void onGeocodingFailure(Exception exception) {
-                    Snackbar.make(requireView(), exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(view, exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
                     activity.setLatitude(0);
                     activity.setLongitude(0);
                     viewModel.updateTrip(trip);
@@ -135,11 +138,11 @@ public class ActivityLocationEditFragment extends Fragment {
             });
 
             if (loc1.getEditText() != null) {
-                location1 = loc1.getEditText().getText().toString();
+                location1 = loc1.getEditText().getText().toString().trim();
             }
 
             if (loc2.getEditText() != null) {
-                location2 = loc2.getEditText().getText().toString();
+                location2 = loc2.getEditText().getText().toString().trim();
             }
 
             boolean valid = false;
@@ -188,48 +191,48 @@ public class ActivityLocationEditFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                List<Trip> trips = ((Result.Success) result).getData().getTripList();
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(
+                getViewLifecycleOwner(),
+                result -> {
+                    if (result.isSuccess()) {
+                        List<Trip> trips = ((Result.Success) result).getData().getTripList();
 
-                for (Trip mTrip : trips) {
-                    if (mTrip.getId() == tripId) {
-                        trip = mTrip;
-                        break;
+                        for (Trip mTrip : trips) {
+                            if (mTrip.getId() == tripId) {
+                                this.trip = mTrip;
+                                break;
+                            }
+                        }
+
+                        if (this.trip == null || this.trip.getActivity() == null
+                                || this.trip.getActivity().getActivityList() == null) {
+                            return;
+                        }
+
+                        for (Activity mActivity : this.trip.getActivity().getActivityList()) {
+                            if (mActivity.getId() == activityId) {
+                                this.activity = mActivity;
+                                break;
+                            }
+                        }
+
+                        if (this.activity == null) return;
+
+                        loc1.setHint(this.activity.getLocation());
+
+                        if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
+                            loc2.setHint(this.activity.getEnd_location());
+                            loc2.setVisibility(View.VISIBLE);
+                            arrow.setVisibility(View.VISIBLE);
+                        } else {
+                            loc2.setVisibility(View.GONE);
+                            arrow.setVisibility(View.GONE);
+                        }
+                    } else {
+                        ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
+                        Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
+                                .getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
-                }
-
-                if (trip == null || trip.getActivity() == null
-                        || trip.getActivity().getActivityList() == null) {
-                    return;
-                }
-
-                for (Activity mActivity : trip.getActivity().getActivityList()) {
-                    if (mActivity.getId() == activityId) {
-                        this.activity = mActivity;
-                        break;
-                    }
-                }
-
-                if (this.activity == null) return;
-
-                loc1.setHint(this.activity.getLocation());
-
-                if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
-                    loc2.setHint(this.activity.getEnd_location());
-
-                    loc2.setVisibility(View.VISIBLE);
-                    arrow.setVisibility(View.VISIBLE);
-                } else {
-                    loc2.setVisibility(View.GONE);
-                    arrow.setVisibility(View.GONE);
-                }
-            } else {
-                ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
-                Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
-                        .getMessage()), Snackbar.LENGTH_SHORT).show();
-                requireActivity().finish();
-            }
-        });
+                });
     }
 }

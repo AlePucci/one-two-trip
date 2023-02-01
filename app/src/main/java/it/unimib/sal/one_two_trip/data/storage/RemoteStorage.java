@@ -31,21 +31,23 @@ public class RemoteStorage extends BaseRemoteStorage {
         byte[] data = baos.toByteArray();
 
         UploadTask uploadTask = storageReference.putBytes(data);
-        uploadTask.addOnFailureListener(exception -> {
-            // Handle unsuccessful uploads
-            callback.onUploadFailure(exception);
-        }).addOnSuccessListener(taskSnapshot -> {
-            // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-            // ...
-            if (taskSnapshot.getTask().isSuccessful()) {
-                // TODO USER IDs
-                File localFile = new File(application.getFilesDir(), 1 + "-" + tripId + "-" + TRIP_LOGO_NAME);
+        uploadTask.addOnFailureListener(exception -> callback.onUploadFailure(exception))
+                .addOnSuccessListener(taskSnapshot -> {
+                    if (taskSnapshot.getTask().isSuccessful()) {
+                        // TODO USER IDs
+                        File localFile = new File(application.getFilesDir(), 1 + "-" + tripId + "-" + TRIP_LOGO_NAME);
 
-                storageReference.getFile(localFile).addOnSuccessListener(taskSnapshot1 ->
-                        callback.onUploadSuccess()).addOnFailureListener(exception ->
-                        callback.onUploadFailure(exception));
-            }
-        });
+                        storageReference.getFile(localFile).addOnSuccessListener(taskSnapshot1 ->
+                        {
+                            long lastUpdate = -1;
+                            if (taskSnapshot.getMetadata() != null) {
+                                lastUpdate = taskSnapshot.getMetadata().getUpdatedTimeMillis();
+                            }
+                            callback.onUploadSuccess(lastUpdate);
+                        }).addOnFailureListener(exception ->
+                                callback.onUploadFailure(exception));
+                    }
+                });
     }
 
     @Override
@@ -69,6 +71,10 @@ public class RemoteStorage extends BaseRemoteStorage {
                 .child(String.valueOf(tripId)).child(TRIP_LOGO_NAME);
 
         // TODO USER IDs
-        storageReference.getMetadata().addOnSuccessListener(storageMetadata -> callback.onExistsResponse(true)).addOnFailureListener(exception -> callback.onExistsResponse(false));
+        storageReference.getMetadata().addOnSuccessListener(storageMetadata -> {
+            long lastUpdate = storageMetadata.getUpdatedTimeMillis();
+            callback.onExistsResponse(lastUpdate);
+        }).addOnFailureListener(exception ->
+                callback.onExistsResponse(-1));
     }
 }

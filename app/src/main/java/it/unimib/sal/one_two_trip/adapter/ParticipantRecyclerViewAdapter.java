@@ -1,27 +1,38 @@
 package it.unimib.sal.one_two_trip.adapter;
 
+import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.USER_COLOR;
+
+import android.app.Application;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Person;
+import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
+import it.unimib.sal.one_two_trip.util.Utility;
 
 public class ParticipantRecyclerViewAdapter
         extends RecyclerView.Adapter<ParticipantRecyclerViewAdapter.ParticipantHolder> {
 
     private final List<Person> personList;
     private final OnItemClickListener onItemClickListener;
+    private final Application application;
 
-    public ParticipantRecyclerViewAdapter(List<Person> personList, OnItemClickListener onItemClickListener) {
+    public ParticipantRecyclerViewAdapter(List<Person> personList, Application application,
+                                          OnItemClickListener onItemClickListener) {
         this.personList = personList;
         this.onItemClickListener = onItemClickListener;
+        this.application = application;
     }
 
     @NonNull
@@ -50,17 +61,35 @@ public class ParticipantRecyclerViewAdapter
     }
 
     public class ParticipantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final TextView itemName;
+        private final TextView participantName;
+        private final TextView participantImage;
+        private final ConstraintLayout participantLayout;
 
         public ParticipantHolder(@NonNull View itemView) {
             super(itemView);
-            itemName = itemView.findViewById(R.id.participant_name);
+            participantName = itemView.findViewById(R.id.participant_name);
+            participantImage = itemView.findViewById(R.id.participant_image);
+            participantLayout = itemView.findViewById(R.id.participant_constraint);
         }
 
         public void bind(Person person) {
             String fullName = person.getName() + " " + person.getSurname();
-            itemName.setText(fullName);
-            itemView.setOnClickListener(this);
+            participantName.setText(fullName);
+            participantImage.setText(fullName.substring(0, 1));
+
+            SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
+            int color;
+            if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                    USER_COLOR + "_" + person.getId()) != null) {
+                color = Integer.parseInt(sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                        USER_COLOR + "_" + person.getId()));
+            } else {
+                color = Utility.getRandomColor();
+                sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME,
+                        USER_COLOR + "_" + person.getId(), String.valueOf(color));
+            }
+            participantImage.setBackgroundTintList(ColorStateList.valueOf(color));
+            participantLayout.setOnClickListener(this);
         }
 
         @Override

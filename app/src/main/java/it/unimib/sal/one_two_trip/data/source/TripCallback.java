@@ -17,5 +17,4 @@ public interface TripCallback {
 
     void onSuccessFromLocal(List<Trip> tripList);
 
-    void onFailureFromLocal(Exception exception);
 }

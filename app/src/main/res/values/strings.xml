@@ -49,6 +49,17 @@
     <string name="trip_description_positive">CHANGE</string>
     <string name="trip_description_negative">@android:string/cancel</string>
 
+    <!-- trip settings -->
+    <string name="trip_logo_upload_failure">Something went wrong during uploading! Please try again</string>
+    <string name="trip_logo_download_failure">Something went wrong during downloading! Please try again</string>
+    <string name="trip_logo_pick_photo">Pick a photo for your trip</string>
+    <string name="trip_participants">%1$d participants</string>
+    <string name="trip_activities">%1$d activities added</string>
+    <string name="trip_add_description">Add description…</string>
+    <string name="trip_participants_list">Participants:</string>
+    <string name="add_participants">Add participants</string>
+    <string name="remove_participant">Remove participant</string>
+
     <!-- activity -->
     <string name="activity_where_title">Where</string>
     <string name="activity_when_title">When</string>
@@ -69,6 +80,26 @@
     <string name="activity_new_title_hint">Name</string>
     <string name="activity_new_confirmation_positive">Confirm</string>
     <string name="activity_new_confirmation_negative">Cancel</string>
+    <string name="activity_new_moving">Is this a journey? (i.e. flight)</string>
+    <string name="activity_new_when_description">Choose the date or dates for the activity</string>
+    <string name="activity_new_where_description">Choose the location or locations of the activity</string>
+    <string name="activity_new_participant_description">Pick the participants of the activity</string>
+    <string name="activity_new_when_arrow_description">Second date:</string>
+    <string name="activity_new_where_arrow_description">Second location:</string>
+    <string name="activity_new_descr_description">Write the description of the activity</string>
+    <string name="activity_when_description">Edit the date or dates for the activity</string>
+    <string name="activity_where_description">Edit the location or locations of the activity</string>
+    <string name="activity_participant_description">Edit the participants of the activity</string>
+    <string name="activity_when_arrow_description">Second date:</string>
+    <string name="activity_where_arrow_description">Second location:</string>
+    <string name="activity_descr_description">Edit the description of the activity</string>
+    <string name="activity_drag_button">Drag</string>
+    <string name="participant_item_description">Participant</string>
+    <string name="activity_edit_button">Edit</string>
+    <string name="activity_confirm_button">Confirm</string>
+    <string name="activity_locate_button">Locate on the map</string>
+    <string name="activity_navigate_button">Navigate</string>
+    <string name="activity_add_to_calendar_button">Add to calendar</string>
 
     <!-- about -->
     <string name="made_by">Made with 💛 by:</string>
@@ -136,14 +167,5 @@
     <string name="no_internet_error">Error! You have no connection at the moment. Please retry later.</string>
     <string name="no_shareable_activities">There are no activities to share here!</string>
     <string name="share_trip_error">Something went wrong! Please try again</string>
-
-    <string name="trip_logo_upload_failure">Something went wrong during uploading! Please try again</string>
-    <string name="trip_logo_download_failure">Something went wrong during downloading! Please try again</string>
-    <string name="trip_logo_pick_photo">Pick a photo for your trip</string>
-    <string name="trip_participants">%1$d participants</string>
-    <string name="trip_activities">%1$d activities added</string>
-    <string name="trip_add_description">Add description…</string>
-    <string name="trip_participants_list">Participants:</string>
-    <string name="activity_new_moving">Is this a journey? (i.e. flight)</string>
     <!-- end -->
 </resources>

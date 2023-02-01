@@ -43,8 +43,13 @@ public class ActivityParticipantEditFragment extends Fragment {
     private Application application;
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
+
+    private Trip trip;
     private Activity activity;
+
     private List<Person> personList;
+    private List<Person> notParticipating;
+
     private ParticipantRecyclerViewAdapter participantAdapter;
     private ParticipantRecyclerViewAdapter notParticipantAdapter;
 
@@ -55,15 +60,16 @@ public class ActivityParticipantEditFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.application = requireActivity().getApplication();
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        this.application = activity.getApplication();
         this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(this.application);
         if (tripsRepository != null) {
-            this.viewModel = new ViewModelProvider(requireActivity(),
+            this.viewModel = new ViewModelProvider(activity,
                     new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
         } else {
-            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+            Snackbar.make(activity.findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -84,15 +90,20 @@ public class ActivityParticipantEditFragment extends Fragment {
             return;
         }
 
-        long tripId = ((ActivityFragment) getParentFragment().getParentFragment()).getTripId();
-        long activityId = ((ActivityFragment) getParentFragment().getParentFragment()).getActivityId();
+        ActivityFragment parentFragment = (ActivityFragment) getParentFragment().getParentFragment();
+        long tripId = parentFragment.getTripId();
+        long activityId = parentFragment.getActivityId();
 
         RecyclerView participant_recycler = view.findViewById(R.id.activity_participant_recycler_edit);
         RecyclerView not_participant_recycler = view.findViewById(R.id.activity_not_participant_recycler_edit);
         MaterialButton confirm = view.findViewById(R.id.activity_participant_confirm);
 
         confirm.setOnClickListener(view1 -> {
-            //TODO: implement the participant editing
+            activity.getParticipant().setPersonList(personList);
+            activity.setEveryoneParticipate(personList.size() == trip.getParticipant().getPersonList().size());
+
+            viewModel.updateTrip(trip);
+
             Navigation.findNavController(view).navigate(
                     R.id.action_activityParticipantEditFragment_to_activityParticipantFragment);
         });
@@ -106,11 +117,12 @@ public class ActivityParticipantEditFragment extends Fragment {
         }
 
 
-        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(
+                getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
-                        Trip trip = null;
+                        trip = null;
                         for (Trip mTrip : trips) {
                             if (mTrip.getId() == tripId) {
                                 trip = mTrip;
@@ -140,17 +152,17 @@ public class ActivityParticipantEditFragment extends Fragment {
                             return;
                         }
 
-                        List<Person> notParticipating = new ArrayList<>(trip.getParticipant().getPersonList());
+                        notParticipating = new ArrayList<>(trip.getParticipant().getPersonList());
                         notParticipating.removeAll(this.personList);
 
                         //Participating
                         participantAdapter = new ParticipantRecyclerViewAdapter(this.personList,
+                                application,
                                 position -> {
-                                    //TODO: remove from participant list
-                                    Snackbar.make(view, "User "
-                                                    + personList.get(position).getName()
-                                                    + " " + personList.get(position).getName(),
-                                            Snackbar.LENGTH_SHORT).show();
+                                    Person p = personList.remove(position);
+                                    notParticipating.add(p);
+                                    participantAdapter.notifyDataSetChanged();
+                                    notParticipantAdapter.notifyDataSetChanged();
                                 });
                         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context,
                                 LinearLayoutManager.HORIZONTAL, false);
@@ -159,12 +171,12 @@ public class ActivityParticipantEditFragment extends Fragment {
 
                         //Not Participating
                         notParticipantAdapter = new ParticipantRecyclerViewAdapter(notParticipating,
+                                application,
                                 position -> {
-                                    //TODO: add to participant list
-                                    Snackbar.make(view, "User "
-                                                    + notParticipating.get(position).getName()
-                                                    + " " + notParticipating.get(position).getSurname(),
-                                            Snackbar.LENGTH_SHORT).show();
+                                    Person p = notParticipating.remove(position);
+                                    personList.add(p);
+                                    participantAdapter.notifyDataSetChanged();
+                                    notParticipantAdapter.notifyDataSetChanged();
                                 });
                         RecyclerView.LayoutManager layoutManager2 = new LinearLayoutManager(context,
                                 LinearLayoutManager.HORIZONTAL, false);
@@ -174,7 +186,6 @@ public class ActivityParticipantEditFragment extends Fragment {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
                                 .getMessage()), Snackbar.LENGTH_SHORT).show();
-                        requireActivity().finish();
                     }
                 });
     }

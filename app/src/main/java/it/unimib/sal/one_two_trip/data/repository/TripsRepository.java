@@ -49,13 +49,11 @@ public class TripsRepository implements ITripsRepository, TripCallback {
 
     @Override
     public void updateTrip(Trip trip) {
-        //this.tripsLocalDataSource.updateTrip(trip);
         this.tripsRemoteDataSource.updateTrip(trip);
     }
 
     @Override
     public void deleteTrip(Trip trip) {
-        //this.tripsLocalDataSource.deleteTrip(trip);
         this.tripsRemoteDataSource.deleteTrip(trip);
     }
 
@@ -79,9 +77,4 @@ public class TripsRepository implements ITripsRepository, TripCallback {
         this.allTripsMutableLiveData.postValue(result);
     }
 
-    @Override
-    public void onFailureFromLocal(Exception exception) {
-        Result.Error resultError = new Result.Error(exception.getMessage());
-        this.allTripsMutableLiveData.postValue(resultError);
-    }
 }

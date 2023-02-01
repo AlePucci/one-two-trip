@@ -43,6 +43,7 @@ import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
+import it.unimib.sal.one_two_trip.util.Utility;
 
 public class ActivityFragment extends Fragment implements MenuProvider {
 
@@ -78,15 +79,16 @@ public class ActivityFragment extends Fragment implements MenuProvider {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.application = requireActivity().getApplication();
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        this.application = activity.getApplication();
         this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(this.application);
         if (tripsRepository != null) {
-            this.viewModel = new ViewModelProvider(requireActivity(),
+            this.viewModel = new ViewModelProvider(activity,
                     new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
         } else {
-            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+            Snackbar.make(activity.findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
 
@@ -109,7 +111,8 @@ public class ActivityFragment extends Fragment implements MenuProvider {
 
         androidx.fragment.app.FragmentActivity activity = requireActivity();
         MaterialToolbar toolbar = activity.findViewById(R.id.trip_toolbar);
-        ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+        ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(),
+                Lifecycle.State.RESUMED);
 
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
@@ -118,24 +121,25 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                     LAST_UPDATE);
         }
 
-        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(
+                getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
 
                         for (Trip mTrip : trips) {
                             if (mTrip.getId() == this.tripId) {
-                                trip = mTrip;
+                                this.trip = mTrip;
                                 break;
                             }
                         }
 
-                        if (trip == null || trip.getActivity() == null
-                                || trip.getActivity().getActivityList() == null) {
+                        if (this.trip == null || this.trip.getActivity() == null
+                                || this.trip.getActivity().getActivityList() == null) {
                             return;
                         }
 
-                        for (Activity mActivity : trip.getActivity().getActivityList()) {
+                        for (Activity mActivity : this.trip.getActivity().getActivityList()) {
                             if (mActivity.getId() == this.activityId) {
                                 this.activity = mActivity;
                                 break;
@@ -149,7 +153,6 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
                                 .getMessage()), Snackbar.LENGTH_SHORT).show();
-                        requireActivity().finish();
                     }
                 });
     }
@@ -174,7 +177,9 @@ public class ActivityFragment extends Fragment implements MenuProvider {
             alert.setView(input);
             alert.setPositiveButton(getString(R.string.activity_title_change_positive),
                     (dialog, which) -> {
-                        String newTitle = input.getText().toString();
+                        if (input.getText() == null) return;
+
+                        String newTitle = input.getText().toString().trim();
                         if (!newTitle.isEmpty() && !newTitle.equals(oldTitle)) {
                             this.activity.setTitle(newTitle);
                             this.viewModel.updateTrip(this.trip);
@@ -193,11 +198,15 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                         this.trip.getActivity().getActivityList().removeIf(activity ->
                                 activity.getId() == activityId);
                         this.viewModel.updateTrip(this.trip);
+                        Utility.onActivityDelete(this.trip, this.activity, this.application);
+
                         Bundle bundle = new Bundle();
-                        bundle.putLong(SELECTED_TRIP_ID, trip.getId());
+                        bundle.putLong(SELECTED_TRIP_ID, this.trip.getId());
                         bundle.putBoolean(MOVE_TO_ACTIVITY, false);
-                        bundle.putLong(SELECTED_ACTIVITY_ID, 0);
-                        Navigation.findNavController(requireView()).navigate(R.id.action_activityFragment_to_tripFragment, bundle);
+                        bundle.putLong(SELECTED_ACTIVITY_ID, this.activityId);
+                        Navigation.findNavController(
+                                requireView()).navigate(R.id.action_activityFragment_to_tripFragment,
+                                bundle);
                     });
 
             alert.setNegativeButton(getString(R.string.activity_delete_confirmation_negative),

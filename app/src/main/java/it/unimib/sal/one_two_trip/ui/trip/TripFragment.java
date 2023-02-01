@@ -73,6 +73,7 @@ import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
+import it.unimib.sal.one_two_trip.util.Utility;
 
 public class TripFragment extends Fragment implements MenuProvider {
 
@@ -88,11 +89,9 @@ public class TripFragment extends Fragment implements MenuProvider {
     private TripRecyclerViewAdapter adapter;
     private Application application;
     private SharedPreferencesUtil sharedPreferencesUtil;
-
     private MapView mapView;
     private MyLocationNewOverlay mLocationOverlay;
     private ActivityResultLauncher<String[]> multiplePermissionLauncher;
-
     private Trip trip;
     private List<Activity> activityList;
 
@@ -106,15 +105,16 @@ public class TripFragment extends Fragment implements MenuProvider {
 
         Configuration.getInstance().load(getContext(), PreferenceManager.getDefaultSharedPreferences(getContext()));
 
-        this.application = requireActivity().getApplication();
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        this.application = activity.getApplication();
         this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(this.application);
         if (tripsRepository != null) {
-            this.viewModel = new ViewModelProvider(requireActivity(),
+            this.viewModel = new ViewModelProvider(activity,
                     new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
         } else {
-            Snackbar.make(requireActivity().findViewById(android.R.id.content),
+            Snackbar.make(activity.findViewById(android.R.id.content),
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
         this.activityList = new ArrayList<>();
@@ -130,7 +130,6 @@ public class TripFragment extends Fragment implements MenuProvider {
                 });
 
         loadMap();
-
     }
 
     @Override
@@ -185,7 +184,7 @@ public class TripFragment extends Fragment implements MenuProvider {
             alert.setView(input);
             alert.setPositiveButton(getString(R.string.activity_new_confirmation_positive),
                     (dialog, which) -> {
-                        String title = input.getText().toString();
+                        String title = input.getText().toString().trim();
                         if (!title.isEmpty()) {
                             Bundle bundle = new Bundle();
                             bundle.putLong(SELECTED_TRIP_ID, tripId);
@@ -217,6 +216,7 @@ public class TripFragment extends Fragment implements MenuProvider {
         progressBar.setVisibility(View.VISIBLE);
 
         this.adapter = new TripRecyclerViewAdapter(this.activityList,
+                this.application,
                 new TripRecyclerViewAdapter.OnItemClickListener() {
                     @Override
                     public void onActivityClick(int position) {
@@ -247,45 +247,46 @@ public class TripFragment extends Fragment implements MenuProvider {
                     LAST_UPDATE);
         }
 
-        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observeForever(result -> {
-            if (result.isSuccess()) {
-                List<Trip> trips = ((Result.Success) result).getData().getTripList();
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(
+                getViewLifecycleOwner(),
+                result -> {
+                    if (result.isSuccess()) {
+                        List<Trip> trips = ((Result.Success) result).getData().getTripList();
 
-                for (Trip trip : trips) {
-                    if (trip.getId() == tripId) {
-                        this.trip = trip;
-                        break;
+                        for (Trip trip : trips) {
+                            if (trip.getId() == tripId) {
+                                this.trip = trip;
+                                break;
+                            }
+                        }
+
+                        if (this.trip == null) {
+                            return;
+                        }
+
+                        // todo check if saved
+
+                        if (this.trip.getActivity() != null
+                                && this.trip.getActivity().getActivityList() != null
+                                && !this.trip.getActivity().getActivityList().isEmpty()) {
+                            List<Activity> activityList = this.trip.getActivity().getActivityList();
+                            activityList.sort(Comparator.comparing(Activity::getStart_date));
+                            adapter.addData(activityList);
+                        }
+
+                        toolbar.setTitle(trip.getTitle());
+                        progressBar.setVisibility(View.GONE);
+
+                        if (isVisible())
+                            mapSetup();
+                    } else {
+                        ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
+                        Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
+                                .getMessage()), Snackbar.LENGTH_SHORT).show();
+
+                        progressBar.setVisibility(View.GONE);
                     }
-                }
-
-                if (this.trip == null) {
-                    return;
-                }
-
-                // todo check if saved
-
-                if (this.trip.getActivity() != null
-                        && this.trip.getActivity().getActivityList() != null
-                        && !this.trip.getActivity().getActivityList().isEmpty()) {
-                    List<Activity> activityList = this.trip.getActivity().getActivityList();
-                    activityList.sort(Comparator.comparing(Activity::getStart_date));
-                    adapter.addData(activityList);
-                }
-
-                toolbar.setTitle(trip.getTitle());
-                progressBar.setVisibility(View.GONE);
-
-                if (isVisible())
-                    mapSetup();
-            } else {
-                ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
-                Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
-                        .getMessage()), Snackbar.LENGTH_SHORT).show();
-
-                progressBar.setVisibility(View.GONE);
-                requireActivity().finish();
-            }
-        });
+                });
     }
 
     @Override
@@ -405,7 +406,7 @@ public class TripFragment extends Fragment implements MenuProvider {
             alert.setView(input);
             alert.setPositiveButton(getString(R.string.trip_title_change_positive),
                     (dialog, which) -> {
-                        String newTitle = input.getText().toString();
+                        String newTitle = input.getText().toString().trim();
                         if (!newTitle.isEmpty() && !newTitle.equals(oldTitle)) {
                             this.trip.setTitle(newTitle);
                             this.viewModel.updateTrip(this.trip);
@@ -422,6 +423,10 @@ public class TripFragment extends Fragment implements MenuProvider {
             alert.setPositiveButton(getString(R.string.trip_delete_confirmation_positive),
                     (dialog, whichButton) -> {
                         this.viewModel.deleteTrip(this.trip);
+                        Utility.deleteNotifications(this.trip, this.application);
+                        for (Activity a : this.trip.getActivity().getActivityList()) {
+                            Utility.deleteNotifications(a, this.application, this.trip.getId());
+                        }
                         requireActivity().onBackPressed();
                     });
 
