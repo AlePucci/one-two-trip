@@ -413,7 +413,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
             alert.setPositiveButton(getString(R.string.trip_delete_confirmation_positive),
                     (dialog, whichButton) -> {
                         this.viewModel.deleteTrip(this.trip);
-                        requireActivity().onBackPressed();
+                        requireActivity().finish();
                     });
 
             alert.setNegativeButton(getString(R.string.trip_delete_confirmation_negative),

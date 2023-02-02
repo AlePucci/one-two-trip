@@ -62,4 +62,11 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
             }
         });
     }
+
+    @Override
+    public void deleteTrip(Trip trip) {
+        TripsRoomDatabase.databaseWriteExecutor.execute(
+                () -> this.tripsDAO.delete(trip)
+        );
+    }
 }

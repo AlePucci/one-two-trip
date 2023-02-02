@@ -55,6 +55,7 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     @Override
     public void deleteTrip(Trip trip) {
         this.tripsRemoteDataSource.deleteTrip(trip);
+        this.tripsLocalDataSource.deleteTrip(trip);
     }
 
     @Override

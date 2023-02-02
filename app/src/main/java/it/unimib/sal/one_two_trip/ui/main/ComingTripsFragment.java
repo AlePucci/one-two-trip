@@ -233,9 +233,11 @@ public class ComingTripsFragment extends Fragment {
 
                         // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
                         if (fetchedTrips == null || fetchedTrips.isEmpty()) {
+                            this.comingTrips.clear();
                             noTripsText.setText(R.string.no_trips_added);
                             noTripsText.setVisibility(View.VISIBLE);
                             noTripsImage.setVisibility(View.VISIBLE);
+                            tripsRecyclerViewAdapter.notifyDataSetChanged();
                         } else {
                             List<Trip> comingTrips = new ArrayList<>(fetchedTrips);
 
@@ -261,22 +263,25 @@ public class ComingTripsFragment extends Fragment {
 
 
                             // IF THERE ARE NO COMING TRIPS, SHOW THE NO COMING TRIPS IMAGE TEXT
+
+                            this.comingTrips.clear();
                             if (comingTrips.isEmpty()) {
                                 noTripsText.setText(R.string.no_past_trips);
                                 noTripsText.setVisibility(View.VISIBLE);
                                 noTripsImage.setVisibility(View.VISIBLE);
+
                             } else {
                                 noTripsText.setVisibility(View.GONE);
                                 noTripsImage.setVisibility(View.GONE);
 
-                                this.comingTrips.clear();
                                 this.comingTrips.addAll(comingTrips);
                                 this.comingTrips.sort(Comparator.comparing(Trip::getStart_date));
                                 //this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
                                 //       this.comingTrips.size() + 1);
-                                // TODO FIX THIS
-                                this.tripsRecyclerViewAdapter.notifyDataSetChanged();
                             }
+
+                            // TODO FIX THIS
+                            this.tripsRecyclerViewAdapter.notifyDataSetChanged();
                         }
 
                         progressBar.setVisibility(View.GONE);

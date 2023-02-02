@@ -229,9 +229,11 @@ public class PastTripsFragment extends Fragment {
 
                         // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
                         if (fetchedTrips == null || fetchedTrips.isEmpty()) {
+                            this.pastTrips.clear();
                             noTripsText.setText(R.string.no_trips_added);
                             noTripsText.setVisibility(View.VISIBLE);
                             noTripsImage.setVisibility(View.VISIBLE);
+                            tripsRecyclerViewAdapter.notifyDataSetChanged();
                         } else {
                             List<Trip> pastTrips = new ArrayList<>(fetchedTrips);
 
@@ -239,6 +241,7 @@ public class PastTripsFragment extends Fragment {
                             pastTrips.removeIf(trip -> trip != null && !trip.isCompleted());
 
                             // IF THERE ARE NO PAST TRIPS, SHOW THE NO PAST TRIPS IMAGE TEXT
+                            this.pastTrips.clear();
                             if (pastTrips.isEmpty()) {
                                 noTripsText.setText(R.string.no_past_trips);
                                 noTripsText.setVisibility(View.VISIBLE);
@@ -247,13 +250,12 @@ public class PastTripsFragment extends Fragment {
                                 noTripsText.setVisibility(View.GONE);
                                 noTripsImage.setVisibility(View.GONE);
 
-                                this.pastTrips.clear();
                                 this.pastTrips.addAll(pastTrips);
                                 //this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
                                 //        this.pastTrips.size() + 1);
-                                // TODO FIX THIS
-                                this.tripsRecyclerViewAdapter.notifyDataSetChanged();
                             }
+                            // TODO FIX THIS
+                            this.tripsRecyclerViewAdapter.notifyDataSetChanged();
                         }
 
                         progressBar.setVisibility(View.GONE);
