@@ -247,6 +247,7 @@
             android:id="@+id/activity_new_participant_card_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             tools:context=".ui.trip.activity.ActivityParticipantEditFragment">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -260,7 +261,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_baseline_group_24"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

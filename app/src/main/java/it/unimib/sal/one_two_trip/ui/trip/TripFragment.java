@@ -1,5 +1,6 @@
 package it.unimib.sal.one_two_trip.ui.trip;
 
+import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static it.unimib.sal.one_two_trip.util.Constants.ACTIVITY_TITLE;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVE_TO_ACTIVITY;
@@ -12,6 +13,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -79,10 +81,7 @@ public class TripFragment extends Fragment implements MenuProvider {
 
     private final String[] PERMISSIONS = {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.INTERNET,
-            Manifest.permission.ACCESS_NETWORK_STATE,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION,
     };
 
     private TripsViewModel viewModel;
@@ -119,17 +118,13 @@ public class TripFragment extends Fragment implements MenuProvider {
         }
         this.activityList = new ArrayList<>();
 
-        ActivityResultContracts.RequestMultiplePermissions multiplePermissionsContract =
-                new ActivityResultContracts.RequestMultiplePermissions();
 
-        multiplePermissionLauncher = registerForActivityResult(multiplePermissionsContract,
+        multiplePermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),
                 isGranted -> {
-                    if (!isGranted.containsValue(false)) {
-                        //loadMap();
-                    }
+                    //TODO: rewrite
                 });
 
-        loadMap();
+        requestPerms();
     }
 
     @Override
@@ -277,7 +272,8 @@ public class TripFragment extends Fragment implements MenuProvider {
                         toolbar.setTitle(trip.getTitle());
                         progressBar.setVisibility(View.GONE);
 
-                        if (isVisible())
+                        Log.d("AAA", "observe");
+                        if (isAdded())
                             mapSetup();
                     } else {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
@@ -296,11 +292,10 @@ public class TripFragment extends Fragment implements MenuProvider {
             mLocationOverlay.enableMyLocation();
         }
         if (mapView != null) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+            Configuration.getInstance().load(getContext(), prefs);
             mapView.onResume();
         }
-
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
-        //Configuration.getInstance().load(requireContext(), prefs);
     }
 
     @Override
@@ -310,11 +305,10 @@ public class TripFragment extends Fragment implements MenuProvider {
             mLocationOverlay.disableMyLocation();
         }
         if (mapView != null) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+            Configuration.getInstance().save(getContext(), prefs);
             mapView.onPause();
         }
-
-        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
-        //Configuration.getInstance().save(requireContext(), prefs);
     }
 
     private void mapSetup() {
@@ -373,15 +367,12 @@ public class TripFragment extends Fragment implements MenuProvider {
         mapController.setCenter(startPoint);
     }
 
-    private void loadMap() {
+    private void requestPerms() {
         boolean permissionsStatus =
                 Arrays.stream(PERMISSIONS).allMatch(p ->
-                        ActivityCompat.checkSelfPermission(application, p) == PackageManager.PERMISSION_GRANTED);
+                        checkSelfPermission(application, p) == PackageManager.PERMISSION_GRANTED);
 
-        if (permissionsStatus) {
-            Configuration.getInstance().load(application,
-                    PreferenceManager.getDefaultSharedPreferences(application));
-        } else {
+        if (!permissionsStatus) {
             multiplePermissionLauncher.launch(PERMISSIONS);
         }
     }
