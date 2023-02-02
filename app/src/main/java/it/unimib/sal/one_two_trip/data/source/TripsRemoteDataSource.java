@@ -77,17 +77,17 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
     @Override
     public void updateTrip(Trip trip) {
         // TODO fix path (trip id)
-        this.tripsCollectionReference.child(String.valueOf(trip.getId() - 1)).setValue(trip);
+        this.tripsCollectionReference.child(String.valueOf(trip.getId())).setValue(trip);
     }
 
     @Override
     public void insertTrip(Trip trip) {
-        this.tripsCollectionReference.setValue(trip);
+        this.tripsCollectionReference.child(String.valueOf(trip.getId())).setValue(trip);
     }
 
     @Override
     public void deleteTrip(Trip trip) {
         // TODO fix path (trip id)
-        this.tripsCollectionReference.child(String.valueOf(trip.getId() - 1)).removeValue();
+        this.tripsCollectionReference.child(String.valueOf(trip.getId())).removeValue();
     }
 }

@@ -57,6 +57,9 @@ public class TripsRepository implements ITripsRepository, TripCallback {
         this.tripsRemoteDataSource.deleteTrip(trip);
     }
 
+    @Override
+    public void insertTrip(Trip trip) { this.tripsRemoteDataSource.insertTrip(trip); }
+
 
     @Override
     public void onSuccessFromRemote(TripsApiResponse tripsApiResponse, long lastUpdate) {

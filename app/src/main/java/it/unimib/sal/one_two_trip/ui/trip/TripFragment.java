@@ -172,7 +172,7 @@ public class TripFragment extends Fragment implements MenuProvider {
                 Lifecycle.State.RESUMED);
 
         FloatingActionButton fab = view.findViewById(R.id.trip_fab);
-        //TODO: add activity
+
         fab.setOnClickListener(v -> {
             AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
             EditText input = new EditText(requireContext());

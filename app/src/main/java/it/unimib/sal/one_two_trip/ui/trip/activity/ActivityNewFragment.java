@@ -247,6 +247,10 @@ public class ActivityNewFragment extends Fragment {
             activity.setDescription(description);
             activity.setParticipant(new PersonListHolder(personList));
 
+            if(personList.size() == trip.getParticipant().getPersonList().size()) {
+                activity.setEveryoneParticipate(true);
+            }
+
             if (moving.isChecked()) {
                 if (where2.getEditText() != null && where2.getEditText().getText().toString().trim().isEmpty()) {
                     where2.setError(getString(R.string.activity_field_error));

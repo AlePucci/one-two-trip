@@ -57,4 +57,13 @@ public class TripsViewModel extends ViewModel {
     public void deleteTrip(Trip trip) {
         this.tripsRepository.deleteTrip(trip);
     }
+
+    /**
+     * Inserts a new trip.
+     *
+     * @param trip The trip to be inserted
+     */
+    public void insertTrip(Trip trip) {
+        this.tripsRepository.insertTrip(trip);
+    }
 }

@@ -133,5 +133,10 @@
     <string name="activity_add_to_calendar_button">Aggiungi al calendario</string>
     <string name="add_participants">Aggiungi partecipanti</string>
     <string name="remove_participant">Rimuovi partecipante</string>
+    <string name="trip_new_hint">Nome</string>
+    <string name="trip_new_positive">Conferma</string>
+    <string name="trip_new_negative">Cancella</string>
+    <string name="trip_new_descr">Nome:</string>
+    <string name="trip_new_title">Crea nuovo viaggio</string>
     <!-- end -->
 </resources>

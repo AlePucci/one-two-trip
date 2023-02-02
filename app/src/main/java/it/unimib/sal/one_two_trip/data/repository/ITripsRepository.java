@@ -12,4 +12,6 @@ public interface ITripsRepository {
     void updateTrip(Trip trip);
 
     void deleteTrip(Trip trip);
+
+    void insertTrip(Trip trip);
 }
