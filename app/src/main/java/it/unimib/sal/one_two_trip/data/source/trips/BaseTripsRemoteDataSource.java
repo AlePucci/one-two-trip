@@ -1,6 +1,6 @@
-package it.unimib.sal.one_two_trip.data.source;
+package it.unimib.sal.one_two_trip.data.source.trips;
 
-import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 
 /**
  * Base class to get Trips from a remote source.

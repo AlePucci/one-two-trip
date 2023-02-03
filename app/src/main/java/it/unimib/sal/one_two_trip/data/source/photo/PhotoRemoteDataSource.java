@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.data.source;
+package it.unimib.sal.one_two_trip.data.source.photo;
 
 import static it.unimib.sal.one_two_trip.util.Constants.PHOTOS_PER_PAGE_VALUE;
 import static it.unimib.sal.one_two_trip.util.Constants.PHOTOS_VERSION;
@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import it.unimib.sal.one_two_trip.BuildConfig;
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.model.PictureApiResponse;
+import it.unimib.sal.one_two_trip.data.database.model.response.PictureApiResponse;
 import it.unimib.sal.one_two_trip.service.PictureApiService;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import retrofit2.Call;

@@ -17,7 +17,7 @@ import java.text.DateFormat;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.util.Utility;
 
 /**

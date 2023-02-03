@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.data.repository;
+package it.unimib.sal.one_two_trip.data.repository.trips;
 
 import static it.unimib.sal.one_two_trip.util.Constants.FRESH_TIMEOUT;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
@@ -9,13 +9,13 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
-import it.unimib.sal.one_two_trip.data.source.BaseTripsLocalDataSource;
-import it.unimib.sal.one_two_trip.data.source.BaseTripsRemoteDataSource;
-import it.unimib.sal.one_two_trip.data.source.TripCallback;
-import it.unimib.sal.one_two_trip.model.Result;
-import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.model.TripsApiResponse;
-import it.unimib.sal.one_two_trip.model.TripsResponse;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.database.model.response.TripsApiResponse;
+import it.unimib.sal.one_two_trip.data.database.model.response.TripsResponse;
+import it.unimib.sal.one_two_trip.data.source.trips.BaseTripsLocalDataSource;
+import it.unimib.sal.one_two_trip.data.source.trips.BaseTripsRemoteDataSource;
+import it.unimib.sal.one_two_trip.data.source.trips.TripCallback;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 /**
@@ -70,7 +70,7 @@ public class TripsRepository implements ITripsRepository, TripCallback {
 
     @Override
     public void onSuccessFromRemote(@NonNull TripsApiResponse tripsApiResponse, long lastUpdate) {
-        this.tripsLocalDataSource.insertTrips(tripsApiResponse.getTrips());
+        this.tripsLocalDataSource.insertTrips(tripsApiResponse.getTripList());
         this.sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, LAST_UPDATE,
                 Long.toString(lastUpdate));
     }

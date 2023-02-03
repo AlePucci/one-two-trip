@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.model;
+package it.unimib.sal.one_two_trip.data.database.model.response;
 
 /**
  * Class to represent the API response of the Nominatim geocoding service.

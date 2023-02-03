@@ -33,10 +33,10 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.Result;
-import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -56,7 +56,6 @@ public class ActivityFragment extends Fragment implements MenuProvider {
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
     private Trip trip;
-
     private Activity activity;
 
     public ActivityFragment() {

@@ -1,26 +1,28 @@
-package it.unimib.sal.one_two_trip.model;
+package it.unimib.sal.one_two_trip.data.database.model.response;
 
 import androidx.annotation.NonNull;
 
 import java.util.List;
 
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
+
 /**
  * This class represents the response of the API call to get the list of trips from
  * our Firebase Realtime Database.
  */
-public class TripsApiResponse {
+public class TripsApiResponse extends TripsResponse {
 
     private String status;
     private int totalResults;
-    private List<Trip> trips;
 
     public TripsApiResponse() {
+        super();
     }
 
     public TripsApiResponse(String status, int totalResults, List<Trip> trips) {
+        super(trips);
         this.status = status;
         this.totalResults = totalResults;
-        this.trips = trips;
     }
 
     public String getStatus() {
@@ -39,18 +41,10 @@ public class TripsApiResponse {
         this.totalResults = totalResults;
     }
 
-    public List<Trip> getTrips() {
-        return trips;
-    }
-
-    public void setTrips(List<Trip> trips) {
-        this.trips = trips;
-    }
-
     @Override
     @NonNull
     public String toString() {
         return "TripsApiResponse{" + "status='" + status + '\'' + ", totalResults=" + totalResults +
-                ", trips=" + trips.toString() + '}';
+                ", trips=" + super.toString() + '}';
     }
 }

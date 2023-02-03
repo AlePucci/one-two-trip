@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.model;
+package it.unimib.sal.one_two_trip.data.database.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -115,12 +115,12 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return email_address.equals(person.email_address);
+        return id.equals(person.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email_address);
+        return Objects.hash(id);
     }
 
     @NonNull

@@ -50,11 +50,11 @@ import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.SettingsParticipantRecyclerViewAdapter;
-import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.source.storage.RemoteStorage;
 import it.unimib.sal.one_two_trip.data.source.storage.RemoteStorageCallback;
-import it.unimib.sal.one_two_trip.model.Result;
-import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -410,6 +410,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
             alert.setPositiveButton(getString(R.string.trip_delete_confirmation_positive),
                     (dialog, whichButton) -> {
                         this.viewModel.deleteTrip(this.trip);
+                        this.remoteStorage.deleteTripLogo(this.tripId);
                         requireActivity().finish();
                     });
 

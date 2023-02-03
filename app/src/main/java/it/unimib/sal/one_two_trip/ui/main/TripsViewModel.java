@@ -3,9 +3,9 @@ package it.unimib.sal.one_two_trip.ui.main;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.model.Result;
-import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 
 /**
  * ViewModel to manage the list of Trips.

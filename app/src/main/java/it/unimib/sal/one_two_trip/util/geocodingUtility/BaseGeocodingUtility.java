@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.util;
+package it.unimib.sal.one_two_trip.util.geocodingUtility;
 
 /**
  * Base class for the geocoding utilities.

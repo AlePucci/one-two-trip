@@ -24,15 +24,15 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.Result;
-import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
-import it.unimib.sal.one_two_trip.util.GeocodingUtility;
-import it.unimib.sal.one_two_trip.util.GeocodingUtilityCallback;
+import it.unimib.sal.one_two_trip.util.geocodingUtility.GeocodingUtility;
+import it.unimib.sal.one_two_trip.util.geocodingUtility.GeocodingUtilityCallback;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 

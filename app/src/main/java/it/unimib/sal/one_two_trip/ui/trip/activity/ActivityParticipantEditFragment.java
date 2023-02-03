@@ -26,11 +26,11 @@ import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.ParticipantRecyclerViewAdapter;
-import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.Person;
-import it.unimib.sal.one_two_trip.model.Result;
-import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Person;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -98,15 +98,18 @@ public class ActivityParticipantEditFragment extends Fragment {
         MaterialButton confirm = view.findViewById(R.id.activity_participant_confirm);
 
         confirm.setOnClickListener(view1 -> {
-            activity.getParticipant().setPersonList(personList);
-            activity.setEveryoneParticipate(personList.size() == trip.getParticipant().getPersonList().size());
+            this.activity.getParticipant().setPersonList(this.personList);
 
-            viewModel.updateTrip(trip);
+            if (this.trip.getParticipant() != null && this.trip.getParticipant().getPersonList() != null) {
+                this.activity.setEveryoneParticipate(this.personList.size()
+                        == this.trip.getParticipant().getPersonList().size());
+            }
+
+            this.viewModel.updateTrip(this.trip);
 
             Navigation.findNavController(view).navigate(
                     R.id.action_activityParticipantEditFragment_to_activityParticipantFragment);
         });
-
 
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
@@ -115,26 +118,24 @@ public class ActivityParticipantEditFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-
         this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(
                 getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
-                        trip = null;
                         for (Trip mTrip : trips) {
                             if (mTrip.getId().equals(tripId)) {
-                                trip = mTrip;
+                                this.trip = mTrip;
                                 break;
                             }
                         }
 
-                        if (trip == null || trip.getActivity() == null
-                                || trip.getActivity().getActivityList() == null) {
+                        if (this.trip == null || this.trip.getActivity() == null
+                                || this.trip.getActivity().getActivityList() == null) {
                             return;
                         }
 
-                        for (Activity mActivity : trip.getActivity().getActivityList()) {
+                        for (Activity mActivity : this.trip.getActivity().getActivityList()) {
                             if (mActivity.getId().equals(activityId)) {
                                 this.activity = mActivity;
                                 break;
@@ -147,36 +148,44 @@ public class ActivityParticipantEditFragment extends Fragment {
 
                         this.personList = this.activity.getParticipant().getPersonList();
 
-                        if (trip.getParticipant() == null || trip.getParticipant().getPersonList() == null) {
+                        if (this.trip.getParticipant() == null || this.trip.getParticipant().getPersonList() == null) {
                             return;
                         }
 
-                        notParticipating = new ArrayList<>(trip.getParticipant().getPersonList());
-                        notParticipating.removeAll(this.personList);
+                        this.notParticipating = new ArrayList<>(this.trip.getParticipant().getPersonList());
+                        this.notParticipating.removeAll(this.personList);
 
                         //Participating
-                        participantAdapter = new ParticipantRecyclerViewAdapter(this.personList,
-                                application,
+                        this.participantAdapter = new ParticipantRecyclerViewAdapter(
+                                this.personList,
+                                this.application,
                                 position -> {
-                                    Person p = personList.remove(position);
-                                    notParticipating.add(p);
-                                    participantAdapter.notifyDataSetChanged();
-                                    notParticipantAdapter.notifyDataSetChanged();
+                                    Person p = this.personList.remove(position);
+                                    this.notParticipating.add(p);
+                                    int size = this.notParticipating.size();
+                                    this.notParticipantAdapter.notifyItemRangeInserted(size - 1,
+                                            size);
+                                    this.participantAdapter.notifyItemRemoved(position);
                                 });
+
                         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context,
                                 LinearLayoutManager.HORIZONTAL, false);
                         participant_recycler.setLayoutManager(layoutManager);
                         participant_recycler.setAdapter(participantAdapter);
 
                         //Not Participating
-                        notParticipantAdapter = new ParticipantRecyclerViewAdapter(notParticipating,
-                                application,
+                        this.notParticipantAdapter = new ParticipantRecyclerViewAdapter(
+                                this.notParticipating,
+                                this.application,
                                 position -> {
-                                    Person p = notParticipating.remove(position);
-                                    personList.add(p);
-                                    participantAdapter.notifyDataSetChanged();
-                                    notParticipantAdapter.notifyDataSetChanged();
+                                    Person p = this.notParticipating.remove(position);
+                                    this.personList.add(p);
+                                    int size = this.personList.size();
+                                    this.participantAdapter.notifyItemRangeInserted(size - 1,
+                                            size);
+                                    this.notParticipantAdapter.notifyItemRemoved(position);
                                 });
+
                         RecyclerView.LayoutManager layoutManager2 = new LinearLayoutManager(context,
                                 LinearLayoutManager.HORIZONTAL, false);
                         not_participant_recycler.setLayoutManager(layoutManager2);

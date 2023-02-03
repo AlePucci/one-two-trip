@@ -27,8 +27,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.source.PhotoCallback;
-import it.unimib.sal.one_two_trip.data.source.PhotoRemoteDataSource;
+import it.unimib.sal.one_two_trip.data.source.photo.PhotoCallback;
+import it.unimib.sal.one_two_trip.data.source.photo.PhotoRemoteDataSource;
 
 /**
  * Utility class used to download a photo from a remote web service, add a text and a logo to it

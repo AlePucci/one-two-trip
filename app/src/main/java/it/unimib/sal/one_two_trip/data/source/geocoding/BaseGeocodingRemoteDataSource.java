@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.data.source;
+package it.unimib.sal.one_two_trip.data.source.geocoding;
 
 import java.io.IOException;
 

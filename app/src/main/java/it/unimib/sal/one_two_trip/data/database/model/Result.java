@@ -1,4 +1,6 @@
-package it.unimib.sal.one_two_trip.model;
+package it.unimib.sal.one_two_trip.data.database.model;
+
+import it.unimib.sal.one_two_trip.data.database.model.response.TripsResponse;
 
 /**
  * Class that represents the result of an action that requires

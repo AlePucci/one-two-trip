@@ -11,7 +11,6 @@ import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_
 
 import android.Manifest;
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -64,16 +63,15 @@ import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.TripRecyclerViewAdapter;
-import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.Result;
-import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
-import it.unimib.sal.one_two_trip.util.Utility;
 
 /**
  * Fragment that shows the details of a trip in terms of list of activities and an interactive map.
@@ -390,48 +388,7 @@ public class TripFragment extends Fragment implements MenuProvider {
 
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-        Context context = requireContext();
-        if (menuItem.getItemId() == R.id.trip_menu_rename) {
-            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(context);
-            String oldTitle = this.trip.getTitle();
-            EditText input = new EditText(context);
-            input.setInputType(InputType.TYPE_CLASS_TEXT);
-            input.setHint(oldTitle);
-
-            alert.setTitle(getString(R.string.trip_title_change_title));
-            alert.setMessage(getString(R.string.trip_title_change));
-            alert.setView(input);
-            alert.setPositiveButton(getString(R.string.trip_title_change_positive),
-                    (dialog, which) -> {
-                        String newTitle = input.getText().toString().trim();
-                        if (!newTitle.isEmpty() && !newTitle.equals(oldTitle)) {
-                            this.trip.setTitle(newTitle);
-                            this.viewModel.updateTrip(this.trip);
-                        }
-                    });
-            alert.setNegativeButton(getString(R.string.trip_title_change_negative), null);
-            alert.show();
-
-            return true;
-        } else if (menuItem.getItemId() == R.id.trip_menu_delete) {
-            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(context);
-            alert.setTitle(getString(R.string.trip_delete_confirmation_title));
-            alert.setMessage(getString(R.string.trip_delete_confirmation));
-            alert.setPositiveButton(getString(R.string.trip_delete_confirmation_positive),
-                    (dialog, whichButton) -> {
-                        this.viewModel.deleteTrip(this.trip);
-                        Utility.deleteNotifications(this.trip, this.application);
-                        for (Activity a : this.trip.getActivity().getActivityList()) {
-                            Utility.deleteNotifications(a, this.application, this.trip.getId());
-                        }
-                        requireActivity().onBackPressed();
-                    });
-
-            alert.setNegativeButton(getString(R.string.trip_delete_confirmation_negative),
-                    null);
-            alert.show();
-            return true;
-        } else if (menuItem.getItemId() == R.id.trip_menu_settings) {
+        if (menuItem.getItemId() == R.id.trip_menu_settings) {
             Bundle bundle = new Bundle();
             bundle.putString(SELECTED_TRIP_ID, this.trip.getId());
             Navigation.findNavController(requireView())

@@ -9,7 +9,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 
 /**
  * Data Access Object (DAO) that provides methods that can be used to query,

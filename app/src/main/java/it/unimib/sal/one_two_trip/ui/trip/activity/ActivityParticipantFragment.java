@@ -24,10 +24,11 @@ import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.ParticipantRecyclerViewAdapter;
-import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.Result;
-import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Person;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -122,25 +123,26 @@ public class ActivityParticipantFragment extends Fragment {
                             }
                         }
 
-                        if (activity == null) return;
+                        if (activity == null || activity.getParticipant() == null
+                                || activity.getParticipant().getPersonList() == null) {
+                            return;
+                        }
 
-                        Activity finalActivity = activity;
+                        List<Person> personList = activity.getParticipant().getPersonList();
 
                         ParticipantRecyclerViewAdapter adapter =
                                 new ParticipantRecyclerViewAdapter(
-                                        activity.getParticipant()
-                                                .getPersonList(),
+                                        personList,
                                         application,
                                         position -> {
                                             //TODO: goto user page
                                             Snackbar.make(view, "User "
-                                                            + finalActivity.getParticipant()
-                                                            .getPersonList().get(position).getName()
+                                                            + personList.get(position).getName()
                                                             + " "
-                                                            + finalActivity.getParticipant()
-                                                            .getPersonList().get(position).getSurname(),
+                                                            + personList.get(position).getSurname(),
                                                     Snackbar.LENGTH_SHORT).show();
                                         });
+
                         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),
                                 LinearLayoutManager.HORIZONTAL, false);
                         recyclerView.setLayoutManager(layoutManager);

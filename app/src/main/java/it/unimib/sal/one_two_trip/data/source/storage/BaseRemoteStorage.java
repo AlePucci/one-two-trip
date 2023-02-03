@@ -18,4 +18,6 @@ public abstract class BaseRemoteStorage {
     public abstract void downloadTripLogo(String tripId);
 
     public abstract void tripLogoExists(String tripId);
+
+    public abstract void deleteTripLogo(String tripId);
 }

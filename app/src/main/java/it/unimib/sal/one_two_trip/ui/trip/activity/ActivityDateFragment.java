@@ -28,10 +28,10 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.Result;
-import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -134,7 +134,6 @@ public class ActivityDateFragment extends Fragment {
                             return;
                         }
 
-
                         for (Activity mActivity : trip.getActivity().getActivityList()) {
                             if (mActivity.getId().equals(activityId)) {
                                 this.activity = mActivity;
@@ -150,8 +149,8 @@ public class ActivityDateFragment extends Fragment {
 
                         TextView date2 = view.findViewById(R.id.activity_when2);
                         ImageView arrow = view.findViewById(R.id.activity_when_arrow);
-                        if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
-                            date2.setText(df.format(activity.getEnd_date()));
+                        if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
+                            date2.setText(df.format(this.activity.getEnd_date()));
                             date2.setVisibility(View.VISIBLE);
                             arrow.setVisibility(View.VISIBLE);
                         } else {

@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.model;
+package it.unimib.sal.one_two_trip.data.database.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Objects;
 
-import it.unimib.sal.one_two_trip.model.holder.ActivityListHolder;
-import it.unimib.sal.one_two_trip.model.holder.PersonListHolder;
+import it.unimib.sal.one_two_trip.data.database.model.holder.ActivityListHolder;
+import it.unimib.sal.one_two_trip.data.database.model.holder.PersonListHolder;
 
 /**
  * Class representing a trip.

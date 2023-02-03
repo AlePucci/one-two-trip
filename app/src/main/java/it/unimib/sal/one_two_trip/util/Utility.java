@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Random;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 
 /**
  * Utility class to provide useful methods among the application.
@@ -79,7 +79,7 @@ public class Utility {
             return null;
         }
 
-        List<it.unimib.sal.one_two_trip.model.Activity> tmp =
+        List<it.unimib.sal.one_two_trip.data.database.model.Activity> tmp =
                 new ArrayList<>(tripList.get(tripPosition).getActivity().getActivityList());
 
         tmp.removeIf(activity -> activity == null
@@ -158,7 +158,7 @@ public class Utility {
      * @param activity    the activity to schedule the notifications for (already updated)
      * @param application the application context
      */
-    public static void scheduleNotifications(it.unimib.sal.one_two_trip.model.Activity activity,
+    public static void scheduleNotifications(it.unimib.sal.one_two_trip.data.database.model.Activity activity,
                                              Application application, String tripId) {
         scheduleActivityNotifications(activity, application, tripId, false);
     }
@@ -183,7 +183,7 @@ public class Utility {
      * @param application the application context
      * @param tripId      the id of the trip the activity belongs to
      */
-    public static void deleteNotifications(it.unimib.sal.one_two_trip.model.Activity activity,
+    public static void deleteNotifications(it.unimib.sal.one_two_trip.data.database.model.Activity activity,
                                            Application application, String tripId) {
         scheduleActivityNotifications(activity, application, tripId, true);
     }
@@ -197,7 +197,7 @@ public class Utility {
      * @param activity    the activity to schedule the notifications for (already updated)
      * @param application the application context
      */
-    public static void onActivityCreate(Trip trip, it.unimib.sal.one_two_trip.model.Activity activity,
+    public static void onActivityCreate(Trip trip, it.unimib.sal.one_two_trip.data.database.model.Activity activity,
                                         Application application) {
         scheduleTripNotifications(trip, application, false);
         scheduleActivityNotifications(activity, application, trip.getId(), false);
@@ -211,7 +211,7 @@ public class Utility {
      * @param activity    the activity deleted
      * @param application the application context
      */
-    public static void onActivityDelete(Trip trip, it.unimib.sal.one_two_trip.model.Activity activity,
+    public static void onActivityDelete(Trip trip, it.unimib.sal.one_two_trip.data.database.model.Activity activity,
                                         Application application) {
         deleteNotifications(activity, application, trip.getId());
         scheduleNotifications(trip, application);
@@ -257,9 +257,9 @@ public class Utility {
             long timeInMillis = ((long) time[i] * MINUTE_IN_MILLIS);
             Date now = new Date();
             Date notificationTime = null;
-            it.unimib.sal.one_two_trip.model.Activity firstComingActivity = null;
+            it.unimib.sal.one_two_trip.data.database.model.Activity firstComingActivity = null;
 
-            for (it.unimib.sal.one_two_trip.model.Activity activity :
+            for (it.unimib.sal.one_two_trip.data.database.model.Activity activity :
                     trip.getActivity().getActivityList()) {
                 if (activity == null) {
                     continue;
@@ -306,7 +306,7 @@ public class Utility {
      * @param tripId      the id of the trip the activity belongs to
      * @param deleted     true if the activity is deleted (used to cancel the notifications), false otherwise
      */
-    private static void scheduleActivityNotifications(it.unimib.sal.one_two_trip.model.Activity activity,
+    private static void scheduleActivityNotifications(it.unimib.sal.one_two_trip.data.database.model.Activity activity,
                                                       Application application, String tripId,
                                                       boolean deleted) {
         if (activity == null) {

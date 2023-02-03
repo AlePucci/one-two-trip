@@ -137,7 +137,7 @@
     <string name="remove_participant">Rimuovi partecipante</string>
     <string name="trip_new_hint">Nome</string>
     <string name="trip_new_positive">Conferma</string>
-    <string name="trip_new_negative">Cancella</string>
+    <string name="trip_new_negative">Annulla</string>
     <string name="trip_new_descr">Nome:</string>
     <string name="trip_new_title">Crea nuovo viaggio</string>
     <string name="no_shareable_activities_2">Non ci sono attività statiche da condividere!</string>

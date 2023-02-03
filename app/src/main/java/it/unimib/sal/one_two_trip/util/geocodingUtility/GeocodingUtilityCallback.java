@@ -1,4 +1,6 @@
-package it.unimib.sal.one_two_trip.util;
+package it.unimib.sal.one_two_trip.util.geocodingUtility;
+
+import it.unimib.sal.one_two_trip.util.geocodingUtility.GeocodingUtility;
 
 /**
  * Interface to send geocoding utility data from {@link GeocodingUtility} to the activities.

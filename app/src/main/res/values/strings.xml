@@ -51,7 +51,7 @@
     <string name="trip_new_title">Create new trip</string>
     <string name="trip_new_descr">New trip name:</string>
     <string name="trip_new_hint">Name</string>
-    <string name="trip_new_positive">CONFIRM</string>
+    <string name="trip_new_positive">Confirm</string>
     <string name="trip_new_negative">@android:string/cancel</string>
 
     <!-- trip settings -->
@@ -86,7 +86,7 @@
     <string name="activity_new_title_descr">Name:</string>
     <string name="activity_new_title_hint">Name</string>
     <string name="activity_new_confirmation_positive">Confirm</string>
-    <string name="activity_new_confirmation_negative">Cancel</string>
+    <string name="activity_new_confirmation_negative">@android:string/cancel</string>
     <string name="activity_new_moving">Is this a journey? (i.e. flight)</string>
     <string name="activity_new_when_description">Choose the date or dates for the activity</string>
     <string name="activity_new_where_description">Choose the location or locations of the activity</string>
@@ -177,5 +177,6 @@
     <string name="no_shareable_activities">There are no activities to share here!</string>
     <string name="no_shareable_activities_2">There are no static activities to share here!</string>
     <string name="share_trip_error">Something went wrong! Please try again</string>
+
     <!-- end -->
 </resources>

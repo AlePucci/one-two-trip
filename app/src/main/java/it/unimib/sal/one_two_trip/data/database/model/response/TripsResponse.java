@@ -1,6 +1,8 @@
-package it.unimib.sal.one_two_trip.model;
+package it.unimib.sal.one_two_trip.data.database.model.response;
 
 import java.util.List;
+
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 
 /**
  * Class simulating the response of the API call to get the trips.

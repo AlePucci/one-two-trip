@@ -31,10 +31,10 @@ import java.util.Date;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.Result;
-import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -104,8 +104,8 @@ public class ActivityDateEditFragment extends Fragment {
         dateb1.setOnClickListener(view12 -> {
             final Calendar c = Calendar.getInstance();
 
-            if (activity.getStart_date() != 0) {
-                c.setTime(new Date(activity.getStart_date()));
+            if (this.activity.getStart_date() != 0) {
+                c.setTime(new Date(this.activity.getStart_date()));
             }
 
             new DatePickerDialog(context, (datePicker, i, i1, i2) ->
@@ -120,8 +120,8 @@ public class ActivityDateEditFragment extends Fragment {
         dateb2.setOnClickListener(view12 -> {
             final Calendar c = Calendar.getInstance();
 
-            if (activity.getEnd_date() != 0) {
-                c.setTime(new Date(activity.getEnd_date()));
+            if (this.activity.getEnd_date() != 0) {
+                c.setTime(new Date(this.activity.getEnd_date()));
             }
 
             new DatePickerDialog(context, (datePicker, i, i1, i2) ->
@@ -140,7 +140,7 @@ public class ActivityDateEditFragment extends Fragment {
             long date2;
 
             if (dateb1.getText().toString().trim().isEmpty()) {
-                date1 = activity.getStart_date();
+                date1 = this.activity.getStart_date();
             } else {
                 Date temp = df.parse(dateb1.getText().toString().trim(),
                         new ParsePosition(0));
@@ -183,7 +183,7 @@ public class ActivityDateEditFragment extends Fragment {
                     return;
                 }
 
-                if (date1 != activity.getStart_date() || date2 != activity.getEnd_date()) {
+                if (date1 != this.activity.getStart_date() || date2 != this.activity.getEnd_date()) {
                     this.activity.setStart_date(date1);
                     this.activity.setEnd_date(date2);
                     valid = true;

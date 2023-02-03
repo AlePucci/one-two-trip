@@ -18,7 +18,7 @@ import com.google.android.material.button.MaterialButton;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.model.Person;
+import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 import it.unimib.sal.one_two_trip.util.Utility;
 

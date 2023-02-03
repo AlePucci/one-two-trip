@@ -6,7 +6,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.PHOTOS_ENDPOINT;
 import static it.unimib.sal.one_two_trip.util.Constants.PHOTOS_PER_PAGE;
 import static it.unimib.sal.one_two_trip.util.Constants.PHOTOS_QUERY;
 
-import it.unimib.sal.one_two_trip.model.PictureApiResponse;
+import it.unimib.sal.one_two_trip.data.database.model.response.PictureApiResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;

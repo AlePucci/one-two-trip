@@ -1,6 +1,6 @@
-package it.unimib.sal.one_two_trip.data.source;
+package it.unimib.sal.one_two_trip.data.source.geocoding;
 
-import it.unimib.sal.one_two_trip.util.GeocodingUtility;
+import it.unimib.sal.one_two_trip.util.geocodingUtility.GeocodingUtility;
 
 /**
  * Interface to send geocoding data from remote source to {@link GeocodingUtility} class.

@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.data.source;
+package it.unimib.sal.one_two_trip.data.source.trips;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
@@ -9,7 +9,7 @@ import java.util.List;
 
 import it.unimib.sal.one_two_trip.data.database.ITripsDAO;
 import it.unimib.sal.one_two_trip.data.database.TripsRoomDatabase;
-import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 /**

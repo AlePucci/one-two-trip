@@ -88,4 +88,15 @@ public class RemoteStorage extends BaseRemoteStorage {
         }).addOnFailureListener(exception ->
                 callback.onExistsResponse(-1));
     }
+
+    @Override
+    public void deleteTripLogo(String tripId) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference().child(FIREBASE_USER_COLLECTION)
+                .child("1")
+                .child(FIREBASE_TRIPS_COLLECTION)
+                .child(String.valueOf(tripId)).child(TRIP_LOGO_NAME);
+
+        storageReference.delete();
+    }
 }

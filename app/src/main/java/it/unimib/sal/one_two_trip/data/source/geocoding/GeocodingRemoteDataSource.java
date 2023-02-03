@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.data.source;
+package it.unimib.sal.one_two_trip.data.source.geocoding;
 
 import static it.unimib.sal.one_two_trip.util.Constants.GEOCODING_FORMAT_VALUE;
 
@@ -7,7 +7,7 @@ import android.content.Context;
 import java.io.IOException;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.model.GeocodingApiResponse;
+import it.unimib.sal.one_two_trip.data.database.model.response.GeocodingApiResponse;
 import it.unimib.sal.one_two_trip.service.GeocodingApiService;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import retrofit2.Call;

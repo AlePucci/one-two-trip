@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.model.holder;
+package it.unimib.sal.one_two_trip.data.database.model.holder;
 
 import androidx.annotation.NonNull;
 import androidx.room.Ignore;
@@ -6,7 +6,7 @@ import androidx.room.Ignore;
 import java.util.List;
 import java.util.Objects;
 
-import it.unimib.sal.one_two_trip.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
 
 /**
  * Class used to store the list of activities in Room database.

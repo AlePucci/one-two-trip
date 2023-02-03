@@ -1,17 +1,19 @@
-package it.unimib.sal.one_two_trip.util;
+package it.unimib.sal.one_two_trip.util.geocodingUtility;
 
 import android.app.Application;
 
 import java.io.IOException;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.source.GeocodingCallback;
-import it.unimib.sal.one_two_trip.data.source.GeocodingRemoteDataSource;
+import it.unimib.sal.one_two_trip.data.source.geocoding.GeocodingCallback;
+import it.unimib.sal.one_two_trip.data.source.geocoding.GeocodingRemoteDataSource;
+import it.unimib.sal.one_two_trip.util.ServiceLocator;
 
 /**
  * Utility class to get the geocoding data.
  */
 public class GeocodingUtility extends BaseGeocodingUtility {
+
     private final Application application;
     private final GeocodingRemoteDataSource geocodingRemoteDataSource;
 

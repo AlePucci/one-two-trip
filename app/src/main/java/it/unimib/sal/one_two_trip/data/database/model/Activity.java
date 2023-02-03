@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.model;
+package it.unimib.sal.one_two_trip.data.database.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import it.unimib.sal.one_two_trip.model.holder.PersonListHolder;
+import it.unimib.sal.one_two_trip.data.database.model.holder.PersonListHolder;
 
 /**
  * Class to represent an activity as a part of a trip.

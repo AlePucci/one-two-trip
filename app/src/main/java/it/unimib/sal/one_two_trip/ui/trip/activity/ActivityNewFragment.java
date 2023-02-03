@@ -10,6 +10,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.STATIC_ACTIVITY_TYPE_NAM
 import android.app.Application;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,18 +41,18 @@ import java.util.UUID;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.ParticipantRecyclerViewAdapter;
-import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.Person;
-import it.unimib.sal.one_two_trip.model.Result;
-import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.model.holder.PersonListHolder;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Person;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.database.model.holder.PersonListHolder;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.Constants;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
-import it.unimib.sal.one_two_trip.util.GeocodingUtility;
-import it.unimib.sal.one_two_trip.util.GeocodingUtilityCallback;
+import it.unimib.sal.one_two_trip.util.geocodingUtility.GeocodingUtility;
+import it.unimib.sal.one_two_trip.util.geocodingUtility.GeocodingUtilityCallback;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 import it.unimib.sal.one_two_trip.util.Utility;
@@ -66,10 +67,8 @@ public class ActivityNewFragment extends Fragment {
     private SharedPreferencesUtil sharedPreferencesUtil;
     private Trip trip;
     private Activity activity;
-
     private List<Person> personList;
     private List<Person> notParticipating;
-
     private ParticipantRecyclerViewAdapter participantAdapter;
     private ParticipantRecyclerViewAdapter notParticipantAdapter;
 
@@ -104,9 +103,18 @@ public class ActivityNewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        DateFormat df = SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 
+        if (getArguments() == null) {
+            return;
+        }
+
+        String tripId = getArguments().getString(SELECTED_TRIP_ID);
+        String title = getArguments().getString(ACTIVITY_TITLE);
+
+        DateFormat df = SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
         GeocodingUtility endUtility = new GeocodingUtility(this.application);
+        Context context = requireContext();
+
         endUtility.setGeocodingUtilityCallback(new GeocodingUtilityCallback() {
             @Override
             public void onGeocodingSuccess(String lat, String lon) {
@@ -123,7 +131,6 @@ public class ActivityNewFragment extends Fragment {
                 onNewActivityCreated();
             }
         });
-
 
         GeocodingUtility utility = new GeocodingUtility(this.application);
         utility.setGeocodingUtilityCallback(new GeocodingUtilityCallback() {
@@ -149,10 +156,7 @@ public class ActivityNewFragment extends Fragment {
         });
 
         TextView activity_title = view.findViewById(R.id.activity_new_title);
-        if (getArguments() != null) {
-            String title = getArguments().getString(ACTIVITY_TITLE);
-            activity_title.setText(title);
-        }
+        activity_title.setText(title);
 
         TextInputLayout where1 = view.findViewById(R.id.activity_new_where1_edit);
         MaterialButton when1 = view.findViewById(R.id.activity_new_when1_edit);
@@ -205,7 +209,6 @@ public class ActivityNewFragment extends Fragment {
 
         MaterialButton materialButton = view.findViewById(R.id.activity_new_confirm);
         materialButton.setOnClickListener(view1 -> {
-
             if (where1.getEditText() != null && where1.getEditText().getText().toString().trim().isEmpty()) {
                 where1.setError(getString(R.string.activity_field_error));
                 return;
@@ -228,7 +231,7 @@ public class ActivityNewFragment extends Fragment {
                 return;
             }
 
-            String title = getArguments().getString(ACTIVITY_TITLE);
+
             String location = where1.getEditText().getText().toString().trim();
 
             Date parsed = df.parse(when1.getText().toString(), new ParsePosition(0));
@@ -242,16 +245,16 @@ public class ActivityNewFragment extends Fragment {
 
             String description = descr.getEditText().getText().toString().trim();
 
-            activity = new Activity();
-            activity.setId(UUID.randomUUID().toString());
-            activity.setTitle(title);
-            activity.setLocation(location);
-            activity.setStart_date(date);
-            activity.setDescription(description);
-            activity.setParticipant(new PersonListHolder(personList));
+            this.activity = new Activity();
+            this.activity.setId(UUID.randomUUID().toString());
+            this.activity.setTitle(title);
+            this.activity.setLocation(location);
+            this.activity.setStart_date(date);
+            this.activity.setDescription(description);
+            this.activity.setParticipant(new PersonListHolder(this.personList));
 
-            if (personList.size() == trip.getParticipant().getPersonList().size()) {
-                activity.setEveryoneParticipate(true);
+            if (this.personList.size() == this.trip.getParticipant().getPersonList().size()) {
+                this.activity.setEveryoneParticipate(true);
             }
 
             if (moving.isChecked()) {
@@ -269,7 +272,7 @@ public class ActivityNewFragment extends Fragment {
                     where2.setErrorEnabled(false);
                 }
 
-                activity.setType(Constants.MOVING_ACTIVITY_TYPE_NAME);
+                this.activity.setType(Constants.MOVING_ACTIVITY_TYPE_NAME);
 
                 String location2 = where2.getEditText().getText().toString().trim();
 
@@ -282,21 +285,20 @@ public class ActivityNewFragment extends Fragment {
                 }
                 date = parsed.getTime();
 
-                activity.setEnd_location(location2);
-                activity.setEnd_date(date);
+                this.activity.setEnd_location(location2);
+                this.activity.setEnd_date(date);
             } else {
-                activity.setType(STATIC_ACTIVITY_TYPE_NAME);
+                this.activity.setType(STATIC_ACTIVITY_TYPE_NAME);
             }
 
-            if (trip != null) {
+            if (this.trip != null) {
                 utility.search(location, 1);
 
-                trip.getActivity().getActivityList().add(activity);
+                this.trip.getActivity().getActivityList().add(this.activity);
 
                 requireActivity().onBackPressed();
             }
         });
-
 
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
@@ -305,15 +307,8 @@ public class ActivityNewFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-
         this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
-                if (getArguments() == null) {
-                    return;
-                }
-
-
-                String tripId = getArguments().getString(SELECTED_TRIP_ID);
                 List<Trip> trips = ((Result.Success) result).getData().getTripList();
 
                 for (Trip trip : trips) {
@@ -323,26 +318,42 @@ public class ActivityNewFragment extends Fragment {
                     }
                 }
 
-                personList = new ArrayList<>();
-                personList.addAll(trip.getParticipant().getPersonList());
-                notParticipating = new ArrayList<>();
+                if (this.trip == null || this.trip.getParticipant() == null
+                        || this.trip.getParticipant().getPersonList() == null) {
+                    return;
+                }
 
-                participantAdapter = new ParticipantRecyclerViewAdapter(personList, application, position -> {
-                    Person p = personList.remove(position);
-                    notParticipating.add(p);
-                    participantAdapter.notifyDataSetChanged();
-                    notParticipantAdapter.notifyDataSetChanged();
-                });
+                this.personList = new ArrayList<>(trip.getParticipant().getPersonList());
+                this.notParticipating = new ArrayList<>();
 
-                notParticipantAdapter = new ParticipantRecyclerViewAdapter(notParticipating, application, position -> {
-                    Person p = notParticipating.remove(position);
-                    personList.add(p);
-                    participantAdapter.notifyDataSetChanged();
-                    notParticipantAdapter.notifyDataSetChanged();
-                });
+                this.participantAdapter = new ParticipantRecyclerViewAdapter(
+                        this.personList,
+                        this.application,
+                        position -> {
+                            Person p = this.personList.remove(position);
+                            this.notParticipating.add(p);
+                            int size = this.notParticipating.size();
+                            this.notParticipantAdapter.notifyItemRangeInserted(size - 1,
+                                    size);
+                            this.participantAdapter.notifyItemRemoved(position);
+                        });
 
-                participatingRV.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-                notParticipatingRV.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+                this.notParticipantAdapter = new ParticipantRecyclerViewAdapter(
+                        this.notParticipating,
+                        this.application,
+                        position -> {
+                            Person p = this.notParticipating.remove(position);
+                            this.personList.add(p);
+                            int size = this.personList.size();
+                            this.participantAdapter.notifyItemRangeInserted(size - 1,
+                                    size);
+                            this.notParticipantAdapter.notifyItemRemoved(position);
+                        });
+
+                participatingRV.setLayoutManager(new LinearLayoutManager(context,
+                        LinearLayoutManager.HORIZONTAL, false));
+                notParticipatingRV.setLayoutManager(new LinearLayoutManager(context,
+                        LinearLayoutManager.HORIZONTAL, false));
 
                 participatingRV.setAdapter(participantAdapter);
                 notParticipatingRV.setAdapter(notParticipantAdapter);

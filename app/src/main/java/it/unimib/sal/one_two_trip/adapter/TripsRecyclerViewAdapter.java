@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.Trip;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 
 /**
  * Custom adapter that extends RecyclerView.Adapter to show an ArrayList of Trips
