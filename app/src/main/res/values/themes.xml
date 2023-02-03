@@ -67,4 +67,8 @@
         <item name="backgroundTint">@drawable/settings_button</item>
     </style>
 
+    <style name="Widget.App.CustomAlertDialog" parent="Theme.Material3.DayNight.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/dialog_background</item>
+    </style>
+
 </resources>

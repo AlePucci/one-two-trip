@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -170,14 +171,24 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                 "Add participant", Snackbar.LENGTH_SHORT).show());
 
         descriptionCardview.setOnClickListener(v -> {
-            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(requireContext());
+            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
+                    requireContext(), R.style.Widget_App_CustomAlertDialog);
             EditText input = new EditText(requireContext());
+            FrameLayout container = new FrameLayout(requireContext());
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(50, 0, 50, 0);
+            input.setLayoutParams(params);
+
             String oldDescription = this.trip.getDescription();
-            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            input.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            input.setSingleLine(false);
+            input.setMaxLines(3);
+            container.addView(input);
 
             alert.setTitle(getString(R.string.trip_description_title));
             alert.setMessage(getString(R.string.trip_description_change));
-            alert.setView(input);
+            alert.setView(container);
             alert.setPositiveButton(getString(R.string.trip_description_positive),
                     (dialog, which) -> {
                         if (input.getText() == null) return;
@@ -340,35 +351,38 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
 
     @Override
     public void onExistsResponse(long lastUpdate) {
-        long savedLastUpdate = 0;
+        if (isAdded()) {
+            long savedLastUpdate = 0;
 
-        if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
-                LAST_LOGO_UPDATE + "_" + this.tripId) != null) {
-            savedLastUpdate = Long.parseLong(
-                    sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
-                            LAST_LOGO_UPDATE + "_" + this.tripId));
-        }
+            if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                    LAST_LOGO_UPDATE + "_" + this.tripId) != null) {
+                savedLastUpdate = Long.parseLong(
+                        sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                                LAST_LOGO_UPDATE + "_" + this.tripId));
+            }
 
-        if (lastUpdate > 0 && savedLastUpdate != lastUpdate) {
-            // NEED TO DOWNLOAD
-            this.progressBar.setVisibility(View.VISIBLE);
-            Blurry.with(this.application)
-                    .radius(25)
-                    .sampling(2)
-                    .async()
-                    .capture(this.tripLogo)
-                    .into(this.tripLogo);
-            this.remoteStorage.downloadTripLogo(this.tripId);
-            sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME,
-                    LAST_LOGO_UPDATE + "_" + this.tripId, String.valueOf(lastUpdate));
-        } else {
-            // NO NEED TO DOWNLOAD
-            Bitmap bitmap = BitmapFactory.decodeFile(this.imagePath);
-            if (bitmap == null) {
-                this.tripLogo.setImageBitmap(
-                        BitmapFactory.decodeResource(getResources(), R.drawable.default_trip_image));
+            if (lastUpdate > 0 && savedLastUpdate != lastUpdate) {
+                // NEED TO DOWNLOAD
+                this.progressBar.setVisibility(View.VISIBLE);
+                Blurry.with(this.application)
+                        .radius(25)
+                        .sampling(2)
+                        .async()
+                        .capture(this.tripLogo)
+                        .into(this.tripLogo);
+                this.remoteStorage.downloadTripLogo(this.tripId);
+                sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME,
+                        LAST_LOGO_UPDATE + "_" + this.tripId, String.valueOf(lastUpdate));
             } else {
-                this.tripLogo.setImageBitmap(bitmap);
+                // NO NEED TO DOWNLOAD
+                Bitmap bitmap = BitmapFactory.decodeFile(this.imagePath);
+                if (bitmap == null) {
+                    this.tripLogo.setImageBitmap(
+                            BitmapFactory.decodeResource(getResources(),
+                                    R.drawable.default_trip_image));
+                } else {
+                    this.tripLogo.setImageBitmap(bitmap);
+                }
             }
         }
     }
@@ -382,15 +396,22 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         Context context = requireContext();
         if (menuItem.getItemId() == R.id.trip_menu_rename) {
-            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(context);
-            String oldTitle = this.trip.getTitle();
-            EditText input = new EditText(context);
+            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
+                    requireContext(), R.style.Widget_App_CustomAlertDialog);
+            EditText input = new EditText(requireContext());
             input.setInputType(InputType.TYPE_CLASS_TEXT);
+            FrameLayout container = new FrameLayout(requireContext());
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(50, 0, 50, 0);
+            input.setLayoutParams(params);
+            container.addView(input);
+            String oldTitle = this.trip.getTitle();
             input.setHint(oldTitle);
 
             alert.setTitle(getString(R.string.trip_title_change_title));
             alert.setMessage(getString(R.string.trip_title_change));
-            alert.setView(input);
+            alert.setView(container);
             alert.setPositiveButton(getString(R.string.trip_title_change_positive),
                     (dialog, which) -> {
                         String newTitle = input.getText().toString().trim();
@@ -404,7 +425,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
 
             return true;
         } else if (menuItem.getItemId() == R.id.trip_menu_delete) {
-            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(context);
+            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
+                    requireContext(), R.style.Widget_App_CustomAlertDialog);
             alert.setTitle(getString(R.string.trip_delete_confirmation_title));
             alert.setMessage(getString(R.string.trip_delete_confirmation));
             alert.setPositiveButton(getString(R.string.trip_delete_confirmation_positive),

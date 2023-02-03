@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -169,14 +170,20 @@ public class TripFragment extends Fragment implements MenuProvider {
         FloatingActionButton fab = view.findViewById(R.id.trip_fab);
 
         fab.setOnClickListener(v -> {
-            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(requireContext());
+            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
+                    requireContext(), R.style.Widget_App_CustomAlertDialog);
             EditText input = new EditText(requireContext());
             input.setInputType(InputType.TYPE_CLASS_TEXT);
-            input.setHint(R.string.activity_new_title_hint);
+            FrameLayout container = new FrameLayout(requireContext());
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(50, 0, 50, 0);
+            input.setLayoutParams(params);
+            container.addView(input);
 
             alert.setTitle(getString(R.string.activity_new_title));
             alert.setMessage(getString(R.string.activity_new_title_descr));
-            alert.setView(input);
+            alert.setView(container);
             alert.setPositiveButton(getString(R.string.activity_new_confirmation_positive),
                     (dialog, which) -> {
                         String title = input.getText().toString().trim();

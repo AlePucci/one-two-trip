@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,21 +43,21 @@ import java.util.UUID;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.ParticipantRecyclerViewAdapter;
-import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.data.database.model.holder.PersonListHolder;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.Constants;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
-import it.unimib.sal.one_two_trip.util.geocodingUtility.GeocodingUtility;
-import it.unimib.sal.one_two_trip.util.geocodingUtility.GeocodingUtilityCallback;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 import it.unimib.sal.one_two_trip.util.Utility;
+import it.unimib.sal.one_two_trip.util.geocodingUtility.GeocodingUtility;
+import it.unimib.sal.one_two_trip.util.geocodingUtility.GeocodingUtilityCallback;
 
 /**
  * Fragment that enables the user to create a new activity.
@@ -159,6 +161,7 @@ public class ActivityNewFragment extends Fragment {
         activity_title.setText(title);
 
         TextInputLayout where1 = view.findViewById(R.id.activity_new_where1_edit);
+        EditText where1Edit = view.findViewById(R.id.activity_new_where_edittext1);
         MaterialButton when1 = view.findViewById(R.id.activity_new_when1_edit);
         TextInputLayout descr = view.findViewById(R.id.activity_new_descr_textlayout);
         MaterialSwitch moving = view.findViewById(R.id.activity_new_moving);
@@ -171,11 +174,15 @@ public class ActivityNewFragment extends Fragment {
 
         moving.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
+                //MOVING
+                where1Edit.setImeOptions(EditorInfo.IME_ACTION_NEXT);
                 where2.setVisibility(View.VISIBLE);
                 when2.setVisibility(View.VISIBLE);
                 whereArrow.setVisibility(View.VISIBLE);
                 whenArrow.setVisibility(View.VISIBLE);
             } else {
+                //STATIC
+                where1Edit.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 where2.setVisibility(View.GONE);
                 when2.setVisibility(View.GONE);
                 whereArrow.setVisibility(View.GONE);
@@ -185,6 +192,14 @@ public class ActivityNewFragment extends Fragment {
 
         when1.setOnClickListener(view12 -> {
             final Calendar c = Calendar.getInstance();
+
+            if (when1.getText() != null && !when1.getText().toString().isEmpty()) {
+                Date date1 = df.parse(when1.getText().toString(), new ParsePosition(0));
+
+                if (date1 != null) {
+                    c.setTime(date1);
+                }
+            }
 
             new DatePickerDialog(requireContext(), (datePicker, i, i1, i2) ->
                     new TimePickerDialog(requireContext(), (timePicker, j, j1) -> {
@@ -197,6 +212,14 @@ public class ActivityNewFragment extends Fragment {
 
         when2.setOnClickListener(view12 -> {
             final Calendar c = Calendar.getInstance();
+
+            if (when2.getText() != null && !when2.getText().toString().isEmpty()) {
+                Date date2 = df.parse(when2.getText().toString(), new ParsePosition(0));
+
+                if (date2 != null) {
+                    c.setTime(date2);
+                }
+            }
 
             new DatePickerDialog(requireContext(), (datePicker, i, i1, i2) ->
                     new TimePickerDialog(requireContext(), (timePicker, j, j1) -> {

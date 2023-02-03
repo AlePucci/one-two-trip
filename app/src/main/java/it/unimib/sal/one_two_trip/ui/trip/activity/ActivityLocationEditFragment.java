@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -87,7 +89,9 @@ public class ActivityLocationEditFragment extends Fragment {
         String activityId = parentFragment.getActivityId();
 
         TextInputLayout loc1 = view.findViewById(R.id.activity_where1_edit);
+        EditText loc1text = view.findViewById(R.id.activity_where_edittext1);
         TextInputLayout loc2 = view.findViewById(R.id.activity_where2_edit);
+        EditText loc2text = view.findViewById(R.id.activity_where_edittext2);
         MaterialButton confirmButton = view.findViewById(R.id.activity_where_confirm);
         ImageView arrow = view.findViewById(R.id.activity_where_arrow_edit);
 
@@ -221,13 +225,20 @@ public class ActivityLocationEditFragment extends Fragment {
 
                         if (this.activity == null) return;
 
-                        loc1.setHint(this.activity.getLocation());
+                        String location1 = this.activity.getLocation();
+                        loc1.setHint(location1);
+                        loc1text.setText(location1);
 
                         if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
-                            loc2.setHint(this.activity.getEnd_location());
+                            String location2 = this.activity.getEnd_location();
+                            loc2.setHint(location2);
+                            loc2text.setText(location2);
+                            loc1text.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+
                             loc2.setVisibility(View.VISIBLE);
                             arrow.setVisibility(View.VISIBLE);
                         } else {
+                            loc1text.setImeOptions(EditorInfo.IME_ACTION_DONE);
                             loc2.setVisibility(View.GONE);
                             arrow.setVisibility(View.GONE);
                         }

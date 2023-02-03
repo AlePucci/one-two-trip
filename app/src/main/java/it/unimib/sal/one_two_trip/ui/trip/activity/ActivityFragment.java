@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,10 +34,10 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -168,15 +169,22 @@ public class ActivityFragment extends Fragment implements MenuProvider {
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         Context context = requireContext();
         if (menuItem.getItemId() == R.id.trip_menu_rename) {
-            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(context);
-            String oldTitle = this.activity.getTitle();
-            EditText input = new EditText(context);
+            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
+                    requireContext(), R.style.Widget_App_CustomAlertDialog);
+            EditText input = new EditText(requireContext());
             input.setInputType(InputType.TYPE_CLASS_TEXT);
+            FrameLayout container = new FrameLayout(requireContext());
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(50, 0, 50, 0);
+            input.setLayoutParams(params);
+            container.addView(input);
+            String oldTitle = this.activity.getTitle();
             input.setHint(oldTitle);
 
             alert.setTitle(getString(R.string.activity_title_change_title));
             alert.setMessage(getString(R.string.activity_title_change));
-            alert.setView(input);
+            alert.setView(container);
             alert.setPositiveButton(getString(R.string.activity_title_change_positive),
                     (dialog, which) -> {
                         if (input.getText() == null) return;
@@ -192,7 +200,8 @@ public class ActivityFragment extends Fragment implements MenuProvider {
 
             return true;
         } else if (menuItem.getItemId() == R.id.trip_menu_delete) {
-            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(context);
+            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
+                    requireContext(), R.style.Widget_App_CustomAlertDialog);
             alert.setTitle(getString(R.string.activity_delete_confirmation_title));
             alert.setMessage(getString(R.string.activity_delete_confirmation));
             alert.setPositiveButton(getString(R.string.activity_delete_confirmation_positive),

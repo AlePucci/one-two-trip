@@ -5,7 +5,9 @@ import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,8 +29,8 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.UUID;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 
 /**
@@ -125,14 +127,21 @@ public class HomeActivity extends AppCompatActivity {
         TripsViewModel finalViewModel = viewModel;
         fab.setOnClickListener(view -> {
             if (finalViewModel != null) {
-                androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(this);
+                androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
+                        this, R.style.Widget_App_CustomAlertDialog);
                 EditText input = new EditText(this);
+                FrameLayout container = new FrameLayout(this);
+                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.setMargins(50, 0, 50, 0);
+                container.addView(input);
+                input.setLayoutParams(params);
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
                 input.setHint(R.string.trip_new_hint);
 
                 alert.setTitle(getString(R.string.trip_new_title));
                 alert.setMessage(getString(R.string.trip_new_descr));
-                alert.setView(input);
+                alert.setView(container);
                 alert.setPositiveButton(getString(R.string.trip_new_positive),
                         (dialog, which) -> {
                             String title = input.getText().toString().trim();
