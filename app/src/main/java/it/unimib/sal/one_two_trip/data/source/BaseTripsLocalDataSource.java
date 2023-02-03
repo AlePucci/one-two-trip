@@ -4,6 +4,9 @@ import java.util.List;
 
 import it.unimib.sal.one_two_trip.model.Trip;
 
+/**
+ * Base class to get Trips from a local source.
+ */
 public abstract class BaseTripsLocalDataSource {
 
     protected TripCallback tripCallback;

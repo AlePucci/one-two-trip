@@ -8,7 +8,6 @@ import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_
 import static it.unimib.sal.one_two_trip.util.Constants.TRIP_LOGO_NAME;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -52,8 +51,8 @@ import java.util.List;
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.SettingsParticipantRecyclerViewAdapter;
 import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.data.storage.RemoteStorage;
-import it.unimib.sal.one_two_trip.data.storage.RemoteStorageCallback;
+import it.unimib.sal.one_two_trip.data.source.storage.RemoteStorage;
+import it.unimib.sal.one_two_trip.data.source.storage.RemoteStorageCallback;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
@@ -64,9 +63,8 @@ import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 import jp.wasabeef.blurry.Blurry;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link TripSettingsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment that shows the settings of a trip, such as the participants, the activities and the
+ * description. Here the user can also change the trip logo.
  */
 public class TripSettingsFragment extends Fragment implements RemoteStorageCallback, MenuProvider {
 
@@ -75,23 +73,13 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
     private RemoteStorage remoteStorage;
     private String imagePath;
     private ShapeableImageView tripLogo;
-    private long tripId;
+    private String tripId;
     private boolean isUploading = false;
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
     private ProgressBar progressBar;
 
     public TripSettingsFragment() {
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment TripSettingsFragment.
-     */
-    public static TripSettingsFragment newInstance() {
-        return new TripSettingsFragment();
     }
 
     @Override
@@ -116,7 +104,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_trip_settings, container, false);
     }
@@ -139,7 +127,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                 Lifecycle.State.RESUMED);
 
         if (getArguments() != null) {
-            this.tripId = getArguments().getLong(SELECTED_TRIP_ID);
+            this.tripId = getArguments().getString(SELECTED_TRIP_ID);
         }
 
         //TODO FIX USER ID
@@ -182,7 +170,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                 "Add participant", Snackbar.LENGTH_SHORT).show());
 
         descriptionCardview.setOnClickListener(v -> {
-            AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
+            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(requireContext());
             EditText input = new EditText(requireContext());
             String oldDescription = this.trip.getDescription();
             input.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -194,9 +182,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                     (dialog, which) -> {
                         if (input.getText() == null) return;
 
-                        String descriptionMessage = input.getText().toString();
-                        if (!descriptionMessage.isEmpty()
-                                && !descriptionMessage.equals(oldDescription)) {
+                        String descriptionMessage = input.getText().toString().trim();
+                        if (!descriptionMessage.equals(oldDescription)) {
                             this.trip.setDescription(descriptionMessage);
                             this.viewModel.updateTrip(this.trip);
                         }
@@ -228,7 +215,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
 
                         for (Trip mTrip : trips) {
-                            if (mTrip.getId() == tripId) {
+                            if (mTrip.getId().equals(tripId)) {
                                 this.trip = mTrip;
                                 break;
                             }
@@ -240,19 +227,29 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
 
                         if (this.trip.getParticipant() != null &&
                                 this.trip.getParticipant().getPersonList() != null) {
-                            participants.setText(String.format(getString(R.string.trip_participants),
-                                    this.trip.getParticipant().getPersonList().size()));
+                            int size = this.trip.getParticipant().getPersonList().size();
+                            if (size != 1) {
+                                participants.setText(String.format(getString(R.string.trip_participants_plural),
+                                        size));
+                            } else {
+                                participants.setText(String.format(getString(R.string.trip_participants_singular)));
+                            }
                         } else {
-                            participants.setText(String.format(getString(R.string.trip_participants),
+                            participants.setText(String.format(getString(R.string.trip_participants_plural),
                                     0));
                         }
 
                         if (this.trip.getActivity() != null
                                 && this.trip.getActivity().getActivityList() != null) {
-                            activities.setText(String.format(getString(R.string.trip_activities),
-                                    this.trip.getActivity().getActivityList().size()));
+                            int size = this.trip.getActivity().getActivityList().size();
+                            if (size != 1) {
+                                activities.setText(String.format(getString(R.string.trip_activities_plural),
+                                        size));
+                            } else {
+                                activities.setText(String.format(getString(R.string.trip_activities_singular)));
+                            }
                         } else {
-                            activities.setText(String.format(getString(R.string.trip_activities),
+                            activities.setText(String.format(getString(R.string.trip_activities_plural),
                                     0));
                         }
 
@@ -385,7 +382,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         Context context = requireContext();
         if (menuItem.getItemId() == R.id.trip_menu_rename) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(context);
             String oldTitle = this.trip.getTitle();
             EditText input = new EditText(context);
             input.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -407,7 +404,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
 
             return true;
         } else if (menuItem.getItemId() == R.id.trip_menu_delete) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(context);
             alert.setTitle(getString(R.string.trip_delete_confirmation_title));
             alert.setMessage(getString(R.string.trip_delete_confirmation));
             alert.setPositiveButton(getString(R.string.trip_delete_confirmation_positive),

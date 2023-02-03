@@ -1,16 +1,10 @@
 package it.unimib.sal.one_two_trip.ui.main;
 
-import static it.unimib.sal.one_two_trip.util.Constants.ACTIVITY_TITLE;
-import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
-
-import android.app.AlertDialog;
-import android.app.Application;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -20,7 +14,6 @@ import androidx.core.view.MenuProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -31,11 +24,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.UUID;
+
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
-import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 /**
  * The main activity of the app that a user sees after logging in.
@@ -130,8 +124,8 @@ public class HomeActivity extends AppCompatActivity {
 
         TripsViewModel finalViewModel = viewModel;
         fab.setOnClickListener(view -> {
-            if(finalViewModel != null) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            if (finalViewModel != null) {
+                androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(this);
                 EditText input = new EditText(this);
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
                 input.setHint(R.string.trip_new_hint);
@@ -144,7 +138,7 @@ public class HomeActivity extends AppCompatActivity {
                             String title = input.getText().toString().trim();
                             if (!title.isEmpty()) {
                                 Trip trip = new Trip();
-                                trip.setId(System.currentTimeMillis());
+                                trip.setId(UUID.randomUUID().toString());
                                 trip.setTitle(title);
                                 trip.setTripOwner("1");
                                 //TODO: set trip owner & add them to the trip

@@ -5,6 +5,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ACTIVITY;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_CHANNEL_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_DELETED;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ENTITY_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_IMPORTANCE;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_TIME;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_TRIP;
@@ -24,18 +25,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import java.util.Collections;
 import java.util.Set;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.ui.trip.TripActivity;
 
+/**
+ * Utility class called when an alarm is triggered. It shows a notification to the user.
+ */
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
-    public void onReceive(Context context, Intent incomingIntent) {
+    public void onReceive(@NonNull Context context, Intent incomingIntent) {
         SharedPreferencesUtil sharedPreferencesUtil =
                 new SharedPreferencesUtil((Application) context.getApplicationContext());
         boolean isNotificationEnabled = Boolean.parseBoolean(sharedPreferencesUtil
@@ -54,18 +60,37 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
 
         String type = incomingIntent.getStringExtra(NOTIFICATION_TYPE);
-        long tripId = Long.parseLong(incomingIntent.getStringExtra(SELECTED_TRIP_ID));
+        String tripId = incomingIntent.getStringExtra(SELECTED_TRIP_ID);
         String name = incomingIntent.getStringExtra(NOTIFICATION_ENTITY_NAME);
         int notificationTime = Integer.parseInt(incomingIntent.getStringExtra(NOTIFICATION_TIME));
 
-        long activityId = 0;
+        String activityId = "";
 
         if (type.equalsIgnoreCase(NOTIFICATION_ACTIVITY)) {
-            activityId = Long.parseLong(incomingIntent.getStringExtra(SELECTED_ACTIVITY_ID));
+            activityId = incomingIntent.getStringExtra(SELECTED_ACTIVITY_ID);
         }
 
-        int notificationId = type.equalsIgnoreCase(NOTIFICATION_ACTIVITY)
-                ? (int) activityId : (int) tripId;
+        int notificationId = (int) System.currentTimeMillis();
+
+        if (type.equalsIgnoreCase(NOTIFICATION_ACTIVITY)) {
+            if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                    NOTIFICATION_ID + activityId) != null) {
+                notificationId = Integer.parseInt(sharedPreferencesUtil.readStringData(
+                        SHARED_PREFERENCES_FILE_NAME, NOTIFICATION_ID + activityId));
+            } else {
+                sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME,
+                        NOTIFICATION_ID + activityId, String.valueOf(notificationId));
+            }
+        } else {
+            if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                    NOTIFICATION_ID + tripId) != null) {
+                notificationId = Integer.parseInt(sharedPreferencesUtil.readStringData(
+                        SHARED_PREFERENCES_FILE_NAME, NOTIFICATION_ID + tripId));
+            } else {
+                sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME,
+                        NOTIFICATION_ID + tripId, String.valueOf(notificationId));
+            }
+        }
 
         String notificationTimeString;
         switch (notificationTime) {
@@ -93,11 +118,21 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         Set<String> notificationsSet;
         if (type.equalsIgnoreCase(NOTIFICATION_TRIP)) {
-            notificationsSet = sharedPreferencesUtil.readStringSetData(
-                    SHARED_PREFERENCES_FILE_NAME, SHARED_PREFERENCES_TRIP_NOTIFICATIONS);
+            if (sharedPreferencesUtil.readStringSetData(SHARED_PREFERENCES_FILE_NAME,
+                    SHARED_PREFERENCES_TRIP_NOTIFICATIONS) != null) {
+                notificationsSet = sharedPreferencesUtil.readStringSetData(
+                        SHARED_PREFERENCES_FILE_NAME, SHARED_PREFERENCES_TRIP_NOTIFICATIONS);
+            } else {
+                notificationsSet = Collections.emptySet();
+            }
         } else {
-            notificationsSet = sharedPreferencesUtil.readStringSetData(
-                    SHARED_PREFERENCES_FILE_NAME, SHARED_PREFERENCES_ACTIVITY_NOTIFICATIONS);
+            if (sharedPreferencesUtil.readStringSetData(SHARED_PREFERENCES_FILE_NAME,
+                    SHARED_PREFERENCES_ACTIVITY_NOTIFICATIONS) != null) {
+                notificationsSet = sharedPreferencesUtil.readStringSetData(
+                        SHARED_PREFERENCES_FILE_NAME, SHARED_PREFERENCES_ACTIVITY_NOTIFICATIONS);
+            } else {
+                notificationsSet = Collections.emptySet();
+            }
         }
         String[] notificationsAr = new String[notificationsSet.size()];
         notificationsAr = notificationsSet.toArray(notificationsAr);

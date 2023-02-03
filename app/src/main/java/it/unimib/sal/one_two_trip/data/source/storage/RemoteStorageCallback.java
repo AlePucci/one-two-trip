@@ -1,5 +1,10 @@
-package it.unimib.sal.one_two_trip.data.storage;
+package it.unimib.sal.one_two_trip.data.source.storage;
 
+import it.unimib.sal.one_two_trip.ui.trip.TripSettingsFragment;
+
+/**
+ * Interface to send data from remote storage to {@link TripSettingsFragment} class.
+ */
 public interface RemoteStorageCallback {
 
     void onUploadSuccess(long lastUpdate);

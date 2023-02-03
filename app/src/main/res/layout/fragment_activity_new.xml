@@ -262,6 +262,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_baseline_group_24"
                     app:layout_constraintStart_toStartOf="parent"
+                    android:contentDescription="@string/activity_edit_button"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView

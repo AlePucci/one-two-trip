@@ -48,13 +48,20 @@
     <string name="trip_description_title">Change trip description</string>
     <string name="trip_description_positive">CHANGE</string>
     <string name="trip_description_negative">@android:string/cancel</string>
+    <string name="trip_new_title">Create new trip</string>
+    <string name="trip_new_descr">New trip name:</string>
+    <string name="trip_new_hint">Name</string>
+    <string name="trip_new_positive">CONFIRM</string>
+    <string name="trip_new_negative">@android:string/cancel</string>
 
     <!-- trip settings -->
     <string name="trip_logo_upload_failure">Something went wrong during uploading! Please try again</string>
     <string name="trip_logo_download_failure">Something went wrong during downloading! Please try again</string>
     <string name="trip_logo_pick_photo">Pick a photo for your trip</string>
-    <string name="trip_participants">%1$d participants</string>
-    <string name="trip_activities">%1$d activities added</string>
+    <string name="trip_participants_plural">%1$d participants</string>
+    <string name="trip_participants_singular">1 participant</string>
+    <string name="trip_activities_plural">%1$d activities added</string>
+    <string name="trip_activities_singular">1 activity added</string>
     <string name="trip_add_description">Add description…</string>
     <string name="trip_participants_list">Participants:</string>
     <string name="add_participants">Add participants</string>
@@ -100,6 +107,8 @@
     <string name="activity_locate_button">Locate on the map</string>
     <string name="activity_navigate_button">Navigate</string>
     <string name="activity_add_to_calendar_button">Add to calendar</string>
+    <string name="activity_departure">departure</string>
+    <string name="activity_arrival">arrival</string>
 
     <!-- about -->
     <string name="made_by">Made with 💛 by:</string>
@@ -166,11 +175,7 @@
     <string name="error_retrieving_trips">Error while retrieving trips.</string>
     <string name="no_internet_error">Error! You have no connection at the moment. Please retry later.</string>
     <string name="no_shareable_activities">There are no activities to share here!</string>
+    <string name="no_shareable_activities_2">There are no static activities to share here!</string>
     <string name="share_trip_error">Something went wrong! Please try again</string>
-    <string name="trip_new_title">Create new trip</string>
-    <string name="trip_new_descr">New trip name:</string>
-    <string name="trip_new_hint">Name</string>
-    <string name="trip_new_positive">Confirm</string>
-    <string name="trip_new_negative">Cancel</string>
     <!-- end -->
 </resources>

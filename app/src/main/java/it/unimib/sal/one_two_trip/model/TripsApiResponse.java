@@ -4,6 +4,10 @@ import androidx.annotation.NonNull;
 
 import java.util.List;
 
+/**
+ * This class represents the response of the API call to get the list of trips from
+ * our Firebase Realtime Database.
+ */
 public class TripsApiResponse {
 
     private String status;

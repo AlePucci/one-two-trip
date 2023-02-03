@@ -10,7 +10,6 @@ import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -33,7 +32,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
@@ -77,6 +75,9 @@ import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 import it.unimib.sal.one_two_trip.util.Utility;
 
+/**
+ * Fragment that shows the details of a trip in terms of list of activities and an interactive map.
+ */
 public class TripFragment extends Fragment implements MenuProvider {
 
     private final String[] PERMISSIONS = {
@@ -119,7 +120,8 @@ public class TripFragment extends Fragment implements MenuProvider {
         this.activityList = new ArrayList<>();
 
 
-        multiplePermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),
+        multiplePermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestMultiplePermissions(),
                 isGranted -> {
                     //TODO: rewrite
                 });
@@ -128,7 +130,7 @@ public class TripFragment extends Fragment implements MenuProvider {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_trip, container, false);
     }
@@ -142,10 +144,10 @@ public class TripFragment extends Fragment implements MenuProvider {
             return;
         }
 
-        long tripId = getArguments().getLong(SELECTED_TRIP_ID);
+        String tripId = getArguments().getString(SELECTED_TRIP_ID);
         boolean moveToActivity = getArguments().getBoolean(MOVE_TO_ACTIVITY);
         getArguments().remove(MOVE_TO_ACTIVITY);
-        long activityId = getArguments().getLong(SELECTED_ACTIVITY_ID);
+        String activityId = getArguments().getString(SELECTED_ACTIVITY_ID);
 
         FragmentActivity activity = requireActivity();
         MaterialToolbar toolbar = activity.findViewById(R.id.trip_toolbar);
@@ -169,7 +171,7 @@ public class TripFragment extends Fragment implements MenuProvider {
         FloatingActionButton fab = view.findViewById(R.id.trip_fab);
 
         fab.setOnClickListener(v -> {
-            AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
+            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(requireContext());
             EditText input = new EditText(requireContext());
             input.setInputType(InputType.TYPE_CLASS_TEXT);
             input.setHint(R.string.activity_new_title_hint);
@@ -182,7 +184,7 @@ public class TripFragment extends Fragment implements MenuProvider {
                         String title = input.getText().toString().trim();
                         if (!title.isEmpty()) {
                             Bundle bundle = new Bundle();
-                            bundle.putLong(SELECTED_TRIP_ID, tripId);
+                            bundle.putString(SELECTED_TRIP_ID, tripId);
                             bundle.putString(ACTIVITY_TITLE, title);
                             Navigation.findNavController(v).navigate(R.id.action_tripFragment_to_activityNewFragment, bundle);
                         }
@@ -201,8 +203,8 @@ public class TripFragment extends Fragment implements MenuProvider {
             getArguments().remove(MOVE_TO_ACTIVITY);
 
             Bundle bundle = new Bundle();
-            bundle.putLong(SELECTED_TRIP_ID, tripId);
-            bundle.putLong(SELECTED_ACTIVITY_ID, activityId);
+            bundle.putString(SELECTED_TRIP_ID, tripId);
+            bundle.putString(SELECTED_ACTIVITY_ID, activityId);
             Navigation.findNavController(view).navigate(R.id.action_tripFragment_to_activityFragment,
                     bundle);
         }
@@ -215,10 +217,10 @@ public class TripFragment extends Fragment implements MenuProvider {
                 new TripRecyclerViewAdapter.OnItemClickListener() {
                     @Override
                     public void onActivityClick(int position) {
-                        long activityId = activityList.get(position).getId();
+                        String activityId = activityList.get(position).getId();
                         Bundle bundle = new Bundle();
-                        bundle.putLong(SELECTED_TRIP_ID, tripId);
-                        bundle.putLong(SELECTED_ACTIVITY_ID, activityId);
+                        bundle.putString(SELECTED_TRIP_ID, tripId);
+                        bundle.putString(SELECTED_ACTIVITY_ID, activityId);
                         Navigation.findNavController(view).navigate(
                                 R.id.action_tripFragment_to_activityFragment, bundle);
                     }
@@ -249,7 +251,7 @@ public class TripFragment extends Fragment implements MenuProvider {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
 
                         for (Trip trip : trips) {
-                            if (trip.getId() == tripId) {
+                            if (trip.getId().equals(tripId)) {
                                 this.trip = trip;
                                 break;
                             }
@@ -323,7 +325,11 @@ public class TripFragment extends Fragment implements MenuProvider {
             GeoPoint point = new GeoPoint(a.getLatitude(), a.getLongitude());
             points.add(point);
 
-            marker.setTitle(a.getTitle());
+            if (a.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
+                marker.setTitle(a.getTitle() + " (" + getString(R.string.activity_departure) + ")");
+            } else {
+                marker.setTitle(a.getTitle());
+            }
             marker.setSubDescription(a.getDescription());
             marker.setPosition(point);
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
@@ -334,7 +340,7 @@ public class TripFragment extends Fragment implements MenuProvider {
                 GeoPoint endPoint = new GeoPoint(a.getEndLatitude(), a.getEndLongitude());
                 points.add(endPoint);
 
-                endMarker.setTitle(a.getTitle());
+                endMarker.setTitle(a.getTitle() + " (" + getString(R.string.activity_arrival) + ")");
                 endMarker.setSubDescription(a.getDescription());
                 endMarker.setPosition(endPoint);
                 endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
@@ -386,7 +392,7 @@ public class TripFragment extends Fragment implements MenuProvider {
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         Context context = requireContext();
         if (menuItem.getItemId() == R.id.trip_menu_rename) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(context);
             String oldTitle = this.trip.getTitle();
             EditText input = new EditText(context);
             input.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -408,7 +414,7 @@ public class TripFragment extends Fragment implements MenuProvider {
 
             return true;
         } else if (menuItem.getItemId() == R.id.trip_menu_delete) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(context);
             alert.setTitle(getString(R.string.trip_delete_confirmation_title));
             alert.setMessage(getString(R.string.trip_delete_confirmation));
             alert.setPositiveButton(getString(R.string.trip_delete_confirmation_positive),
@@ -427,7 +433,7 @@ public class TripFragment extends Fragment implements MenuProvider {
             return true;
         } else if (menuItem.getItemId() == R.id.trip_menu_settings) {
             Bundle bundle = new Bundle();
-            bundle.putLong(SELECTED_TRIP_ID, this.trip.getId());
+            bundle.putString(SELECTED_TRIP_ID, this.trip.getId());
             Navigation.findNavController(requireView())
                     .navigate(R.id.action_tripFragment_to_tripSettingsFragment, bundle);
         }

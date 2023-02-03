@@ -1,6 +1,8 @@
 package it.unimib.sal.one_two_trip.util;
 
-
+/**
+ * Base class for the geocoding utilities.
+ */
 public abstract class BaseGeocodingUtility {
 
     protected GeocodingUtilityCallback geocodingUtilityCallback;

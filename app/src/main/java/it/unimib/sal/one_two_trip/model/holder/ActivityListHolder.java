@@ -9,7 +9,7 @@ import java.util.Objects;
 import it.unimib.sal.one_two_trip.model.Activity;
 
 /**
- * This class is used to store the list of activities in the database.
+ * Class used to store the list of activities in Room database.
  */
 public class ActivityListHolder {
     

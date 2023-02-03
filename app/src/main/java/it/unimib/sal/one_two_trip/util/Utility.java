@@ -60,7 +60,7 @@ public class Utility {
     public static String getRandomTripLocation(Trip trip, List<Trip> tripList,
                                                Application application, View view) {
         // PRELIMINARY CHECKS
-        if (tripList == null) return null;
+        if (tripList == null || tripList.isEmpty()) return null;
 
         int tripPosition = -1;
 
@@ -84,6 +84,12 @@ public class Utility {
 
         tmp.removeIf(activity -> activity == null
                 || activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME));
+
+        if (tmp.isEmpty()) {
+            Snackbar.make(view, application.getString(R.string.no_shareable_activities_2),
+                    Snackbar.LENGTH_SHORT).show();
+            return null;
+        }
 
         // RANDOM ACTIVITY TO SHARE
         int r;
@@ -153,7 +159,7 @@ public class Utility {
      * @param application the application context
      */
     public static void scheduleNotifications(it.unimib.sal.one_two_trip.model.Activity activity,
-                                             Application application, long tripId) {
+                                             Application application, String tripId) {
         scheduleActivityNotifications(activity, application, tripId, false);
     }
 
@@ -178,7 +184,7 @@ public class Utility {
      * @param tripId      the id of the trip the activity belongs to
      */
     public static void deleteNotifications(it.unimib.sal.one_two_trip.model.Activity activity,
-                                           Application application, long tripId) {
+                                           Application application, String tripId) {
         scheduleActivityNotifications(activity, application, tripId, true);
     }
 
@@ -240,7 +246,7 @@ public class Utility {
         }
 
 
-        long tripId = trip.getId();
+        String tripId = trip.getId();
 
         for (int i = 0; i < 3; i++) {
             int[] time = {Integer.parseInt(TWO_DAYS), Integer.parseInt(ONE_DAY),
@@ -276,13 +282,13 @@ public class Utility {
             intent.setData(Uri.parse("alarms://trip:" + tripId + ":" + i));
 
             intent.putExtra(NOTIFICATION_TYPE, NOTIFICATION_TRIP);
-            intent.putExtra(SELECTED_TRIP_ID, String.valueOf(tripId));
+            intent.putExtra(SELECTED_TRIP_ID, tripId);
             intent.putExtra(NOTIFICATION_ENTITY_NAME, trip.getTitle());
             intent.putExtra(NOTIFICATION_TIME, String.valueOf(time[i]));
             intent.putExtra(NOTIFICATION_DELETED, deleted);
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(application,
-                    (int) tripId * -1, intent,
+                    (int) System.currentTimeMillis(), intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
             AlarmManager alarmManager = (AlarmManager) application.getSystemService(ALARM_SERVICE);
@@ -301,7 +307,7 @@ public class Utility {
      * @param deleted     true if the activity is deleted (used to cancel the notifications), false otherwise
      */
     private static void scheduleActivityNotifications(it.unimib.sal.one_two_trip.model.Activity activity,
-                                                      Application application, long tripId,
+                                                      Application application, String tripId,
                                                       boolean deleted) {
         if (activity == null) {
             return;
@@ -311,7 +317,7 @@ public class Utility {
             return;
         }
 
-        long activityId = activity.getId();
+        String activityId = activity.getId();
 
         for (int i = 0; i < 3; i++) {
             int[] time = {Integer.parseInt(TWO_HOURS), Integer.parseInt(ONE_HOUR),
@@ -334,13 +340,13 @@ public class Utility {
                     + activityId + ":" + i));
             intent.putExtra(NOTIFICATION_TYPE, NOTIFICATION_ACTIVITY);
             intent.putExtra(SELECTED_TRIP_ID, String.valueOf(tripId));
-            intent.putExtra(SELECTED_ACTIVITY_ID, String.valueOf(activityId));
+            intent.putExtra(SELECTED_ACTIVITY_ID, activityId);
             intent.putExtra(NOTIFICATION_ENTITY_NAME, activity.getTitle());
             intent.putExtra(NOTIFICATION_TIME, String.valueOf(time[i]));
             intent.putExtra(NOTIFICATION_DELETED, deleted);
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(application,
-                    (int) activityId, intent,
+                    (int) System.currentTimeMillis(), intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
             AlarmManager alarmManager = (AlarmManager) application.getSystemService(ALARM_SERVICE);

@@ -15,6 +15,9 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import it.unimib.sal.one_two_trip.R;
 
+/**
+ * Application class.
+ */
 public class App extends Application {
 
     public App() {

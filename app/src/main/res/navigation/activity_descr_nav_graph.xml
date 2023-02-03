@@ -15,12 +15,6 @@
             app:destination="@id/activityDescriptionEditFragment"
             app:popUpTo="@id/activity_descr_nav_graph"
             app:popUpToInclusive="true" />
-        <argument
-            android:name="activityPos"
-            app:argType="integer" />
-        <argument
-            android:name="tripId"
-            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/activityDescriptionEditFragment"
@@ -32,11 +26,5 @@
             app:destination="@id/activityDescriptionFragment"
             app:popUpTo="@id/activity_descr_nav_graph"
             app:popUpToInclusive="true" />
-        <argument
-            android:name="activityPos"
-            app:argType="integer" />
-        <argument
-            android:name="tripId"
-            app:argType="long" />
     </fragment>
 </navigation>

@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.ParticipantRecyclerViewAdapter;
@@ -55,7 +56,9 @@ import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 import it.unimib.sal.one_two_trip.util.Utility;
 
-
+/**
+ * Fragment that enables the user to create a new activity.
+ */
 public class ActivityNewFragment extends Fragment {
 
     private Application application;
@@ -92,7 +95,7 @@ public class ActivityNewFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_activity_new, container, false);
     }
@@ -240,14 +243,14 @@ public class ActivityNewFragment extends Fragment {
             String description = descr.getEditText().getText().toString().trim();
 
             activity = new Activity();
-            activity.setId(System.currentTimeMillis());
+            activity.setId(UUID.randomUUID().toString());
             activity.setTitle(title);
             activity.setLocation(location);
             activity.setStart_date(date);
             activity.setDescription(description);
             activity.setParticipant(new PersonListHolder(personList));
 
-            if(personList.size() == trip.getParticipant().getPersonList().size()) {
+            if (personList.size() == trip.getParticipant().getPersonList().size()) {
                 activity.setEveryoneParticipate(true);
             }
 
@@ -305,16 +308,16 @@ public class ActivityNewFragment extends Fragment {
 
         this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
-                if(getArguments() == null) {
+                if (getArguments() == null) {
                     return;
                 }
 
 
-                long tripId = getArguments().getLong(SELECTED_TRIP_ID);
+                String tripId = getArguments().getString(SELECTED_TRIP_ID);
                 List<Trip> trips = ((Result.Success) result).getData().getTripList();
 
                 for (Trip trip : trips) {
-                    if (trip.getId() == tripId) {
+                    if (trip.getId().equals(tripId)) {
                         this.trip = trip;
                         break;
                     }
@@ -344,7 +347,7 @@ public class ActivityNewFragment extends Fragment {
                 participatingRV.setAdapter(participantAdapter);
                 notParticipatingRV.setAdapter(notParticipantAdapter);
 
-            }else {
+            } else {
                 ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                 Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
                         .getMessage()), Snackbar.LENGTH_SHORT).show();
@@ -353,7 +356,10 @@ public class ActivityNewFragment extends Fragment {
 
     }
 
-
+    /**
+     * This method is called when the activity is created in order to update the trip
+     * and schedule the notification for both the activity and the trip.
+     */
     private void onNewActivityCreated() {
         this.viewModel.updateTrip(this.trip);
         Utility.onActivityCreate(this.trip, this.activity, this.application);

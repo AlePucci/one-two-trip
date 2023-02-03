@@ -21,6 +21,10 @@ import it.unimib.sal.one_two_trip.model.Person;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 import it.unimib.sal.one_two_trip.util.Utility;
 
+/**
+ * Custom adapter that extends RecyclerView.Adapter to show an ArrayList of Participants
+ * with a RecyclerView (in the TripFragment/ActivityFragment)
+ */
 public class ParticipantRecyclerViewAdapter
         extends RecyclerView.Adapter<ParticipantRecyclerViewAdapter.ParticipantHolder> {
 
@@ -30,6 +34,7 @@ public class ParticipantRecyclerViewAdapter
 
     public ParticipantRecyclerViewAdapter(List<Person> personList, Application application,
                                           OnItemClickListener onItemClickListener) {
+        super();
         this.personList = personList;
         this.onItemClickListener = onItemClickListener;
         this.application = application;
@@ -44,7 +49,10 @@ public class ParticipantRecyclerViewAdapter
 
     @Override
     public void onBindViewHolder(@NonNull ParticipantHolder holder, int position) {
-        holder.bind(this.personList.get(position));
+        Person person = this.personList.get(position);
+        if (person == null) return;
+
+        holder.bind(person);
     }
 
     @Override
@@ -56,40 +64,49 @@ public class ParticipantRecyclerViewAdapter
         return this.personList.size();
     }
 
+    /**
+     * Interface to associate a click listener with
+     * a RecyclerView item.
+     */
     public interface OnItemClickListener {
         void onClick(int position);
     }
 
+    /**
+     * Custom ViewHolder to bind data to the RecyclerView items (participants).
+     */
     public class ParticipantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView participantName;
         private final TextView participantImage;
         private final ConstraintLayout participantLayout;
+        private final SharedPreferencesUtil sharedPreferencesUtil;
 
         public ParticipantHolder(@NonNull View itemView) {
             super(itemView);
-            participantName = itemView.findViewById(R.id.participant_name);
-            participantImage = itemView.findViewById(R.id.participant_image);
-            participantLayout = itemView.findViewById(R.id.participant_constraint);
+            this.participantName = itemView.findViewById(R.id.participant_name);
+            this.participantImage = itemView.findViewById(R.id.participant_image);
+            this.participantLayout = itemView.findViewById(R.id.participant_constraint);
+            this.sharedPreferencesUtil = new SharedPreferencesUtil(application);
         }
 
-        public void bind(Person person) {
+        public void bind(@NonNull Person person) {
             String fullName = person.getName() + " " + person.getSurname();
-            participantName.setText(fullName);
-            participantImage.setText(fullName.substring(0, 1));
+            this.participantName.setText(fullName);
+            this.participantImage.setText(fullName.substring(0, 1));
 
-            SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
             int color;
-            if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+            if (this.sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
                     USER_COLOR + "_" + person.getId()) != null) {
-                color = Integer.parseInt(sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
-                        USER_COLOR + "_" + person.getId()));
+                color = Integer.parseInt(this.sharedPreferencesUtil.readStringData(
+                        SHARED_PREFERENCES_FILE_NAME, USER_COLOR + "_" + person.getId()));
             } else {
                 color = Utility.getRandomColor();
-                sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME,
+                this.sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME,
                         USER_COLOR + "_" + person.getId(), String.valueOf(color));
             }
-            participantImage.setBackgroundTintList(ColorStateList.valueOf(color));
-            participantLayout.setOnClickListener(this);
+
+            this.participantImage.setBackgroundTintList(ColorStateList.valueOf(color));
+            this.participantLayout.setOnClickListener(this);
         }
 
         @Override

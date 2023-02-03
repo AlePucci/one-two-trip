@@ -100,8 +100,10 @@
     <string name="menu_rename">Rinomina</string>
     <string name="trip_logo_upload_failure">Errore nel caricamento dell\'immagine. Riprova più tardi</string>
     <string name="trip_logo_pick_photo">Seleziona un\'immagine per il viaggio</string>
-    <string name="trip_participants">%1$d partecipanti</string>
-    <string name="trip_activities">%1$d attività aggiunte</string>
+    <string name="trip_participants_plural">%1$d partecipanti</string>
+    <string name="trip_participants_singular">1 partecipante</string>
+    <string name="trip_activities_plural">%1$d attività aggiunte</string>
+    <string name="trip_activities_singular">1 attività aggiunta</string>
     <string name="trip_add_description">Aggiungi descrizione…</string>
     <string name="trip_participants_list">Partecipanti:</string>
     <string name="trip_description_change">Descrizione:</string>
@@ -138,5 +140,8 @@
     <string name="trip_new_negative">Cancella</string>
     <string name="trip_new_descr">Nome:</string>
     <string name="trip_new_title">Crea nuovo viaggio</string>
+    <string name="no_shareable_activities_2">Non ci sono attività statiche da condividere!</string>
+    <string name="activity_departure">partenza</string>
+    <string name="activity_arrival">arrivo</string>
     <!-- end -->
 </resources>

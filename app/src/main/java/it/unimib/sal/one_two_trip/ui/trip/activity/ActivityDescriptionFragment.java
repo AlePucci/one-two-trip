@@ -32,6 +32,9 @@ import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
+/**
+ * Fragment that enables the user to see the description of an activity.
+ */
 public class ActivityDescriptionFragment extends Fragment {
 
     private Application application;
@@ -60,7 +63,8 @@ public class ActivityDescriptionFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_activity_description, container, false);
     }
 
@@ -73,8 +77,8 @@ public class ActivityDescriptionFragment extends Fragment {
         }
 
         ActivityFragment parentFragment = (ActivityFragment) getParentFragment().getParentFragment();
-        long tripId = parentFragment.getTripId();
-        long activityId = parentFragment.getActivityId();
+        String tripId = parentFragment.getTripId();
+        String activityId = parentFragment.getActivityId();
 
         MaterialButton editButton = view.findViewById(R.id.activity_descr_edit);
 
@@ -97,7 +101,7 @@ public class ActivityDescriptionFragment extends Fragment {
 
                         Trip trip = null;
                         for (Trip mTrip : trips) {
-                            if (mTrip.getId() == tripId) {
+                            if (mTrip.getId().equals(tripId)) {
                                 trip = mTrip;
                                 break;
                             }
@@ -111,7 +115,7 @@ public class ActivityDescriptionFragment extends Fragment {
                         Activity activity = null;
 
                         for (Activity mActivity : trip.getActivity().getActivityList()) {
-                            if (mActivity.getId() == activityId) {
+                            if (mActivity.getId().equals(activityId)) {
                                 activity = mActivity;
                                 break;
                             }

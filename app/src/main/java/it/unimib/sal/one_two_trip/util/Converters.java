@@ -13,8 +13,8 @@ import it.unimib.sal.one_two_trip.model.Activity;
 import it.unimib.sal.one_two_trip.model.Person;
 
 /**
- * This class contains the converters to convert the types used in the application
- * to the types supported by Room database.
+ * Utility class containing the converters used to convert the types used in the application
+ * to the types supported by the Room database.
  */
 public class Converters {
 

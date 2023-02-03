@@ -34,6 +34,9 @@ import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
+/**
+ * Fragment that enables the user to see the participants of an activity.
+ */
 public class ActivityParticipantFragment extends Fragment {
 
     private Application application;
@@ -62,7 +65,7 @@ public class ActivityParticipantFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_activity_participant, container, false);
     }
@@ -76,8 +79,8 @@ public class ActivityParticipantFragment extends Fragment {
         }
 
         ActivityFragment parentFragment = (ActivityFragment) getParentFragment().getParentFragment();
-        long tripId = parentFragment.getTripId();
-        long activityId = parentFragment.getActivityId();
+        String tripId = parentFragment.getTripId();
+        String activityId = parentFragment.getActivityId();
 
         RecyclerView recyclerView = view.findViewById(R.id.activity_participant_recycler);
         MaterialButton editButton = view.findViewById(R.id.activity_participant_edit);
@@ -99,7 +102,7 @@ public class ActivityParticipantFragment extends Fragment {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
                         Trip trip = null;
                         for (Trip mTrip : trips) {
-                            if (mTrip.getId() == tripId) {
+                            if (mTrip.getId().equals(tripId)) {
                                 trip = mTrip;
                                 break;
                             }
@@ -113,7 +116,7 @@ public class ActivityParticipantFragment extends Fragment {
                         Activity activity = null;
 
                         for (Activity mActivity : trip.getActivity().getActivityList()) {
-                            if (mActivity.getId() == activityId) {
+                            if (mActivity.getId().equals(activityId)) {
                                 activity = mActivity;
                                 break;
                             }

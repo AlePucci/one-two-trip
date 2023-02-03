@@ -15,12 +15,16 @@ import it.unimib.sal.one_two_trip.data.source.GeocodingRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.PhotoRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.TripsLocalDataSource;
 import it.unimib.sal.one_two_trip.data.source.TripsRemoteDataSource;
-import it.unimib.sal.one_two_trip.data.storage.RemoteStorage;
+import it.unimib.sal.one_two_trip.data.source.storage.RemoteStorage;
 import it.unimib.sal.one_two_trip.service.GeocodingApiService;
 import it.unimib.sal.one_two_trip.service.PictureApiService;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Registry to provide the dependencies for the classes
+ * used in the application.
+ */
 public class ServiceLocator {
 
     private static volatile ServiceLocator INSTANCE = null;
@@ -28,6 +32,11 @@ public class ServiceLocator {
     private ServiceLocator() {
     }
 
+    /**
+     * Returns an instance of ServiceLocator class.
+     *
+     * @return An instance of ServiceLocator.
+     */
     public static ServiceLocator getInstance() {
         if (INSTANCE == null) {
             synchronized (ServiceLocator.class) {
@@ -39,6 +48,12 @@ public class ServiceLocator {
         return INSTANCE;
     }
 
+    /**
+     * Returns an instance of TripsRoomDatabase class to manage Room database.
+     *
+     * @param application application context
+     * @return An instance of TripsRoomDatabase.
+     */
     public TripsRoomDatabase getTripsDAO(Application application) {
         return TripsRoomDatabase.getDatabase(application);
     }

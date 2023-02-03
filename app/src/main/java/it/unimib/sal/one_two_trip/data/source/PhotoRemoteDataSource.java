@@ -15,12 +15,17 @@ import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * Class to get photos URL from a remote source using Retrofit.
+ */
 public class PhotoRemoteDataSource extends BasePhotoRemoteDataSource {
+
     private final Context context;
     private final PictureApiService pictureApiService;
     private final String PHOTOS_KEY;
 
     public PhotoRemoteDataSource(Context context) {
+        super();
         this.context = context;
         this.pictureApiService = ServiceLocator.getInstance().getPictureApiService();
         this.PHOTOS_KEY = BuildConfig.PHOTOS_KEY;

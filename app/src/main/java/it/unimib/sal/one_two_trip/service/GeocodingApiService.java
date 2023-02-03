@@ -11,6 +11,9 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
+/**
+ * Interface for Service to get geocoding data from the Web Service.
+ */
 public interface GeocodingApiService {
 
     @GET(GEOCODING_ENDPOINT)

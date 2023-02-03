@@ -9,14 +9,15 @@ import androidx.room.PrimaryKey;
 import java.util.Objects;
 
 /**
- * This class represents a person/user.
+ * This class represents a person/user of the application.
  */
 @Entity
 public class Person {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "id")
-    private long id;
+    private String id;
 
     @ColumnInfo(name = "name")
     private String name;
@@ -37,10 +38,11 @@ public class Person {
     private String profile_picture;
 
     public Person() {
+        id = "";
     }
 
     @Ignore
-    public Person(long id, String name, String surname, String email_address, String password,
+    public Person(@NonNull String id, String name, String surname, String email_address, String password,
                   String phone_number, String profile_picture) {
         this.id = id;
         this.name = name;
@@ -51,11 +53,12 @@ public class Person {
         this.profile_picture = profile_picture;
     }
 
-    public long getId() {
+    @NonNull
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 

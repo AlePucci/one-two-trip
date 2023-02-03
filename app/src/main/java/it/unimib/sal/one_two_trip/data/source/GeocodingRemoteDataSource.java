@@ -13,12 +13,16 @@ import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * Class to get geocoding data from a remote source using Retrofit.
+ */
 public class GeocodingRemoteDataSource extends BaseGeocodingRemoteDataSource {
 
     private final Context context;
     private final GeocodingApiService geocodingApiService;
 
     public GeocodingRemoteDataSource(Context context) {
+        super();
         this.context = context;
         this.geocodingApiService = ServiceLocator.getInstance().getGeocodingApiService();
     }

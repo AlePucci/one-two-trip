@@ -15,15 +15,17 @@ import java.util.Objects;
 import it.unimib.sal.one_two_trip.model.holder.PersonListHolder;
 
 /**
- * This class represents an activity.
- * {@link #type Type property} tells us if it's a moving activity (like a flight or train ride)
- * or a standard activity (like a visit to a museum).
+ * Class to represent an activity as a part of a trip.
+ * {@link #type Type} property can tell if it's a moving activity (like a flight or train ride)
+ * or a static activity (like a visit to a museum).
  */
 @Entity
 public class Activity {
-    @PrimaryKey(autoGenerate = true)
+
+    @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "id")
-    private long id;
+    private String id;
 
     @ColumnInfo(name = "title")
     private String title;
@@ -47,7 +49,7 @@ public class Activity {
     private PersonListHolder participant;
 
     @ColumnInfo(name = "trip_id")
-    private long trip_id;
+    private String trip_id;
 
     @ColumnInfo(name = "attachments")
     private List<Object> attachment;
@@ -73,11 +75,12 @@ public class Activity {
     @ColumnInfo(name = "endLatitude")
     private double endLatitude;
 
-    @ColumnInfo(name = "endLongitute")
+    @ColumnInfo(name = "endLongitude")
     private double endLongitude;
 
 
     public Activity() {
+        id = "";
         title = "";
         description = "";
         location = "";
@@ -95,8 +98,8 @@ public class Activity {
     }
 
     @Ignore
-    public Activity(long id, String title, String description, String location, String end_location,
-                    long start_date, long end_date, PersonListHolder participant, long trip_id,
+    public Activity(@NonNull String id, String title, String description, String location, String end_location,
+                    long start_date, long end_date, PersonListHolder participant, String trip_id,
                     List<Object> attachment, List<String> link, boolean completed, String type,
                     boolean everyoneParticipate, double latitude, double longitude) {
         this.id = id;
@@ -117,11 +120,12 @@ public class Activity {
         this.longitude = longitude;
     }
 
-    public long getId() {
+    @NonNull
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 
@@ -181,11 +185,11 @@ public class Activity {
         this.participant = participant;
     }
 
-    public long getTrip_id() {
+    public String getTrip_id() {
         return trip_id;
     }
 
-    public void setTrip_id(long trip_id) {
+    public void setTrip_id(String trip_id) {
         this.trip_id = trip_id;
     }
 
@@ -209,12 +213,12 @@ public class Activity {
         return latitude;
     }
 
-    public double getLongitude() {
-        return longitude;
-    }
-
     public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     public void setLongitude(double longitude) {
@@ -284,8 +288,8 @@ public class Activity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Activity activity = (Activity) o;
-        return id == activity.id && start_date == activity.start_date &&
-                end_date == activity.end_date && trip_id == activity.trip_id &&
+        return id.equals(activity.id) && start_date == activity.start_date &&
+                end_date == activity.end_date && Objects.equals(trip_id, activity.trip_id) &&
                 completed == activity.completed &&
                 everyoneParticipate == activity.everyoneParticipate &&
                 Objects.equals(title, activity.title) &&

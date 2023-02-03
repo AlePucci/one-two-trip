@@ -37,19 +37,18 @@ import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
-
+/**
+ * Fragment that enables the user to edit the participants of an activity.
+ */
 public class ActivityParticipantEditFragment extends Fragment {
 
     private Application application;
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
-
     private Trip trip;
     private Activity activity;
-
     private List<Person> personList;
     private List<Person> notParticipating;
-
     private ParticipantRecyclerViewAdapter participantAdapter;
     private ParticipantRecyclerViewAdapter notParticipantAdapter;
 
@@ -75,7 +74,7 @@ public class ActivityParticipantEditFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_activity_participant_edit, container, false);
     }
@@ -91,8 +90,8 @@ public class ActivityParticipantEditFragment extends Fragment {
         }
 
         ActivityFragment parentFragment = (ActivityFragment) getParentFragment().getParentFragment();
-        long tripId = parentFragment.getTripId();
-        long activityId = parentFragment.getActivityId();
+        String tripId = parentFragment.getTripId();
+        String activityId = parentFragment.getActivityId();
 
         RecyclerView participant_recycler = view.findViewById(R.id.activity_participant_recycler_edit);
         RecyclerView not_participant_recycler = view.findViewById(R.id.activity_not_participant_recycler_edit);
@@ -124,7 +123,7 @@ public class ActivityParticipantEditFragment extends Fragment {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
                         trip = null;
                         for (Trip mTrip : trips) {
-                            if (mTrip.getId() == tripId) {
+                            if (mTrip.getId().equals(tripId)) {
                                 trip = mTrip;
                                 break;
                             }
@@ -136,7 +135,7 @@ public class ActivityParticipantEditFragment extends Fragment {
                         }
 
                         for (Activity mActivity : trip.getActivity().getActivityList()) {
-                            if (mActivity.getId() == activityId) {
+                            if (mActivity.getId().equals(activityId)) {
                                 this.activity = mActivity;
                                 break;
                             }

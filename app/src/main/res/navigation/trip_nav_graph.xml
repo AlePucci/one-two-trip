@@ -20,13 +20,13 @@
             app:popUpToInclusive="false" />
         <argument
             android:name="tripId"
-            app:argType="long" />
+            app:argType="string" />
         <argument
             android:name="moveToActivity"
             app:argType="boolean" />
         <argument
             android:name="activityId"
-            app:argType="long" />
+            app:argType="string" />
         <action
             android:id="@+id/action_tripFragment_to_tripSettingsFragment"
             app:destination="@id/tripSettingsFragment" />
@@ -41,10 +41,10 @@
         tools:layout="@layout/fragment_activity">
         <argument
             android:name="activityId"
-            app:argType="long" />
+            app:argType="string" />
         <argument
             android:name="tripId"
-            app:argType="long" />
+            app:argType="string" />
         <action
             android:id="@+id/action_activityFragment_to_tripFragment"
             app:destination="@id/tripFragment"
@@ -55,10 +55,10 @@
         android:id="@+id/activityNewFragment"
         android:name="it.unimib.sal.one_two_trip.ui.trip.activity.ActivityNewFragment"
         android:label="fragment_activity_new"
-        tools:layout="@layout/fragment_activity_new" >
+        tools:layout="@layout/fragment_activity_new">
         <argument
             android:name="tripId"
-            app:argType="long" />
+            app:argType="string" />
         <argument
             android:name="activityTitle"
             app:argType="string" />
@@ -70,6 +70,6 @@
         tools:layout="@layout/fragment_trip_settings">
         <argument
             android:name="tripId"
-            app:argType="long" />
+            app:argType="string" />
     </fragment>
 </navigation>

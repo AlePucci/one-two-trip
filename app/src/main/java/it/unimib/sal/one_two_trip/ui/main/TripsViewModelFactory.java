@@ -6,11 +6,16 @@ import androidx.lifecycle.ViewModelProvider;
 
 import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 
+/**
+ * Custom ViewModelProvider to be able to have a custom constructor
+ * for the {@link TripsViewModel} class.
+ */
 public class TripsViewModelFactory implements ViewModelProvider.Factory {
 
     private final ITripsRepository tripsRepository;
 
     public TripsViewModelFactory(ITripsRepository tripsRepository) {
+        super();
         this.tripsRepository = tripsRepository;
     }
 

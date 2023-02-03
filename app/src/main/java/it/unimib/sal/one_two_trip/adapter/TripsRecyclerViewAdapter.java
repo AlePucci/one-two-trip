@@ -21,7 +21,7 @@ import it.unimib.sal.one_two_trip.model.Trip;
 
 /**
  * Custom adapter that extends RecyclerView.Adapter to show an ArrayList of Trips
- * with a RecyclerView.
+ * with a RecyclerView (in the HomeFragment)
  */
 public class TripsRecyclerViewAdapter
         extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -37,12 +37,19 @@ public class TripsRecyclerViewAdapter
     public TripsRecyclerViewAdapter(List<Trip> tripList, Application application,
                                     boolean tripsCompleted,
                                     OnItemClickListener onItemClickListener) {
+        super();
         this.tripList = tripList;
         this.onItemClickListener = onItemClickListener;
         this.application = application;
         this.tripsCompleted = tripsCompleted;
     }
 
+    /**
+     * Check if the item at the given position is the header.
+     *
+     * @param position the position of the item
+     * @return true if the item is the header, false otherwise
+     */
     private boolean isHeader(int position) {
         return position == 0;
     }
@@ -72,7 +79,10 @@ public class TripsRecyclerViewAdapter
         if (holder instanceof HeaderViewHolder) {
             ((HeaderViewHolder) holder).bind(this.tripList.size(), this.tripsCompleted);
         } else {
-            ((TripViewHolder) holder).bind(this.tripList.get(position - 1));
+            Trip trip = this.tripList.get(position - 1);
+            if (trip == null) return;
+
+            ((TripViewHolder) holder).bind(trip);
         }
     }
 
@@ -101,7 +111,7 @@ public class TripsRecyclerViewAdapter
     }
 
     /**
-     * Custom ViewHolder to bind data to the RecyclerView items.
+     * Custom ViewHolder to bind data to the RecyclerView items (trips).
      */
     public class TripViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -134,8 +144,10 @@ public class TripsRecyclerViewAdapter
                 if (!trip.isCompleted()) {
                     activityList.removeIf(activity -> activity == null || activity.isCompleted());
                 }
+
                 ActivitiesRecyclerViewAdapter activitiesRecyclerViewAdapter =
-                        new ActivitiesRecyclerViewAdapter(activityList,
+                        new ActivitiesRecyclerViewAdapter(
+                                activityList,
                                 new ActivitiesRecyclerViewAdapter.OnItemClickListener() {
                                     @Override
                                     public void onAttachmentsClick(Activity activity) {
@@ -149,7 +161,7 @@ public class TripsRecyclerViewAdapter
                                     }
                                 });
 
-                this.activityView.setLayoutManager(layoutManager);
+                this.activityView.setLayoutManager(this.layoutManager);
                 this.activityView.setAdapter(activitiesRecyclerViewAdapter);
             }
 
@@ -179,7 +191,7 @@ public class TripsRecyclerViewAdapter
     }
 
     /**
-     * Custom ViewHolder to bind data to the RecyclerView items (moving activities).
+     * Custom ViewHolder to bind data to the RecyclerView items (header).
      */
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
 

@@ -12,6 +12,9 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Query;
 
+/**
+ * Interface for Service to get photos URL from the Web Service.
+ */
 public interface PictureApiService {
 
     @GET(PHOTOS_ENDPOINT)

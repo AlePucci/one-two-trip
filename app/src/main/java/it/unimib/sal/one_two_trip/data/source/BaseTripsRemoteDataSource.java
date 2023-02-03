@@ -2,6 +2,9 @@ package it.unimib.sal.one_two_trip.data.source;
 
 import it.unimib.sal.one_two_trip.model.Trip;
 
+/**
+ * Base class to get Trips from a remote source.
+ */
 public abstract class BaseTripsRemoteDataSource {
 
     protected TripCallback tripCallback;

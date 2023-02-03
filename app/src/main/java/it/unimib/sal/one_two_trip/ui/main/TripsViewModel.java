@@ -7,12 +7,16 @@ import it.unimib.sal.one_two_trip.data.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.Trip;
 
+/**
+ * ViewModel to manage the list of Trips.
+ */
 public class TripsViewModel extends ViewModel {
 
     private final ITripsRepository tripsRepository;
     private MutableLiveData<Result> tripListLiveData;
 
     public TripsViewModel(ITripsRepository tripsRepository) {
+        super();
         this.tripsRepository = tripsRepository;
     }
 

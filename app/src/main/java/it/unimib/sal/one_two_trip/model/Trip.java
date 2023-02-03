@@ -15,14 +15,15 @@ import it.unimib.sal.one_two_trip.model.holder.ActivityListHolder;
 import it.unimib.sal.one_two_trip.model.holder.PersonListHolder;
 
 /**
- * This class represents a trip.
+ * Class representing a trip.
  */
 @Entity
 public class Trip {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "id")
-    private long id;
+    private String id;
 
     @ColumnInfo(name = "tripOwner")
     private String tripOwner;
@@ -52,10 +53,11 @@ public class Trip {
         activity = new ActivityListHolder(new ArrayList<>());
         participant = new PersonListHolder(new ArrayList<>());
         completed = false;
+        id = "";
     }
 
     @Ignore
-    public Trip(long id, String tripOwner, String title, String description,
+    public Trip(@NonNull String id, String tripOwner, String title, String description,
                 ActivityListHolder activity, PersonListHolder participant, boolean completed) {
         this.id = id;
         this.tripOwner = tripOwner;
@@ -72,11 +74,12 @@ public class Trip {
         }
     }
 
-    public long getId() {
+    @NonNull
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 
@@ -166,7 +169,7 @@ public class Trip {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trip trip = (Trip) o;
-        return id == trip.id && completed == trip.completed && tripOwner.equals(trip.tripOwner) &&
+        return id.equals(trip.id) && completed == trip.completed && tripOwner.equals(trip.tripOwner) &&
                 Objects.equals(title, trip.title) &&
                 Objects.equals(description, trip.description) &&
                 Objects.equals(activity, trip.activity) &&

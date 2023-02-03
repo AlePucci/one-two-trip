@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.data.storage;
+package it.unimib.sal.one_two_trip.data.source.storage;
 
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_TRIPS_COLLECTION;
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_USER_COLLECTION;
@@ -7,6 +7,8 @@ import static it.unimib.sal.one_two_trip.util.Constants.TRIP_LOGO_NAME;
 import android.app.Application;
 import android.graphics.Bitmap;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -14,16 +16,22 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
+/**
+ * Class to upload and download files from a remote source using Firebase Storage.
+ */
 public class RemoteStorage extends BaseRemoteStorage {
+
     private final Application application;
 
     public RemoteStorage(Application application) {
+        super();
         this.application = application;
     }
 
-    public void uploadTripLogo(Bitmap bitmap, long tripId) {
+    public void uploadTripLogo(@NonNull Bitmap bitmap, String tripId) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference().child(FIREBASE_USER_COLLECTION).child("1")
+        StorageReference storageReference = storage.getReference().child(FIREBASE_USER_COLLECTION)
+                .child("1")
                 .child(FIREBASE_TRIPS_COLLECTION)
                 .child(String.valueOf(tripId)).child(TRIP_LOGO_NAME);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -35,7 +43,8 @@ public class RemoteStorage extends BaseRemoteStorage {
                 .addOnSuccessListener(taskSnapshot -> {
                     if (taskSnapshot.getTask().isSuccessful()) {
                         // TODO USER IDs
-                        File localFile = new File(application.getFilesDir(), 1 + "-" + tripId + "-" + TRIP_LOGO_NAME);
+                        File localFile = new File(application.getFilesDir(), 1 + "-"
+                                + tripId + "-" + TRIP_LOGO_NAME);
 
                         storageReference.getFile(localFile).addOnSuccessListener(taskSnapshot1 ->
                         {
@@ -51,9 +60,10 @@ public class RemoteStorage extends BaseRemoteStorage {
     }
 
     @Override
-    public void downloadTripLogo(long tripId) {
+    public void downloadTripLogo(String tripId) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference().child(FIREBASE_USER_COLLECTION).child("1")
+        StorageReference storageReference = storage.getReference().child(FIREBASE_USER_COLLECTION)
+                .child("1")
                 .child(FIREBASE_TRIPS_COLLECTION)
                 .child(String.valueOf(tripId)).child(TRIP_LOGO_NAME);
         File localFile = new File(application.getFilesDir(), 1 + "-" + tripId + "-" + TRIP_LOGO_NAME);
@@ -64,9 +74,10 @@ public class RemoteStorage extends BaseRemoteStorage {
     }
 
     @Override
-    public void tripLogoExists(long tripId) {
+    public void tripLogoExists(String tripId) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference().child(FIREBASE_USER_COLLECTION).child("1")
+        StorageReference storageReference = storage.getReference().child(FIREBASE_USER_COLLECTION)
+                .child("1")
                 .child(FIREBASE_TRIPS_COLLECTION)
                 .child(String.valueOf(tripId)).child(TRIP_LOGO_NAME);
 

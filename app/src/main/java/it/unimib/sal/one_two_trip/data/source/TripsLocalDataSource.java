@@ -3,6 +3,8 @@ package it.unimib.sal.one_two_trip.data.source;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.data.database.ITripsDAO;
@@ -10,13 +12,17 @@ import it.unimib.sal.one_two_trip.data.database.TripsRoomDatabase;
 import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
+/**
+ * Class to get Trips from a local source using Room.
+ */
 public class TripsLocalDataSource extends BaseTripsLocalDataSource {
 
     private final ITripsDAO tripsDAO;
     private final SharedPreferencesUtil sharedPreferencesUtil;
 
-    public TripsLocalDataSource(TripsRoomDatabase tripsRoomDatabase,
+    public TripsLocalDataSource(@NonNull TripsRoomDatabase tripsRoomDatabase,
                                 SharedPreferencesUtil sharedPreferencesUtil) {
+        super();
         this.tripsDAO = tripsRoomDatabase.tripsDAO();
         this.sharedPreferencesUtil = sharedPreferencesUtil;
     }
@@ -29,15 +35,27 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
     @Override
     public void getTrips() {
         TripsRoomDatabase.databaseWriteExecutor.execute(
-                () -> tripCallback.onSuccessFromLocal(this.tripsDAO.getAll()));
+                () -> tripCallback.onSuccessFromLocal(this.tripsDAO.getAll())
+        );
     }
 
+    /**
+     * Updates the trip in the local database.
+     * The method is executed with an ExecutorService defined in TripsRoomDatabase class
+     * because the database access cannot been executed in the main thread.
+     */
     @Override
     public void updateTrip(Trip trip) {
         TripsRoomDatabase.databaseWriteExecutor.execute(
-                () -> this.tripsDAO.updateTrip(trip));
+                () -> this.tripsDAO.updateTrip(trip)
+        );
     }
 
+    /**
+     * Insert a list of trips in the local database.
+     * The method is executed with an ExecutorService defined in TripsRoomDatabase class
+     * because the database access cannot been executed in the main thread.
+     */
     @Override
     public void insertTrips(List<Trip> tripList) {
         TripsRoomDatabase.databaseWriteExecutor.execute(() -> {
@@ -50,10 +68,7 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
                     }
                 }
 
-                List<Long> insertedTripIds = this.tripsDAO.insertTripList(tripList);
-                for (int i = 0; i < tripList.size(); i++) {
-                    tripList.get(i).setId(insertedTripIds.get(i));
-                }
+                this.tripsDAO.insertTripList(tripList);
 
                 this.sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME,
                         LAST_UPDATE, String.valueOf(System.currentTimeMillis()));
@@ -63,6 +78,11 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
         });
     }
 
+    /**
+     * Deletes the trip from the local database.
+     * The method is executed with an ExecutorService defined in TripsRoomDatabase class
+     * because the database access cannot been executed in the main thread.
+     */
     @Override
     public void deleteTrip(Trip trip) {
         TripsRoomDatabase.databaseWriteExecutor.execute(

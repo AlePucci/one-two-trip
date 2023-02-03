@@ -19,6 +19,9 @@ import java.util.List;
 import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.model.TripsApiResponse;
 
+/**
+ * Class to get Trips from a remote source using Firebase Realtime Database.
+ */
 public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
 
     private final DatabaseReference tripsCollectionReference;
@@ -56,6 +59,9 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
         this.tripsCollectionReference.addValueEventListener(tripListener);
     }
 
+    /**
+     * Get all trips from Firebase Realtime Database.
+     */
     @Override
     public void getTrips() {
         this.tripsCollectionReference.get().addOnCompleteListener(task -> {
@@ -74,20 +80,27 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
         });
     }
 
+    /**
+     * Update a trip in Firebase Realtime Database.
+     */
     @Override
-    public void updateTrip(Trip trip) {
-        // TODO fix path (trip id)
-        this.tripsCollectionReference.child(String.valueOf(trip.getId())).setValue(trip);
+    public void updateTrip(@NonNull Trip trip) {
+        this.tripsCollectionReference.child(trip.getId()).setValue(trip);
     }
 
+    /**
+     * Insert a trip in Firebase Realtime Database.
+     */
     @Override
-    public void insertTrip(Trip trip) {
-        this.tripsCollectionReference.child(String.valueOf(trip.getId())).setValue(trip);
+    public void insertTrip(@NonNull Trip trip) {
+        this.tripsCollectionReference.child(trip.getId()).setValue(trip);
     }
 
+    /**
+     * Delete a trip in Firebase Realtime Database.
+     */
     @Override
-    public void deleteTrip(Trip trip) {
-        // TODO fix path (trip id)
-        this.tripsCollectionReference.child(String.valueOf(trip.getId())).removeValue();
+    public void deleteTrip(@NonNull Trip trip) {
+        this.tripsCollectionReference.child(trip.getId()).removeValue();
     }
 }

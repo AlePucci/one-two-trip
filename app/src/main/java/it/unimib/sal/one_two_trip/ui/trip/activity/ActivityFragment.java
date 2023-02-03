@@ -6,7 +6,6 @@ import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
-import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
@@ -45,10 +44,14 @@ import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 import it.unimib.sal.one_two_trip.util.Utility;
 
+/**
+ * Fragment that enables the user to see and edit the details of an activity.
+ * It implements the {@link MenuProvider} interface to provide the menu.
+ */
 public class ActivityFragment extends Fragment implements MenuProvider {
 
-    private long tripId;
-    private long activityId;
+    private String tripId;
+    private String activityId;
     private Application application;
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
@@ -59,19 +62,19 @@ public class ActivityFragment extends Fragment implements MenuProvider {
     public ActivityFragment() {
     }
 
-    public long getTripId() {
+    public String getTripId() {
         return tripId;
     }
 
-    public void setTripId(long tripId) {
+    public void setTripId(String tripId) {
         this.tripId = tripId;
     }
 
-    public long getActivityId() {
+    public String getActivityId() {
         return activityId;
     }
 
-    public void setActivityId(long activityId) {
+    public void setActivityId(String activityId) {
         this.activityId = activityId;
     }
 
@@ -95,12 +98,12 @@ public class ActivityFragment extends Fragment implements MenuProvider {
         if (getArguments() == null) {
             return;
         }
-        this.tripId = getArguments().getLong(SELECTED_TRIP_ID);
-        this.activityId = getArguments().getLong(SELECTED_ACTIVITY_ID);
+        this.tripId = getArguments().getString(SELECTED_TRIP_ID);
+        this.activityId = getArguments().getString(SELECTED_ACTIVITY_ID);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_activity, container, false);
     }
@@ -128,7 +131,7 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
 
                         for (Trip mTrip : trips) {
-                            if (mTrip.getId() == this.tripId) {
+                            if (mTrip.getId().equals(this.tripId)) {
                                 this.trip = mTrip;
                                 break;
                             }
@@ -140,7 +143,7 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                         }
 
                         for (Activity mActivity : this.trip.getActivity().getActivityList()) {
-                            if (mActivity.getId() == this.activityId) {
+                            if (mActivity.getId().equals(this.activityId)) {
                                 this.activity = mActivity;
                                 break;
                             }
@@ -166,7 +169,7 @@ public class ActivityFragment extends Fragment implements MenuProvider {
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
         Context context = requireContext();
         if (menuItem.getItemId() == R.id.trip_menu_rename) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(context);
             String oldTitle = this.activity.getTitle();
             EditText input = new EditText(context);
             input.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -190,20 +193,20 @@ public class ActivityFragment extends Fragment implements MenuProvider {
 
             return true;
         } else if (menuItem.getItemId() == R.id.trip_menu_delete) {
-            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(context);
             alert.setTitle(getString(R.string.activity_delete_confirmation_title));
             alert.setMessage(getString(R.string.activity_delete_confirmation));
             alert.setPositiveButton(getString(R.string.activity_delete_confirmation_positive),
                     (dialog, whichButton) -> {
                         this.trip.getActivity().getActivityList().removeIf(activity ->
-                                activity.getId() == activityId);
+                                activity.getId().equals(activityId));
                         this.viewModel.updateTrip(this.trip);
                         Utility.onActivityDelete(this.trip, this.activity, this.application);
 
                         Bundle bundle = new Bundle();
-                        bundle.putLong(SELECTED_TRIP_ID, this.trip.getId());
+                        bundle.putString(SELECTED_TRIP_ID, this.tripId);
                         bundle.putBoolean(MOVE_TO_ACTIVITY, false);
-                        bundle.putLong(SELECTED_ACTIVITY_ID, this.activityId);
+                        bundle.putString(SELECTED_ACTIVITY_ID, this.activityId);
                         Navigation.findNavController(
                                 requireView()).navigate(R.id.action_activityFragment_to_tripFragment,
                                 bundle);

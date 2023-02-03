@@ -56,9 +56,7 @@ import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 import it.unimib.sal.one_two_trip.util.Utility;
 
 /**
- * A simple {@link Fragment} subclass that shows the coming trips of the user.
- * Use the {@link ComingTripsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment that shows the list of coming trips. It is used by the {@link HomeActivity}.
  */
 public class ComingTripsFragment extends Fragment {
 
@@ -72,11 +70,6 @@ public class ComingTripsFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
 
     public ComingTripsFragment() {
-    }
-
-    @NonNull
-    public static ComingTripsFragment newInstance() {
-        return new ComingTripsFragment();
     }
 
     @Override

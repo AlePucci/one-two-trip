@@ -36,6 +36,9 @@ import it.unimib.sal.one_two_trip.util.GeocodingUtilityCallback;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
+/**
+ * Fragment that enables the user to edit the location(s) of an activity.
+ */
 public class ActivityLocationEditFragment extends Fragment {
 
     private Application application;
@@ -66,7 +69,7 @@ public class ActivityLocationEditFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_activity_location_edit, container, false);
     }
@@ -80,8 +83,8 @@ public class ActivityLocationEditFragment extends Fragment {
         }
 
         ActivityFragment parentFragment = (ActivityFragment) getParentFragment().getParentFragment();
-        long tripId = parentFragment.getTripId();
-        long activityId = parentFragment.getActivityId();
+        String tripId = parentFragment.getTripId();
+        String activityId = parentFragment.getActivityId();
 
         TextInputLayout loc1 = view.findViewById(R.id.activity_where1_edit);
         TextInputLayout loc2 = view.findViewById(R.id.activity_where2_edit);
@@ -198,7 +201,7 @@ public class ActivityLocationEditFragment extends Fragment {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
 
                         for (Trip mTrip : trips) {
-                            if (mTrip.getId() == tripId) {
+                            if (mTrip.getId().equals(tripId)) {
                                 this.trip = mTrip;
                                 break;
                             }
@@ -210,7 +213,7 @@ public class ActivityLocationEditFragment extends Fragment {
                         }
 
                         for (Activity mActivity : this.trip.getActivity().getActivityList()) {
-                            if (mActivity.getId() == activityId) {
+                            if (mActivity.getId().equals(activityId)) {
                                 this.activity = mActivity;
                                 break;
                             }

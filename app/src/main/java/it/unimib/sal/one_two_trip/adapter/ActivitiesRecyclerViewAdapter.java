@@ -22,7 +22,7 @@ import it.unimib.sal.one_two_trip.util.Utility;
 
 /**
  * Custom adapter that extends RecyclerView.Adapter to show an ArrayList of Activities
- * with a RecyclerView.
+ * with a RecyclerView (in the HomeFragment)
  */
 public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -34,6 +34,7 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
     public ActivitiesRecyclerViewAdapter(List<Activity> activityList,
                                          OnItemClickListener onItemClickListener) {
+        super();
         this.activityList = activityList;
         this.onItemClickListener = onItemClickListener;
     }
@@ -147,10 +148,10 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 this.activityDate.setVisibility(View.GONE);
             }
 
-            if (activity.getParticipant() == null
+            if (activity.isEveryoneParticipate() ||
+                    activity.getParticipant() == null
                     || activity.getParticipant().getPersonList() == null
-                    || activity.getParticipant().getPersonList().isEmpty()
-                    || activity.isEveryoneParticipate()) {
+                    || activity.getParticipant().getPersonList().isEmpty()) {
                 this.participants.setVisibility(View.GONE);
             } else {
                 this.participants.setText(
@@ -171,7 +172,6 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             if (v.getId() == R.id.attachments) {
                 onItemClickListener.onAttachmentsClick(activityList.get(getAdapterPosition()));
             } else {
-                //click on the activity itself
                 onItemClickListener.onActivityClick(activityList.get(getAdapterPosition()));
             }
         }
@@ -238,7 +238,6 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             if (v.getId() == R.id.attachments) {
                 onItemClickListener.onAttachmentsClick(activityList.get(getAdapterPosition()));
             } else {
-                //click on the activity itself
                 onItemClickListener.onActivityClick(activityList.get(getAdapterPosition()));
             }
         }

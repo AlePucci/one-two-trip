@@ -16,6 +16,10 @@ import java.util.concurrent.Executors;
 import it.unimib.sal.one_two_trip.model.Trip;
 import it.unimib.sal.one_two_trip.util.Converters;
 
+/**
+ * Main access point for the underlying connection to the local database.
+ * <a href="https://developer.android.com/reference/kotlin/androidx/room/Database">See here</a>
+ */
 @Database(entities = {Trip.class}, version = TRIPS_DATABASE_VERSION, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class TripsRoomDatabase extends RoomDatabase {

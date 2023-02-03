@@ -20,6 +20,10 @@ import org.osmdroid.config.Configuration;
 import it.unimib.sal.one_two_trip.BuildConfig;
 import it.unimib.sal.one_two_trip.R;
 
+/**
+ * Activity that contains Fragments to allow user to see, edit and delete the details of a trip.
+ * It contains a interactive map that shows the activities of the trip.
+ */
 public class TripActivity extends AppCompatActivity {
 
     @Override
@@ -27,11 +31,11 @@ public class TripActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip);
 
-        long tripId = getIntent().getLongExtra(SELECTED_TRIP_ID, 0);
+        String tripId = getIntent().getStringExtra(SELECTED_TRIP_ID);
         boolean moveToActivity = getIntent().getBooleanExtra(MOVE_TO_ACTIVITY, false);
-        long activityId = 0;
+        String activityId = "";
         if (moveToActivity) {
-            activityId = getIntent().getLongExtra(SELECTED_ACTIVITY_ID, 0);
+            activityId = getIntent().getStringExtra(SELECTED_ACTIVITY_ID);
         }
         String tripName = getIntent().getStringExtra(SELECTED_TRIP_NAME);
 
@@ -60,9 +64,9 @@ public class TripActivity extends AppCompatActivity {
                 findFragmentById(R.id.trip_nav_host);
 
         Bundle bundle = new Bundle();
-        bundle.putLong(SELECTED_TRIP_ID, tripId);
+        bundle.putString(SELECTED_TRIP_ID, tripId);
         bundle.putBoolean(MOVE_TO_ACTIVITY, moveToActivity);
-        bundle.putLong(SELECTED_ACTIVITY_ID, activityId);
+        bundle.putString(SELECTED_ACTIVITY_ID, activityId);
 
         if (navHostFragment != null) {
             NavController navController = navHostFragment.getNavController();

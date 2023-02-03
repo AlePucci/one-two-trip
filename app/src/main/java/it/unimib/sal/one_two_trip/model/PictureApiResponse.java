@@ -1,5 +1,9 @@
 package it.unimib.sal.one_two_trip.model;
 
+/**
+ * Class to represent the API response of the Unsplash photo service.
+ * <a href="https://unsplash.com/">See docs</a>
+ */
 public class PictureApiResponse {
 
     private int total;

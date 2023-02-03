@@ -2,6 +2,9 @@ package it.unimib.sal.one_two_trip.model;
 
 import java.util.List;
 
+/**
+ * Class simulating the response of the API call to get the trips.
+ */
 public class TripsResponse {
 
     private List<Trip> tripList;

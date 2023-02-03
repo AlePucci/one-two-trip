@@ -42,6 +42,9 @@ import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 import it.unimib.sal.one_two_trip.util.Utility;
 
+/**
+ * Fragment that enables the user to edit the date(s) of an activity.
+ */
 public class ActivityDateEditFragment extends Fragment {
 
     private Application application;
@@ -72,7 +75,7 @@ public class ActivityDateEditFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_activity_date_edit, container, false);
     }
@@ -88,8 +91,8 @@ public class ActivityDateEditFragment extends Fragment {
         ActivityFragment parentFragment = (ActivityFragment) getParentFragment().getParentFragment();
         Context context = requireContext();
 
-        long tripId = parentFragment.getTripId();
-        long activityId = parentFragment.getActivityId();
+        String tripId = parentFragment.getTripId();
+        String activityId = parentFragment.getActivityId();
 
         DateFormat df = SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 
@@ -213,7 +216,7 @@ public class ActivityDateEditFragment extends Fragment {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
                         for (Trip mTrip : trips) {
-                            if (mTrip.getId() == tripId) {
+                            if (mTrip.getId().equals(tripId)) {
                                 this.trip = mTrip;
                                 break;
                             }
@@ -226,7 +229,7 @@ public class ActivityDateEditFragment extends Fragment {
 
 
                         for (Activity mActivity : this.trip.getActivity().getActivityList()) {
-                            if (mActivity.getId() == activityId) {
+                            if (mActivity.getId().equals(activityId)) {
                                 this.activity = mActivity;
                                 break;
                             }

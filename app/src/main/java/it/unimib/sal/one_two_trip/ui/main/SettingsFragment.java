@@ -39,9 +39,8 @@ import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link SettingsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment that shows the settings of the app, such as notifications and theme.
+ * It is used by the {@link HomeActivity}.
  */
 public class SettingsFragment extends Fragment {
 
@@ -60,11 +59,6 @@ public class SettingsFragment extends Fragment {
     private MaterialButton theme_dark;
 
     public SettingsFragment() {
-    }
-
-    @NonNull
-    public static SettingsFragment newInstance() {
-        return new SettingsFragment();
     }
 
     @Override

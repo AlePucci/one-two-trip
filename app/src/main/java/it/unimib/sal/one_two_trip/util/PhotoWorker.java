@@ -30,6 +30,10 @@ import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.data.source.PhotoCallback;
 import it.unimib.sal.one_two_trip.data.source.PhotoRemoteDataSource;
 
+/**
+ * Utility class used to download a photo from a remote web service, add a text and a logo to it
+ * and make it shareable.
+ */
 public class PhotoWorker extends Worker implements PhotoCallback {
 
     private final Context context;
@@ -41,7 +45,8 @@ public class PhotoWorker extends Worker implements PhotoCallback {
     public PhotoWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         this.context = context;
-        this.photoRemoteDataSource = ServiceLocator.getInstance().getPhotoRemoteDataSource(context.getApplicationContext());
+        this.photoRemoteDataSource = ServiceLocator.getInstance()
+                .getPhotoRemoteDataSource(context.getApplicationContext());
         this.photoRemoteDataSource.setPhotoCallback(this);
     }
 

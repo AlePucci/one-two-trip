@@ -1,6 +1,11 @@
 package it.unimib.sal.one_two_trip.model;
 
+/**
+ * Class to represent the API response of the Nominatim geocoding service.
+ * <a href="https://nominatim.org/">See docs</a>
+ */
 public class GeocodingApiResponse {
+
     private String display_name;
     private String lat;
     private String lon;

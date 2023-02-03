@@ -32,7 +32,9 @@ import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
-
+/**
+ * Fragment that enables the user to edit the description of an activity.
+ */
 public class ActivityDescriptionEditFragment extends Fragment {
 
     private Application application;
@@ -63,7 +65,8 @@ public class ActivityDescriptionEditFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_activity_description_edit, container, false);
     }
 
@@ -76,8 +79,8 @@ public class ActivityDescriptionEditFragment extends Fragment {
         }
 
         ActivityFragment parentFragment = (ActivityFragment) getParentFragment().getParentFragment();
-        long tripId = parentFragment.getTripId();
-        long activityId = parentFragment.getActivityId();
+        String tripId = parentFragment.getTripId();
+        String activityId = parentFragment.getActivityId();
 
         MaterialButton editButton = view.findViewById(R.id.activity_descr_confirm);
         TextInputEditText description = view.findViewById(R.id.activity_descr_edittext);
@@ -107,7 +110,7 @@ public class ActivityDescriptionEditFragment extends Fragment {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.Success) result).getData().getTripList();
                         for (Trip mTrip : trips) {
-                            if (mTrip.getId() == tripId) {
+                            if (mTrip.getId().equals(tripId)) {
                                 this.trip = mTrip;
                                 break;
                             }
@@ -119,7 +122,7 @@ public class ActivityDescriptionEditFragment extends Fragment {
                         }
 
                         for (Activity mActivity : this.trip.getActivity().getActivityList()) {
-                            if (mActivity.getId() == activityId) {
+                            if (mActivity.getId().equals(activityId)) {
                                 this.activity = mActivity;
                                 break;
                             }
