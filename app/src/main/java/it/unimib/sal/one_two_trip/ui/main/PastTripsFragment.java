@@ -248,8 +248,8 @@ public class PastTripsFragment extends Fragment {
                                 noTripsText.setVisibility(View.GONE);
                                 noTripsImage.setVisibility(View.GONE);
 
+                                pastTrips.sort(Comparator.comparing(Trip::getStart_date).reversed());
                                 this.pastTrips.addAll(pastTrips);
-                                this.pastTrips.sort(Comparator.comparing(Trip::getStart_date));
                                 this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
                                         previousSize + 1);
                             }
@@ -263,6 +263,16 @@ public class PastTripsFragment extends Fragment {
                     }
                     progressBar.setVisibility(View.GONE);
                 });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (this.swipeRefreshLayout != null) {
+            this.swipeRefreshLayout.setRefreshing(false);
+            this.swipeRefreshLayout.destroyDrawingCache();
+            this.swipeRefreshLayout.clearAnimation();
+        }
     }
 
     /**

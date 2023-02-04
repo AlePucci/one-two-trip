@@ -58,9 +58,9 @@
     <string name="trip_logo_upload_failure">Something went wrong during uploading! Please try again</string>
     <string name="trip_logo_download_failure">Something went wrong during downloading! Please try again</string>
     <string name="trip_logo_pick_photo">Pick a photo for your trip</string>
-    <string name="trip_participants_plural">%1$d participants</string>
+    <string name="trip_participants_plural" tools:ignore="PluralsCandidate">%1$d participants</string>
     <string name="trip_participants_singular">1 participant</string>
-    <string name="trip_activities_plural">%1$d activities added</string>
+    <string name="trip_activities_plural" tools:ignore="PluralsCandidate">%1$d activities added</string>
     <string name="trip_activities_singular">1 activity added</string>
     <string name="trip_add_description">Add description…</string>
     <string name="trip_participants_list">Participants:</string>

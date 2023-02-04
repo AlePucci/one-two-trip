@@ -214,8 +214,15 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             this.activityStartTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT)
                     .format(activity.getStart_date()));
             this.activityStartLocation.setText(activity.getLocation());
-            this.activityEndTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT)
-                    .format(activity.getEnd_date()));
+
+            if (Utility.compareDate(activity.getStart_date(), activity.getEnd_date())) {
+                this.activityEndTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT)
+                        .format(activity.getEnd_date()));
+            } else {
+                String longActivity = DateFormat.getTimeInstance(DateFormat.SHORT)
+                        .format(activity.getEnd_date()) + "*";
+                this.activityEndTime.setText(longActivity);
+            }
             this.activityEndLocation.setText(activity.getEnd_location());
 
             if (isActivityFirstOfTheDay(position)) {

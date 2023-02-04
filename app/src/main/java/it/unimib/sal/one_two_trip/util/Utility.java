@@ -42,6 +42,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Predicate;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
@@ -380,5 +381,16 @@ public class Utility {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
                     alarmTime.getTimeInMillis(), pendingIntent);
         }
+    }
+
+    /**
+     * Utility predicate used to negate another predicate.
+     *
+     * @param t   the predicate to negate
+     * @param <T> the type of the predicate
+     * @return the negated predicate
+     */
+    public static <T> Predicate<T> not(@NonNull Predicate<T> t) {
+        return t.negate();
     }
 }

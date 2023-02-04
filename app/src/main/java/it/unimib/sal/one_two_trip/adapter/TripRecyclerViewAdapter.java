@@ -22,6 +22,7 @@ import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
+import it.unimib.sal.one_two_trip.util.Utility;
 
 /**
  * Custom adapter that extends RecyclerView.Adapter to show an ArrayList of Activities
@@ -63,21 +64,6 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
         }
 
         return this.activities.size();
-    }
-
-    /**
-     * Utility method to check if two dates are in the same day
-     *
-     * @param date1 first date
-     * @param date2 second date
-     * @return true if the dates are in the same day, false otherwise
-     */
-    private boolean isSameDay(long date1, long date2) {
-        DateFormat df = DateFormat.getDateInstance();
-        String day1 = df.format(date1);
-        String day2 = df.format(date2);
-
-        return day1.equalsIgnoreCase(day2);
     }
 
     public void addData(List<Activity> activities) {
@@ -140,7 +126,7 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
             long startDate = activity.getStart_date();
 
             if (index == 0 || activities.get(index - 1) == null
-                    || !isSameDay(activities.get(index - 1).getStart_date(), startDate)) {
+                    || !Utility.compareDate(activities.get(index - 1).getStart_date(), startDate)) {
                 item_header.setText(DateFormat.getDateInstance(DateFormat.LONG)
                         .format(startDate));
                 item_header.setVisibility(View.VISIBLE);
@@ -187,9 +173,14 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
             if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                 this.item_pos2.setText(activity.getEnd_location());
                 this.item_pos2.setVisibility(View.VISIBLE);
-
+                
                 String end_date = df.format(activity.getEnd_date());
-                this.item_time2.setText(end_date);
+                if (Utility.compareDate(activity.getStart_date(), activity.getEnd_date())) {
+                    this.item_time2.setText(end_date);
+                } else {
+                    String longActivity = end_date + "*";
+                    this.item_time2.setText(longActivity);
+                }
                 this.item_time2.setVisibility(View.VISIBLE);
 
                 this.item_separator.setVisibility(View.VISIBLE);

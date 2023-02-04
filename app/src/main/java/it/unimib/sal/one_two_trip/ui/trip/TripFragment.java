@@ -8,6 +8,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAM
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Utility.not;
 
 import android.Manifest;
 import android.app.Application;
@@ -323,57 +324,67 @@ public class TripFragment extends Fragment implements MenuProvider {
      */
     private void mapSetup() {
         Log.d("AAA", "called map setup");
-        mapView.getOverlays().clear();
+        this.mapView.getOverlays().clear();
 
         //Markers
         List<GeoPoint> points = new ArrayList<>();
         List<Marker> markers = new ArrayList<>();
-        for (Activity a : trip.getActivity().getActivityList()) {
-            Marker marker = new Marker(mapView);
-            GeoPoint point = new GeoPoint(a.getLatitude(), a.getLongitude());
-            points.add(point);
 
-            if (a.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
-                marker.setTitle(a.getTitle() + " (" + getString(R.string.activity_departure) + ")");
-            } else {
-                marker.setTitle(a.getTitle());
-            }
-            marker.setSubDescription(a.getDescription());
-            marker.setPosition(point);
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            markers.add(marker);
+        if (this.trip.getActivity() != null && this.trip.getActivity().getActivityList() != null) {
+            for (Activity a : this.trip.getActivity().getActivityList()) {
+                if (a == null) continue;
 
-            if (a.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
-                Marker endMarker = new Marker(mapView);
-                GeoPoint endPoint = new GeoPoint(a.getEndLatitude(), a.getEndLongitude());
-                points.add(endPoint);
+                Marker marker = new Marker(this.mapView);
+                GeoPoint point = new GeoPoint(a.getLatitude(), a.getLongitude());
+                points.add(point);
 
-                endMarker.setTitle(a.getTitle() + " (" + getString(R.string.activity_arrival) + ")");
-                endMarker.setSubDescription(a.getDescription());
-                endMarker.setPosition(endPoint);
-                endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                markers.add(endMarker);
+                if (a.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
+                    marker.setTitle(a.getTitle() + " (" + getString(R.string.activity_departure) + ")");
+                } else {
+                    marker.setTitle(a.getTitle());
+                }
+                marker.setSubDescription(a.getDescription());
+                marker.setPosition(point);
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                markers.add(marker);
+
+                if (a.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
+                    Marker endMarker = new Marker(this.mapView);
+                    GeoPoint endPoint = new GeoPoint(a.getEndLatitude(), a.getEndLongitude());
+                    points.add(endPoint);
+
+                    endMarker.setTitle(a.getTitle() + " (" + getString(R.string.activity_arrival) + ")");
+                    endMarker.setSubDescription(a.getDescription());
+                    endMarker.setPosition(endPoint);
+                    endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                    markers.add(endMarker);
+                }
             }
         }
         Polyline line = new Polyline();
         line.setPoints(points);
-        mapView.getOverlayManager().add(line);
-        mapView.invalidate();
+        this.mapView.getOverlayManager().add(line);
+        this.mapView.invalidate();
 
         //Add the markers after the line so that the line is in background
         //TODO: order the markers so that they don't overlap
-        mapView.getOverlays().addAll(markers);
+        this.mapView.getOverlays().addAll(markers);
 
         //Move to location
-        IMapController mapController = mapView.getController();
+        IMapController mapController = this.mapView.getController();
         mapController.setZoom(9.5);
 
         GeoPoint startPoint = new GeoPoint(0.0, 0.0);
 
-        if (!trip.getActivity().getActivityList().isEmpty()) {
-            Activity startActivity = trip.getActivity().getActivityList().stream().filter(Activity::isCompleted).findFirst().orElse(null);
+        if (this.trip.getActivity() != null && this.trip.getActivity().getActivityList() != null &&
+                !this.trip.getActivity().getActivityList().isEmpty()) {
+            List<Activity> activityList = new ArrayList<>(this.trip.getActivity().getActivityList());
+            activityList.sort(Comparator.comparing(Activity::getStart_date));
+            Activity startActivity = activityList.stream()
+                    .filter(not(Activity::isCompleted)).findFirst().orElse(null);
+
             if (startActivity == null) {
-                startActivity = trip.getActivity().getActivityList().get(0);
+                startActivity = activityList.get(0);
             }
 
             startPoint = new GeoPoint(startActivity.getLatitude(), startActivity.getLongitude());
