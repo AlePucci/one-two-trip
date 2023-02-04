@@ -2,6 +2,7 @@ package it.unimib.sal.one_two_trip.util;
 
 import static android.content.Context.ALARM_SERVICE;
 import static it.unimib.sal.one_two_trip.util.Constants.HALF_HOUR;
+import static it.unimib.sal.one_two_trip.util.Constants.INTENT_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.MINUTE_IN_MILLIS;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.NOTIFICATION_ACTIVITY;
@@ -14,6 +15,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.ONE_DAY;
 import static it.unimib.sal.one_two_trip.util.Constants.ONE_HOUR;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
+import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.TWELVE_HOURS;
 import static it.unimib.sal.one_two_trip.util.Constants.TWO_DAYS;
 import static it.unimib.sal.one_two_trip.util.Constants.TWO_HOURS;
@@ -287,8 +289,20 @@ public class Utility {
             intent.putExtra(NOTIFICATION_TIME, String.valueOf(time[i]));
             intent.putExtra(NOTIFICATION_DELETED, deleted);
 
+            int pendingIntentId = (int) System.currentTimeMillis();
+
+            SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
+            if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, INTENT_ID
+                    + tripId) != null) {
+                pendingIntentId = Integer.parseInt(sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                        INTENT_ID + tripId));
+            } else {
+                sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, INTENT_ID
+                        + tripId, String.valueOf(pendingIntentId));
+            }
+
             PendingIntent pendingIntent = PendingIntent.getBroadcast(application,
-                    (int) System.currentTimeMillis(), intent,
+                    pendingIntentId, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
             AlarmManager alarmManager = (AlarmManager) application.getSystemService(ALARM_SERVICE);
@@ -345,8 +359,20 @@ public class Utility {
             intent.putExtra(NOTIFICATION_TIME, String.valueOf(time[i]));
             intent.putExtra(NOTIFICATION_DELETED, deleted);
 
+            int pendingIntentId = (int) System.currentTimeMillis();
+
+            SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
+            if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME, INTENT_ID
+                    + activityId) != null) {
+                pendingIntentId = Integer.parseInt(sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
+                        INTENT_ID + activityId));
+            } else {
+                sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME, INTENT_ID
+                        + activityId, String.valueOf(pendingIntentId));
+            }
+
             PendingIntent pendingIntent = PendingIntent.getBroadcast(application,
-                    (int) System.currentTimeMillis(), intent,
+                    pendingIntentId, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
             AlarmManager alarmManager = (AlarmManager) application.getSystemService(ALARM_SERVICE);

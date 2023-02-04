@@ -92,6 +92,7 @@ public class Constants {
     public static final String NOTIFICATION_CHANNEL_ID = "one_two_trip_channel";
     public static final String NOTIFICATION_DELETED = "deleted";
     public static final String NOTIFICATION_ID = "notId";
+    public static final String INTENT_ID = "intentId";
     public static final int NOTIFICATION_IMPORTANCE = NotificationManagerCompat.IMPORTANCE_HIGH;
     public static final String NOTIFICATION_TIME = "time";
 
