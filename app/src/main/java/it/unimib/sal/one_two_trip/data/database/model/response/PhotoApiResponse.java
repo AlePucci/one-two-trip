@@ -4,14 +4,14 @@ package it.unimib.sal.one_two_trip.data.database.model.response;
  * Class to represent the API response of the Unsplash photo service.
  * <a href="https://unsplash.com/">See docs</a>
  */
-public class PictureApiResponse {
+public class PhotoApiResponse {
 
     private int total;
     private int total_pages;
     private PictureApiResult[] results;
     private String[] errors;
 
-    public PictureApiResponse() {
+    public PhotoApiResponse() {
     }
 
     public int getTotal() {

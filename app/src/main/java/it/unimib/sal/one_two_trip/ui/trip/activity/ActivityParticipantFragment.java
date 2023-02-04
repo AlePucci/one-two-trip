@@ -100,7 +100,7 @@ public class ActivityParticipantFragment extends Fragment {
                 getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
-                        List<Trip> trips = ((Result.Success) result).getData().getTripList();
+                        List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
                         Trip trip = null;
                         for (Trip mTrip : trips) {
                             if (mTrip.getId().equals(tripId)) {

@@ -33,8 +33,8 @@ import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
-import it.unimib.sal.one_two_trip.util.geocodingUtility.GeocodingUtility;
-import it.unimib.sal.one_two_trip.util.geocodingUtility.GeocodingUtilityCallback;
+import it.unimib.sal.one_two_trip.util.geocoding.GeocodingUtility;
+import it.unimib.sal.one_two_trip.util.geocoding.GeocodingUtilityCallback;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
@@ -202,7 +202,7 @@ public class ActivityLocationEditFragment extends Fragment {
                 getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
-                        List<Trip> trips = ((Result.Success) result).getData().getTripList();
+                        List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
 
                         for (Trip mTrip : trips) {
                             if (mTrip.getId().equals(tripId)) {

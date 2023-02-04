@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import it.unimib.sal.one_two_trip.BuildConfig;
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.database.model.response.PictureApiResponse;
+import it.unimib.sal.one_two_trip.data.database.model.response.PhotoApiResponse;
 import it.unimib.sal.one_two_trip.service.PictureApiService;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import retrofit2.Call;
@@ -31,6 +31,12 @@ public class PhotoRemoteDataSource extends BasePhotoRemoteDataSource {
         this.PHOTOS_KEY = BuildConfig.PHOTOS_KEY;
     }
 
+    /**
+     * Get the photo URL from a remote source.
+     *
+     * @param location the location to search for.
+     * @throws IOException if the request fails.
+     */
     @Override
     public void getPhoto(String location) throws IOException {
         if (location == null || location.isEmpty()) {
@@ -38,12 +44,12 @@ public class PhotoRemoteDataSource extends BasePhotoRemoteDataSource {
             return;
         }
 
-        Call<PictureApiResponse> pictureApiCall = this.pictureApiService.getPhotos(location.trim(),
+        Call<PhotoApiResponse> pictureApiCall = this.pictureApiService.getPhotos(location.trim(),
                 PHOTOS_PER_PAGE_VALUE,
                 PHOTOS_KEY,
                 PHOTOS_VERSION);
 
-        Response<PictureApiResponse> response = pictureApiCall.execute();
+        Response<PhotoApiResponse> response = pictureApiCall.execute();
 
         if (response.body() != null && response.isSuccessful() &&
                 (response.body().getErrors() == null || response.body().getErrors().length == 0)) {

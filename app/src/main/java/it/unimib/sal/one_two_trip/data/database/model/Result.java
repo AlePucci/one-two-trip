@@ -12,17 +12,17 @@ public abstract class Result {
     }
 
     public boolean isSuccess() {
-        return (this instanceof Success);
+        return (this instanceof TripSuccess);
     }
 
     /**
      * Class that represents a successful action during the interaction
-     * with a Web Service or a local database.
+     * with a Web Service or a local database. (TRIPS)
      */
-    public static final class Success extends Result {
+    public static final class TripSuccess extends Result {
         private final TripsResponse response;
 
-        public Success(TripsResponse response) {
+        public TripSuccess(TripsResponse response) {
             this.response = response;
         }
 

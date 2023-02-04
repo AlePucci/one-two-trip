@@ -15,6 +15,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.TWELVE_HOURS;
 import static it.unimib.sal.one_two_trip.util.Constants.TWO_DAYS;
 import static it.unimib.sal.one_two_trip.util.Constants.TWO_HOURS;
 
+import android.app.Application;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +58,7 @@ public class SettingsFragment extends Fragment {
     private MaterialButton theme_system;
     private MaterialButton theme_light;
     private MaterialButton theme_dark;
+    private Application application;
 
     public SettingsFragment() {
     }
@@ -64,6 +66,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.application = requireActivity().getApplication();
     }
 
     @Override
@@ -76,9 +79,10 @@ public class SettingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        BottomNavigationView bottomNavigationView = requireActivity()
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        BottomNavigationView bottomNavigationView = activity
                 .findViewById(R.id.bottom_navigation);
-        FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
+        FloatingActionButton fab = activity.findViewById(R.id.fab);
         bottomNavigationView.setVisibility(View.GONE);
         fab.setVisibility(View.GONE);
 
@@ -121,13 +125,21 @@ public class SettingsFragment extends Fragment {
         save_button.setOnClickListener(this::saveSettings);
     }
 
+    /**
+     * Hides or shows the notifications settings cardview.
+     *
+     * @param isVisible true if the cardview must be visible, false otherwise.
+     */
     private void toggleNotificationsList(boolean isVisible) {
         this.notifications_cardview.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
+    /**
+     * Saves the settings of the user in the shared preferences.
+     */
     private void saveSettings(View v) {
         SharedPreferencesUtil sharedPreferencesUtil
-                = new SharedPreferencesUtil(requireActivity().getApplication());
+                = new SharedPreferencesUtil(this.application);
         boolean notifications = this.notifications_switch.isChecked();
 
         if (notifications) {
@@ -195,9 +207,12 @@ public class SettingsFragment extends Fragment {
         Snackbar.make(v, getString(R.string.settings_saved), Snackbar.LENGTH_SHORT).show();
     }
 
+    /**
+     * Restores the settings of the user from the shared preferences.
+     */
     private void restoreSettings() {
         SharedPreferencesUtil sharedPreferencesUtil
-                = new SharedPreferencesUtil(requireActivity().getApplication());
+                = new SharedPreferencesUtil(this.application);
 
         boolean notifications = Boolean.parseBoolean(
                 sharedPreferencesUtil.readStringData(

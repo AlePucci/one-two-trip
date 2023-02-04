@@ -4,6 +4,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.FONT_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.IMAGE_MIME;
 import static it.unimib.sal.one_two_trip.util.Constants.KEY_COMPLETED;
 import static it.unimib.sal.one_two_trip.util.Constants.KEY_LOCATION;
+import static it.unimib.sal.one_two_trip.util.Constants.SHARED_IMAGE;
 
 import android.content.Context;
 import android.content.Intent;
@@ -45,8 +46,7 @@ public class PhotoWorker extends Worker implements PhotoCallback {
     public PhotoWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         this.context = context;
-        this.photoRemoteDataSource = ServiceLocator.getInstance()
-                .getPhotoRemoteDataSource(context.getApplicationContext());
+        this.photoRemoteDataSource = new PhotoRemoteDataSource(context);
         this.photoRemoteDataSource.setPhotoCallback(this);
     }
 
@@ -97,7 +97,7 @@ public class PhotoWorker extends Worker implements PhotoCallback {
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 
         String path = MediaStore.Images.Media.insertImage(this.context.getContentResolver(),
-                inImage, "shared_img_" + System.currentTimeMillis(), null);
+                inImage, SHARED_IMAGE + System.currentTimeMillis(), null);
 
         if (path == null) {
             return null;

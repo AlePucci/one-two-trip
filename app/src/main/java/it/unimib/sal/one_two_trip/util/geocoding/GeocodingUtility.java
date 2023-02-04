@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.util.geocodingUtility;
+package it.unimib.sal.one_two_trip.util.geocoding;
 
 import android.app.Application;
 
@@ -7,7 +7,6 @@ import java.io.IOException;
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.data.source.geocoding.GeocodingCallback;
 import it.unimib.sal.one_two_trip.data.source.geocoding.GeocodingRemoteDataSource;
-import it.unimib.sal.one_two_trip.util.ServiceLocator;
 
 /**
  * Utility class to get the geocoding data.
@@ -19,8 +18,7 @@ public class GeocodingUtility extends BaseGeocodingUtility {
 
     public GeocodingUtility(Application application) {
         this.application = application;
-        this.geocodingRemoteDataSource = ServiceLocator.getInstance().getGeocodingRemoteDataSource
-                (this.application);
+        this.geocodingRemoteDataSource = new GeocodingRemoteDataSource(this.application);
     }
 
     @Override
@@ -29,6 +27,9 @@ public class GeocodingUtility extends BaseGeocodingUtility {
         new Thread(runnable).start();
     }
 
+    /**
+     * Runnable class to perform the geocoding search in another thread.
+     */
     public class GeoRunnable implements Runnable, GeocodingCallback {
 
         private final String query;

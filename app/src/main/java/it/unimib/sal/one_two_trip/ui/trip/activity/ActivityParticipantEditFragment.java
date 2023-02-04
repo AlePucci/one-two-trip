@@ -122,7 +122,8 @@ public class ActivityParticipantEditFragment extends Fragment {
                 getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
-                        List<Trip> trips = ((Result.Success) result).getData().getTripList();
+                        List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
+
                         for (Trip mTrip : trips) {
                             if (mTrip.getId().equals(tripId)) {
                                 this.trip = mTrip;

@@ -83,7 +83,7 @@ public class TripsRepository implements ITripsRepository, TripCallback {
 
     @Override
     public void onSuccessFromLocal(List<Trip> tripList) {
-        Result.Success result = new Result.Success(new TripsResponse(tripList));
+        Result.TripSuccess result = new Result.TripSuccess(new TripsResponse(tripList));
         this.allTripsMutableLiveData.postValue(result);
     }
 }

@@ -64,6 +64,7 @@ public class Constants {
     // SHARE PHOTO CONSTANTS
     public static final String IMAGE_MIME = "image/*";
     public static final String FONT_NAME = "sans-serif-condensed-medium";
+    public static final String SHARED_IMAGE = "shared_img_";
 
     // STATUS
     public static final String STATUS_OK = "OK";

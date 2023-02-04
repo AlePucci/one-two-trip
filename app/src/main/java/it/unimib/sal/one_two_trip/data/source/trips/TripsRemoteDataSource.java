@@ -36,6 +36,9 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
         this.addTripListener();
     }
 
+    /**
+     * Add a listener to all the trips of the user in Firebase Realtime Database.
+     */
     private void addTripListener() {
         ValueEventListener tripListener = new ValueEventListener() {
             @Override

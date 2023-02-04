@@ -46,10 +46,11 @@ public class AboutFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        BottomNavigationView bottomNavigationView = requireActivity()
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        BottomNavigationView bottomNavigationView = activity
                 .findViewById(R.id.bottom_navigation);
-        FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
-        LinearLayout contribute = requireActivity().findViewById(R.id.contribute_layout);
+        FloatingActionButton fab = activity.findViewById(R.id.fab);
+        LinearLayout contribute = activity.findViewById(R.id.contribute_layout);
         bottomNavigationView.setVisibility(View.GONE);
         fab.setVisibility(View.GONE);
 

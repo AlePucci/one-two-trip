@@ -128,7 +128,7 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                 getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
-                        List<Trip> trips = ((Result.Success) result).getData().getTripList();
+                        List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
 
                         for (Trip mTrip : trips) {
                             if (mTrip.getId().equals(this.tripId)) {
@@ -170,10 +170,10 @@ public class ActivityFragment extends Fragment implements MenuProvider {
         Context context = requireContext();
         if (menuItem.getItemId() == R.id.trip_menu_rename) {
             androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
-                    requireContext(), R.style.Widget_App_CustomAlertDialog);
-            EditText input = new EditText(requireContext());
+                    context, R.style.Widget_App_CustomAlertDialog);
+            EditText input = new EditText(context);
             input.setInputType(InputType.TYPE_CLASS_TEXT);
-            FrameLayout container = new FrameLayout(requireContext());
+            FrameLayout container = new FrameLayout(context);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(50, 0, 50, 0);
@@ -201,7 +201,7 @@ public class ActivityFragment extends Fragment implements MenuProvider {
             return true;
         } else if (menuItem.getItemId() == R.id.trip_menu_delete) {
             androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
-                    requireContext(), R.style.Widget_App_CustomAlertDialog);
+                    context, R.style.Widget_App_CustomAlertDialog);
             alert.setTitle(getString(R.string.activity_delete_confirmation_title));
             alert.setMessage(getString(R.string.activity_delete_confirmation));
             alert.setPositiveButton(getString(R.string.activity_delete_confirmation_positive),

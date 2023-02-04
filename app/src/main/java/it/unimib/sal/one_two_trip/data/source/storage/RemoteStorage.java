@@ -28,6 +28,12 @@ public class RemoteStorage extends BaseRemoteStorage {
         this.application = application;
     }
 
+    /**
+     * Upload the trip logo to Firebase Storage.
+     *
+     * @param bitmap the bitmap to upload
+     * @param tripId the trip id
+     */
     public void uploadTripLogo(@NonNull Bitmap bitmap, String tripId) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference().child(FIREBASE_USER_COLLECTION)
@@ -59,6 +65,11 @@ public class RemoteStorage extends BaseRemoteStorage {
                 });
     }
 
+    /**
+     * Download the trip logo from Firebase Storage.
+     *
+     * @param tripId the trip id
+     */
     @Override
     public void downloadTripLogo(String tripId) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -73,6 +84,11 @@ public class RemoteStorage extends BaseRemoteStorage {
                 callback.onDownloadFailure(exception));
     }
 
+    /**
+     * Check if the trip logo exists in Firebase Storage.
+     *
+     * @param tripId the trip id
+     */
     @Override
     public void tripLogoExists(String tripId) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -89,6 +105,11 @@ public class RemoteStorage extends BaseRemoteStorage {
                 callback.onExistsResponse(-1));
     }
 
+    /**
+     * Delete the trip logo from Firebase Storage.
+     *
+     * @param tripId the trip id
+     */
     @Override
     public void deleteTripLogo(String tripId) {
         FirebaseStorage storage = FirebaseStorage.getInstance();

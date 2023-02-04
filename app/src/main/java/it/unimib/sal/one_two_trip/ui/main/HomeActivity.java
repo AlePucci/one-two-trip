@@ -137,7 +137,6 @@ public class HomeActivity extends AppCompatActivity {
                 container.addView(input);
                 input.setLayoutParams(params);
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
-                input.setHint(R.string.trip_new_hint);
 
                 alert.setTitle(getString(R.string.trip_new_title));
                 alert.setMessage(getString(R.string.trip_new_descr));

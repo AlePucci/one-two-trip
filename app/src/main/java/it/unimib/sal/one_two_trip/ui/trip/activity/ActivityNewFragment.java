@@ -56,8 +56,8 @@ import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 import it.unimib.sal.one_two_trip.util.Utility;
-import it.unimib.sal.one_two_trip.util.geocodingUtility.GeocodingUtility;
-import it.unimib.sal.one_two_trip.util.geocodingUtility.GeocodingUtilityCallback;
+import it.unimib.sal.one_two_trip.util.geocoding.GeocodingUtility;
+import it.unimib.sal.one_two_trip.util.geocoding.GeocodingUtilityCallback;
 
 /**
  * Fragment that enables the user to create a new activity.
@@ -332,7 +332,7 @@ public class ActivityNewFragment extends Fragment {
 
         this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
-                List<Trip> trips = ((Result.Success) result).getData().getTripList();
+                List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
 
                 for (Trip trip : trips) {
                     if (trip.getId().equals(tripId)) {

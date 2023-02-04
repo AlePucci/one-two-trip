@@ -64,10 +64,10 @@ import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.TripRecyclerViewAdapter;
-import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -171,10 +171,10 @@ public class TripFragment extends Fragment implements MenuProvider {
 
         fab.setOnClickListener(v -> {
             androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
-                    requireContext(), R.style.Widget_App_CustomAlertDialog);
-            EditText input = new EditText(requireContext());
+                    activity, R.style.Widget_App_CustomAlertDialog);
+            EditText input = new EditText(activity);
             input.setInputType(InputType.TYPE_CLASS_TEXT);
-            FrameLayout container = new FrameLayout(requireContext());
+            FrameLayout container = new FrameLayout(activity);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(50, 0, 50, 0);
@@ -201,7 +201,7 @@ public class TripFragment extends Fragment implements MenuProvider {
 
         //RecyclerView
         RecyclerView recyclerView = view.findViewById(R.id.trip_recyclerview);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireContext());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         recyclerView.setLayoutManager(linearLayoutManager);
 
         if (moveToActivity) {
@@ -253,7 +253,7 @@ public class TripFragment extends Fragment implements MenuProvider {
                 getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
-                        List<Trip> trips = ((Result.Success) result).getData().getTripList();
+                        List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
 
                         for (Trip trip : trips) {
                             if (trip.getId().equals(tripId)) {
@@ -318,6 +318,9 @@ public class TripFragment extends Fragment implements MenuProvider {
         }
     }
 
+    /**
+     * Method to setup the map
+     */
     private void mapSetup() {
         Log.d("AAA", "called map setup");
         mapView.getOverlays().clear();
@@ -378,6 +381,9 @@ public class TripFragment extends Fragment implements MenuProvider {
         mapController.setCenter(startPoint);
     }
 
+    /**
+     * Method to request permissions for the map
+     */
     private void requestPerms() {
         boolean permissionsStatus =
                 Arrays.stream(PERMISSIONS).allMatch(p ->

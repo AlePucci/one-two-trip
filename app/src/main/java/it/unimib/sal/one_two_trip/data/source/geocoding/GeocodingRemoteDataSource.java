@@ -27,6 +27,13 @@ public class GeocodingRemoteDataSource extends BaseGeocodingRemoteDataSource {
         this.geocodingApiService = ServiceLocator.getInstance().getGeocodingApiService();
     }
 
+    /**
+     * Get the geocoding data from a remote source.
+     *
+     * @param query the location to search for.
+     * @param limit the number of results to return.
+     * @throws IOException if the request fails.
+     */
     @Override
     public void search(String query, int limit) throws IOException {
         if (query == null || query.isEmpty()) {

@@ -51,16 +51,17 @@ import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.SettingsParticipantRecyclerViewAdapter;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.source.storage.RemoteStorage;
 import it.unimib.sal.one_two_trip.data.source.storage.RemoteStorageCallback;
-import it.unimib.sal.one_two_trip.data.database.model.Result;
-import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
+import it.unimib.sal.one_two_trip.util.Utility;
 import jp.wasabeef.blurry.Blurry;
 
 /**
@@ -100,7 +101,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
 
-        this.remoteStorage = ServiceLocator.getInstance().getRemoteStorage(this.application);
+        this.remoteStorage = new RemoteStorage(this.application);
         this.remoteStorage.setRemoteStorageCallback(this);
     }
 
@@ -172,7 +173,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
 
         descriptionCardview.setOnClickListener(v -> {
             androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
-                    requireContext(), R.style.Widget_App_CustomAlertDialog);
+                    activity, R.style.Widget_App_CustomAlertDialog);
             EditText input = new EditText(requireContext());
             FrameLayout container = new FrameLayout(requireContext());
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
@@ -223,7 +224,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                 getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
-                        List<Trip> trips = ((Result.Success) result).getData().getTripList();
+                        List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
 
                         for (Trip mTrip : trips) {
                             if (mTrip.getId().equals(tripId)) {
@@ -397,10 +398,10 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
         Context context = requireContext();
         if (menuItem.getItemId() == R.id.trip_menu_rename) {
             androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
-                    requireContext(), R.style.Widget_App_CustomAlertDialog);
-            EditText input = new EditText(requireContext());
+                    context, R.style.Widget_App_CustomAlertDialog);
+            EditText input = new EditText(context);
             input.setInputType(InputType.TYPE_CLASS_TEXT);
-            FrameLayout container = new FrameLayout(requireContext());
+            FrameLayout container = new FrameLayout(context);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(50, 0, 50, 0);
@@ -426,13 +427,21 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
             return true;
         } else if (menuItem.getItemId() == R.id.trip_menu_delete) {
             androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
-                    requireContext(), R.style.Widget_App_CustomAlertDialog);
+                    context, R.style.Widget_App_CustomAlertDialog);
             alert.setTitle(getString(R.string.trip_delete_confirmation_title));
             alert.setMessage(getString(R.string.trip_delete_confirmation));
             alert.setPositiveButton(getString(R.string.trip_delete_confirmation_positive),
                     (dialog, whichButton) -> {
                         this.viewModel.deleteTrip(this.trip);
                         this.remoteStorage.deleteTripLogo(this.tripId);
+                        Utility.deleteNotifications(this.trip, this.application);
+
+                        if (this.trip != null && this.trip.getActivity() != null
+                                && this.trip.getActivity().getActivityList() != null) {
+                            for (it.unimib.sal.one_two_trip.data.database.model.Activity activity : this.trip.getActivity().getActivityList()) {
+                                Utility.deleteNotifications(activity, this.application, this.tripId);
+                            }
+                        }
                         requireActivity().finish();
                     });
 
