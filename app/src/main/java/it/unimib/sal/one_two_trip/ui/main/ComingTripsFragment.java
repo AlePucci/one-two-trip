@@ -121,11 +121,7 @@ public class ComingTripsFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        final String finalLastUpdate = lastUpdate;
-        this.swipeRefreshLayout.setOnRefreshListener(() -> {
-            this.refresh(finalLastUpdate);
-            this.swipeRefreshLayout.setRefreshing(false);
-        });
+        this.swipeRefreshLayout.setOnRefreshListener(this::refresh);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activity,
                 LinearLayoutManager.VERTICAL, false);
@@ -228,11 +224,13 @@ public class ComingTripsFragment extends Fragment {
 
                         // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
                         if (fetchedTrips == null || fetchedTrips.isEmpty()) {
+                            int previousSize = this.comingTrips.size();
                             this.comingTrips.clear();
+                            this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
+                                    previousSize);
                             noTripsText.setText(R.string.no_trips_added);
                             noTripsText.setVisibility(View.VISIBLE);
                             noTripsImage.setVisibility(View.VISIBLE);
-                            tripsRecyclerViewAdapter.notifyDataSetChanged();
                         } else {
                             List<Trip> comingTrips = new ArrayList<>(fetchedTrips);
 
@@ -258,9 +256,11 @@ public class ComingTripsFragment extends Fragment {
 
 
                             // IF THERE ARE NO COMING TRIPS, SHOW THE NO COMING TRIPS IMAGE TEXT
-
+                            int previousSize = this.comingTrips.size();
                             this.comingTrips.clear();
                             if (comingTrips.isEmpty()) {
+                                this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
+                                        previousSize);
                                 noTripsText.setText(R.string.no_past_trips);
                                 noTripsText.setVisibility(View.VISIBLE);
                                 noTripsImage.setVisibility(View.VISIBLE);
@@ -271,31 +271,25 @@ public class ComingTripsFragment extends Fragment {
 
                                 this.comingTrips.addAll(comingTrips);
                                 this.comingTrips.sort(Comparator.comparing(Trip::getStart_date));
-                                //this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
-                                //       this.comingTrips.size() + 1);
+                                this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
+                                        previousSize + 1);
                             }
-
-                            // TODO FIX THIS
-                            this.tripsRecyclerViewAdapter.notifyDataSetChanged();
                         }
 
-                        progressBar.setVisibility(View.GONE);
                     } else {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
                                 .getMessage()), Snackbar.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.GONE);
                     }
+                    progressBar.setVisibility(View.GONE);
                 });
     }
 
     /**
-     * Forces the refresh of the trips
-     *
-     * @param lastUpdate the last update time
+     * Forces the refresh of the trips and stops the refresh animation.
      */
-    private void refresh(String lastUpdate) {
-        this.tripsViewModel.fetchTrips(Long.parseLong(lastUpdate));
+    private void refresh() {
+        this.tripsViewModel.refreshTrips();
         this.swipeRefreshLayout.setRefreshing(false);
     }
 }

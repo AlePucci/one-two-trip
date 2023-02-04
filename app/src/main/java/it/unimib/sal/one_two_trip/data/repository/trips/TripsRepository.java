@@ -40,6 +40,12 @@ public class TripsRepository implements ITripsRepository, TripCallback {
         this.tripsLocalDataSource.setTripCallback(this);
     }
 
+    /**
+     * Fetch the trips from the local source if the last update is less than FRESH_TIMEOUT.
+     *
+     * @param lastUpdate the last update time
+     * @return the list of trips
+     */
     @Override
     public MutableLiveData<Result> fetchTrips(long lastUpdate) {
         long currentTime = System.currentTimeMillis();
@@ -52,17 +58,43 @@ public class TripsRepository implements ITripsRepository, TripCallback {
         return this.allTripsMutableLiveData;
     }
 
+    /**
+     * Refresh the trips from the remote source.
+     *
+     * @return the list of trips
+     */
+    @Override
+    public MutableLiveData<Result> refreshTrips() {
+        this.tripsRemoteDataSource.getTrips();
+        return this.allTripsMutableLiveData;
+    }
+
+    /**
+     * Update the trip in the remote source.
+     *
+     * @param trip the trip to update
+     */
     @Override
     public void updateTrip(Trip trip) {
         this.tripsRemoteDataSource.updateTrip(trip);
     }
 
+    /**
+     * Delete the trip from the remote source and from the local source.
+     *
+     * @param trip the trip to delete
+     */
     @Override
     public void deleteTrip(Trip trip) {
         this.tripsRemoteDataSource.deleteTrip(trip);
         this.tripsLocalDataSource.deleteTrip(trip);
     }
 
+    /**
+     * Insert the trip in the remote source.
+     *
+     * @param trip the trip to insert
+     */
     @Override
     public void insertTrip(Trip trip) {
         this.tripsRemoteDataSource.insertTrip(trip);

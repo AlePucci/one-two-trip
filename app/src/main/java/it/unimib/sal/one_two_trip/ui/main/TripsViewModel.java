@@ -3,9 +3,9 @@ package it.unimib.sal.one_two_trip.ui.main;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 
 /**
  * ViewModel to manage the list of Trips.
@@ -40,9 +40,18 @@ public class TripsViewModel extends ViewModel {
      *
      * @param lastUpdate The last update time read from the SharedPreferences.
      */
-    public void fetchTrips(long lastUpdate) {
+    private void fetchTrips(long lastUpdate) {
         this.tripListLiveData = this.tripsRepository.fetchTrips(lastUpdate);
     }
+
+    /**
+     * It uses the Repository to download the trip list
+     * and to associate it with the LiveData object.
+     */
+    public void refreshTrips() {
+        this.tripListLiveData = this.tripsRepository.refreshTrips();
+    }
+
 
     /**
      * Updates the trip. For example an activity is added or trip title changed.

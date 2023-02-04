@@ -36,6 +36,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -119,11 +120,7 @@ public class PastTripsFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        final String finalLastUpdate = lastUpdate;
-        this.swipeRefreshLayout.setOnRefreshListener(() -> {
-            this.refresh(finalLastUpdate);
-            this.swipeRefreshLayout.setRefreshing(false);
-        });
+        this.swipeRefreshLayout.setOnRefreshListener(this::refresh);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activity,
                 LinearLayoutManager.VERTICAL, false);
@@ -224,11 +221,14 @@ public class PastTripsFragment extends Fragment {
 
                         // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
                         if (fetchedTrips == null || fetchedTrips.isEmpty()) {
+                            int previousSize = this.pastTrips.size();
                             this.pastTrips.clear();
+                            this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
+                                    previousSize);
                             noTripsText.setText(R.string.no_trips_added);
                             noTripsText.setVisibility(View.VISIBLE);
                             noTripsImage.setVisibility(View.VISIBLE);
-                            tripsRecyclerViewAdapter.notifyDataSetChanged();
+
                         } else {
                             List<Trip> pastTrips = new ArrayList<>(fetchedTrips);
 
@@ -236,8 +236,11 @@ public class PastTripsFragment extends Fragment {
                             pastTrips.removeIf(trip -> trip != null && !trip.isCompleted());
 
                             // IF THERE ARE NO PAST TRIPS, SHOW THE NO PAST TRIPS IMAGE TEXT
+                            int previousSize = this.pastTrips.size();
                             this.pastTrips.clear();
                             if (pastTrips.isEmpty()) {
+                                this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
+                                        previousSize);
                                 noTripsText.setText(R.string.no_past_trips);
                                 noTripsText.setVisibility(View.VISIBLE);
                                 noTripsImage.setVisibility(View.VISIBLE);
@@ -246,30 +249,27 @@ public class PastTripsFragment extends Fragment {
                                 noTripsImage.setVisibility(View.GONE);
 
                                 this.pastTrips.addAll(pastTrips);
-                                //this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
-                                //        this.pastTrips.size() + 1);
+                                this.pastTrips.sort(Comparator.comparing(Trip::getStart_date));
+                                this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
+                                        previousSize + 1);
                             }
-                            // TODO FIX THIS
-                            this.tripsRecyclerViewAdapter.notifyDataSetChanged();
                         }
 
-                        progressBar.setVisibility(View.GONE);
+
                     } else {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
                                 .getMessage()), Snackbar.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.GONE);
                     }
+                    progressBar.setVisibility(View.GONE);
                 });
     }
 
     /**
-     * Forces the refresh of the trips
-     *
-     * @param lastUpdate the last update time
+     * Forces the refresh of the trips and stops the refresh animation.
      */
-    private void refresh(String lastUpdate) {
-        this.tripsViewModel.fetchTrips(Long.parseLong(lastUpdate));
+    private void refresh() {
+        this.tripsViewModel.refreshTrips();
         this.swipeRefreshLayout.setRefreshing(false);
     }
 }
