@@ -8,4 +8,6 @@
     <string name="activity_end_time" translatable="false">EndTime</string>
     <string name="activity_end_location" translatable="false">EndLoc</string>
     <string name="participants" translatable="false">Participants</string>
+
+    <!-- end of file -->
 </resources>

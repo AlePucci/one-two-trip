@@ -53,4 +53,5 @@
         app:layout_constraintEnd_toStartOf="@+id/participant_settings_remove"
         app:layout_constraintStart_toEndOf="@+id/participant_settings_name"
         app:layout_constraintTop_toTopOf="parent" />
+    
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -61,5 +61,6 @@
             app:icon="@drawable/ic_baseline_check_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_descr_textlayout" />
+        
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
