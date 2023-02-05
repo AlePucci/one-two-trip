@@ -69,6 +69,7 @@ public class ParticipantRecyclerViewAdapter
      * a RecyclerView item.
      */
     public interface OnItemClickListener {
+
         void onClick(int position);
     }
 
@@ -76,6 +77,7 @@ public class ParticipantRecyclerViewAdapter
      * Custom ViewHolder to bind data to the RecyclerView items (participants).
      */
     public class ParticipantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
         private final TextView participantName;
         private final TextView participantImage;
         private final ConstraintLayout participantLayout;
@@ -95,14 +97,16 @@ public class ParticipantRecyclerViewAdapter
             this.participantImage.setText(fullName.substring(0, 1));
 
             int color;
+
+            String id = person.getId();
             if (this.sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
-                    USER_COLOR + "_" + person.getId()) != null) {
+                    USER_COLOR + "_" + id) != null) {
                 color = Integer.parseInt(this.sharedPreferencesUtil.readStringData(
-                        SHARED_PREFERENCES_FILE_NAME, USER_COLOR + "_" + person.getId()));
+                        SHARED_PREFERENCES_FILE_NAME, USER_COLOR + "_" + id));
             } else {
                 color = Utility.getRandomColor();
                 this.sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME,
-                        USER_COLOR + "_" + person.getId(), String.valueOf(color));
+                        USER_COLOR + "_" + id, String.valueOf(color));
             }
 
             this.participantImage.setBackgroundTintList(ColorStateList.valueOf(color));

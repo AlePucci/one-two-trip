@@ -78,6 +78,7 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
      * a RecyclerView item.
      */
     public interface OnItemClickListener {
+
         void onActivityClick(int position);
 
         void onDragClick(int position);
@@ -167,15 +168,16 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
             this.item_pos1.setText(activity.getLocation());
 
             DateFormat df = DateFormat.getTimeInstance(DateFormat.SHORT);
-            String date = df.format(activity.getStart_date());
+            String date = df.format(startDate);
             this.item_time1.setText(date);
 
             if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                 this.item_pos2.setText(activity.getEnd_location());
                 this.item_pos2.setVisibility(View.VISIBLE);
-                
-                String end_date = df.format(activity.getEnd_date());
-                if (Utility.compareDate(activity.getStart_date(), activity.getEnd_date())) {
+
+                long endDate = activity.getEnd_date();
+                String end_date = df.format(endDate);
+                if (Utility.compareDate(startDate, endDate)) {
                     this.item_time2.setText(end_date);
                 } else {
                     String longActivity = end_date + "*";

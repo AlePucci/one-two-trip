@@ -18,7 +18,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Registry to provide the dependencies for the classes ussed in the application.
+ * Registry to provide the dependencies for the classes used in the application.
  */
 public class ServiceLocator {
 

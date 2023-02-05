@@ -19,22 +19,11 @@
         <item name="cardBackgroundColor">@color/cardview_light_background</item>
     </style>
 
-    <style name="Widget.App.ShareButton" parent="Widget.Material3.Button.IconButton">
-        <item name="iconTint">?attr/colorOnSurface</item>
-    </style>
-
     <style name="Widget.App.TripTimeAppearance" parent="">
         <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="fontFamily">sans-serif-light</item>
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:textStyle">normal</item>
-    </style>
-
-    <style name="Widget.App.TripLocationAppearance" parent="">
-        <item name="android:textColor">?attr/colorOnSurface</item>
-        <item name="fontFamily">sans-serif-light</item>
-        <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="Widget.App.ToolbarTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">

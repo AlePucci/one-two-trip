@@ -99,6 +99,7 @@ public class TripsRecyclerViewAdapter
      * a RecyclerView item.
      */
     public interface OnItemClickListener {
+
         void onTripShare(Trip trip);
 
         void onTripClick(Trip trip);
