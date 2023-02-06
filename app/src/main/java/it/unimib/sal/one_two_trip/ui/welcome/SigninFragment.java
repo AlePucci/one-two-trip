@@ -46,7 +46,6 @@ public class SigninFragment extends Fragment {
     private DataEncryptionUtil dataEncryptionUtil;
     private UserViewModel userViewModel;
     boolean maschio;
-    private ProgressBar progressBar;
 
     public SigninFragment() {
         // Required empty public constructor
@@ -193,14 +192,17 @@ public class SigninFragment extends Fragment {
                 onRadioButtonClicked(v);
             }
         });
+
+
         EditText email_edit_text = view.findViewById(R.id.email_edit_text);
         EditText password_email_edit_text = view.findViewById(R.id.password_email_edit_text);
-        Button buttonRegistration = null;
+
+
+        Button buttonRegistration = view.findViewById(R.id.signin_button);
         buttonRegistration.setOnClickListener(v -> {
             String email = email_edit_text.getText().toString().trim();
             String password = password_email_edit_text.getText().toString().trim();
             if (isEmailOk(email) & isPasswordOk(password)) {
-                progressBar.setVisibility(View.VISIBLE);
                 if (!userViewModel.isAuthenticationError()) {
                     userViewModel.getUserMutableLiveData(email, password, false).observe(
                             getViewLifecycleOwner(), result -> {
@@ -220,7 +222,6 @@ public class SigninFragment extends Fragment {
                 } else {
                     userViewModel.getUser(email, password, false);
                 }
-                progressBar.setVisibility(View.GONE);
             } else {
                 userViewModel.setAuthenticationError(true);
                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
@@ -262,7 +263,7 @@ public class SigninFragment extends Fragment {
     private boolean isPasswordOk(String password) {
         // Check if the password length is correct
         EditText pass = requireView().findViewById(R.id.password_email_edit_text);
-        if (pass == null || password.length() < Constants.MINIMUM_PASSWORD_LENGHT) {
+        if (password == null || password.length() < Constants.MINIMUM_PASSWORD_LENGHT) {
             pass.setError("Error password");
             return false;
         } else {

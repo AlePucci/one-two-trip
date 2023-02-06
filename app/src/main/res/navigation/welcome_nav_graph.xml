@@ -18,12 +18,19 @@
         <action
             android:id="@+id/action_welcomeFragment_to_homeActivity"
             app:destination="@id/homeActivity" />
+        <action
+            android:id="@+id/action_welcomeFragment_to_loginFragment2"
+            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
         android:name="it.unimib.sal.one_two_trip.ui.welcome.SigninFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_signin" />
+        tools:layout="@layout/fragment_signin" >
+        <action
+            android:id="@+id/action_loginFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
+    </fragment>
     <fragment
         android:id="@+id/forgotPasswordFragment"
         android:name="it.unimib.sal.one_two_trip.ForgotPasswordFragment"

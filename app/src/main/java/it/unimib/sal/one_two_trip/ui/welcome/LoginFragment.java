@@ -2,6 +2,8 @@ package it.unimib.sal.one_two_trip.ui.welcome;
 
 import static android.provider.Telephony.Carriers.PASSWORD;
 import static it.unimib.sal.one_two_trip.util.Constants.EMAIL_ADDRESS;
+import static it.unimib.sal.one_two_trip.util.Constants.ENCRYPTED_DATA_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.ID_TOKEN;
 import static it.unimib.sal.one_two_trip.util.Constants.INVALID_CREDENTIALS_ERROR;
 import static it.unimib.sal.one_two_trip.util.Constants.INVALID_USER_ERROR;
@@ -12,10 +14,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +34,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 
 
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.BeginSignInResult;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
@@ -37,8 +43,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -49,6 +58,7 @@ import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.model.Result;
 import it.unimib.sal.one_two_trip.model.User;
 import it.unimib.sal.one_two_trip.repository.user.IUserRepository;
+import it.unimib.sal.one_two_trip.util.Constants;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 
 /**
@@ -59,8 +69,8 @@ import it.unimib.sal.one_two_trip.util.ServiceLocator;
 public class LoginFragment extends Fragment {
     private static final String TAG = LoginFragment.class.getSimpleName();
     private UserViewModel userViewModel;
-    private TextInputLayout textInputLayoutEmail;
-    private TextInputLayout textInputLayoutPassword;
+    private TextInputEditText textInputEditEmail;
+    private TextInputEditText textInputEditPassword;
     private LinearProgressIndicator progressIndicator;
     private ActivityResultLauncher<IntentSenderRequest> activityResultLauncher;
     private FirebaseAuth mFirebaseAuth;
@@ -173,8 +183,24 @@ public class LoginFragment extends Fragment {
     }
 
     private void saveLoginData(String email, String password, String idToken) {
+            try {
+                dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                        ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, EMAIL_ADDRESS, email);
+                dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                        ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, PASSWORD, password);
+                dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                        ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN, idToken);
 
-}
+                if (password != null) {
+                    dataEncryptionUtil.writeSecreteDataOnFile(ENCRYPTED_DATA_FILE_NAME,
+                            email.concat(":").concat(password));
+                }
+
+            } catch (GeneralSecurityException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -186,18 +212,104 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Button buttonLogin = view.findViewById(R.id.button3);
-        final Button buttonGoogleLogin = view.findViewById(R.id.buttonGoogleLogin);
-        final Button buttonRegistration = view.findViewById(R.id.signin_button);
-        buttonLogin.setOnClickListener(v ->
-                Navigation.findNavController(requireView()).navigate(R.id.action_welcomeFragment_to_homeActivity));
+        Button buttonLogin = view.findViewById(R.id.button2);
+        buttonLogin.setOnClickListener(v -> {
+            textInputEditEmail = view.findViewById(R.id.email_login);
+            textInputEditPassword = view.findViewById(R.id.password_login);
+            String email = textInputEditEmail.getText().toString().trim();
+            String password = textInputEditPassword.getText().toString().trim();
+
+            // Start login if email and password are ok
+            if (isEmailOk(email) & isPasswordOk(password)) {
+                if (!userViewModel.isAuthenticationError()) {
+                    progressIndicator.setVisibility(View.VISIBLE);
+                    userViewModel.getUserMutableLiveData(email, password, true).observe(
+                            getViewLifecycleOwner(), result -> {
+                                if (result.isSuccess()) {
+                                    User user = ((Result.UserResponseSuccess) result).getData();
+                                    saveLoginData(email, password, user.getIdToken());
+                                    userViewModel.setAuthenticationError(false);
+                                    retrieveUserInformationAndStartActivity(user, R.id.action_welcomeFragment_to_homeActivity);
+                                } else {
+                                    userViewModel.setAuthenticationError(true);
+                                    progressIndicator.setVisibility(View.GONE);
+                                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                            getErrorMessage(((Result.Error) result).getMessage()),
+                                            Snackbar.LENGTH_SHORT).show();
+                                }
+                            });
+                } else {
+                    userViewModel.getUser(email, password, true);
+                }
+            } else {
+                Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                        R.string.check_login_data_message, Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        Button buttonNotReg = view.findViewById(R.id.button3);
+        buttonNotReg.setOnClickListener(v -> {
+            Navigation.findNavController(requireView()).navigate(R.id.action_welcomeFragment_to_loginFragment);
+        });
+
 
         Button buttonForgotPassword = view.findViewById(R.id.button);
         buttonForgotPassword.setOnClickListener(v ->
                 Navigation.findNavController(requireView()).navigate(R.id.action_welcomeFragment_to_forgotPasswordFragment));
 
-    };
+        Button buttonGoogleLogin = view.findViewById(R.id.buttonGoogleLogin);
+        buttonGoogleLogin.setOnClickListener(v -> oneTapClient.beginSignIn(signInRequest)
+                .addOnSuccessListener(requireActivity(), new OnSuccessListener<BeginSignInResult>() {
+                    @Override
+                    public void onSuccess(BeginSignInResult result) {
+                        Log.d(TAG, "onSuccess from oneTapClient.beginSignIn(BeginSignInRequest)");
+                        IntentSenderRequest intentSenderRequest =
+                                new IntentSenderRequest.Builder(result.getPendingIntent()).build();
+                        activityResultLauncher.launch(intentSenderRequest);
+                    }
+                })
+                .addOnFailureListener(requireActivity(), new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // No saved credentials found. Launch the One Tap sign-up flow, or
+                        // do nothing and continue presenting the signed-out UI.
+                        Log.d(TAG, e.getLocalizedMessage());
 
+                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                requireActivity().getString(R.string.error_no_google_account_found_message),
+                                Snackbar.LENGTH_SHORT).show();
+                    }
+                }));
+    };
+    private boolean isPasswordOk(String password) {
+        // Check if the password length is correct
+        EditText pass = requireView().findViewById(R.id.password_login);
+        if (password == null || password.length() < Constants.MINIMUM_PASSWORD_LENGHT) {
+            pass.setError("Error password");
+            return false;
+        } else {
+            pass.setError(null);
+            return true;
+        }
+    }
+    private boolean isEmailOk(String email) {
+        EditText emailToText = requireActivity().findViewById(R.id.email_login);
+        if (emailToText != null && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(getActivity().getApplicationContext(), "Email Verified !", Toast.LENGTH_SHORT).show();
+            return true;
+        } else {
+            Toast.makeText(getActivity().getApplicationContext(), "Enter valid Email address !", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        userViewModel.setAuthenticationError(false);
+    }
 
 
 

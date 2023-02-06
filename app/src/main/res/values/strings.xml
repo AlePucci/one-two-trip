@@ -74,7 +74,7 @@
     <string name="error_json_parsing">Error! Please try again</string>
     <string name="error_retrieving_trips">Error while retrieving trips.</string>
     <string name="no_internet_error">Error! You have no connection at the moment. Please retry later.</string>
-
+    <string name="error_no_google_account_found_message" translatable="false">No Google Account</string>
     <string name="logo" translatable="false">Logo Application</string>
     <string name="sign_in" translatable="false">Sign-in</string>
     <string name="name" translatable="false">Name</string>
