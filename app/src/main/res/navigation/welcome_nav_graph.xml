@@ -15,6 +15,9 @@
         <action
             android:id="@+id/action_welcomeFragment_to_forgotPasswordFragment"
             app:destination="@id/forgotPasswordFragment" />
+        <action
+            android:id="@+id/action_welcomeFragment_to_homeActivity"
+            app:destination="@id/homeActivity" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -25,5 +28,14 @@
         android:id="@+id/forgotPasswordFragment"
         android:name="it.unimib.sal.one_two_trip.ForgotPasswordFragment"
         android:label="fragment_forgot_password"
-        tools:layout="@layout/fragment_forgot_password" />
+        tools:layout="@layout/fragment_forgot_password" >
+        <action
+            android:id="@+id/action_forgotPasswordFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/homeActivity"
+        android:name="it.unimib.sal.one_two_trip.ui.main.HomeActivity"
+        android:label="activity_home"
+        tools:layout="@layout/activity_home" />
 </navigation>

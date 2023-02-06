@@ -11,6 +11,9 @@ properties.load(new FileInputStream(propertiesFile))
 android {
     namespace 'it.unimib.sal.one_two_trip'
     compileSdk 33
+    aaptOptions {
+        cruncherEnabled = false
+    }
 
     defaultConfig {
         applicationId "it.unimib.sal.one_two_trip"
@@ -37,6 +40,8 @@ android {
 
 dependencies {
 
+    implementation 'com.google.android.gms:play-services-auth:20.1.0'
+    implementation 'androidx.security:security-crypto:1.1.0-alpha03'
     def nav_version = "2.5.3"
     def room_version = "2.5.0"
 

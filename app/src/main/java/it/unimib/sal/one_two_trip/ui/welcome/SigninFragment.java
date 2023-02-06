@@ -1,59 +1,57 @@
 package it.unimib.sal.one_two_trip.ui.welcome;
 
+import static it.unimib.sal.one_two_trip.util.Constants.EMAIL_ADDRESS;
+import static it.unimib.sal.one_two_trip.util.Constants.ENCRYPTED_DATA_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.ID_TOKEN;
+import static it.unimib.sal.one_two_trip.util.Constants.PASSWORD;
+import static it.unimib.sal.one_two_trip.util.Constants.USER_COLLISION_ERROR;
+import static it.unimib.sal.one_two_trip.util.Constants.WEAK_PASSWORD_ERROR;
+
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
+import com.google.android.gms.common.SignInButton;
+import com.google.android.material.snackbar.Snackbar;
+
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Calendar;
 
 import it.unimib.sal.one_two_trip.R;
+import it.unimib.sal.one_two_trip.model.Result;
+import it.unimib.sal.one_two_trip.model.User;
+import it.unimib.sal.one_two_trip.util.Constants;
 
 
 public class SigninFragment extends Fragment {
 
+    private DataEncryptionUtil dataEncryptionUtil;
+    private UserViewModel userViewModel;
     boolean maschio;
+    private ProgressBar progressBar;
 
     public SigninFragment() {
         // Required empty public constructor
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
-        super.onViewCreated(view, savedInstanceState);
-        dateButton = view.findViewById(R.id.datePicker);
-        dateButton.setText(getTodaysDate());
-        Button setDate = view.findViewById(R.id.datePicker);
-        Button maleButton = view.findViewById(R.id.firstButton);
-        Button femaleButton = view.findViewById(R.id.secondButton);
-        setDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDatePicker(v);
-            }
-        });
-        maleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onRadioButtonClicked(v);
-            }
-        });
-        femaleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onRadioButtonClicked(v);
-            }
-        });
-    }
 
 
 
@@ -168,6 +166,129 @@ public class SigninFragment extends Fragment {
                 break;
         }
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        dateButton = view.findViewById(R.id.datePicker);
+        dateButton.setText(getTodaysDate());
+        Button setDate = view.findViewById(R.id.datePicker);
+        Button maleButton = view.findViewById(R.id.firstButton);
+        Button femaleButton = view.findViewById(R.id.secondButton);
+        setDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDatePicker(v);
+            }
+        });
+        maleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onRadioButtonClicked(v);
+            }
+        });
+        femaleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onRadioButtonClicked(v);
+            }
+        });
+        EditText email_edit_text = view.findViewById(R.id.email_edit_text);
+        EditText password_email_edit_text = view.findViewById(R.id.password_email_edit_text);
+        Button buttonRegistration = null;
+        buttonRegistration.setOnClickListener(v -> {
+            String email = email_edit_text.getText().toString().trim();
+            String password = password_email_edit_text.getText().toString().trim();
+            if (isEmailOk(email) & isPasswordOk(password)) {
+                progressBar.setVisibility(View.VISIBLE);
+                if (!userViewModel.isAuthenticationError()) {
+                    userViewModel.getUserMutableLiveData(email, password, false).observe(
+                            getViewLifecycleOwner(), result -> {
+                                if (result.isSuccess()) {
+                                    User user = ((Result.UserResponseSuccess) result).getData();
+                                    saveLoginData(email, password, user.getIdToken());
+                                    userViewModel.setAuthenticationError(false);
+                                    Navigation.findNavController(view).navigate(
+                                            R.id.action_welcomeFragment_to_homeActivity);
+                                } else {
+                                    userViewModel.setAuthenticationError(true);
+                                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                            getErrorMessage(((Result.Error) result).getMessage()),
+                                            Snackbar.LENGTH_SHORT).show();
+                                }
+                            });
+                } else {
+                    userViewModel.getUser(email, password, false);
+                }
+                progressBar.setVisibility(View.GONE);
+            } else {
+                userViewModel.setAuthenticationError(true);
+                Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                        R.string.check_login_data_message, Snackbar.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private String getErrorMessage(String message) {
+        switch(message) {
+            case WEAK_PASSWORD_ERROR:
+                return requireActivity().getString(R.string.error_password);
+            case USER_COLLISION_ERROR:
+                return requireActivity().getString(R.string.error_user_collision_message);
+            default:
+                return requireActivity().getString(R.string.unexpected_error);
+        }
+    }
+
+    private boolean isEmailOk(String email) {
+        EditText emailToText = requireActivity().findViewById(R.id.email_edit_text);
+        if (emailToText != null && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(getActivity().getApplicationContext(), "Email Verified !", Toast.LENGTH_SHORT).show();
+            return true;
+        } else {
+            Toast.makeText(getActivity().getApplicationContext(), "Enter valid Email address !", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+
+    }
+
+    /**
+     * Checks if the password is not empty.
+     * @param password The password to be checked
+     * @return True if the password has at least 6 characters, false otherwise
+     */
+    private boolean isPasswordOk(String password) {
+        // Check if the password length is correct
+        EditText pass = requireView().findViewById(R.id.password_email_edit_text);
+        if (pass == null || password.length() < Constants.MINIMUM_PASSWORD_LENGHT) {
+            pass.setError("Error password");
+            return false;
+        } else {
+            pass.setError(null);
+            return true;
+        }
+    }
+    private void saveLoginData(String email, String password, String idToken) {
+        try {
+            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, EMAIL_ADDRESS, email);
+            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, PASSWORD, password);
+            dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(
+                    ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ID_TOKEN, idToken);
+            dataEncryptionUtil.writeSecreteDataOnFile(ENCRYPTED_DATA_FILE_NAME,
+                    email.concat(":").concat(password));
+        } catch (GeneralSecurityException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
 
 
 }

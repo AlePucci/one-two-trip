@@ -90,7 +90,12 @@
     <string name="google_login" translatable="false">Login with Google</string>
     <string name="new_account" translatable="false">New to World News?</string>
     <string name="register" translatable="false">Register</string>
+    <string name="error_password" translatable="false">Error password</string>
+    <string name="error_user_collision_message" translatable="false">The email address is already in use by another account</string>
+    <string name="check_login_data_message" translatable="false">Check the data you inserted</string>
     <string name="forgot_password_text" translatable="false">Enter the email address associated with your account and we will send you a link to reset your password.</string>
+    <string name="error_login_password_message" translatable="false">The password is invalid</string>
+    <string name="error_login_user_message" translatable="false">There is no user record corresponding to this identifier</string>
     <!-- TODO: Remove or change this placeholder text -->
 
 

@@ -5,12 +5,19 @@ import android.app.Application;
 import it.unimib.sal.one_two_trip.database.TripsRoomDatabase;
 import it.unimib.sal.one_two_trip.repository.ITripsRepository;
 import it.unimib.sal.one_two_trip.repository.TripsRepository;
+import it.unimib.sal.one_two_trip.repository.user.IUserRepository;
+import it.unimib.sal.one_two_trip.repository.user.UserRepository;
 import it.unimib.sal.one_two_trip.service.PictureApiService;
 import it.unimib.sal.one_two_trip.source.BaseTripsLocalDataSource;
 import it.unimib.sal.one_two_trip.source.BaseTripsRemoteDataSource;
 import it.unimib.sal.one_two_trip.source.PhotoRemoteDataSource;
 import it.unimib.sal.one_two_trip.source.TripsLocalDataSource;
 import it.unimib.sal.one_two_trip.source.TripsMockRemoteDataSource;
+import it.unimib.sal.one_two_trip.source.user.BaseUserAuthenticationRemoteDataSource;
+import it.unimib.sal.one_two_trip.source.user.BaseUserDataRemoteDataSource;
+import it.unimib.sal.one_two_trip.source.user.UserAuthenticationRemoteDataSource;
+import it.unimib.sal.one_two_trip.source.user.UserDataRemoteDataSource;
+import it.unimib.sal.one_two_trip.ui.welcome.DataEncryptionUtil;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -74,4 +81,22 @@ public class ServiceLocator {
     public PhotoRemoteDataSource getPhotoRemoteDataSource() {
         return new PhotoRemoteDataSource();
     }
-}
+
+    public IUserRepository getUserRepository(Application application) {
+        SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
+
+        BaseUserAuthenticationRemoteDataSource userRemoteAuthenticationDataSource =
+                new UserAuthenticationRemoteDataSource();
+
+        BaseUserDataRemoteDataSource userDataRemoteDataSource =
+                new UserDataRemoteDataSource(sharedPreferencesUtil);
+        DataEncryptionUtil dataEncryptionUtil = new DataEncryptionUtil(application);
+
+
+
+        return new UserRepository(userRemoteAuthenticationDataSource, userDataRemoteDataSource);
+
+    }
+    }
+
+

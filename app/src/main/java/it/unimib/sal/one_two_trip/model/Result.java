@@ -5,12 +5,16 @@ package it.unimib.sal.one_two_trip.model;
  * the use of a Web Service or a local database.
  */
 public abstract class Result {
-    private Result() {
-    }
+    private Result() {}
 
     public boolean isSuccess() {
-        return (this instanceof Success);
+        if (this instanceof UserResponseSuccess) {
+            return true;
+        } else {
+            return false;
+        }
     }
+
 
     /**
      * Class that represents a successful action during the interaction
@@ -41,6 +45,16 @@ public abstract class Result {
 
         public String getMessage() {
             return message;
+        }
+    }
+
+    public static final class UserResponseSuccess  extends Result{
+        private final User user;
+        public UserResponseSuccess(User user) {
+            this.user = user;
+        }
+        public User getData(){
+            return user;
         }
     }
 }

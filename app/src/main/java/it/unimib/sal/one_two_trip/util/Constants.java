@@ -11,7 +11,8 @@ public class Constants {
 
     public static final int MAX_ACTIVITIES_PER_TRIP_HOME = 3;
     public static final String MOVING_ACTIVITY_TYPE_NAME = "moving";
-
+    public static final String ENCRYPTED_DATA_FILE_NAME = "it.unimib.sal.one_two_trip.encrypted_preferences";
+    public static final String ENCRYPTED_SHARED_PREFERENCES_FILE_NAME = "it.unimib.sal.one_two_trip.encrypted_preferences";
     // SharedPreferences
     public static final String SHARED_PREFERENCES_FILE_NAME = "it.unimib.sal.one_two_trip.preferences";
     public static final String SHARED_PREFERENCES_NOTIFICATIONS_ON = "notifications_o";
@@ -35,6 +36,10 @@ public class Constants {
     public static final String INVALID_CREDENTIALS_ERROR = "invalidCredentials";
     public static final String USER_COLLISION_ERROR = "userCollisionError";
     public static final String WEAK_PASSWORD_ERROR = "passwordIsWeak";
+    public static final String EMAIL_ADDRESS = "email_address";
+    public static final String PASSWORD = "password";
+    public static final String ID_TOKEN = "google_token";
+
 
     // PHOTOS
     public static final String PHOTOS_BASE_URL = "https://api.unsplash.com/";
@@ -42,6 +47,8 @@ public class Constants {
     public static final String PHOTOS_QUERY = "query";
     public static final String PHOTOS_PER_PAGE = "per_page";
 
-    public static final String FIREBASE_REALTIME_DATABASE = "https://console.firebase.google.com/u/0/project/trip-b29d1/database/trip-b29d1-default-rtdb/data/~2F";
+    public static final int MINIMUM_PASSWORD_LENGHT = 6;
+
+    public static final String FIREBASE_REALTIME_DATABASE = "https://trip-b29d1-default-rtdb.europe-west1.firebasedatabase.app/";
     public static final String FIREBASE_USERS_COLLECTION = "users";
 }

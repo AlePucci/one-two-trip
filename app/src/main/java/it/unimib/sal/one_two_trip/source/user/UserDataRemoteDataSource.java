@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.repository.user;
+package it.unimib.sal.one_two_trip.source.user;
 
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_REALTIME_DATABASE;
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_USERS_COLLECTION;
@@ -16,7 +16,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import it.unimib.sal.one_two_trip.model.User;
-import it.unimib.sal.one_two_trip.source.user.BaseUserDataRemoteDataSource;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {

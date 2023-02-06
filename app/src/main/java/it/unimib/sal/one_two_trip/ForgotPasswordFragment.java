@@ -2,11 +2,15 @@ package it.unimib.sal.one_two_trip;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,5 +56,13 @@ public class ForgotPasswordFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_forgot_password, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
+        Button backButton = view.findViewById(R.id.backbutton);
+
+        backButton.setOnClickListener(v ->
+                Navigation.findNavController(requireView()).navigate(R.id.action_forgotPasswordFragment_to_welcomeFragment));
     }
 }
