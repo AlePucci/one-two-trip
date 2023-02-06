@@ -26,9 +26,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import it.unimib.sal.one_two_trip.R;
+import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
@@ -149,6 +151,13 @@ public class HomeActivity extends AppCompatActivity {
                                 trip.setId(UUID.randomUUID().toString());
                                 trip.setTitle(title);
                                 trip.setTripOwner("1");
+                                ArrayList<Person> people = new ArrayList<>();
+                                Person person = new Person();
+                                person.setId("2");
+                                person.setName("John");
+                                person.setSurname("Doe");
+                                people.add(person);
+                                trip.getParticipant().setPersonList(people);
                                 //TODO: set trip owner & add them to the trip
                                 finalViewModel.insertTrip(trip);
                             }

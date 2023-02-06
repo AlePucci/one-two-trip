@@ -31,6 +31,7 @@ import androidx.navigation.Navigation;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.HashMap;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
@@ -58,6 +59,7 @@ public class ActivityFragment extends Fragment implements MenuProvider {
     private SharedPreferencesUtil sharedPreferencesUtil;
     private Trip trip;
     private Activity activity;
+    private MaterialToolbar toolbar;
 
     public ActivityFragment() {
     }
@@ -113,7 +115,7 @@ public class ActivityFragment extends Fragment implements MenuProvider {
         super.onViewCreated(view, savedInstanceState);
 
         androidx.fragment.app.FragmentActivity activity = requireActivity();
-        MaterialToolbar toolbar = activity.findViewById(R.id.trip_toolbar);
+        toolbar = activity.findViewById(R.id.trip_toolbar);
         ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(),
                 Lifecycle.State.RESUMED);
 
@@ -192,7 +194,10 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                         String newTitle = input.getText().toString().trim();
                         if (!newTitle.isEmpty() && !newTitle.equals(oldTitle)) {
                             this.activity.setTitle(newTitle);
-                            this.viewModel.updateTrip(this.trip);
+                            toolbar.setTitle(this.activity.getTitle());
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("title", newTitle);
+                            this.viewModel.updateActivity(map, tripId, activityId);
                         }
                     });
             alert.setNegativeButton(getString(R.string.activity_title_change_negative), null);
@@ -208,7 +213,7 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                     (dialog, whichButton) -> {
                         this.trip.getActivity().getActivityList().removeIf(activity ->
                                 activity.getId().equals(activityId));
-                        this.viewModel.updateTrip(this.trip);
+                        this.viewModel.deleteActivity(activity, trip);
                         Utility.onActivityDelete(this.trip, this.activity, this.application);
 
                         Bundle bundle = new Bundle();

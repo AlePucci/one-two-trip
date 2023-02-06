@@ -3,6 +3,9 @@ package it.unimib.sal.one_two_trip.ui.main;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.HashMap;
+
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
@@ -58,8 +61,12 @@ public class TripsViewModel extends ViewModel {
      *
      * @param trip The trip to be updated.
      */
-    public void updateTrip(Trip trip) {
-        this.tripsRepository.updateTrip(trip);
+    public void updateTrip(HashMap<String, Object> trip, String tripId) {
+        this.tripsRepository.updateTrip(trip, tripId);
+    }
+
+    public void updateActivity(HashMap<String, Object> trip, String tripId, String activityId) {
+        this.tripsRepository.updateActivity(trip, tripId, activityId);
     }
 
     /**
@@ -78,5 +85,13 @@ public class TripsViewModel extends ViewModel {
      */
     public void insertTrip(Trip trip) {
         this.tripsRepository.insertTrip(trip);
+    }
+
+    public void insertActivity(Activity activity, Trip trip) {
+        this.tripsRepository.insertActivity(activity, trip);
+    }
+
+    public void deleteActivity(Activity activity, Trip trip) {
+        this.tripsRepository.deleteActivity(activity, trip);
     }
 }

@@ -19,6 +19,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.HashMap;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
@@ -90,7 +91,9 @@ public class ActivityDescriptionEditFragment extends Fragment {
                     && !description.getText().toString().equalsIgnoreCase(
                     activity.getDescription())) {
                 this.activity.setDescription(description.getText().toString().trim());
-                this.viewModel.updateTrip(trip);
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("description", this.activity.getDescription());
+                this.viewModel.updateActivity(map, tripId, activityId);
             }
 
             Navigation.findNavController(view).navigate(

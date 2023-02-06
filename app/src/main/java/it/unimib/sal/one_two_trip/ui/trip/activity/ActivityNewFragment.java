@@ -275,6 +275,7 @@ public class ActivityNewFragment extends Fragment {
             this.activity.setStart_date(date);
             this.activity.setDescription(description);
             this.activity.setParticipant(new PersonListHolder(this.personList));
+            this.activity.setTrip_id(this.trip.getId());
 
             if (this.personList.size() == this.trip.getParticipant().getPersonList().size()) {
                 this.activity.setEveryoneParticipate(true);
@@ -319,7 +320,7 @@ public class ActivityNewFragment extends Fragment {
 
                 this.trip.getActivity().getActivityList().add(this.activity);
 
-                requireActivity().onBackPressed();
+
             }
         });
 
@@ -395,7 +396,10 @@ public class ActivityNewFragment extends Fragment {
      * and schedule the notification for both the activity and the trip.
      */
     private void onNewActivityCreated() {
-        this.viewModel.updateTrip(this.trip);
+        this.viewModel.insertActivity(this.activity, this.trip);
         Utility.onActivityCreate(this.trip, this.activity, this.application);
+        this.requireActivity().runOnUiThread(() -> requireActivity().onBackPressed());
+
+
     }
 }

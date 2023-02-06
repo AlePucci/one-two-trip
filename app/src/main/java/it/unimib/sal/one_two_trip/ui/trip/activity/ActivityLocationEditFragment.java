@@ -23,6 +23,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.HashMap;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
@@ -94,6 +95,7 @@ public class ActivityLocationEditFragment extends Fragment {
         EditText loc2text = view.findViewById(R.id.activity_where_edittext2);
         MaterialButton confirmButton = view.findViewById(R.id.activity_where_confirm);
         ImageView arrow = view.findViewById(R.id.activity_where_arrow_edit);
+        HashMap<String, Object> map = new HashMap<>();
 
         //Confirm Edit
         confirmButton.setOnClickListener(view1 -> {
@@ -106,8 +108,10 @@ public class ActivityLocationEditFragment extends Fragment {
                 public void onGeocodingSuccess(String lat, String lon) {
                     activity.setEndLatitude(Double.parseDouble(lat));
                     activity.setEndLongitude(Double.parseDouble(lon));
+                    map.put("end_latitude", Double.parseDouble(lat));
+                    map.put("end_longitude", Double.parseDouble(lon));
 
-                    viewModel.updateTrip(trip);
+                    viewModel.updateActivity(map, tripId, activityId);
                 }
 
                 @Override
@@ -116,7 +120,10 @@ public class ActivityLocationEditFragment extends Fragment {
                     Snackbar.make(view, exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
                     activity.setLatitude(0);
                     activity.setLongitude(0);
-                    viewModel.updateTrip(trip);
+
+                    map.put("latitude", 0);
+                    map.put("longitude", 0);
+                    viewModel.updateActivity(map, tripId, activityId);
                 }
             });
 
@@ -127,20 +134,24 @@ public class ActivityLocationEditFragment extends Fragment {
                 public void onGeocodingSuccess(String lat, String lon) {
                     activity.setLatitude(Double.parseDouble(lat));
                     activity.setLongitude(Double.parseDouble(lon));
+                    map.put("latitude", Double.parseDouble(lat));
+                    map.put("longitude", Double.parseDouble(lon));
 
                     if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                         endUtility.search(activity.getEnd_location(), 1);
                     } else {
-                        viewModel.updateTrip(trip);
+                       viewModel.updateActivity(map, tripId, activityId);
                     }
                 }
 
                 @Override
                 public void onGeocodingFailure(Exception exception) {
                     Snackbar.make(view, exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
+                    map.put("latitude", 0);
+                    map.put("longitude", 0);
                     activity.setLatitude(0);
                     activity.setLongitude(0);
-                    viewModel.updateTrip(trip);
+                    viewModel.updateActivity(map, tripId, activityId);
                 }
             });
 
@@ -163,8 +174,11 @@ public class ActivityLocationEditFragment extends Fragment {
                 location1 = this.activity.getLocation();
             }
 
+
             if (!this.activity.getLocation().equalsIgnoreCase(location1)) {
                 this.activity.setLocation(location1);
+
+                map.put("location", location1);
                 valid = true;
             }
 
@@ -180,6 +194,7 @@ public class ActivityLocationEditFragment extends Fragment {
 
                 if (!this.activity.getEnd_location().equalsIgnoreCase(location2)) {
                     this.activity.setEnd_location(location2);
+                    map.put("end_location", location2);
                     valid = true;
                 }
             }

@@ -1,11 +1,13 @@
 package it.unimib.sal.one_two_trip.ui.trip.activity;
 
+import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_USER_COLLECTION;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,17 +22,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.ParticipantRecyclerViewAdapter;
-import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -98,14 +105,40 @@ public class ActivityParticipantEditFragment extends Fragment {
         MaterialButton confirm = view.findViewById(R.id.activity_participant_confirm);
 
         confirm.setOnClickListener(view1 -> {
+            Log.d("personList", personList.toString());
+            Log.d("participantList", activity.getParticipant().getPersonList().toString());
+            List<Person> newParticipants = new ArrayList<>(this.personList);
+            newParticipants.removeAll(this.activity.getParticipant().getPersonList());
+
+            List<Person> removedParticipants = new ArrayList<>(this.activity.getParticipant().getPersonList());
+            removedParticipants.removeAll(this.personList);
+
             this.activity.getParticipant().setPersonList(this.personList);
 
             if (this.trip.getParticipant() != null && this.trip.getParticipant().getPersonList() != null) {
                 this.activity.setEveryoneParticipate(this.personList.size()
                         == this.trip.getParticipant().getPersonList().size());
+                this.viewModel.updateActivity(new HashMap<String, Object>() {
+                    {
+                        put("everyoneParticipate", activity.isEveryoneParticipate());
+                    }
+                }, tripId, activityId);
             }
 
-            this.viewModel.updateTrip(this.trip);
+            HashMap<String, Object> map = new HashMap<>();
+            Log.d("newParticipants", newParticipants.toString());
+            Log.d("removedParticipants", removedParticipants.toString());
+            for (Person person : newParticipants) {
+                DocumentReference ds = FirebaseFirestore.getInstance().collection(FIREBASE_USER_COLLECTION).document(person.getId());
+                map.put("participant", FieldValue.arrayUnion(ds));
+                this.viewModel.updateActivity(map, tripId, activityId);
+            }
+
+            for (Person person : removedParticipants) {
+                DocumentReference ds = FirebaseFirestore.getInstance().collection(FIREBASE_USER_COLLECTION).document(person.getId());
+                map.put("participant", FieldValue.arrayRemove(ds));
+                this.viewModel.updateActivity(map, tripId, activityId);
+            }
 
             Navigation.findNavController(view).navigate(
                     R.id.action_activityParticipantEditFragment_to_activityParticipantFragment);
@@ -147,7 +180,7 @@ public class ActivityParticipantEditFragment extends Fragment {
                                 || this.activity.getParticipant().getPersonList() == null)
                             return;
 
-                        this.personList = this.activity.getParticipant().getPersonList();
+                        this.personList = new ArrayList<>(this.activity.getParticipant().getPersonList());
 
                         if (this.trip.getParticipant() == null || this.trip.getParticipant().getPersonList() == null) {
                             return;

@@ -9,6 +9,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
@@ -134,7 +136,7 @@ public class ActivityDateEditFragment extends Fragment {
         });
 
         editButton.setOnClickListener(view1 -> {
-            boolean valid = false;
+            HashMap<String, Object> map = new HashMap<>();
 
             long date1;
             long date2;
@@ -183,20 +185,27 @@ public class ActivityDateEditFragment extends Fragment {
                     return;
                 }
 
-                if (date1 != this.activity.getStart_date() || date2 != this.activity.getEnd_date()) {
+                if (date1 != this.activity.getStart_date()){
                     this.activity.setStart_date(date1);
+                    map.put("start_date", date1);
+
+                }
+
+                if ( date2 != this.activity.getEnd_date()) {
                     this.activity.setEnd_date(date2);
-                    valid = true;
+                    map.put("end_date", date2);
                 }
             } else if (date1 != activity.getStart_date()) {
                 this.activity.setStart_date(date1);
-                valid = true;
+                map.put("start_date", date1);
             }
 
-            if (valid) {
-                this.viewModel.updateTrip(this.trip);
+            if (!map.isEmpty()) {
+                Log.d("ActivityDateEditFrag", "map: " + map);
+                this.viewModel.updateActivity(map, tripId, activityId);
                 Utility.onActivityCreate(this.trip, this.activity, this.application);
             }
+            Log.d("ActivityDateEditFrag", "map: " + map);
 
             Navigation.findNavController(view1).navigate(
                     R.id.action_activityDateEditFragment_to_activityDateFragment);

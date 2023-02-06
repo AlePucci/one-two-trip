@@ -5,7 +5,9 @@ import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import it.unimib.sal.one_two_trip.data.database.ITripsDAO;
 import it.unimib.sal.one_two_trip.data.database.TripsRoomDatabase;
@@ -62,6 +64,12 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
             List<Trip> allTrips = this.tripsDAO.getAll();
 
             if (tripList != null) {
+//                for (Trip trip : tripList) {
+//                    if (!trip.isParticipating()) {
+//                        // or is deleted TODO
+//                        this.tripsDAO.delete(trip);
+//                    }
+//                }
                 for (Trip trip : allTrips) {
                     if (tripList.contains(trip)) {
                         tripList.set(tripList.indexOf(trip), trip);

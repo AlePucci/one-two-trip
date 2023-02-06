@@ -7,8 +7,10 @@ import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.HashMap;
 import java.util.List;
 
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.data.database.model.response.TripsApiResponse;
@@ -75,8 +77,13 @@ public class TripsRepository implements ITripsRepository, TripCallback {
      * @param trip the trip to update
      */
     @Override
-    public void updateTrip(Trip trip) {
-        this.tripsRemoteDataSource.updateTrip(trip);
+    public void updateTrip(HashMap<String, Object> trip, String tripId) {
+        this.tripsRemoteDataSource.updateTrip(trip, tripId);
+    }
+
+    @Override
+    public void updateActivity(HashMap<String, Object> trip, String tripId, String activityId) {
+        this.tripsRemoteDataSource.updateActivity(trip, tripId, activityId);
     }
 
     /**
@@ -90,6 +97,11 @@ public class TripsRepository implements ITripsRepository, TripCallback {
         this.tripsLocalDataSource.deleteTrip(trip);
     }
 
+    @Override
+    public void deleteActivity(Activity activity, Trip trip) {
+        this.tripsRemoteDataSource.deleteActivity(activity, trip);
+    }
+
     /**
      * Insert the trip in the remote source.
      *
@@ -98,6 +110,11 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     @Override
     public void insertTrip(Trip trip) {
         this.tripsRemoteDataSource.insertTrip(trip);
+    }
+
+    @Override
+    public void insertActivity(Activity activity, Trip trip) {
+        this.tripsRemoteDataSource.insertActivity(activity, trip);
     }
 
     @Override

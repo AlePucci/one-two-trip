@@ -12,6 +12,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -233,6 +234,7 @@ public class ComingTripsFragment extends Fragment {
                             noTripsImage.setVisibility(View.VISIBLE);
                         } else {
                             List<Trip> comingTrips = new ArrayList<>(fetchedTrips);
+                            Log.d("ComingTripsFragment", "onViewCreated: " + comingTrips.size());
 
                             // FILTERS THE TRIPS THAT ARE NOT COMPLETED (COMING TRIPS)
                             comingTrips.removeIf(trip -> trip != null && trip.isCompleted());

@@ -47,6 +47,7 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
@@ -196,8 +197,10 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
 
                         String descriptionMessage = input.getText().toString().trim();
                         if (!descriptionMessage.equals(oldDescription)) {
+                            HashMap <String, Object> map = new HashMap <>();
                             this.trip.setDescription(descriptionMessage);
-                            this.viewModel.updateTrip(this.trip);
+                            map.put("description", descriptionMessage);
+                            this.viewModel.updateTrip(map, tripId);
                         }
                     });
             alert.setNegativeButton(getString(R.string.trip_description_negative), null);
@@ -417,8 +420,10 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                     (dialog, which) -> {
                         String newTitle = input.getText().toString().trim();
                         if (!newTitle.isEmpty() && !newTitle.equals(oldTitle)) {
+                            HashMap <String, Object> map = new HashMap <>();
                             this.trip.setTitle(newTitle);
-                            this.viewModel.updateTrip(this.trip);
+                            map.put("title", newTitle);
+                            this.viewModel.updateTrip(map, tripId);
                         }
                     });
             alert.setNegativeButton(getString(R.string.trip_title_change_negative), null);

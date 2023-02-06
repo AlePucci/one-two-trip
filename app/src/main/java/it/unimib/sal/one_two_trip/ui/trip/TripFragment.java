@@ -262,9 +262,9 @@ public class TripFragment extends Fragment implements MenuProvider {
                                 break;
                             }
                         }
-
-                        if (this.trip == null) {
-                            return;
+                        Log.d("AAA", "trip: " + this.trip.isParticipating());
+                        if (!this.trip.isParticipating()) {
+                            requireActivity().finish();
                         }
 
                         // todo check if saved
