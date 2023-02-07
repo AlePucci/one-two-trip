@@ -5,8 +5,14 @@ import static it.unimib.sal.one_two_trip.util.Constants.RETROFIT_ERROR;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
+
 import it.unimib.sal.one_two_trip.R;
 
+/**
+ * Utility class to get the proper message to be show
+ * to the user when an error occurs.
+ */
 public class ErrorMessagesUtil {
 
     private final Application application;
@@ -21,7 +27,7 @@ public class ErrorMessagesUtil {
      * @param errorType The type of error.
      * @return The message to be shown to the user.
      */
-    public String getErrorMessage(String errorType) {
+    public String getErrorMessage(@NonNull String errorType) {
         switch (errorType) {
             case RETROFIT_ERROR:
                 return application.getString(R.string.error_retrieving_trips);

@@ -14,5 +14,4 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "one-two-trip"
 include ':app'

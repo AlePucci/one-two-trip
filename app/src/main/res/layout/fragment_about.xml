@@ -2,14 +2,15 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    tools:context=".ui.main.AboutFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/about_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".ui.main.AboutFragment">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/app_name"
@@ -136,8 +137,8 @@
                 android:id="@+id/github"
                 android:layout_width="16sp"
                 android:layout_height="16sp"
-                android:src="@drawable/github"
-                android:contentDescription="@string/github" />
+                android:contentDescription="@string/github"
+                android:src="@drawable/github" />
         </LinearLayout>
 
         <TextView
@@ -157,6 +158,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:autoLink="email"
+            android:contentDescription="@string/contact_email_description"
             android:gravity="center"
             android:minHeight="48dp"
             android:text="@string/app_email"

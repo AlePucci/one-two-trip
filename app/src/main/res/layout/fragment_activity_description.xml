@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_descr_card"
+    style="@style/Widget.Material3.CardView.Elevated"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".ui.trip.activity.ActivityDescriptionFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/activity_descr_constraint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp">
+
+        <ImageView
+            android:id="@+id/activity_descr_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/activity_descr_description"
+            app:layout_constraintBottom_toBottomOf="@+id/activity_descr_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_notes_24" />
+
+        <TextView
+            android:id="@+id/activity_descr_title"
+            style="@style/MaterialAlertDialog.Material3.Title.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/activity_descr_title"
+            app:layout_constraintStart_toEndOf="@+id/activity_descr_icon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/activity_descr"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_descr_title"
+            tools:text="Veni Vidi Vici" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/activity_descr_edit"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/activity_edit_button"
+            app:icon="@drawable/ic_baseline_edit_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_descr" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

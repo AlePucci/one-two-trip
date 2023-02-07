@@ -9,6 +9,7 @@
     tools:context=".ui.trip.activity.ActivityLocationFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/activity_where_constraint_edit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp">
@@ -17,6 +18,7 @@
             android:id="@+id/activity_where_icon_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/activity_where_description"
             app:layout_constraintBottom_toBottomOf="@+id/activity_where_label_edit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -37,6 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:contentDescription="@string/activity_where_arrow_description"
             android:src="@drawable/ic_baseline_arrow_downward_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +49,8 @@
             android:id="@+id/activity_where1_edit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:singleLine="true"
+            app:endIconDrawable="@drawable/ic_baseline_cancel_24"
+            app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +59,10 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/activity_where_edittext1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -63,18 +70,19 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:singleLine="true"
             app:endIconDrawable="@drawable/ic_baseline_cancel_24"
             app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_where_arrow_edit">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/activity_where_edittext2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
@@ -82,10 +90,10 @@
             style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/activity_confirm_button"
             app:icon="@drawable/ic_baseline_check_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_where2_edit" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </com.google.android.material.card.MaterialCardView>

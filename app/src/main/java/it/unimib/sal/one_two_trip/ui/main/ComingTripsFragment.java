@@ -1,12 +1,18 @@
 package it.unimib.sal.one_two_trip.ui.main;
 
+import static it.unimib.sal.one_two_trip.util.Constants.KEY_COMPLETED;
+import static it.unimib.sal.one_two_trip.util.Constants.KEY_LOCATION;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.MOVE_TO_ACTIVITY;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,30 +26,38 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.TripsRecyclerViewAdapter;
-import it.unimib.sal.one_two_trip.model.Result;
-import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.model.TripsResponse;
-import it.unimib.sal.one_two_trip.repository.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.trip.TripActivity;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
+import it.unimib.sal.one_two_trip.util.PhotoWorker;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
+import it.unimib.sal.one_two_trip.util.Utility;
 
 /**
- * A simple {@link Fragment} subclass that shows the coming trips of the user.
- * Use the {@link ComingTripsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment that shows the list of coming trips. It is used by the {@link HomeActivity}.
  */
 public class ComingTripsFragment extends Fragment {
 
@@ -54,30 +68,32 @@ public class ComingTripsFragment extends Fragment {
     private TripsRecyclerViewAdapter tripsRecyclerViewAdapter;
     private SharedPreferencesUtil sharedPreferencesUtil;
     private Application application;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public ComingTripsFragment() {
-    }
-
-    public static ComingTripsFragment newInstance() {
-        return new ComingTripsFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        application = requireActivity().getApplication();
-
-        sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        this.application = activity.getApplication();
+        this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(this.application);
-        tripsViewModel = new ViewModelProvider(requireActivity(),
-                new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
-        comingTrips = new ArrayList<>();
+        if (tripsRepository != null) {
+            this.tripsViewModel = new ViewModelProvider(activity,
+                    new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
+        } else {
+            Snackbar.make(activity.findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
+        this.comingTrips = new ArrayList<>();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_coming_trips, container, false);
     }
@@ -86,48 +102,18 @@ public class ComingTripsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
         RecyclerView comingTripsView = view.findViewById(R.id.coming_trips_view);
-        TextView comingTripsTitle = view.findViewById(R.id.coming_trips_title);
         TextView noTripsText = view.findViewById(R.id.no_trips_text);
         ImageView noTripsImage = view.findViewById(R.id.no_trips_image);
         ProgressBar progressBar = view.findViewById(R.id.progress_bar);
-        BottomNavigationView bottomNavigationView = requireActivity()
+        BottomNavigationView bottomNavigationView = activity
                 .findViewById(R.id.bottom_navigation);
-        FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
+        FloatingActionButton fab = activity.findViewById(R.id.fab);
+        this.swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
 
         bottomNavigationView.setVisibility(View.VISIBLE);
         fab.setVisibility(View.VISIBLE);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(requireContext(),
-                LinearLayoutManager.VERTICAL, false);
-
-        tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(comingTrips,
-                this.application,
-                new TripsRecyclerViewAdapter.OnItemClickListener() {
-                    @Override
-                    public void onTripShare(Trip trip) {
-                        Snackbar.make(view, "Share " + trip.getTitle(),
-                                Snackbar.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onTripClick(Trip trip) {
-                        Intent intent = new Intent(requireContext(), TripActivity.class);
-                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
-                        requireContext().startActivity(intent);
-                    }
-
-                    @Override
-                    public void onButtonClick(Trip trip) {
-                        Intent intent = new Intent(requireContext(), TripActivity.class);
-                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
-                        requireContext().startActivity(intent);
-                    }
-                });
-
-        comingTripsView.setNestedScrollingEnabled(false);
-        comingTripsView.setLayoutManager(layoutManager);
-        comingTripsView.setAdapter(tripsRecyclerViewAdapter);
 
         String lastUpdate = "0";
         if (sharedPreferencesUtil.readStringData(SHARED_PREFERENCES_FILE_NAME,
@@ -136,63 +122,186 @@ public class ComingTripsFragment extends Fragment {
                     LAST_UPDATE);
         }
 
+        this.swipeRefreshLayout.setOnRefreshListener(this::refresh);
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(activity,
+                LinearLayoutManager.VERTICAL, false);
+
+        this.tripsRecyclerViewAdapter = new TripsRecyclerViewAdapter(comingTrips,
+                this.application,
+                false,
+                new TripsRecyclerViewAdapter.OnItemClickListener() {
+                    @Override
+                    public void onTripShare(Trip trip) {
+                        if (Utility.isConnected(activity)) {
+                            AtomicBoolean oneTime = new AtomicBoolean(false);
+                            boolean isCompleted = trip.isCompleted();
+                            String location = Utility.getRandomTripLocation(trip, comingTrips,
+                                    application, view);
+
+                            if (location == null || location.isEmpty()) {
+                                return;
+                            }
+
+                            // WORKER INITIALIZATION
+                            Data inputData = new Data.Builder()
+                                    .putString(KEY_LOCATION, location)
+                                    .putBoolean(KEY_COMPLETED, isCompleted)
+                                    .build();
+
+                            Constraints constraints = new Constraints.Builder()
+                                    .setRequiresStorageNotLow(true)
+                                    .build();
+
+                            OneTimeWorkRequest photoRequest =
+                                    new OneTimeWorkRequest.Builder(PhotoWorker.class)
+                                            .setInputData(inputData)
+                                            .setConstraints(constraints)
+                                            .build();
+                            UUID requestId = photoRequest.getId();
+                            WorkManager.getInstance(application).enqueue(photoRequest);
+
+                            WorkManager.getInstance(application).getWorkInfoByIdLiveData(requestId)
+                                    .observe(getViewLifecycleOwner(), workInfo -> {
+                                        if (!oneTime.get()
+                                                && workInfo.getState() == WorkInfo.State.FAILED) {
+                                            Snackbar.make(view,
+                                                            R.string.share_trip_error,
+                                                            Snackbar.LENGTH_SHORT)
+                                                    .show();
+                                            oneTime.set(true);
+                                        }
+                                    });
+                        } else {
+                            Snackbar.make(view, activity
+                                            .getString(R.string.no_internet_error),
+                                    Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onTripClick(Trip trip) {
+                        Intent intent = new Intent(activity, TripActivity.class);
+                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
+                        intent.putExtra(SELECTED_TRIP_NAME, trip.getTitle());
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onButtonClick(Trip trip) {
+                        Intent intent = new Intent(activity, TripActivity.class);
+                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
+                        intent.putExtra(SELECTED_TRIP_NAME, trip.getTitle());
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onAttachmentsClick(Trip trip, Activity activity) {
+                        // TODO: implement this
+                        Snackbar.make(view, activity.getAttachment().toString(),
+                                Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onActivityClick(Trip trip, Activity mActivity) {
+                        Intent intent = new Intent(application, TripActivity.class);
+                        intent.putExtra(SELECTED_TRIP_ID, trip.getId());
+                        intent.putExtra(MOVE_TO_ACTIVITY, true);
+                        intent.putExtra(SELECTED_ACTIVITY_ID, mActivity.getId());
+                        startActivity(intent);
+                    }
+                });
+
+        comingTripsView.setLayoutManager(layoutManager);
+        comingTripsView.setAdapter(tripsRecyclerViewAdapter);
+
         progressBar.setVisibility(View.VISIBLE);
 
-        tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+        this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(
+                getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
-                        List<Trip> fetchedTrips = ((Result.Success<TripsResponse>) result).getData().getTripList();
+                        List<Trip> fetchedTrips = ((Result.TripSuccess) result).getData().getTripList();
 
                         // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
                         if (fetchedTrips == null || fetchedTrips.isEmpty()) {
+                            int previousSize = this.comingTrips.size();
+                            this.comingTrips.clear();
+                            this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
+                                    previousSize);
                             noTripsText.setText(R.string.no_trips_added);
                             noTripsText.setVisibility(View.VISIBLE);
                             noTripsImage.setVisibility(View.VISIBLE);
-                            comingTripsTitle.setVisibility(View.GONE);
                         } else {
                             List<Trip> comingTrips = new ArrayList<>(fetchedTrips);
+                            Log.d("ComingTripsFragment", "onViewCreated: " + comingTrips.size());
 
                             // FILTERS THE TRIPS THAT ARE NOT COMPLETED (COMING TRIPS)
-                            for (Iterator<Trip> i = comingTrips.iterator(); i.hasNext(); ) {
-                                Trip trip = i.next();
-                                if (trip != null && trip.isCompleted()) i.remove();
+                            comingTrips.removeIf(trip -> trip != null && trip.isCompleted());
+
+                            for (Trip trip : comingTrips) {
+                                if (trip == null) {
+                                    continue;
+                                }
+
+                                Utility.scheduleNotifications(trip, this.application);
+
+                                if (trip.getActivity() == null
+                                        || trip.getActivity().getActivityList() == null) {
+                                    continue;
+                                }
+                                for (Activity mActivity : trip.getActivity().getActivityList()) {
+                                    Utility.scheduleNotifications(mActivity, this.application,
+                                            trip.getId());
+                                }
                             }
 
+
                             // IF THERE ARE NO COMING TRIPS, SHOW THE NO COMING TRIPS IMAGE TEXT
+                            int previousSize = this.comingTrips.size();
+                            this.comingTrips.clear();
                             if (comingTrips.isEmpty()) {
+                                this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
+                                        previousSize);
                                 noTripsText.setText(R.string.no_past_trips);
                                 noTripsText.setVisibility(View.VISIBLE);
                                 noTripsImage.setVisibility(View.VISIBLE);
-                                comingTripsTitle.setVisibility(View.GONE);
-                            } else {
-                                int comingTripsCount = comingTrips.size();
-                                if (comingTripsCount == 1) {
-                                    comingTripsTitle.setText(R.string.coming_trips_title_single);
-                                } else {
-                                    comingTripsTitle.setText(String
-                                            .format(getString(R.string.coming_trips_title_multiple),
-                                                    comingTripsCount));
-                                }
 
-                                comingTripsTitle.setVisibility(View.VISIBLE);
+                            } else {
                                 noTripsText.setVisibility(View.GONE);
                                 noTripsImage.setVisibility(View.GONE);
 
-                                int initialSize = this.comingTrips.size();
-                                this.comingTrips.clear();
+                                comingTrips.sort(Comparator.comparing(Trip::getStart_date));
                                 this.comingTrips.addAll(comingTrips);
-                                tripsRecyclerViewAdapter.notifyItemRangeInserted(initialSize,
-                                        this.comingTrips.size());
+                                this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
+                                        previousSize + 1);
                             }
                         }
 
-                        progressBar.setVisibility(View.GONE);
                     } else {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
                                 .getMessage()), Snackbar.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.GONE);
                     }
+                    progressBar.setVisibility(View.GONE);
                 });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (this.swipeRefreshLayout != null) {
+            this.swipeRefreshLayout.setRefreshing(false);
+            this.swipeRefreshLayout.destroyDrawingCache();
+            this.swipeRefreshLayout.clearAnimation();
+        }
+    }
+
+    /**
+     * Forces the refresh of the trips and stops the refresh animation.
+     */
+    private void refresh() {
+        this.tripsViewModel.refreshTrips();
+        this.swipeRefreshLayout.setRefreshing(false);
     }
 }

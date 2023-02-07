@@ -1,15 +1,20 @@
 package it.unimib.sal.one_two_trip.ui.main;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -17,9 +22,18 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 import it.unimib.sal.one_two_trip.R;
+import it.unimib.sal.one_two_trip.data.database.model.Person;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.util.ServiceLocator;
 
 /**
  * The main activity of the app that a user sees after logging in.
@@ -40,6 +54,19 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+
+        ITripsRepository tripsRepository = ServiceLocator.getInstance()
+                .getTripsRepository(getApplication());
+        TripsViewModel viewModel = null;
+        if (tripsRepository != null) {
+            viewModel = new ViewModelProvider(this,
+                    new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
+        } else {
+            Snackbar.make(findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
+
+
         MaterialToolbar toolbar = findViewById(R.id.top_appbar);
         setSupportActionBar(toolbar);
 
@@ -48,27 +75,29 @@ public class HomeActivity extends AppCompatActivity {
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
 
-        assert navHostFragment != null;
-        navController = navHostFragment.getNavController();
+        if (navHostFragment != null) {
+            this.navController = navHostFragment.getNavController();
+        }
 
         NavigationView drawerNav = findViewById(R.id.drawer_navigation);
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
 
-        appBarConfiguration = new AppBarConfiguration
+        this.appBarConfiguration = new AppBarConfiguration
                 .Builder(R.id.fragment_coming_trips, R.id.fragment_past_trips,
                 R.id.fragment_settings, R.id.fragment_about)
-                .setOpenableLayout(drawerLayout).build();
+                .setOpenableLayout(this.drawerLayout).build();
 
         drawerNav.setCheckedItem(R.id.fragment_coming_trips);
 
         // For the Toolbar
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupActionBarWithNavController(this,
+                this.navController, this.appBarConfiguration);
 
         // For the NavigationDrawer
-        NavigationUI.setupWithNavController(drawerNav, navController);
+        NavigationUI.setupWithNavController(drawerNav, this.navController);
 
         // For the BottomNavigationView
-        NavigationUI.setupWithNavController(bottomNav, navController);
+        NavigationUI.setupWithNavController(bottomNav, this.navController);
 
         addMenuProvider(new MenuProvider() {
             @Override
@@ -83,16 +112,69 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         drawerNav.getMenu().findItem(R.id.logout).setOnMenuItemClickListener(item -> {
-            /* TO DO: LOGOUT */
+            /* TODO: LOGOUT */
             return false;
+        });
+
+        // For setting past trip fragment as "Home" in navigation drawer
+        this.navController.addOnDestinationChangedListener((navController, navDestination, bundle)
+                -> {
+            if (navDestination.getId() == R.id.fragment_past_trips) {
+                drawerNav.getMenu().getItem(0).setChecked(true);
+            }
+        });
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+
+        TripsViewModel finalViewModel = viewModel;
+        fab.setOnClickListener(view -> {
+            if (finalViewModel != null) {
+                androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
+                        this, R.style.Widget_App_CustomAlertDialog);
+                EditText input = new EditText(this);
+                FrameLayout container = new FrameLayout(this);
+                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.setMargins(50, 0, 50, 0);
+                container.addView(input);
+                input.setLayoutParams(params);
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                alert.setTitle(getString(R.string.trip_new_title));
+                alert.setMessage(getString(R.string.trip_new_descr));
+                alert.setView(container);
+                alert.setPositiveButton(getString(R.string.trip_new_positive),
+                        (dialog, which) -> {
+                            String title = input.getText().toString().trim();
+                            if (!title.isEmpty()) {
+                                Trip trip = new Trip();
+                                trip.setId(UUID.randomUUID().toString());
+                                trip.setTitle(title);
+                                trip.setTripOwner("1");
+                                ArrayList<Person> people = new ArrayList<>();
+                                Person person = new Person();
+                                person.setId("2");
+                                person.setName("John");
+                                person.setSurname("Doe");
+                                people.add(person);
+                                trip.getParticipant().setPersonList(people);
+                                //TODO: set trip owner & add them to the trip
+                                finalViewModel.insertTrip(trip);
+                            }
+                        });
+                alert.setNegativeButton(getString(R.string.trip_new_negative), null);
+                alert.show();
+            }
         });
     }
 
+    @Override
     public boolean onSupportNavigateUp() {
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
+        return NavigationUI.navigateUp(this.navController, this.appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
 
+    @Override
     public void onBackPressed() {
         if (this.drawerLayout != null && this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             this.drawerLayout.closeDrawer(GravityCompat.START);

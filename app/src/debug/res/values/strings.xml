@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="trip_title" translatable="false">Title</string>
-    <string name="activity_when_title" translatable="false">Date</string>
+    <string name="activity_when_title_d" translatable="false">Date</string>
     <string name="activity_name" translatable="false">Name</string>
     <string name="activity_start_time" translatable="false">StartTime</string>
     <string name="activity_start_location" translatable="false">StartLoc</string>
     <string name="activity_end_time" translatable="false">EndTime</string>
     <string name="activity_end_location" translatable="false">EndLoc</string>
     <string name="participants" translatable="false">Participants</string>
+
+    <!-- end of file -->
 </resources>

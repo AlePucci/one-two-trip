@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_participant_nav_graph"
+    app:startDestination="@id/activityParticipantFragment">
+
+    <fragment
+        android:id="@+id/activityParticipantFragment"
+        android:name="it.unimib.sal.one_two_trip.ui.trip.activity.ActivityParticipantFragment"
+        android:label="fragment_activity_participant"
+        tools:layout="@layout/fragment_activity_participant">
+        <action
+            android:id="@+id/action_activityParticipantFragment_to_activityParticipantEditFragment"
+            app:destination="@id/activityParticipantEditFragment"
+            app:popUpTo="@id/activity_participant_nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/activityParticipantEditFragment"
+        android:name="it.unimib.sal.one_two_trip.ui.trip.activity.ActivityParticipantEditFragment"
+        android:label="fragment_activity_participant_edit"
+        tools:layout="@layout/fragment_activity_participant_edit">
+        <action
+            android:id="@+id/action_activityParticipantEditFragment_to_activityParticipantFragment"
+            app:destination="@id/activityParticipantFragment"
+            app:popUpTo="@id/activity_participant_nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>

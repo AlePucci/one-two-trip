@@ -6,76 +6,73 @@ import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_
 
 import android.app.Application;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.materialswitch.MaterialSwitch;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.Result;
-import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.model.TripResponse;
-import it.unimib.sal.one_two_trip.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.ui.trip.TripViewModel;
-import it.unimib.sal.one_two_trip.ui.trip.TripViewModelFactory;
-import it.unimib.sal.one_two_trip.util.Constants;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
+import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
+import it.unimib.sal.one_two_trip.util.geocoding.GeocodingUtility;
+import it.unimib.sal.one_two_trip.util.geocoding.GeocodingUtilityCallback;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
-
+/**
+ * Fragment that enables the user to edit the location(s) of an activity.
+ */
 public class ActivityLocationEditFragment extends Fragment {
-    private Application application;
-    private TripViewModel viewModel;
-    private SharedPreferencesUtil sharedPreferencesUtil;
 
+    private Application application;
+    private TripsViewModel viewModel;
+    private SharedPreferencesUtil sharedPreferencesUtil;
     private Trip trip;
     private Activity activity;
 
     public ActivityLocationEditFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        application = requireActivity().getApplication();
-
-        sharedPreferencesUtil = new SharedPreferencesUtil(application);
-
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        this.application = activity.getApplication();
+        this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
-                .getTripsRepository(application);
-        viewModel = new ViewModelProvider(requireActivity(),
-                new TripViewModelFactory(tripsRepository)).get(TripViewModel.class);
+                .getTripsRepository(this.application);
+        if (tripsRepository != null) {
+            this.viewModel = new ViewModelProvider(activity,
+                    new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
+        } else {
+            Snackbar.make(activity.findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_activity_location_edit, container, false);
     }
@@ -84,63 +81,129 @@ public class ActivityLocationEditFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TextInputLayout loc1 = requireView().findViewById(R.id.activity_where1_edit);
-        TextInputLayout loc2 = requireView().findViewById(R.id.activity_where2_edit);
-        MaterialButton confirmButton = requireView().findViewById(R.id.activity_where_confirm);
-        ImageView arrow = requireView().findViewById(R.id.activity_where_arrow_edit);
+        if (getParentFragment() == null || getParentFragment().getParentFragment() == null) {
+            return;
+        }
+
+        ActivityFragment parentFragment = (ActivityFragment) getParentFragment().getParentFragment();
+        String tripId = parentFragment.getTripId();
+        String activityId = parentFragment.getActivityId();
+
+        TextInputLayout loc1 = view.findViewById(R.id.activity_where1_edit);
+        EditText loc1text = view.findViewById(R.id.activity_where_edittext1);
+        TextInputLayout loc2 = view.findViewById(R.id.activity_where2_edit);
+        EditText loc2text = view.findViewById(R.id.activity_where_edittext2);
+        MaterialButton confirmButton = view.findViewById(R.id.activity_where_confirm);
+        ImageView arrow = view.findViewById(R.id.activity_where_arrow_edit);
+        HashMap<String, Object> map = new HashMap<>();
 
         //Confirm Edit
         confirmButton.setOnClickListener(view1 -> {
             String location1 = null;
             String location2 = null;
 
-            if(loc1.getEditText() != null) {
-                location1 = loc1.getEditText().getText().toString();
+            GeocodingUtility endUtility = new GeocodingUtility(this.application);
+            endUtility.setGeocodingUtilityCallback(new GeocodingUtilityCallback() {
+                @Override
+                public void onGeocodingSuccess(String lat, String lon) {
+                    activity.setEndLatitude(Double.parseDouble(lat));
+                    activity.setEndLongitude(Double.parseDouble(lon));
+                    map.put("end_latitude", Double.parseDouble(lat));
+                    map.put("end_longitude", Double.parseDouble(lon));
+
+                    viewModel.updateActivity(map, tripId, activityId);
+                }
+
+                @Override
+                public void onGeocodingFailure(Exception exception) {
+                    //TODO string must be in strings.xml
+                    Snackbar.make(view, exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
+                    activity.setLatitude(0);
+                    activity.setLongitude(0);
+
+                    map.put("latitude", 0);
+                    map.put("longitude", 0);
+                    viewModel.updateActivity(map, tripId, activityId);
+                }
+            });
+
+
+            GeocodingUtility utility = new GeocodingUtility(this.application);
+            utility.setGeocodingUtilityCallback(new GeocodingUtilityCallback() {
+                @Override
+                public void onGeocodingSuccess(String lat, String lon) {
+                    activity.setLatitude(Double.parseDouble(lat));
+                    activity.setLongitude(Double.parseDouble(lon));
+                    map.put("latitude", Double.parseDouble(lat));
+                    map.put("longitude", Double.parseDouble(lon));
+
+                    if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
+                        endUtility.search(activity.getEnd_location(), 1);
+                    } else {
+                       viewModel.updateActivity(map, tripId, activityId);
+                    }
+                }
+
+                @Override
+                public void onGeocodingFailure(Exception exception) {
+                    Snackbar.make(view, exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
+                    map.put("latitude", 0);
+                    map.put("longitude", 0);
+                    activity.setLatitude(0);
+                    activity.setLongitude(0);
+                    viewModel.updateActivity(map, tripId, activityId);
+                }
+            });
+
+            if (loc1.getEditText() != null) {
+                location1 = loc1.getEditText().getText().toString().trim();
             }
 
-            if(loc2.getEditText() != null) {
-                location2 = loc2.getEditText().getText().toString();
+            if (loc2.getEditText() != null) {
+                location2 = loc2.getEditText().getText().toString().trim();
             }
-
-            Log.d("AAA", location1 + " " + location2);
 
             boolean valid = false;
 
-            if(location1 == null) {
+            if (location1 == null) {
                 loc1.setError(getResources().getString(R.string.activity_field_error));
                 return;
             }
 
-            if(location1.equals("")) {
-                location1 = activity.getLocation();
+            if (location1.isEmpty()) {
+                location1 = this.activity.getLocation();
             }
 
-            if(!activity.getLocation().equals(location1)) {
-                activity.setLocation(location1);
+
+            if (!this.activity.getLocation().equalsIgnoreCase(location1)) {
+                this.activity.setLocation(location1);
+
+                map.put("location", location1);
                 valid = true;
             }
 
-            if(activity.getType().equals(MOVING_ACTIVITY_TYPE_NAME)) {
-                if(location2 == null) {
+            if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
+                if (location2 == null) {
                     loc2.setError(getResources().getString(R.string.activity_field_error));
                     return;
                 }
 
-                if(location2.equals("")) {
-                    location2 = activity.getEnd_location();
+                if (location2.isEmpty()) {
+                    location2 = this.activity.getEnd_location();
                 }
 
-                if(!activity.getEnd_location().equals(location2)) {
-                    activity.setEnd_location(location2);
+                if (!this.activity.getEnd_location().equalsIgnoreCase(location2)) {
+                    this.activity.setEnd_location(location2);
+                    map.put("end_location", location2);
                     valid = true;
                 }
             }
 
-            if(valid) {
-                viewModel.updateTrip(trip);
+            if (valid) {
+                utility.search(this.activity.getLocation(), 1);
             }
-
-            Navigation.findNavController(view1).navigate(R.id.action_activityLocationEditFragment_to_activityLocationFragment);
+            Navigation.findNavController(view1).navigate(
+                    R.id.action_activityLocationEditFragment_to_activityLocationFragment);
         });
 
         String lastUpdate = "0";
@@ -150,33 +213,55 @@ public class ActivityLocationEditFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        viewModel.getTrip(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
-            if(result.isSuccess()) {
-                trip = ((Result.Success<TripResponse>) result).getData().getTrip();
-                activity = trip.getActivity().activityList.get(viewModel.getActivityPosition());
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(
+                getViewLifecycleOwner(),
+                result -> {
+                    if (result.isSuccess()) {
+                        List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
 
-                loc1.setHint(activity.getLocation());
+                        for (Trip mTrip : trips) {
+                            if (mTrip.getId().equals(tripId)) {
+                                this.trip = mTrip;
+                                break;
+                            }
+                        }
 
-                if(activity.getType().equals(Constants.MOVING_ACTIVITY_TYPE_NAME)) {
-                    loc2.setHint(activity.getEnd_location());
+                        if (this.trip == null || this.trip.getActivity() == null
+                                || this.trip.getActivity().getActivityList() == null) {
+                            return;
+                        }
 
-                    loc2.setVisibility(View.VISIBLE);
-                    arrow.setVisibility(View.VISIBLE);
-                } else {
-                    loc2.setVisibility(View.GONE);
-                    arrow.setVisibility(View.GONE);
-                }
-            } else {
-                ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
-                Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
-                        .getMessage()), Snackbar.LENGTH_SHORT).show();
-            }
-        });
-    }
+                        for (Activity mActivity : this.trip.getActivity().getActivityList()) {
+                            if (mActivity.getId().equals(activityId)) {
+                                this.activity = mActivity;
+                                break;
+                            }
+                        }
 
-    private boolean hasLocationChanged(TextInputLayout location) {
-        return location.getEditText() != null &&
-                !location.getEditText().getText().toString().equals("") &&
-                !location.getEditText().getText().toString().equals(activity.getLocation());
+                        if (this.activity == null) return;
+
+                        String location1 = this.activity.getLocation();
+                        loc1.setHint(location1);
+                        loc1text.setText(location1);
+
+                        if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
+                            String location2 = this.activity.getEnd_location();
+                            loc2.setHint(location2);
+                            loc2text.setText(location2);
+                            loc1text.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+
+                            loc2.setVisibility(View.VISIBLE);
+                            arrow.setVisibility(View.VISIBLE);
+                        } else {
+                            loc1text.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                            loc2.setVisibility(View.GONE);
+                            arrow.setVisibility(View.GONE);
+                        }
+                    } else {
+                        ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
+                        Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
+                                .getMessage()), Snackbar.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

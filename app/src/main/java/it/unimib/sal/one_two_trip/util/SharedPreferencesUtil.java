@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * Utility class to read and write data using SharedPreferences API.
- * Doc can be read here: https://developer.android.com/training/data-storage/shared-preferences
+ * Doc can be read <a href="https://developer.android.com/training/data-storage/shared-preferences">here.</a>
  */
 public class SharedPreferencesUtil {
 
@@ -20,9 +20,10 @@ public class SharedPreferencesUtil {
 
     /**
      * Writes a String value using SharedPreferences API.
+     *
      * @param sharedPreferencesFileName The name of file where to write data.
-     * @param key The key associated with the value to write.
-     * @param value The value to write associated with the key.
+     * @param key                       The key associated with the value to write.
+     * @param value                     The value to write associated with the key.
      */
     public void writeStringData(String sharedPreferencesFileName, String key, String value) {
         SharedPreferences sharedPref = application.getSharedPreferences(sharedPreferencesFileName,
@@ -34,9 +35,10 @@ public class SharedPreferencesUtil {
 
     /**
      * Writes a set of String values using SharedPreferences API.
+     *
      * @param sharedPreferencesFileName The name of file where to write data.
-     * @param key The key associated with the value to write.
-     * @param value The value to write associated with the key.
+     * @param key                       The key associated with the value to write.
+     * @param value                     The value to write associated with the key.
      */
     public void writeStringSetData(String sharedPreferencesFileName, String key, Set<String> value) {
         SharedPreferences sharedPref = application.getSharedPreferences(sharedPreferencesFileName,
@@ -49,8 +51,9 @@ public class SharedPreferencesUtil {
     /**
      * Returns the String value associated with the key passed as argument
      * using SharedPreferences API.
+     *
      * @param sharedPreferencesFileName The name of file where to read the data.
-     * @param key The key associated with the value to read.
+     * @param key                       The key associated with the value to read.
      * @return The String value associated with the key passed as argument.
      */
     public String readStringData(String sharedPreferencesFileName, String key) {
@@ -62,8 +65,9 @@ public class SharedPreferencesUtil {
     /**
      * Returns the set of String values associated with the key passed as argument
      * using SharedPreferences API.
+     *
      * @param sharedPreferencesFileName The name of file where to read the data.
-     * @param key The key associated with the value to read.
+     * @param key                       The key associated with the value to read.
      * @return The set of String values associated with the key passed as argument.
      */
     public Set<String> readStringSetData(String sharedPreferencesFileName, String key) {
