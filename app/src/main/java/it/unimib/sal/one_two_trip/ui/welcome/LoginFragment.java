@@ -138,7 +138,6 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         Button buttonLogin = view.findViewById(R.id.button2);
         Button buttonNotReg = view.findViewById(R.id.button3);
         Button buttonForgotPassword = view.findViewById(R.id.button);
