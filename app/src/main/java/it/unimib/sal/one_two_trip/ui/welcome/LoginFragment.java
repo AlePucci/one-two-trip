@@ -209,6 +209,7 @@ public class LoginFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -222,7 +223,6 @@ public class LoginFragment extends Fragment {
             // Start login if email and password are ok
             if (isEmailOk(email) & isPasswordOk(password)) {
                 if (!userViewModel.isAuthenticationError()) {
-                    progressIndicator.setVisibility(View.VISIBLE);
                     userViewModel.getUserMutableLiveData(email, password, true).observe(
                             getViewLifecycleOwner(), result -> {
                                 if (result.isSuccess()) {
@@ -232,7 +232,6 @@ public class LoginFragment extends Fragment {
                                     retrieveUserInformationAndStartActivity(user, R.id.action_welcomeFragment_to_homeActivity);
                                 } else {
                                     userViewModel.setAuthenticationError(true);
-                                    progressIndicator.setVisibility(View.GONE);
                                     Snackbar.make(requireActivity().findViewById(android.R.id.content),
                                             getErrorMessage(((Result.Error) result).getMessage()),
                                             Snackbar.LENGTH_SHORT).show();
@@ -301,9 +300,8 @@ public class LoginFragment extends Fragment {
             Toast.makeText(getActivity().getApplicationContext(), "Enter valid Email address !", Toast.LENGTH_SHORT).show();
             return false;
         }
-
-
     }
+
 
     @Override
     public void onResume() {

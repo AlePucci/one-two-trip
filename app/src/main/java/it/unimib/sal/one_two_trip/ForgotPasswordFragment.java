@@ -1,5 +1,7 @@
 package it.unimib.sal.one_two_trip;
 
+import static android.content.ContentValues.TAG;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,10 +9,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,6 +27,7 @@ import android.widget.Button;
  * create an instance of this fragment.
  */
 public class ForgotPasswordFragment extends Fragment {
+    TextInputEditText editText;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,8 +71,27 @@ public class ForgotPasswordFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){
         Button backButton = view.findViewById(R.id.backbutton);
+        Button submitButton = view.findViewById(R.id.submit_button);
+        editText = view.findViewById(R.id.email_forgot_pass);
+        submitButton.setOnClickListener(v -> {
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            auth.sendPasswordResetEmail((editText.getText().toString())).addOnCompleteListener(
+                    new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                Log.d(TAG, "Password reset email sent");
+                            }else{
+                                Log.d(TAG, "Failed to send password reset email", task.getException());
+                            }
+                        }
+                    }
+            );
 
+        });
         backButton.setOnClickListener(v ->
                 Navigation.findNavController(requireView()).navigate(R.id.action_forgotPasswordFragment_to_welcomeFragment));
+
     }
+
 }
