@@ -21,7 +21,7 @@
     </fragment>
     <fragment
         android:id="@+id/signinFragment"
-        android:name="it.unimib.sal.one_two_trip.ui.welcome.SigninFragment"
+        android:name="it.unimib.sal.one_two_trip.ui.welcome.SignupFragment"
         android:label="fragment_signin"
         tools:layout="@layout/fragment_signin">
         <action

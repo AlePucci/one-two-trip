@@ -1,8 +1,8 @@
 package it.unimib.sal.one_two_trip.ui.welcome;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import it.unimib.sal.one_two_trip.R;
 

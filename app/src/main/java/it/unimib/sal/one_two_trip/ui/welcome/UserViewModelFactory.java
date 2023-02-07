@@ -1,4 +1,5 @@
 package it.unimib.sal.one_two_trip.ui.welcome;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -18,9 +19,10 @@ public class UserViewModelFactory implements ViewModelProvider.Factory {
         this.userRepository = userRepository;
     }
 
+    @SuppressWarnings("unchecked") // This is safe because of the type parameter.
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new UserViewModel(userRepository);
+        return (T) new UserViewModel(this.userRepository);
     }
 }

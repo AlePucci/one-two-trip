@@ -6,19 +6,15 @@ import static it.unimib.sal.one_two_trip.util.Constants.ENCRYPTED_DATA_FILE_NAME
 import static it.unimib.sal.one_two_trip.util.Constants.ENCRYPTED_SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.ID_TOKEN;
 import static it.unimib.sal.one_two_trip.util.Constants.INVALID_CREDENTIALS_ERROR;
-import static it.unimib.sal.one_two_trip.util.Constants.INVALID_USER_ERROR;
 
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.IntentSenderRequest;
@@ -35,6 +31,7 @@ import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -43,10 +40,10 @@ import java.security.GeneralSecurityException;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
-import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 import it.unimib.sal.one_two_trip.data.database.model.User;
+import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 import it.unimib.sal.one_two_trip.ui.main.HomeActivity;
-import it.unimib.sal.one_two_trip.util.Constants;
+import it.unimib.sal.one_two_trip.util.DataEncryptionUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 
 /**
@@ -55,12 +52,12 @@ import it.unimib.sal.one_two_trip.util.ServiceLocator;
 public class LoginFragment extends Fragment {
 
     private UserViewModel userViewModel;
-    private TextInputEditText textInputEditEmail;
-    private TextInputEditText textInputEditPassword;
     private ActivityResultLauncher<IntentSenderRequest> activityResultLauncher;
     private SignInClient oneTapClient;
     private BeginSignInRequest signInRequest;
     private DataEncryptionUtil dataEncryptionUtil;
+    private TextInputEditText emailEditText;
+    private TextInputEditText passwordEditText;
 
 
     public LoginFragment() {
@@ -72,13 +69,21 @@ public class LoginFragment extends Fragment {
 
         FragmentActivity activity = requireActivity();
         Application application = activity.getApplication();
+
         IUserRepository userRepository = ServiceLocator.getInstance().
                 getUserRepository(application);
-        this.userViewModel = new ViewModelProvider(
-                activity,
-                new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        if (userRepository != null) {
+            this.userViewModel = new ViewModelProvider(
+                    activity,
+                    new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        } else {
+            Snackbar.make(activity.findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
+
         this.dataEncryptionUtil = new DataEncryptionUtil(application);
 
+        // LOGIN
         this.oneTapClient = Identity.getSignInClient(activity);
         this.signInRequest = BeginSignInRequest.builder()
                 .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
@@ -95,42 +100,44 @@ public class LoginFragment extends Fragment {
         ActivityResultContracts.StartIntentSenderForResult startIntentSenderForResult =
                 new ActivityResultContracts.StartIntentSenderForResult();
 
-        this.activityResultLauncher = registerForActivityResult(startIntentSenderForResult, activityResult -> {
-            if (activityResult.getResultCode() == Activity.RESULT_OK) {
-                try {
-                    SignInCredential credential = this.oneTapClient.getSignInCredentialFromIntent(activityResult.getData());
-                    String idToken = credential.getGoogleIdToken();
-                    if (idToken != null) {
-                        this.userViewModel.getGoogleUserMutableLiveData(idToken).observe(
-                                getViewLifecycleOwner(),
-                                authenticationResult -> {
-                                    if (authenticationResult.isSuccess()) {
-                                        User user = ((Result.UserResponseSuccess) authenticationResult).getData();
-                                        saveLoginData(user.getEmail(), null, user.getIdToken());
-                                        userViewModel.setAuthenticationError(false);
-                                        startActivity(new Intent(activity, HomeActivity.class));
-                                    } else {
-                                        userViewModel.setAuthenticationError(true);
-                                        Snackbar.make(activity.findViewById(android.R.id.content),
-                                                getErrorMessage(((Result.Error) authenticationResult)
-                                                        .getMessage()),
-                                                Snackbar.LENGTH_SHORT).show();
-                                    }
-                                });
+        this.activityResultLauncher = registerForActivityResult(startIntentSenderForResult,
+                activityResult -> {
+                    if (activityResult.getResultCode() == Activity.RESULT_OK) {
+                        try {
+                            SignInCredential credential =
+                                    this.oneTapClient.getSignInCredentialFromIntent(activityResult.getData());
+                            String idToken = credential.getGoogleIdToken();
+
+                            if (idToken != null) {
+                                this.userViewModel.getGoogleUserMutableLiveData(idToken).observe(
+                                        getViewLifecycleOwner(),
+                                        authenticationResult -> {
+                                            if (authenticationResult.isSuccess()) {
+                                                User user = ((Result.UserResponseSuccess) authenticationResult).getData();
+                                                saveLoginData(user.getEmail(), null, user.getIdToken());
+                                                this.userViewModel.setAuthenticationError(false);
+                                                startActivity(new Intent(activity, HomeActivity.class));
+                                            } else {
+                                                this.userViewModel.setAuthenticationError(true);
+                                                Snackbar.make(activity.findViewById(android.R.id.content),
+                                                        getErrorMessage(((Result.Error) authenticationResult)
+                                                                .getMessage()),
+                                                        Snackbar.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }
+                        } catch (ApiException e) {
+                            Snackbar.make(activity.findViewById(android.R.id.content),
+                                    activity.getString(R.string.unexpected_error),
+                                    Snackbar.LENGTH_SHORT).show();
+                        }
                     }
-                } catch (ApiException e) {
-                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                            requireActivity().getString(R.string.unexpected_error),
-                            Snackbar.LENGTH_SHORT).show();
-                }
-            }
-        });
+                });
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
@@ -138,29 +145,37 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Button buttonLogin = view.findViewById(R.id.button2);
-        Button buttonNotReg = view.findViewById(R.id.button3);
-        Button buttonForgotPassword = view.findViewById(R.id.button);
-        Button buttonGoogleLogin = view.findViewById(R.id.buttonGoogleLogin);
 
-        buttonLogin.setOnClickListener(v -> {
-            this.textInputEditEmail = view.findViewById(R.id.email_login);
-            this.textInputEditPassword = view.findViewById(R.id.password_login);
+        FragmentActivity activity = requireActivity();
+
+        if (this.userViewModel.getLoggedUser() != null) {
+            activity.startActivity(new Intent(activity, HomeActivity.class));
+            activity.finish();
+        }
+
+        MaterialButton loginButton = view.findViewById(R.id.buttonLogin);
+        MaterialButton signupButton = view.findViewById(R.id.buttonRegister);
+        MaterialButton forgotPasswordButton = view.findViewById(R.id.buttonForgotPassword);
+        MaterialButton googleLoginButton = view.findViewById(R.id.buttonGoogleLogin);
+        this.emailEditText = view.findViewById(R.id.email_login);
+        this.passwordEditText = view.findViewById(R.id.password_login);
+
+        loginButton.setOnClickListener(v -> {
             String email = "";
-
-            if (textInputEditEmail.getText() != null) {
-                email = textInputEditEmail.getText().toString().trim();
+            if (this.emailEditText.getText() != null) {
+                email = this.emailEditText.getText().toString().trim();
             }
 
             String password = "";
-            if (textInputEditPassword.getText() != null) {
-                password = textInputEditPassword.getText().toString().trim();
+            if (this.passwordEditText.getText() != null) {
+                password = this.passwordEditText.getText().toString().trim();
             }
 
-            if (isEmailOk(email) & isPasswordOk(password)) {
+            if (isEmailOk() && isPasswordOk()) {
                 if (!this.userViewModel.isAuthenticationError()) {
                     String finalEmail = email;
                     String finalPassword = password;
+
                     this.userViewModel.getUserMutableLiveData(
                             email, password, true).observe(
                             getViewLifecycleOwner(), result -> {
@@ -168,10 +183,11 @@ public class LoginFragment extends Fragment {
                                     User user = ((Result.UserResponseSuccess) result).getData();
                                     saveLoginData(finalEmail, finalPassword, user.getIdToken());
                                     this.userViewModel.setAuthenticationError(false);
-                                    startActivity(new Intent(requireActivity(), HomeActivity.class));
+                                    startActivity(new Intent(activity, HomeActivity.class));
+                                    activity.finish();
                                 } else {
                                     this.userViewModel.setAuthenticationError(true);
-                                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                    Snackbar.make(view,
                                             getErrorMessage(((Result.Error) result).getMessage()),
                                             Snackbar.LENGTH_SHORT).show();
                                 }
@@ -180,27 +196,30 @@ public class LoginFragment extends Fragment {
                     this.userViewModel.getUser(email, password, true);
                 }
             } else {
-                Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                Snackbar.make(view,
                         R.string.check_login_data_message, Snackbar.LENGTH_SHORT).show();
             }
         });
 
+        signupButton.setOnClickListener(v ->
+                Navigation.findNavController(view)
+                        .navigate(R.id.action_loginFragment_to_signinFragment));
 
-        buttonNotReg.setOnClickListener(v -> Navigation.findNavController(view)
-                .navigate(R.id.action_loginFragment_to_signinFragment));
-
-        buttonForgotPassword.setOnClickListener(v ->
+        forgotPasswordButton.setOnClickListener(v ->
                 Navigation.findNavController(view)
                         .navigate(R.id.action_loginFragment_to_forgotPasswordFragment));
 
-        buttonGoogleLogin.setOnClickListener(v -> this.oneTapClient.beginSignIn(signInRequest)
-                .addOnSuccessListener(requireActivity(), result -> {
-                    IntentSenderRequest intentSenderRequest =
-                            new IntentSenderRequest.Builder(result.getPendingIntent()).build();
-                    activityResultLauncher.launch(intentSenderRequest);
-                })
-                .addOnFailureListener(requireActivity(), e ->
-                        Log.d("GoogleOneTap", "Error: " + e.getMessage())));
+        googleLoginButton.setOnClickListener(v ->
+                this.oneTapClient.beginSignIn(this.signInRequest)
+                        .addOnSuccessListener(activity, result -> {
+                            IntentSenderRequest intentSenderRequest =
+                                    new IntentSenderRequest.Builder(result.getPendingIntent()).build();
+                            this.activityResultLauncher.launch(intentSenderRequest);
+                        })
+                        .addOnFailureListener(activity, e ->
+                                Snackbar.make(view,
+                                        activity.getString(R.string.unexpected_error),
+                                        Snackbar.LENGTH_SHORT).show()));
     }
 
     @Override
@@ -209,34 +228,32 @@ public class LoginFragment extends Fragment {
         this.userViewModel.setAuthenticationError(false);
     }
 
-    private boolean isPasswordOk(String password) {
-        EditText pass = requireView().findViewById(R.id.password_login);
-
-        if (password == null || password.isEmpty() || password.length() < Constants.MINIMUM_PASSWORD_LENGHT) {
-            pass.setError("Error password");
+    private boolean isPasswordOk() {
+        if (this.passwordEditText.getText() == null) {
             return false;
-        } else {
-            pass.setError(null);
-            return true;
         }
+
+        String password = this.passwordEditText.getText().toString().trim();
+
+        return !password.isEmpty();
     }
 
-    private boolean isEmailOk(String email) {
-        EditText emailToText = requireView().findViewById(R.id.email_login);
+    private boolean isEmailOk() {
+        if (this.emailEditText.getText() == null) {
+            return false;
+        }
 
-        return emailToText != null && Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        String email = emailEditText.getText().toString().trim();
+
+        return !email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-
+    @NonNull
     private String getErrorMessage(@NonNull String errorType) {
-        switch (errorType) {
-            case INVALID_CREDENTIALS_ERROR:
-                return requireActivity().getString(R.string.error_login_password_message);
-            case INVALID_USER_ERROR:
-                return requireActivity().getString(R.string.error_login_user_message);
-            default:
-                return requireActivity().getString(R.string.unexpected_error);
+        if (INVALID_CREDENTIALS_ERROR.equals(errorType)) {
+            return getString(R.string.error_login_user_or_password_message);
         }
+        return getString(R.string.unexpected_error);
     }
 
     private void saveLoginData(String email, String password, String idToken) {
@@ -252,7 +269,6 @@ public class LoginFragment extends Fragment {
                 this.dataEncryptionUtil.writeSecreteDataOnFile(ENCRYPTED_DATA_FILE_NAME,
                         email.concat(":").concat(password));
             }
-
         } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
         }

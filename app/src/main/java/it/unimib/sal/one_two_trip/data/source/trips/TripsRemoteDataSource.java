@@ -7,7 +7,9 @@ import static it.unimib.sal.one_two_trip.util.Constants.STATUS_OK;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.security.crypto.EncryptedSharedPreferences;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -27,6 +29,7 @@ import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.data.database.model.response.TripsApiResponse;
+import it.unimib.sal.one_two_trip.util.DataEncryptionUtil;
 
 /**
  * Class to get Trips from a remote source using Firebase Realtime Database.
@@ -34,11 +37,14 @@ import it.unimib.sal.one_two_trip.data.database.model.response.TripsApiResponse;
 public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
 
     private final CollectionReference tripsCollectionReference;
+    private final String idToken;
 
     public TripsRemoteDataSource(String idToken) {
         super();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         this.tripsCollectionReference = db.collection(FIREBASE_TRIPS_COLLECTION);
+
+        this.idToken = idToken;
 
 
         this.addTripListener();

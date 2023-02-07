@@ -1,5 +1,6 @@
 package it.unimib.sal.one_two_trip.ui.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
@@ -33,6 +34,10 @@ import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
+import it.unimib.sal.one_two_trip.ui.welcome.UserViewModel;
+import it.unimib.sal.one_two_trip.ui.welcome.UserViewModelFactory;
+import it.unimib.sal.one_two_trip.ui.welcome.WelcomeActivity;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 
 /**
@@ -54,7 +59,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
                 .getTripsRepository(getApplication());
         TripsViewModel viewModel = null;
@@ -66,6 +70,16 @@ public class HomeActivity extends AppCompatActivity {
                     getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
         }
 
+        IUserRepository userRepository = ServiceLocator.getInstance()
+                .getUserRepository(getApplication());
+        UserViewModel userViewModel = null;
+        if (userRepository != null) {
+            userViewModel = new ViewModelProvider(this,
+                    new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        } else {
+            Snackbar.make(findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
 
         MaterialToolbar toolbar = findViewById(R.id.top_appbar);
         setSupportActionBar(toolbar);
@@ -111,8 +125,14 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        UserViewModel finalUserViewModel = userViewModel;
         drawerNav.getMenu().findItem(R.id.logout).setOnMenuItemClickListener(item -> {
-            /* TODO: LOGOUT */
+            if (finalUserViewModel != null) {
+                finalUserViewModel.logout();
+                Intent intent = new Intent(HomeActivity.this, WelcomeActivity.class);
+                startActivity(intent);
+                finish();
+            }
             return false;
         });
 

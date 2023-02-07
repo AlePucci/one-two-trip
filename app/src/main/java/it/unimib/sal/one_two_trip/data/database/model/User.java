@@ -6,15 +6,40 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.Exclude;
-public class User implements Parcelable{
+
+import org.jetbrains.annotations.Contract;
+
+public class User implements Parcelable {
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        @NonNull
+        @Contract("_ -> new")
+        @Override
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        @NonNull
+        @Contract(value = "_ -> new", pure = true)
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
     private String name;
     private String email;
     private String idToken;
 
-    public User(String name, String email, String idToken){
+    public User(String name, String email, String idToken) {
         this.name = name;
         this.email = email;
         this.idToken = idToken;
+    }
+
+    protected User(@NonNull Parcel in) {
+        this.name = in.readString();
+        this.email = in.readString();
+        this.idToken = in.readString();
     }
 
     public String getName() {
@@ -34,53 +59,36 @@ public class User implements Parcelable{
     }
 
     @Exclude
-    public String getIdToken(){
+    public String getIdToken() {
         return idToken;
     }
 
     public void setIdToken(String idToken) {
         this.idToken = idToken;
     }
+
     @NonNull
     @Override
-    public String toString(){
+    public String toString() {
         return "User{ " + "name='" + name + '\'' + ", email='" + email + '\'' + ", idToken='" + idToken + '\'' + '}';
     }
 
     @Override
-    public int describeContents(){
+    public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(this.name);
         dest.writeString(this.email);
         dest.writeString(this.idToken);
     }
 
-    public void readFromParcel(Parcel source) {
+
+    public void readFromParcel(@NonNull Parcel source) {
         this.name = source.readString();
         this.email = source.readString();
         this.idToken = source.readString();
     }
-
-    protected User(Parcel in) {
-        this.name = in.readString();
-        this.email = in.readString();
-        this.idToken = in.readString();
-    }
-
-    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
-        @Override
-        public User createFromParcel(Parcel source) {
-            return new User(source);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
-
 }

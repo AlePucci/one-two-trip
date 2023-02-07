@@ -113,6 +113,6 @@ public class Constants {
     // USER COLOR
     public static final String USER_COLOR = "userColor";
 
-    public static final int MINIMUM_PASSWORD_LENGHT = 6;
+    public static final int MINIMUM_PASSWORD_LENGTH = 6;
     public static final String FIREBASE_USERS_COLLECTION = "users";
 }

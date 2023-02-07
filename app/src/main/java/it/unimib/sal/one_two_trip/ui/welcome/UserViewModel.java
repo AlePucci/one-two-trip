@@ -1,71 +1,58 @@
 package it.unimib.sal.one_two_trip.ui.welcome;
 
-
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import it.unimib.sal.one_two_trip.data.database.model.Result;
-import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 import it.unimib.sal.one_two_trip.data.database.model.User;
-
+import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 
 public class UserViewModel extends ViewModel {
-    private static final String TAG = UserViewModel.class.getSimpleName();
 
     private final IUserRepository userRepository;
     private MutableLiveData<Result> userMutableLiveData;
-    private MutableLiveData<Result> userFavoriteNewsMutableLiveData;
-    private MutableLiveData<Result> userPreferencesMutableLiveData;
     private boolean authenticationError;
 
     public UserViewModel(IUserRepository userRepository) {
         this.userRepository = userRepository;
-        authenticationError = false;
+        this.authenticationError = false;
     }
 
-    public MutableLiveData<Result> getUserMutableLiveData(
-            String email, String password, boolean isUserRegistered) {
-        if (userMutableLiveData == null) {
+    public MutableLiveData<Result> getUserMutableLiveData(String email, String password,
+                                                          boolean isUserRegistered) {
+        if (this.userMutableLiveData == null) {
             getUserData(email, password, isUserRegistered);
         }
-        return userMutableLiveData;
+        return this.userMutableLiveData;
     }
 
     public MutableLiveData<Result> getGoogleUserMutableLiveData(String token) {
-        Log.d(TAG, "getGoogleUserMutableLiveData: " + token);
-        if (userMutableLiveData == null) {
+        if (this.userMutableLiveData == null) {
             getUserData(token);
         }
-        return userMutableLiveData;
+        return this.userMutableLiveData;
     }
 
-
     public User getLoggedUser() {
-        return userRepository.getLoggedUser();
+        return this.userRepository.getLoggedUser();
     }
 
     public MutableLiveData<Result> logout() {
-        if (userMutableLiveData == null) {
-            userMutableLiveData = userRepository.logout();
+        if (this.userMutableLiveData == null) {
+            this.userMutableLiveData = this.userRepository.logout();
         } else {
-            userRepository.logout();
+            this.userRepository.logout();
         }
 
-        return userMutableLiveData;
-    }
-
-    private void getUserFavoriteNews(String idToken) {
-        userFavoriteNewsMutableLiveData = userRepository.getUserFavoriteNews(idToken);
+        return this.userMutableLiveData;
     }
 
     public void getUser(String email, String password, boolean isUserRegistered) {
-        userRepository.getUser(email, password, isUserRegistered);
+        this.userRepository.getUser(email, password, isUserRegistered);
     }
 
     public boolean isAuthenticationError() {
-        return authenticationError;
+        return this.authenticationError;
     }
 
     public void setAuthenticationError(boolean authenticationError) {
@@ -73,11 +60,10 @@ public class UserViewModel extends ViewModel {
     }
 
     private void getUserData(String email, String password, boolean isUserRegistered) {
-        userMutableLiveData = userRepository.getUser(email, password, isUserRegistered);
+        this.userMutableLiveData = this.userRepository.getUser(email, password, isUserRegistered);
     }
 
     private void getUserData(String token) {
-        Log.d(TAG, "getUserData: " + token);
-        userMutableLiveData = userRepository.getGoogleUser(token);
+        this.userMutableLiveData = this.userRepository.getGoogleUser(token);
     }
 }

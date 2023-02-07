@@ -2,26 +2,25 @@ package it.unimib.sal.one_two_trip.data.repository.user;
 
 import androidx.lifecycle.MutableLiveData;
 
-import java.util.Set;
-
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.User;
+import it.unimib.sal.one_two_trip.data.source.trips.BaseTripsLocalDataSource;
 import it.unimib.sal.one_two_trip.data.source.user.BaseUserAuthenticationRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.user.BaseUserDataRemoteDataSource;
 
 public class UserRepository implements IUserRepository, UserResponseCallback {
 
-    private static final String TAG = UserRepository.class.getSimpleName();
-
     private final BaseUserAuthenticationRemoteDataSource userRemoteDataSource;
     private final BaseUserDataRemoteDataSource userDataRemoteDataSource;
+    private final BaseTripsLocalDataSource tripsLocalDataSource;
     private final MutableLiveData<Result> userMutableLiveData;
 
-
     public UserRepository(BaseUserAuthenticationRemoteDataSource userRemoteDataSource,
-                          BaseUserDataRemoteDataSource userDataRemoteDataSource) {
+                          BaseUserDataRemoteDataSource userDataRemoteDataSource,
+                          BaseTripsLocalDataSource tripsLocalDataSource) {
         this.userRemoteDataSource = userRemoteDataSource;
         this.userDataRemoteDataSource = userDataRemoteDataSource;
+        this.tripsLocalDataSource = tripsLocalDataSource;
         this.userMutableLiveData = new MutableLiveData<>();
         this.userRemoteDataSource.setUserResponseCallback(this);
         this.userDataRemoteDataSource.setUserResponseCallback(this);
@@ -34,80 +33,68 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
         } else {
             signUp(email, password);
         }
-        return userMutableLiveData;
+        return this.userMutableLiveData;
     }
 
     @Override
     public MutableLiveData<Result> getGoogleUser(String idToken) {
         signInWithGoogle(idToken);
-        return userMutableLiveData;
-    }
-
-    @Override
-    public MutableLiveData<Result> getUserFavoriteNews(String idToken) {
-        return null;
-    }
-
-    @Override
-    public MutableLiveData<Result> getUserPreferences(String idToken) {
-        return null;
+        return this.userMutableLiveData;
     }
 
     @Override
     public void onSuccessFromAuthentication(User user) {
-        if (user != null)
-            userDataRemoteDataSource.saveUserData(user);
+        if (user != null) {
+            this.userDataRemoteDataSource.saveUserData(user);
+        }
     }
 
     @Override
     public void onFailureFromAuthentication(String message) {
         Result.Error result = new Result.Error(message);
-        userMutableLiveData.postValue(result);
+        this.userMutableLiveData.postValue(result);
     }
 
     @Override
     public void onSuccessFromRemoteDatabase(User user) {
         Result.UserResponseSuccess result = new Result.UserResponseSuccess(user);
-        userMutableLiveData.postValue(result);
+        this.userMutableLiveData.postValue(result);
     }
 
     @Override
     public void onFailureFromRemoteDatabase(String message) {
-
+        Result.Error result = new Result.Error(message);
+        this.userMutableLiveData.postValue(result);
     }
 
     @Override
     public void onSuccessLogout() {
+        this.tripsLocalDataSource.deleteAllTrips();
     }
 
     @Override
     public void signUp(String email, String password) {
-        userRemoteDataSource.signUp(email, password);
+        this.userRemoteDataSource.signUp(email, password);
     }
 
     @Override
     public void signIn(String email, String password) {
-        userRemoteDataSource.signIn(email, password);
+        this.userRemoteDataSource.signIn(email, password);
     }
 
     @Override
     public void signInWithGoogle(String token) {
-        userRemoteDataSource.signInWithGoogle(token);
+        this.userRemoteDataSource.signInWithGoogle(token);
     }
 
     @Override
     public User getLoggedUser() {
-        return null;
+        return this.userRemoteDataSource.getLoggedUser();
     }
 
     @Override
     public MutableLiveData<Result> logout() {
-        return null;
+        this.userRemoteDataSource.logout();
+        return this.userMutableLiveData;
     }
-
-    @Override
-    public void saveUserPreferences(String favoriteCountry, Set<String> favoriteTopics, String idToken) {
-
-    }
-
 }

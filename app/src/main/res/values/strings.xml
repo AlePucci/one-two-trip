@@ -5,6 +5,23 @@
     <string name="app_description">Your favorite app for creating and managing group trips</string>
     <string name="app_version" translatable="false">1.0.0</string>
 
+    <!-- login -->
+    <string name="logo">Application logo</string>
+    <string name="sign_up">Sign up</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="login">Login</string>
+    <string name="email">E-mail</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="not_registered_yet">Not registered yet?</string>
+    <string name="or">OR</string>
+    <string name="google_login">Login with Google</string>
+    <string name="register">Register</string>
+    <string name="forgot_password_text">Enter the email address associated with your account and we will send you a link to reset your password.</string>
+    <string name="check_login_data_message">Field(s) not valid!</string>
+
     <!-- home -->
     <string name="trip_map_description">Map of the trip</string>
     <string name="trip_fab_label">Add Activity</string>
@@ -174,31 +191,14 @@
     <string name="error_json_parsing">Error! Please try again</string>
     <string name="error_retrieving_trips">Error while retrieving trips.</string>
     <string name="no_internet_error">Error! You have no connection at the moment. Please retry later.</string>
-    <string name="error_no_google_account_found_message" translatable="false">No Google Account</string>
-    <string name="logo" translatable="false">Logo Application</string>
-    <string name="sign_in" translatable="false">Sign-in</string>
-    <string name="name" translatable="false">Name</string>
-    <string name="surname" translatable="false">Surname</string>
-    <string name="login" translatable="false">Login</string>
-    <string name="submit" translatable="false">Submit</string>
-    <string name="email" translatable="false">E-mail</string>
-    <string name="password" translatable="false">Password</string>
-    <string name="confirm_password" translatable="false">Confirm password</string>
-    <string name="forgot_password" translatable="false">Forgot password?</string>
-    <string name="txt_or" translatable="false">OR</string>
-    <string name="google_log" translatable="false">Login with Google</string>
-    <string name="google_login" translatable="false">Login with Google</string>
-    <string name="new_account" translatable="false">New to World News?</string>
-    <string name="register" translatable="false">Register</string>
-    <string name="error_password" translatable="false">Error password</string>
-    <string name="error_user_collision_message" translatable="false">The email address is already in use by another account</string>
-    <string name="check_login_data_message" translatable="false">Check the data you inserted</string>
-    <string name="forgot_password_text" translatable="false">Enter the email address associated with your account and we will send you a link to reset your password.</string>
-    <string name="error_login_password_message" translatable="false">The password is invalid</string>
-    <string name="error_login_user_message" translatable="false">There is no user record corresponding to this identifier</string>
-    <!-- TODO: Remove or change this placeholder text -->
-
-    <string name="WEB_SERVER_ID" translatable="false">484986298181-gm1ouq9nmf9jr76mi0l7gg63ogncfebr.apps.googleusercontent.com</string>
+    <string name="error_no_google_account_found_message">No Google account found!</string>
+    <string name="error_password_too_weak">Password is too weak! It should be at least %1$d characters long!</string>
+    <string name="error_email_not_valid">E-mail is not valid!</string>
+    <string name="error_password_dont_match">Passwords don\'t match!</string>
+    <string name="error_empty_name">Name is empty!</string>
+    <string name="error_empty_surname">Surname is empty!</string>
+    <string name="error_user_collision_message">The e-mail address is already in use!</string>
+    <string name="error_login_user_or_password_message">E-mail or password is incorrect!</string>
     <string name="no_shareable_activities">There are no activities to share here!</string>
     <string name="no_shareable_activities_2">There are no static activities to share here!</string>
     <string name="share_trip_error">Something went wrong! Please try again</string>

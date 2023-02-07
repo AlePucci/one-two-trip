@@ -43,7 +43,7 @@ public interface ITripsDAO {
     void delete(Trip trip);
 
     @Query("DELETE FROM trip")
-    void deleteAll();
+    int deleteAll();
 
     @Delete
     void deleteAllWithoutQuery(Trip... trips);

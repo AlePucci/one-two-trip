@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    
     <string name="trip_title" translatable="false">Title</string>
     <string name="activity_when_title_d" translatable="false">Date</string>
     <string name="activity_name" translatable="false">Name</string>
@@ -8,6 +9,7 @@
     <string name="activity_end_time" translatable="false">EndTime</string>
     <string name="activity_end_location" translatable="false">EndLoc</string>
     <string name="participants" translatable="false">Participants</string>
+    <string name="WEB_SERVER_ID" translatable="false">484986298181-gm1ouq9nmf9jr76mi0l7gg63ogncfebr.apps.googleusercontent.com</string>
 
     <!-- end of file -->
 </resources>

@@ -223,8 +223,6 @@ public class PastTripsFragment extends Fragment {
                         if (fetchedTrips == null || fetchedTrips.isEmpty()) {
                             int previousSize = this.pastTrips.size();
                             this.pastTrips.clear();
-                            this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
-                                    previousSize);
                             noTripsText.setText(R.string.no_trips_added);
                             noTripsText.setVisibility(View.VISIBLE);
                             noTripsImage.setVisibility(View.VISIBLE);
@@ -239,8 +237,7 @@ public class PastTripsFragment extends Fragment {
                             int previousSize = this.pastTrips.size();
                             this.pastTrips.clear();
                             if (pastTrips.isEmpty()) {
-                                this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
-                                        previousSize);
+
                                 noTripsText.setText(R.string.no_past_trips);
                                 noTripsText.setVisibility(View.VISIBLE);
                                 noTripsImage.setVisibility(View.VISIBLE);
@@ -250,11 +247,10 @@ public class PastTripsFragment extends Fragment {
 
                                 pastTrips.sort(Comparator.comparing(Trip::getStart_date).reversed());
                                 this.pastTrips.addAll(pastTrips);
-                                this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
-                                        previousSize + 1);
+
                             }
                         }
-
+                        this.tripsRecyclerViewAdapter.notifyDataSetChanged();
 
                     } else {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);

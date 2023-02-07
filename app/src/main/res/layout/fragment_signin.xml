@@ -5,7 +5,7 @@
     android:id="@+id/signup_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.welcome.SigninFragment">
+    tools:context=".ui.welcome.SignupFragment">
 
     <ImageView
         android:id="@+id/logo"
@@ -20,7 +20,7 @@
         android:id="@+id/signup_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign up"
+        android:text="@string/sign_up"
         android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -40,8 +40,8 @@
         app:boxCornerRadiusTopStart="8dp"
         app:boxStrokeColor="@color/black"
         app:hintTextColor="@color/black"
-        app:layout_constraintStart_toEndOf="@id/guidelineLog"
         app:layout_constraintEnd_toStartOf="@id/surname_input_layout"
+        app:layout_constraintStart_toEndOf="@id/guidelineLog"
         app:layout_constraintTop_toBottomOf="@id/signup_text">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -53,7 +53,7 @@
             android:textColor="@color/black"
             android:textColorHighlight="@color/black"
             android:textColorHint="@color/black"
-            android:textColorLink="@color/black"/>
+            android:textColorLink="@color/black" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -62,8 +62,8 @@
         android:id="@+id/surname_input_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
         android:textColorHint="@color/black"
         app:boxBackgroundColor="@android:color/transparent"
         app:boxCornerRadiusBottomEnd="8dp"
@@ -72,8 +72,8 @@
         app:boxCornerRadiusTopStart="8dp"
         app:boxStrokeColor="@color/black"
         app:hintTextColor="@color/black"
-        app:layout_constraintStart_toEndOf="@id/name_input_layout"
         app:layout_constraintEnd_toStartOf="@id/guidelineLog1"
+        app:layout_constraintStart_toEndOf="@id/name_input_layout"
         app:layout_constraintTop_toBottomOf="@id/signup_text">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -85,7 +85,7 @@
             android:textColor="@color/black"
             android:textColorHighlight="@color/black"
             android:textColorHint="@color/black"
-            android:textColorLink="@color/black"/>
+            android:textColorLink="@color/black" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -117,12 +117,12 @@
         app:boxCornerRadiusTopStart="8dp"
         app:boxStrokeColor="@color/black"
         app:hintTextColor="@color/black"
-        app:startIconTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@id/guidelineLog1"
         app:layout_constraintStart_toEndOf="@id/guidelineLog"
         app:layout_constraintTop_toBottomOf="@+id/name_input_layout"
-        app:startIconDrawable="@drawable/ic_baseline_alternate_email_24">
+        app:startIconDrawable="@drawable/ic_baseline_alternate_email_24"
+        app:startIconTint="@color/black">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/email_edittext"
@@ -133,7 +133,7 @@
             android:textColor="@color/black"
             android:textColorHighlight="@color/black"
             android:textColorHint="@color/black"
-            android:textColorLink="@color/black"/>
+            android:textColorLink="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -154,8 +154,8 @@
         app:layout_constraintTop_toBottomOf="@id/email_input_layout"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/black"
-        app:startIconTint="@color/black"
-        app:startIconDrawable="@drawable/ic_baseline_lock_24">
+        app:startIconDrawable="@drawable/ic_baseline_lock_24"
+        app:startIconTint="@color/black">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password_edittext"
@@ -204,17 +204,18 @@
             android:textColorLink="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/signup_button"
         style="@style/Widget.Material3.Button.ElevatedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:layout_marginBottom="20dp"
-        android:text="Register"
+        android:text="@string/register"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guidelineLog1"
         app:layout_constraintStart_toStartOf="@+id/guidelineLog"
         app:layout_constraintTop_toBottomOf="@id/confirm_password_layout" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -143,5 +143,28 @@
     <string name="no_shareable_activities_2">Non ci sono attività statiche da condividere!</string>
     <string name="activity_departure">partenza</string>
     <string name="activity_arrival">arrivo</string>
+    <string name="logo">Logo dell\'app</string>
+    <string name="sign_up">Registrati</string>
+    <string name="name">Nome</string>
+    <string name="surname">Cognome</string>
+    <string name="login">Accedi</string>
+    <string name="email">E-mail</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Conferma password</string>
+    <string name="forgot_password">Hai dimenticato la password?</string>
+    <string name="or">O</string>
+    <string name="google_login">Accedi con Google</string>
+    <string name="register">Registrati</string>
+    <string name="forgot_password_text">Inserisci l\'e-mail associata con il tuo account e ti invieremo un link per reimpostare la password."</string>
+    <string name="check_login_data_message">Campi non validi!</string>
+    <string name="error_no_google_account_found_message">Nessun account Google trovato!</string>
+    <string name="error_password_too_weak">La password è troppo debole! Dovrebbe contenere almeno %1$d caratteri!</string>
+    <string name="error_user_collision_message">Indirizzo e-mail già in uso!</string>
+    <string name="error_login_user_or_password_message">E-mail o password non validi!</string>
+    <string name="not_registered_yet">Non sei ancora registrato?</string>
+    <string name="error_email_not_valid">L\'e-mail non è valida!</string>
+    <string name="error_password_dont_match">Le password non combaciano!</string>
+    <string name="error_empty_name">Il nome è vuoto!</string>
+    <string name="error_empty_surname">Il cognome è vuoto!</string>
     <!-- end -->
 </resources>
