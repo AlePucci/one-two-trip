@@ -3,42 +3,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/welcomeFragment">
-    <fragment
-        android:id="@+id/welcomeFragment"
-        android:name="it.unimib.sal.one_two_trip.ui.welcome.LoginFragment"
-        android:label="fragment_welcome"
-        tools:layout="@layout/fragment_login" >
-        <action
-            android:id="@+id/action_welcomeFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-        <action
-            android:id="@+id/action_welcomeFragment_to_forgotPasswordFragment"
-            app:destination="@id/forgotPasswordFragment" />
-        <action
-            android:id="@+id/action_welcomeFragment_to_homeActivity"
-            app:destination="@id/homeActivity" />
-        <action
-            android:id="@+id/action_welcomeFragment_to_loginFragment2"
-            app:destination="@id/loginFragment" />
-    </fragment>
+    app:startDestination="@id/loginFragment">
     <fragment
         android:id="@+id/loginFragment"
-        android:name="it.unimib.sal.one_two_trip.ui.welcome.SigninFragment"
+        android:name="it.unimib.sal.one_two_trip.ui.welcome.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_signin" >
+        tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_loginFragment_to_welcomeFragment"
-            app:destination="@id/welcomeFragment" />
+            android:id="@+id/action_loginFragment_to_signinFragment"
+            app:destination="@id/signinFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_forgotPasswordFragment"
+            app:destination="@id/forgotPasswordFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_homeActivity"
+            app:destination="@id/homeActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/signinFragment"
+        android:name="it.unimib.sal.one_two_trip.ui.welcome.SigninFragment"
+        android:label="fragment_signin"
+        tools:layout="@layout/fragment_signin">
+        <action
+            android:id="@+id/action_signinFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/forgotPasswordFragment"
-        android:name="it.unimib.sal.one_two_trip.ForgotPasswordFragment"
+        android:name="it.unimib.sal.one_two_trip.ui.welcome.ForgotPasswordFragment"
         android:label="fragment_forgot_password"
-        tools:layout="@layout/fragment_forgot_password" >
+        tools:layout="@layout/fragment_forgot_password">
         <action
-            android:id="@+id/action_forgotPasswordFragment_to_welcomeFragment"
-            app:destination="@id/welcomeFragment" />
+            android:id="@+id/action_forgotPasswordFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
     <activity
         android:id="@+id/homeActivity"

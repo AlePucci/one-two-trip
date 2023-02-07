@@ -98,7 +98,7 @@
     <string name="error_login_user_message" translatable="false">There is no user record corresponding to this identifier</string>
     <!-- TODO: Remove or change this placeholder text -->
 
-
+    <string name="WEB_SERVER_ID" translatable="false">484986298181-gm1ouq9nmf9jr76mi0l7gg63ogncfebr.apps.googleusercontent.com</string>
 
     <!-- end -->
 </resources>

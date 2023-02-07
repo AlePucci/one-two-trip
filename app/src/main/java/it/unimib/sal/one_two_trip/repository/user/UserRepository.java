@@ -1,5 +1,7 @@
 package it.unimib.sal.one_two_trip.repository.user;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.Set;
@@ -16,16 +18,13 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     private final BaseUserAuthenticationRemoteDataSource userRemoteDataSource;
     private final BaseUserDataRemoteDataSource userDataRemoteDataSource;
     private final MutableLiveData<Result> userMutableLiveData;
-    private final MutableLiveData<Result> userFavoriteNewsMutableLiveData;
-    private final MutableLiveData<Result> userPreferencesMutableLiveData;
+
 
     public UserRepository(BaseUserAuthenticationRemoteDataSource userRemoteDataSource,
                           BaseUserDataRemoteDataSource userDataRemoteDataSource) {
         this.userRemoteDataSource = userRemoteDataSource;
         this.userDataRemoteDataSource = userDataRemoteDataSource;
         this.userMutableLiveData = new MutableLiveData<>();
-        this.userPreferencesMutableLiveData = new MutableLiveData<>();
-        this.userFavoriteNewsMutableLiveData = new MutableLiveData<>();
         this.userRemoteDataSource.setUserResponseCallback(this);
         this.userDataRemoteDataSource.setUserResponseCallback(this);
     }
@@ -58,8 +57,8 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
 
     @Override
     public void onSuccessFromAuthentication(User user) {
-        if(user != null)
-            userRemoteDataSource.saveUserData(user);
+        if (user != null)
+            userDataRemoteDataSource.saveUserData(user);
     }
 
     @Override
@@ -92,8 +91,9 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     public void signIn(String email, String password) {
         userRemoteDataSource.signIn(email, password);
     }
+
     @Override
-    public void signInWithGoogle(String token){
+    public void signInWithGoogle(String token) {
         userRemoteDataSource.signInWithGoogle(token);
     }
 

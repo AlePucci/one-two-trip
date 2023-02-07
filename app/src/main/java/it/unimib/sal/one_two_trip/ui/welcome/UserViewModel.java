@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.ui.welcome;
 
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.compose.runtime.snapshots.Snapshot;
@@ -36,31 +37,13 @@ public class UserViewModel extends ViewModel {
     }
 
     public MutableLiveData<Result> getGoogleUserMutableLiveData(String token) {
+        Log.d(TAG, "getGoogleUserMutableLiveData: " + token);
         if (userMutableLiveData == null) {
             getUserData(token);
         }
         return userMutableLiveData;
     }
 
-    public MutableLiveData<Result> getUserFavoriteNewsMutableLiveData(String idToken) {
-        if (userFavoriteNewsMutableLiveData == null) {
-            getUserFavoriteNews(idToken);
-        }
-        return userFavoriteNewsMutableLiveData;
-    }
-
-    public void saveUserPreferences(String favoriteCountry, Set<String> favoriteTopics, String idToken) {
-        if (idToken != null) {
-            userRepository.saveUserPreferences(favoriteCountry, favoriteTopics, idToken);
-        }
-    }
-
-    public MutableLiveData<Result> getUserPreferences(String idToken) {
-        if (idToken != null) {
-            userPreferencesMutableLiveData = userRepository.getUserPreferences(idToken);
-        }
-        return userPreferencesMutableLiveData;
-    }
 
     public User getLoggedUser() {
         return userRepository.getLoggedUser();
@@ -97,6 +80,7 @@ public class UserViewModel extends ViewModel {
     }
 
     private void getUserData(String token) {
+        Log.d(TAG, "getUserData: " + token);
         userMutableLiveData = userRepository.getGoogleUser(token);
     }
 }

@@ -2,74 +2,90 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/signup_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.welcome.SigninFragment">
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_gravity="center_horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/one_two_trip_vector"
-        tools:layout_editor_absoluteX="0dp" />
-
-    <TextView
-        android:id="@+id/signin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:text="@string/sign_in"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/one_two_trip_vector" />
+
+    <TextView
+        android:id="@+id/signup_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign up"
         android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/guidelineLog"
         app:layout_constraintTop_toBottomOf="@+id/logo" />
 
-
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout1"
-        android:layout_width="wrap_content"
+        android:id="@+id/name_input_layout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:textColorHint="@color/black"
         app:boxBackgroundColor="@android:color/transparent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/guidelineLog1"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:boxStrokeColor="@color/black"
+        app:hintTextColor="@color/black"
         app:layout_constraintStart_toEndOf="@id/guidelineLog"
-        app:layout_constraintTop_toBottomOf="@id/signin">
+        app:layout_constraintEnd_toStartOf="@id/surname_input_layout"
+        app:layout_constraintTop_toBottomOf="@id/signup_text">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="178dp"
+            android:id="@+id/name_textedit"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/name"
             android:inputType="textPersonName"
-            tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
+            android:textColor="@color/black"
+            android:textColorHighlight="@color/black"
+            android:textColorHint="@color/black"
+            android:textColorLink="@color/black"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout2"
-        android:layout_width="wrap_content"
+        android:id="@+id/surname_input_layout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:textColorHint="@color/black"
         app:boxBackgroundColor="@android:color/transparent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:boxStrokeColor="@color/black"
+        app:hintTextColor="@color/black"
+        app:layout_constraintStart_toEndOf="@id/name_input_layout"
         app:layout_constraintEnd_toStartOf="@id/guidelineLog1"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintTop_toBottomOf="@id/signin">
+        app:layout_constraintTop_toBottomOf="@id/signup_text">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="178dp"
+            android:id="@+id/surname_textedit"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/surname"
             android:inputType="textPersonName"
-            tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
+            android:textColor="@color/black"
+            android:textColorHighlight="@color/black"
+            android:textColorHint="@color/black"
+            android:textColorLink="@color/black"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -87,134 +103,118 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="16dp" />
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="177dp"
-        android:layout_height="92dp"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:layout_marginTop="32dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toStartOf="@+id/datePicker"
-        app:layout_constraintStart_toStartOf="@id/guidelineLog"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout1"
-        tools:ignore="MissingConstraints">
-
-        <RadioButton
-            android:id="@+id/firstButton"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Male"
-            android:textColor="@color/black" />
-
-        <RadioButton
-            android:id="@+id/secondButton"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_weight="1"
-            android:text="Female"
-            android:textColor="@color/black" />
-
-    </RadioGroup>
-
-
-    <Button
-        android:id="@+id/datePicker"
-        style="?android:spinnerStyle"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Date of birth"
-        android:textColor="@color/black"
-        android:textSize="20dp"
-        app:layout_constraintHorizontal_bias="0.919"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textInputLayout2" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout"
+        android:id="@+id/email_input_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="32dp"
+        android:textColorHint="@color/black"
         app:boxBackgroundColor="@android:color/transparent"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:boxStrokeColor="@color/black"
+        app:hintTextColor="@color/black"
+        app:startIconTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@id/guidelineLog1"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/guidelineLog"
-        app:layout_constraintTop_toBottomOf="@id/datePicker"
+        app:layout_constraintTop_toBottomOf="@+id/name_input_layout"
         app:startIconDrawable="@drawable/ic_baseline_alternate_email_24">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/email_edit_text"
+            android:id="@+id/email_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/email"
             android:inputType="textEmailAddress"
-            android:textColorHint="@color/white"
-            tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
+            android:textColor="@color/black"
+            android:textColorHighlight="@color/black"
+            android:textColorHint="@color/black"
+            android:textColorLink="@color/black"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout3"
+        android:id="@+id/password_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:textColorHint="@color/black"
         app:boxBackgroundColor="@android:color/transparent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:boxStrokeColor="@color/black"
+        app:hintTextColor="@color/black"
         app:layout_constraintEnd_toStartOf="@id/guidelineLog1"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/guidelineLog"
-        app:layout_constraintTop_toBottomOf="@id/textInputLayout"
+        app:layout_constraintTop_toBottomOf="@id/email_input_layout"
         app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/black"
+        app:startIconTint="@color/black"
         app:startIconDrawable="@drawable/ic_baseline_lock_24">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/password_email_edit_text"
+            android:id="@+id/password_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"
             android:inputType="textPassword"
-            android:textColorHint="@color/white"
-            tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
+            android:textColor="@color/black"
+            android:textColorHighlight="@color/black"
+            android:textColorHint="@color/black"
+            android:textColorLink="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout4"
+        android:id="@+id/confirm_password_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:textColorHint="@color/black"
         app:boxBackgroundColor="@android:color/transparent"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:boxStrokeColor="@color/black"
+        app:hintTextColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintEnd_toStartOf="@id/guidelineLog1"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/guidelineLog"
-        app:layout_constraintTop_toBottomOf="@id/textInputLayout3"
+        app:layout_constraintTop_toBottomOf="@id/password_layout"
         app:passwordToggleEnabled="true"
-        app:startIconDrawable="@drawable/ic_baseline_lock_24">
+        app:passwordToggleTint="@color/black"
+        app:startIconDrawable="@drawable/ic_baseline_lock_24"
+        app:startIconTint="@color/black">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/confirm_password_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/confirm_password"
             android:inputType="textPassword"
-            android:textColorHint="@color/white"
-            tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
+            android:textColor="@color/black"
+            android:textColorHighlight="@color/black"
+            android:textColorHint="@color/black"
+            android:textColorLink="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/signin_button"
+        android:id="@+id/signup_button"
         style="@style/Widget.Material3.Button.ElevatedButton"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:layout_marginBottom="20dp"
-        android:text="@string/sign_in"
-        android:textSize="25dp"
+        android:text="Register"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guidelineLog1"
         app:layout_constraintStart_toStartOf="@+id/guidelineLog"
-        app:layout_constraintTop_toBottomOf="@id/textInputLayout4" />
+        app:layout_constraintTop_toBottomOf="@id/confirm_password_layout" />
 </androidx.constraintlayout.widget.ConstraintLayout>
