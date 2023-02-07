@@ -207,7 +207,9 @@ public class SigninFragment extends Fragment {
         buttonRegistration.setOnClickListener(v -> {
             String email = email_edit_text.getText().toString().trim();
             String password = password_email_edit_text.getText().toString().trim();
-            if (isEmailOk(email) & isPasswordOk(password)) {
+            EditText confirm_password_edit = view.findViewById(R.id.password_edit_text2);
+            String confirm_password = confirm_password_edit.getText().toString();
+            if (isEmailOk(email) & isPasswordOk(password) & password.equals(confirm_password)){
                 if (!userViewModel.isAuthenticationError()) {
                     userViewModel.getUserMutableLiveData(email, password, false).observe(
                             getViewLifecycleOwner(), result -> {
@@ -227,7 +229,10 @@ public class SigninFragment extends Fragment {
                 } else {
                     userViewModel.getUser(email, password, false);
                 }
-            } else {
+            }else if(password.equals(confirm_password)){
+                confirm_password_edit.setError("Password don't match");
+            }
+            else {
                 userViewModel.setAuthenticationError(true);
                 Snackbar.make(requireActivity().findViewById(android.R.id.content),
                         R.string.check_login_data_message, Snackbar.LENGTH_SHORT).show();
