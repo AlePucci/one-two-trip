@@ -42,9 +42,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.model.Result;
-import it.unimib.sal.one_two_trip.model.User;
-import it.unimib.sal.one_two_trip.repository.user.IUserRepository;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
+import it.unimib.sal.one_two_trip.data.database.model.User;
 import it.unimib.sal.one_two_trip.ui.main.HomeActivity;
 import it.unimib.sal.one_two_trip.util.Constants;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;

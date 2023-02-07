@@ -2,17 +2,14 @@ package it.unimib.sal.one_two_trip.ui.welcome;
 
 
 import android.util.Log;
-import android.view.View;
 
-import androidx.compose.runtime.snapshots.Snapshot;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.Set;
+import it.unimib.sal.one_two_trip.data.database.model.Result;
+import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
+import it.unimib.sal.one_two_trip.data.database.model.User;
 
-import it.unimib.sal.one_two_trip.model.Result;
-import it.unimib.sal.one_two_trip.model.User;
-import it.unimib.sal.one_two_trip.repository.user.IUserRepository;
 
 public class UserViewModel extends ViewModel {
     private static final String TAG = UserViewModel.class.getSimpleName();

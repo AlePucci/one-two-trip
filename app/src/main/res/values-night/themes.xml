@@ -9,8 +9,10 @@
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/white</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+
+        <item name="drawerArrowStyle">@style/Widget.App.DrawerArrowStyle</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="Widget.App.CardView" parent="Widget.Material3.CardView.Elevated">

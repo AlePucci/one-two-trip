@@ -3,7 +3,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import it.unimib.sal.one_two_trip.repository.user.IUserRepository;
+import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
+
 
 /**
  * Custom ViewModelProvider to be able to have a custom constructor

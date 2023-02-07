@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_account"
+        android:enabled="true"
         android:icon="@drawable/ic_outline_account_circle_24"
         android:title="@string/menu_account"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 </menu>
+

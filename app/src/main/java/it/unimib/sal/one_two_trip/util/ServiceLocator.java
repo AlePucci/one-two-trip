@@ -1,26 +1,32 @@
 package it.unimib.sal.one_two_trip.util;
 
+import static it.unimib.sal.one_two_trip.util.Constants.GEOCODING_BASE_URL;
+import static it.unimib.sal.one_two_trip.util.Constants.PHOTOS_BASE_URL;
+
 import android.app.Application;
 
-import it.unimib.sal.one_two_trip.database.TripsRoomDatabase;
-import it.unimib.sal.one_two_trip.repository.ITripsRepository;
-import it.unimib.sal.one_two_trip.repository.TripsRepository;
-import it.unimib.sal.one_two_trip.repository.user.IUserRepository;
-import it.unimib.sal.one_two_trip.repository.user.UserRepository;
+import it.unimib.sal.one_two_trip.data.database.TripsRoomDatabase;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.repository.trips.TripsRepository;
+import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
+import it.unimib.sal.one_two_trip.data.repository.user.UserRepository;
+import it.unimib.sal.one_two_trip.data.source.trips.BaseTripsLocalDataSource;
+import it.unimib.sal.one_two_trip.data.source.trips.BaseTripsRemoteDataSource;
+import it.unimib.sal.one_two_trip.data.source.trips.TripsLocalDataSource;
+import it.unimib.sal.one_two_trip.data.source.trips.TripsRemoteDataSource;
+import it.unimib.sal.one_two_trip.service.GeocodingApiService;
 import it.unimib.sal.one_two_trip.service.PictureApiService;
-import it.unimib.sal.one_two_trip.source.BaseTripsLocalDataSource;
-import it.unimib.sal.one_two_trip.source.BaseTripsRemoteDataSource;
-import it.unimib.sal.one_two_trip.source.PhotoRemoteDataSource;
-import it.unimib.sal.one_two_trip.source.TripsLocalDataSource;
-import it.unimib.sal.one_two_trip.source.TripsMockRemoteDataSource;
-import it.unimib.sal.one_two_trip.source.user.BaseUserAuthenticationRemoteDataSource;
-import it.unimib.sal.one_two_trip.source.user.BaseUserDataRemoteDataSource;
-import it.unimib.sal.one_two_trip.source.user.UserAuthenticationRemoteDataSource;
-import it.unimib.sal.one_two_trip.source.user.UserDataRemoteDataSource;
+import it.unimib.sal.one_two_trip.data.source.user.BaseUserAuthenticationRemoteDataSource;
+import it.unimib.sal.one_two_trip.data.source.user.BaseUserDataRemoteDataSource;
+import it.unimib.sal.one_two_trip.data.source.user.UserAuthenticationRemoteDataSource;
+import it.unimib.sal.one_two_trip.data.source.user.UserDataRemoteDataSource;
 import it.unimib.sal.one_two_trip.ui.welcome.DataEncryptionUtil;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Registry to provide the dependencies for the classes used in the application.
+ */
 public class ServiceLocator {
 
     private static volatile ServiceLocator INSTANCE = null;
@@ -28,6 +34,11 @@ public class ServiceLocator {
     private ServiceLocator() {
     }
 
+    /**
+     * Creates an instance of ServiceLocator class.
+     *
+     * @return An instance of ServiceLocator.
+     */
     public static ServiceLocator getInstance() {
         if (INSTANCE == null) {
             synchronized (ServiceLocator.class) {
@@ -39,27 +50,14 @@ public class ServiceLocator {
         return INSTANCE;
     }
 
+    /**
+     * Returns an instance of TripsRoomDatabase class to manage Room database.
+     *
+     * @param application application context
+     * @return An instance of TripsRoomDatabase.
+     */
     public TripsRoomDatabase getTripsDAO(Application application) {
         return TripsRoomDatabase.getDatabase(application);
-    }
-
-    /**
-     * Returns an instance of ITripsRepository.
-     *
-     * @param application Param for accessing the global application state.
-     * @return An instance of ITripsRepository.
-     */
-    public ITripsRepository getTripsRepository(Application application) {
-        BaseTripsRemoteDataSource newsRemoteDataSource;
-        BaseTripsLocalDataSource newsLocalDataSource;
-        SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
-
-        newsRemoteDataSource = new TripsMockRemoteDataSource(new JSONParserUtil(application));
-
-        newsLocalDataSource = new TripsLocalDataSource(getTripsDAO(application),
-                sharedPreferencesUtil);
-
-        return new TripsRepository(newsRemoteDataSource, newsLocalDataSource);
     }
 
     /**
@@ -68,18 +66,39 @@ public class ServiceLocator {
      * @return an instance of PictureApiService.
      */
     public PictureApiService getPictureApiService() {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.PHOTOS_BASE_URL).
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(PHOTOS_BASE_URL).
                 addConverterFactory(GsonConverterFactory.create()).build();
         return retrofit.create(PictureApiService.class);
     }
 
     /**
-     * Returns an instance of PhotoRemoteDataSource.
+     * Returns an instance of GeocodingApiService class using Retrofit.
      *
-     * @return an instance of PhotoRemoteDataSource.
+     * @return An instance of GeocodingApiService.
      */
-    public PhotoRemoteDataSource getPhotoRemoteDataSource() {
-        return new PhotoRemoteDataSource();
+    public GeocodingApiService getGeocodingApiService() {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(GEOCODING_BASE_URL).
+                addConverterFactory(GsonConverterFactory.create()).build();
+        return retrofit.create(GeocodingApiService.class);
+    }
+
+    /**
+     * Returns an instance of ITripsRepository.
+     *
+     * @param application application context
+     * @return An instance of ITripsRepository.
+     */
+    public ITripsRepository getTripsRepository(Application application) {
+        BaseTripsRemoteDataSource tripsRemoteDataSource;
+        BaseTripsLocalDataSource tripsLocalDataSource;
+        SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
+
+        tripsRemoteDataSource = new TripsRemoteDataSource("1"); // TODO - get user id from shared preferences
+        tripsLocalDataSource = new TripsLocalDataSource(getTripsDAO(application),
+                sharedPreferencesUtil);
+
+        return new TripsRepository(tripsRemoteDataSource, tripsLocalDataSource,
+                sharedPreferencesUtil);
     }
 
     public IUserRepository getUserRepository(Application application) {
@@ -93,10 +112,9 @@ public class ServiceLocator {
         DataEncryptionUtil dataEncryptionUtil = new DataEncryptionUtil(application);
 
 
-
         return new UserRepository(userRemoteAuthenticationDataSource, userDataRemoteDataSource);
 
     }
-    }
+}
 
 

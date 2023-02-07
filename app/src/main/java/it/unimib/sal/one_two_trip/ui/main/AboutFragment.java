@@ -20,23 +20,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import it.unimib.sal.one_two_trip.R;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link AboutFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment that shows simple information about the application, such as the version number,
+ * the developers and the GitHub repository to contribute to the project.
+ * It is used by the {@link HomeActivity}.
  */
 public class AboutFragment extends Fragment {
-    public AboutFragment() {
-    }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment AboutFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AboutFragment newInstance() {
-        return new AboutFragment();
+    private static final String TAG = AboutFragment.class.getSimpleName();
+
+    public AboutFragment() {
     }
 
     @Override
@@ -45,9 +37,8 @@ public class AboutFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_about, container, false);
     }
 
@@ -55,10 +46,11 @@ public class AboutFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        BottomNavigationView bottomNavigationView = requireActivity()
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        BottomNavigationView bottomNavigationView = activity
                 .findViewById(R.id.bottom_navigation);
-        FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
-        LinearLayout contribute = requireActivity().findViewById(R.id.contribute_layout);
+        FloatingActionButton fab = activity.findViewById(R.id.fab);
+        LinearLayout contribute = activity.findViewById(R.id.contribute_layout);
         bottomNavigationView.setVisibility(View.GONE);
         fab.setVisibility(View.GONE);
 
