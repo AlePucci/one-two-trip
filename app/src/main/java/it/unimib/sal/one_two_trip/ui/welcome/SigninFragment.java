@@ -70,25 +70,32 @@ public class SigninFragment extends Fragment {
         buttonRegistration.setOnClickListener(v -> {
             String email = email_edit_text.getText().toString().trim();
             String password = password_email_edit_text.getText().toString().trim();
+            String confirm_password = password_email_edit_text.getText().toString().trim();
             if (isEmailOk(email) & isPasswordOk(password)) {
-                if (!this.userViewModel.isAuthenticationError()) {
-                    this.userViewModel.getUserMutableLiveData(email, password, false).observe(
-                            getViewLifecycleOwner(), result -> {
-                                if (result.isSuccess()) {
-                                    User user = ((Result.UserResponseSuccess) result).getData();
-                                    saveLoginData(email, password, user.getIdToken());
-                                    this.userViewModel.setAuthenticationError(false);
-                                    Navigation.findNavController(view).navigate(
-                                            R.id.action_signinFragment_to_loginFragment);
-                                } else {
-                                    this.userViewModel.setAuthenticationError(true);
-                                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
-                                            getErrorMessage(((Result.Error) result).getMessage()),
-                                            Snackbar.LENGTH_SHORT).show();
-                                }
-                            });
+                if (password.equals(confirm_password)) {
+                    if (!this.userViewModel.isAuthenticationError()) {
+                        this.userViewModel.getUserMutableLiveData(email, password, false).observe(
+                                getViewLifecycleOwner(), result -> {
+                                    if (result.isSuccess()) {
+                                        User user = ((Result.UserResponseSuccess) result).getData();
+                                        saveLoginData(email, password, user.getIdToken());
+                                        this.userViewModel.setAuthenticationError(false);
+                                        Navigation.findNavController(view).navigate(
+                                                R.id.action_signinFragment_to_loginFragment);
+                                    } else {
+                                        this.userViewModel.setAuthenticationError(true);
+                                        Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                                                getErrorMessage(((Result.Error) result).getMessage()),
+                                                Snackbar.LENGTH_SHORT).show();
+                                    }
+                                });
+                    } else {
+                        this.userViewModel.getUser(email, password, false);
+                    }
                 } else {
-                    this.userViewModel.getUser(email, password, false);
+                    this.userViewModel.setAuthenticationError(true);
+                    Snackbar.make(requireActivity().findViewById(android.R.id.content),
+                            R.string.check_login_data_message, Snackbar.LENGTH_SHORT).show();
                 }
             } else {
                 this.userViewModel.setAuthenticationError(true);
