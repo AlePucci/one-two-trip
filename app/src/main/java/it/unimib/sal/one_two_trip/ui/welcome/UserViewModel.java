@@ -66,4 +66,10 @@ public class UserViewModel extends ViewModel {
     private void getUserData(String token) {
         this.userMutableLiveData = this.userRepository.getGoogleUser(token);
     }
+
+    public MutableLiveData<Result> resetPassword(String email) {
+        this.userMutableLiveData = this.userRepository.resetPassword(email);
+
+        return this.userMutableLiveData;
+    }
 }

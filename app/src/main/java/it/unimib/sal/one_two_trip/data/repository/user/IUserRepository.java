@@ -11,6 +11,8 @@ public interface IUserRepository {
 
     MutableLiveData<Result> getGoogleUser(String idToken);
 
+    MutableLiveData<Result> resetPassword(String email);
+
     MutableLiveData<Result> logout();
 
     User getLoggedUser();

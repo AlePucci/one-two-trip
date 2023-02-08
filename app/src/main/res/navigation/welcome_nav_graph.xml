@@ -23,7 +23,7 @@
         android:id="@+id/signinFragment"
         android:name="it.unimib.sal.one_two_trip.ui.welcome.SignupFragment"
         android:label="fragment_signin"
-        tools:layout="@layout/fragment_signin">
+        tools:layout="@layout/fragment_signup">
         <action
             android:id="@+id/action_signinFragment_to_loginFragment"
             app:destination="@id/loginFragment" />

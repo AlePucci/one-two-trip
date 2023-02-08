@@ -52,7 +52,6 @@
             app:endIconDrawable="@drawable/ic_baseline_cancel_24"
             app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_where_label_edit">
 

@@ -40,7 +40,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toStartOf="@+id/activity_where_locate1"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_where_title"
             tools:text="Milano" />
@@ -75,7 +74,6 @@
             android:contentDescription="@string/activity_where_arrow_description"
             android:src="@drawable/ic_baseline_arrow_downward_24"
             app:layout_constraintEnd_toStartOf="@+id/activity_where_locate1"
-            app:layout_constraintHorizontal_bias="0.514"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_where1" />
 
@@ -85,7 +83,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toStartOf="@+id/activity_where_locate2"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/activity_where_arrow"
             tools:text="Parigi" />

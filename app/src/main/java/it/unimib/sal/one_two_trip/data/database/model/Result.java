@@ -12,16 +12,12 @@ public abstract class Result {
     }
 
     public boolean isSuccess() {
-        if (this instanceof UserResponseSuccess || this instanceof TripSuccess) {
-            return true;
-        } else {
-            return false;
-        }
+        return this instanceof UserResponseSuccess || this instanceof TripSuccess || this instanceof PasswordResetSuccess;
     }
 
     /**
      * Class that represents a successful action during the interaction
-     * with a Web Service or a local database. (TRIPS)
+     * with a Web Service or a local database. (TRIP)
      */
     public static final class TripSuccess extends Result {
         private final TripsResponse response;
@@ -37,7 +33,23 @@ public abstract class Result {
 
     /**
      * Class that represents a successful action during the interaction
-     * with a Web Service or a local database.
+     * with a Web Service or a local database. (TRIP)
+     */
+    public static final class PasswordResetSuccess extends Result {
+        private final boolean success;
+
+        public PasswordResetSuccess(boolean success) {
+            this.success = success;
+        }
+
+        public boolean getData() {
+            return success;
+        }
+    }
+
+    /**
+     * Class that represents a successful action during the interaction
+     * with a Web Service or a local database. (USER)
      */
     public static final class UserResponseSuccess extends Result {
         private final User user;
@@ -50,6 +62,7 @@ public abstract class Result {
             return user;
         }
     }
+
 
     /**
      * Class that represents an error occurred during the interaction

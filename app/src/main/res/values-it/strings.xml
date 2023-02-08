@@ -166,5 +166,8 @@
     <string name="error_password_dont_match">Le password non combaciano!</string>
     <string name="error_empty_name">Il nome è vuoto!</string>
     <string name="error_empty_surname">Il cognome è vuoto!</string>
+    <string name="reset_password">Reimposta password</string>
+    <string name="error_user_doesnt_exists">L\'utente non esiste!</string>
+    <string name="reset_password_mail_sent">L\'e-mail di reset della password è stata inviata!</string>
     <!-- end -->
 </resources>

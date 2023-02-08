@@ -114,6 +114,22 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
         }
     }
 
+    @Override
+    public void resetPassword(String email) {
+        this.firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(
+                task -> {
+                    if (!task.isSuccessful()) {
+                        Log.d("ERROR", task.getException().getMessage());
+                        userResponseCallback.onFailureFromPasswordReset(getErrorMessage(task.getException()));
+                    }
+                    else{
+                        Log.d("ERROR", "SUCCESS RESET!!");
+                        userResponseCallback.onSuccessFromPasswordReset();
+                    }
+                }
+        );
+    }
+
     private String getErrorMessage(Exception exception) {
         if (exception instanceof FirebaseAuthWeakPasswordException) {
             return WEAK_PASSWORD_ERROR;

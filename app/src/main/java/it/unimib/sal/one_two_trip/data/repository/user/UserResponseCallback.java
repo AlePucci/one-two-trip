@@ -12,5 +12,9 @@ public interface UserResponseCallback {
 
     void onFailureFromRemoteDatabase(String message);
 
+    void onSuccessFromPasswordReset();
+
+    void onFailureFromPasswordReset(String message);
+
     void onSuccessLogout();
 }

@@ -43,6 +43,12 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     }
 
     @Override
+    public MutableLiveData<Result> resetPassword(String email) {
+        this.userRemoteDataSource.resetPassword(email);
+        return this.userMutableLiveData;
+    }
+
+    @Override
     public void onSuccessFromAuthentication(User user) {
         if (user != null) {
             this.userDataRemoteDataSource.saveUserData(user);
@@ -63,6 +69,17 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
 
     @Override
     public void onFailureFromRemoteDatabase(String message) {
+        Result.Error result = new Result.Error(message);
+        this.userMutableLiveData.postValue(result);
+    }
+
+    @Override
+    public void onSuccessFromPasswordReset() {
+        this.userMutableLiveData.postValue(new Result.PasswordResetSuccess(true));
+    }
+
+    @Override
+    public void onFailureFromPasswordReset(String message) {
         Result.Error result = new Result.Error(message);
         this.userMutableLiveData.postValue(result);
     }

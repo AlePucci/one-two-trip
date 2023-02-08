@@ -15,6 +15,7 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.IntentSenderRequest;
@@ -32,6 +33,8 @@ import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.progressindicator.CircularProgressIndicatorSpec;
+import com.google.android.material.progressindicator.IndeterminateDrawable;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -58,6 +61,8 @@ public class LoginFragment extends Fragment {
     private DataEncryptionUtil dataEncryptionUtil;
     private TextInputEditText emailEditText;
     private TextInputEditText passwordEditText;
+    private MaterialButton loginButton;
+    private IndeterminateDrawable<CircularProgressIndicatorSpec> progressIndicatorDrawable;
 
 
     public LoginFragment() {
@@ -117,6 +122,7 @@ public class LoginFragment extends Fragment {
                                                 saveLoginData(user.getEmail(), null, user.getIdToken());
                                                 this.userViewModel.setAuthenticationError(false);
                                                 startActivity(new Intent(activity, HomeActivity.class));
+                                                activity.finish();
                                             } else {
                                                 this.userViewModel.setAuthenticationError(true);
                                                 Snackbar.make(activity.findViewById(android.R.id.content),
@@ -151,55 +157,29 @@ public class LoginFragment extends Fragment {
         if (this.userViewModel.getLoggedUser() != null) {
             activity.startActivity(new Intent(activity, HomeActivity.class));
             activity.finish();
+            return;
         }
 
-        MaterialButton loginButton = view.findViewById(R.id.buttonLogin);
         MaterialButton signupButton = view.findViewById(R.id.buttonRegister);
         MaterialButton forgotPasswordButton = view.findViewById(R.id.buttonForgotPassword);
         MaterialButton googleLoginButton = view.findViewById(R.id.buttonGoogleLogin);
+        this.loginButton = view.findViewById(R.id.buttonLogin);
         this.emailEditText = view.findViewById(R.id.email_login);
         this.passwordEditText = view.findViewById(R.id.password_login);
 
-        loginButton.setOnClickListener(v -> {
-            String email = "";
-            if (this.emailEditText.getText() != null) {
-                email = this.emailEditText.getText().toString().trim();
-            }
+        CircularProgressIndicatorSpec spec = new CircularProgressIndicatorSpec(activity, null, 0,
+                com.google.android.material.R.style.Widget_Material3_CircularProgressIndicator_ExtraSmall);
+        this.progressIndicatorDrawable = IndeterminateDrawable.createCircularDrawable(activity, spec);
 
-            String password = "";
-            if (this.passwordEditText.getText() != null) {
-                password = this.passwordEditText.getText().toString().trim();
+        this.passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                this.passwordEditText.clearFocus();
+                onLoginClick();
             }
-
-            if (isEmailOk() && isPasswordOk()) {
-                if (!this.userViewModel.isAuthenticationError()) {
-                    String finalEmail = email;
-                    String finalPassword = password;
-
-                    this.userViewModel.getUserMutableLiveData(
-                            email, password, true).observe(
-                            getViewLifecycleOwner(), result -> {
-                                if (result.isSuccess()) {
-                                    User user = ((Result.UserResponseSuccess) result).getData();
-                                    saveLoginData(finalEmail, finalPassword, user.getIdToken());
-                                    this.userViewModel.setAuthenticationError(false);
-                                    startActivity(new Intent(activity, HomeActivity.class));
-                                    activity.finish();
-                                } else {
-                                    this.userViewModel.setAuthenticationError(true);
-                                    Snackbar.make(view,
-                                            getErrorMessage(((Result.Error) result).getMessage()),
-                                            Snackbar.LENGTH_SHORT).show();
-                                }
-                            });
-                } else {
-                    this.userViewModel.getUser(email, password, true);
-                }
-            } else {
-                Snackbar.make(view,
-                        R.string.check_login_data_message, Snackbar.LENGTH_SHORT).show();
-            }
+            return false;
         });
+
+        this.loginButton.setOnClickListener(v -> onLoginClick());
 
         signupButton.setOnClickListener(v ->
                 Navigation.findNavController(view)
@@ -209,23 +189,82 @@ public class LoginFragment extends Fragment {
                 Navigation.findNavController(view)
                         .navigate(R.id.action_loginFragment_to_forgotPasswordFragment));
 
-        googleLoginButton.setOnClickListener(v ->
-                this.oneTapClient.beginSignIn(this.signInRequest)
-                        .addOnSuccessListener(activity, result -> {
-                            IntentSenderRequest intentSenderRequest =
-                                    new IntentSenderRequest.Builder(result.getPendingIntent()).build();
-                            this.activityResultLauncher.launch(intentSenderRequest);
-                        })
-                        .addOnFailureListener(activity, e ->
-                                Snackbar.make(view,
-                                        activity.getString(R.string.unexpected_error),
-                                        Snackbar.LENGTH_SHORT).show()));
+        googleLoginButton.setOnClickListener(v -> {
+            googleLoginButton.setEnabled(false);
+            googleLoginButton.setIcon(progressIndicatorDrawable);
+
+            this.oneTapClient.beginSignIn(this.signInRequest)
+                    .addOnSuccessListener(activity, result -> {
+                        IntentSenderRequest intentSenderRequest =
+                                new IntentSenderRequest.Builder(result.getPendingIntent()).build();
+                        this.activityResultLauncher.launch(intentSenderRequest);
+                        googleLoginButton.setEnabled(true);
+                        googleLoginButton.setIcon(null);
+                    })
+                    .addOnFailureListener(activity, e -> {
+                        Snackbar.make(view,
+                                activity.getString(R.string.unexpected_error),
+                                Snackbar.LENGTH_SHORT).show();
+                        googleLoginButton.setEnabled(true);
+                        googleLoginButton.setIcon(null);
+                    });
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
         this.userViewModel.setAuthenticationError(false);
+    }
+
+    private void onLoginClick() {
+        FragmentActivity activity = requireActivity();
+
+        this.loginButton.setEnabled(false);
+        this.loginButton.setIcon(this.progressIndicatorDrawable);
+
+        String email = "";
+        if (this.emailEditText.getText() != null) {
+            email = this.emailEditText.getText().toString().trim();
+        }
+
+        String password = "";
+        if (this.passwordEditText.getText() != null) {
+            password = this.passwordEditText.getText().toString().trim();
+        }
+
+        if (isEmailOk() && isPasswordOk()) {
+            if (!this.userViewModel.isAuthenticationError()) {
+                String finalEmail = email;
+                String finalPassword = password;
+
+                this.userViewModel.getUserMutableLiveData(email, password, true).observe(
+                        getViewLifecycleOwner(), result -> {
+                            if (result.isSuccess()) {
+                                User user = ((Result.UserResponseSuccess) result).getData();
+                                saveLoginData(finalEmail, finalPassword, user.getIdToken());
+                                this.userViewModel.setAuthenticationError(false);
+                                startActivity(new Intent(activity, HomeActivity.class));
+                                activity.finish();
+                                return;
+                            } else {
+                                this.userViewModel.setAuthenticationError(true);
+                                Snackbar.make(activity.findViewById(android.R.id.content),
+                                        getErrorMessage(((Result.Error) result).getMessage()),
+                                        Snackbar.LENGTH_SHORT).show();
+                            }
+                            this.loginButton.setEnabled(true);
+                            this.loginButton.setIcon(null);
+                        });
+            } else {
+                this.userViewModel.getUser(email, password, true);
+            }
+        } else {
+            Snackbar.make(activity.findViewById(android.R.id.content),
+                    R.string.check_login_data_message, Snackbar.LENGTH_SHORT).show();
+            this.loginButton.setEnabled(true);
+            this.loginButton.setIcon(null);
+        }
     }
 
     private boolean isPasswordOk() {
@@ -243,7 +282,7 @@ public class LoginFragment extends Fragment {
             return false;
         }
 
-        String email = emailEditText.getText().toString().trim();
+        String email = this.emailEditText.getText().toString().trim();
 
         return !email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }

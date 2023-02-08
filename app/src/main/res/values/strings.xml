@@ -19,8 +19,10 @@
     <string name="or">OR</string>
     <string name="google_login">Login with Google</string>
     <string name="register">Register</string>
+    <string name="reset_password">Reset password</string>
     <string name="forgot_password_text">Enter the email address associated with your account and we will send you a link to reset your password.</string>
     <string name="check_login_data_message">Field(s) not valid!</string>
+    <string name="reset_password_mail_sent">Password reset e-mail has been sent!</string>
 
     <!-- home -->
     <string name="trip_map_description">Map of the trip</string>
@@ -202,6 +204,7 @@
     <string name="no_shareable_activities">There are no activities to share here!</string>
     <string name="no_shareable_activities_2">There are no static activities to share here!</string>
     <string name="share_trip_error">Something went wrong! Please try again</string>
+    <string name="error_user_doesnt_exists">User doesn\'t exists!</string>
 
     <!-- end -->
 </resources>
