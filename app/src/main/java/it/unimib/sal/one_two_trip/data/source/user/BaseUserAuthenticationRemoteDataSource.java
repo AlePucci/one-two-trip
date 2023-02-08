@@ -1,5 +1,6 @@
 package it.unimib.sal.one_two_trip.data.source.user;
 
+import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.User;
 import it.unimib.sal.one_two_trip.data.repository.user.UserResponseCallback;
 
@@ -11,11 +12,11 @@ public abstract class BaseUserAuthenticationRemoteDataSource {
         this.userResponseCallback = userResponseCallback;
     }
 
-    public abstract User getLoggedUser();
+    public abstract Person getLoggedUser();
 
     public abstract void logout();
 
-    public abstract void signUp(String email, String password);
+    public abstract void signUp(String email, String password, String name, String surname);
 
     public abstract void signIn(String email, String password);
 

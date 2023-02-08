@@ -4,42 +4,41 @@ import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_USERS_COLLECTIO
 
 import androidx.annotation.NonNull;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.User;
 
 public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {
 
-    private final DatabaseReference databaseReference;
+    private final CollectionReference usersReference;
 
     public UserDataRemoteDataSource() {
-        this.databaseReference = FirebaseDatabase.getInstance().getReference().getRef();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        this.usersReference = db.collection(FIREBASE_USERS_COLLECTION);
     }
 
     @Override
-    public void saveUserData(@NonNull User user) {
-        //TODO FIX THIS
-        this.databaseReference.child(FIREBASE_USERS_COLLECTION + "-temp")
-                .child(user.getIdToken()).get().addOnCompleteListener(
-                        task -> {
-                            if (task.isSuccessful()) {
-                                DataSnapshot dataSnapshot = task.getResult();
-                                if (dataSnapshot.exists()) {
-                                    userResponseCallback.onSuccessFromRemoteDatabase(user);
-                                } else {
-                                    databaseReference.child(FIREBASE_USERS_COLLECTION + "-temp")
-                                            .child(user.getIdToken()).setValue(user)
-                                            .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(user))
-                                            .addOnFailureListener(e -> userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage()));
-                                }
-                            } else {
-                                databaseReference.child(FIREBASE_USERS_COLLECTION + "-temp")
-                                        .child(user.getIdToken()).setValue(user)
-                                        .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(user))
-                                        .addOnFailureListener(e -> userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage()));
-                            }
-                        });
+    public void saveUserData(@NonNull Person person) {
+        String idToken = person.getId();
+        this.usersReference.document(idToken).get().addOnCompleteListener(
+                task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot doc = task.getResult();
+                        if (doc.exists()) {
+                            userResponseCallback.onSuccessFromRemoteDatabase(person);
+                        } else {
+                            usersReference.document(idToken).set(person)
+                                    .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(person))
+                                    .addOnFailureListener(e -> userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage()));
+                        }
+                    } else {
+                        usersReference.document(idToken).set(person)
+                                .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(person))
+                                .addOnFailureListener(e -> userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage()));
+                    }
+                });
     }
 }

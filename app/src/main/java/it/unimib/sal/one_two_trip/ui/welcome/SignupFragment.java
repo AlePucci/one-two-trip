@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import it.unimib.sal.one_two_trip.R;
+import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.User;
 import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
@@ -121,10 +122,18 @@ public class SignupFragment extends Fragment {
         this.buttonRegistration.setEnabled(false);
         this.buttonRegistration.setIcon(this.progressIndicatorDrawable);
 
+        String name = "";
+        String surname = "";
         String email = "";
         String password = "";
         String confirm_password = "";
 
+        if(this.name_edit_text.getText()  != null){
+            name = this.name_edit_text.getText().toString().trim();
+        }
+        if(this.surname_edit_text.getText() != null){
+            surname = this.surname_edit_text.getText().toString().trim();
+        }
         if (this.email_edit_text.getText() != null) {
             email = this.email_edit_text.getText().toString().trim();
         }
@@ -141,11 +150,11 @@ public class SignupFragment extends Fragment {
                     Log.d("AAAAAAA", "NO ERROR: " + email + " " + password);
                     String finalEmail = email;
                     String finalPassword = password;
-                    this.userViewModel.getUserMutableLiveData(email, password, false).observe(
+                    this.userViewModel.getUserMutableLiveData(email, password, name, surname).observe(
                             getViewLifecycleOwner(), result -> {
                                 if (result.isSuccess()) {
-                                    User user = ((Result.UserResponseSuccess) result).getData();
-                                    saveLoginData(finalEmail, finalPassword, user.getIdToken());
+                                    Person person = ((Result.PersonResponseSuccess) result).getData();
+                                    saveLoginData(finalEmail, finalPassword, person.getId());
                                     this.userViewModel.setAuthenticationError(false);
                                     startActivity(new Intent(activity, HomeActivity.class));
                                     activity.finish();
@@ -160,8 +169,7 @@ public class SignupFragment extends Fragment {
                                 this.buttonRegistration.setIcon(null);
                             });
                 } else {
-                    Log.d("AAAAAAA", "ERROR: " + email + " " + password);
-                    this.userViewModel.getUser(email, password, false);
+                    this.userViewModel.getUser(email, password, name, surname);
                 }
             } else {
                 Snackbar.make(activity.findViewById(android.R.id.content),

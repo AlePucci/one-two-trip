@@ -3,8 +3,8 @@ package it.unimib.sal.one_two_trip.ui.welcome;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
-import it.unimib.sal.one_two_trip.data.database.model.User;
 import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 
 public class UserViewModel extends ViewModel {
@@ -18,13 +18,21 @@ public class UserViewModel extends ViewModel {
         this.authenticationError = false;
     }
 
-    public MutableLiveData<Result> getUserMutableLiveData(String email, String password,
-                                                          boolean isUserRegistered) {
+    public MutableLiveData<Result> getUserMutableLiveData(String email, String password) {
         if (this.userMutableLiveData == null) {
-            getUserData(email, password, isUserRegistered);
+            getUserData(email, password);
         }
         return this.userMutableLiveData;
     }
+
+    public MutableLiveData<Result> getUserMutableLiveData(String email, String password,
+                                                          String name, String surname) {
+        if (this.userMutableLiveData == null) {
+            getUserData(email, password, name, surname);
+        }
+        return this.userMutableLiveData;
+    }
+
 
     public MutableLiveData<Result> getGoogleUserMutableLiveData(String token) {
         if (this.userMutableLiveData == null) {
@@ -33,7 +41,7 @@ public class UserViewModel extends ViewModel {
         return this.userMutableLiveData;
     }
 
-    public User getLoggedUser() {
+    public Person getLoggedUser() {
         return this.userRepository.getLoggedUser();
     }
 
@@ -47,8 +55,12 @@ public class UserViewModel extends ViewModel {
         return this.userMutableLiveData;
     }
 
-    public void getUser(String email, String password, boolean isUserRegistered) {
-        this.userRepository.getUser(email, password, isUserRegistered);
+    public void getUser(String email, String password) {
+        this.userRepository.getUser(email, password);
+    }
+
+    public void getUser(String email, String password, String name, String surname) {
+        this.userRepository.getUser(email, password, name, surname);
     }
 
     public boolean isAuthenticationError() {
@@ -59,8 +71,12 @@ public class UserViewModel extends ViewModel {
         this.authenticationError = authenticationError;
     }
 
-    private void getUserData(String email, String password, boolean isUserRegistered) {
-        this.userMutableLiveData = this.userRepository.getUser(email, password, isUserRegistered);
+    private void getUserData(String email, String password) {
+        this.userMutableLiveData = this.userRepository.getUser(email, password);
+    }
+
+    private void getUserData(String email, String password, String name, String surname) {
+        this.userMutableLiveData = this.userRepository.getUser(email, password, name, surname);
     }
 
     private void getUserData(String token) {
@@ -68,8 +84,8 @@ public class UserViewModel extends ViewModel {
     }
 
     public MutableLiveData<Result> resetPassword(String email) {
-        this.userMutableLiveData = this.userRepository.resetPassword(email);
+        MutableLiveData<Result> passwordResetMutableLiveData = this.userRepository.resetPassword(email);
 
-        return this.userMutableLiveData;
+        return passwordResetMutableLiveData;
     }
 }

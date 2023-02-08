@@ -1,14 +1,14 @@
 package it.unimib.sal.one_two_trip.data.repository.user;
 
-import it.unimib.sal.one_two_trip.data.database.model.User;
+import it.unimib.sal.one_two_trip.data.database.model.Person;
 
 public interface UserResponseCallback {
 
-    void onSuccessFromAuthentication(User user);
+    void onSuccessFromAuthentication(Person person);
 
     void onFailureFromAuthentication(String message);
 
-    void onSuccessFromRemoteDatabase(User user);
+    void onSuccessFromRemoteDatabase(Person person);
 
     void onFailureFromRemoteDatabase(String message);
 
