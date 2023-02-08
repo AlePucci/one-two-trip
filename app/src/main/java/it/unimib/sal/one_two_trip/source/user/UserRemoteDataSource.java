@@ -13,9 +13,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.unimib.sal.one_two_trip.model.Person;
-import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.model.TripsApiResponse;
+import it.unimib.sal.one_two_trip.data.database.model.Person;
+import it.unimib.sal.one_two_trip.data.database.model.Person;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.database.model.response.TripsApiResponse;
 
 public class UserRemoteDataSource extends BaseUserRemoteDataSource{
 

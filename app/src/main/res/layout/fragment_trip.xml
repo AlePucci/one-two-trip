@@ -2,11 +2,11 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.trip.TripFragment"
     android:id="@+id/trip_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    tools:context=".ui.trip.TripFragment">
 
     <FrameLayout
         android:id="@+id/frame"
@@ -28,7 +28,7 @@
         android:orientation="vertical"
         app:behavior_fitToContents="false"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="48dp"
+        app:behavior_peekHeight="64dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <com.google.android.material.bottomsheet.BottomSheetDragHandleView
@@ -48,7 +48,7 @@
             android:id="@+id/trip_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp"/>
+            android:padding="8dp" />
 
     </LinearLayout>
 
@@ -59,8 +59,10 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/yellow_500"
         android:contentDescription="@string/trip_fab_label"
-        android:src="@drawable/ic_baseline_add_24"
-        app:layout_anchorGravity="end" />
+        android:src="@drawable/ic_plus_24px"
+        app:layout_anchorGravity="end"
+        app:tint="@color/black" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

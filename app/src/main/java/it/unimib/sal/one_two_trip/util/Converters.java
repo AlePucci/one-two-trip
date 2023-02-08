@@ -9,18 +9,18 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
-import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.Person;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Person;
 
 /**
- * This class contains the converters to convert the types used in the application
- * to the types supported by Room database.
+ * Utility class containing the converters used to convert the types used in the application
+ * to the types supported by the Room database.
  */
 public class Converters {
 
     @TypeConverter
     public static List<Activity> storedStringToActivityList(String data) {
-        Gson gson = new Gson();
+        Gson gson = GsonSingleton.getInstance();
         if (data == null) {
             return Collections.emptyList();
         }
@@ -31,24 +31,24 @@ public class Converters {
 
     @TypeConverter
     public static String activityListToStoredString(List<Activity> myObjects) {
-        Gson gson = new Gson();
+        Gson gson = GsonSingleton.getInstance();
         return gson.toJson(myObjects);
     }
 
     @TypeConverter
     public static List<Person> storedStringToPersonList(String data) {
-        Gson gson = new Gson();
+        Gson gson = GsonSingleton.getInstance();
         if (data == null) {
             return Collections.emptyList();
         }
-        Type listType = new TypeToken<List<Activity>>() {
+        Type listType = new TypeToken<List<Person>>() {
         }.getType();
         return gson.fromJson(data, listType);
     }
 
     @TypeConverter
     public static String personListToStoredString(List<Person> myObjects) {
-        Gson gson = new Gson();
+        Gson gson = GsonSingleton.getInstance();
         return gson.toJson(myObjects);
     }
 }

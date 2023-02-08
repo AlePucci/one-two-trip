@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "484986298181-prnaprc60utdobjkklrnn0c8g6439htq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.unimib.sal.one_two_trip",
+            "certificate_hash": "0ba0446f99b6e8136b8233547265d28bb67e374c"
+          }
+        },
+        {
           "client_id": "484986298181-gm1ouq9nmf9jr76mi0l7gg63ogncfebr.apps.googleusercontent.com",
           "client_type": 3
         }

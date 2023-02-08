@@ -9,7 +9,7 @@
         android:id="@+id/activityDateFragment"
         android:name="it.unimib.sal.one_two_trip.ui.trip.activity.ActivityDateFragment"
         android:label="fragment_activity_date"
-        tools:layout="@layout/fragment_activity_date" >
+        tools:layout="@layout/fragment_activity_date">
         <action
             android:id="@+id/action_activityDateFragment_to_activityDateEditFragment"
             app:destination="@id/activityDateEditFragment"
@@ -20,7 +20,7 @@
         android:id="@+id/activityDateEditFragment"
         android:name="it.unimib.sal.one_two_trip.ui.trip.activity.ActivityDateEditFragment"
         android:label="fragment_activity_date_edit"
-        tools:layout="@layout/fragment_activity_date_edit" >
+        tools:layout="@layout/fragment_activity_date_edit">
         <action
             android:id="@+id/action_activityDateEditFragment_to_activityDateFragment"
             app:destination="@id/activityDateFragment"
