@@ -29,7 +29,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.ParticipantRecyclerViewAdapter;
