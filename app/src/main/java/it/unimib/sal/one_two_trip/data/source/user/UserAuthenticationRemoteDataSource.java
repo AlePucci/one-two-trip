@@ -17,8 +17,9 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
-import it.unimib.sal.one_two_trip.data.database.model.User;
+import it.unimib.sal.one_two_trip.data.database.model.Person;
 
 
 public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRemoteDataSource {
@@ -30,12 +31,19 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
     }
 
     @Override
-    public User getLoggedUser() {
+    public Person getLoggedUser() {
         FirebaseUser firebaseUser = this.firebaseAuth.getCurrentUser();
         if (firebaseUser == null) {
             return null;
         } else {
-            return new User(firebaseUser.getDisplayName(), firebaseUser.getEmail(), firebaseUser.getUid());
+            Person person = new Person();
+            person.setId(firebaseUser.getUid());
+            person.setEmail_address(firebaseUser.getEmail());
+            if (firebaseUser.getDisplayName() != null) {
+                person.setName(firebaseUser.getDisplayName().trim().split(" ")[0]);
+                person.setSurname(firebaseUser.getDisplayName().trim().split(" ")[1]);
+            }
+            return person;
         }
     }
 
@@ -57,13 +65,19 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
     }
 
     @Override
-    public void signUp(String email, String password) {
+    public void signUp(String email, String password, String name, String surname) {
         this.firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 FirebaseUser firebaseUser = this.firebaseAuth.getCurrentUser();
                 if (firebaseUser != null) {
-                    this.userResponseCallback.onSuccessFromAuthentication(new User(
-                            firebaseUser.getDisplayName(), email, firebaseUser.getUid()));
+                    Person person = new Person();
+                    person.setEmail_address(email);
+                    person.setId(firebaseUser.getUid());
+                    person.setName(name);
+                    person.setSurname(surname);
+                    person.setProfile_picture("");
+                    firebaseUser.updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(name + " " + surname).build());
+                    this.userResponseCallback.onSuccessFromAuthentication(person);
                 } else {
                     userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
                 }
@@ -80,8 +94,15 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
             if (task.isSuccessful()) {
                 FirebaseUser firebaseUser = this.firebaseAuth.getCurrentUser();
                 if (firebaseUser != null) {
-                    userResponseCallback.onSuccessFromAuthentication(new User(
-                            firebaseUser.getDisplayName(), email, firebaseUser.getUid()));
+                    Person person = new Person();
+                    person.setId(firebaseUser.getUid());
+                    person.setEmail_address(email);
+                    //TODO FIX THIS
+                    if (firebaseUser.getDisplayName() != null) {
+                        person.setName(firebaseUser.getDisplayName().trim().split(" ")[0]);
+                        person.setSurname(firebaseUser.getDisplayName().trim().split(" ")[1]);
+                    }
+                    userResponseCallback.onSuccessFromAuthentication(person);
                 } else {
                     userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
                 }
@@ -100,9 +121,14 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
                 if (task.isSuccessful()) {
                     FirebaseUser firebaseUser = this.firebaseAuth.getCurrentUser();
                     if (firebaseUser != null) {
-                        userResponseCallback.onSuccessFromAuthentication(new User(
-                                firebaseUser.getDisplayName(), firebaseUser.getEmail(),
-                                firebaseUser.getUid()));
+                        Person person = new Person();
+                        person.setId(firebaseUser.getUid());
+                        person.setEmail_address(firebaseUser.getEmail());
+                        if (firebaseUser.getDisplayName() != null) {
+                            person.setName(firebaseUser.getDisplayName().trim().split(" ")[0]);
+                            person.setSurname(firebaseUser.getDisplayName().trim().split(" ")[1]);
+                        }
+                        userResponseCallback.onSuccessFromAuthentication(person);
                     } else {
                         userResponseCallback.onFailureFromAuthentication(
                                 getErrorMessage(task.getException()));
@@ -119,11 +145,8 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
         this.firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(
                 task -> {
                     if (!task.isSuccessful()) {
-                        Log.d("ERROR", task.getException().getMessage());
                         userResponseCallback.onFailureFromPasswordReset(getErrorMessage(task.getException()));
-                    }
-                    else{
-                        Log.d("ERROR", "SUCCESS RESET!!");
+                    } else {
                         userResponseCallback.onSuccessFromPasswordReset();
                     }
                 }

@@ -2,6 +2,7 @@ package it.unimib.sal.one_two_trip.data.repository.user;
 
 import androidx.lifecycle.MutableLiveData;
 
+import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.User;
 import it.unimib.sal.one_two_trip.data.source.trips.BaseTripsLocalDataSource;
@@ -14,6 +15,7 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     private final BaseUserDataRemoteDataSource userDataRemoteDataSource;
     private final BaseTripsLocalDataSource tripsLocalDataSource;
     private final MutableLiveData<Result> userMutableLiveData;
+    private final MutableLiveData<Result> passwordResetMutableLiveData;
 
     public UserRepository(BaseUserAuthenticationRemoteDataSource userRemoteDataSource,
                           BaseUserDataRemoteDataSource userDataRemoteDataSource,
@@ -22,17 +24,20 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
         this.userDataRemoteDataSource = userDataRemoteDataSource;
         this.tripsLocalDataSource = tripsLocalDataSource;
         this.userMutableLiveData = new MutableLiveData<>();
+        this.passwordResetMutableLiveData = new MutableLiveData<>();
         this.userRemoteDataSource.setUserResponseCallback(this);
         this.userDataRemoteDataSource.setUserResponseCallback(this);
     }
 
     @Override
-    public MutableLiveData<Result> getUser(String email, String password, boolean isUserRegistered) {
-        if (isUserRegistered) {
-            signIn(email, password);
-        } else {
-            signUp(email, password);
-        }
+    public MutableLiveData<Result> getUser(String email, String password) {
+        signIn(email, password);
+        return this.userMutableLiveData;
+    }
+
+    @Override
+    public MutableLiveData<Result> getUser(String email, String password, String name, String surname) {
+        signUp(email, password, name, surname);
         return this.userMutableLiveData;
     }
 
@@ -45,13 +50,13 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     @Override
     public MutableLiveData<Result> resetPassword(String email) {
         this.userRemoteDataSource.resetPassword(email);
-        return this.userMutableLiveData;
+        return this.passwordResetMutableLiveData;
     }
 
     @Override
-    public void onSuccessFromAuthentication(User user) {
-        if (user != null) {
-            this.userDataRemoteDataSource.saveUserData(user);
+    public void onSuccessFromAuthentication(Person person) {
+        if (person != null) {
+            this.userDataRemoteDataSource.saveUserData(person);
         }
     }
 
@@ -62,8 +67,8 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     }
 
     @Override
-    public void onSuccessFromRemoteDatabase(User user) {
-        Result.UserResponseSuccess result = new Result.UserResponseSuccess(user);
+    public void onSuccessFromRemoteDatabase(Person person) {
+        Result.PersonResponseSuccess result = new Result.PersonResponseSuccess(person);
         this.userMutableLiveData.postValue(result);
     }
 
@@ -75,13 +80,13 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
 
     @Override
     public void onSuccessFromPasswordReset() {
-        this.userMutableLiveData.postValue(new Result.PasswordResetSuccess(true));
+        this.passwordResetMutableLiveData.postValue(new Result.PasswordResetSuccess(true));
     }
 
     @Override
     public void onFailureFromPasswordReset(String message) {
         Result.Error result = new Result.Error(message);
-        this.userMutableLiveData.postValue(result);
+        this.passwordResetMutableLiveData.postValue(result);
     }
 
     @Override
@@ -90,8 +95,8 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     }
 
     @Override
-    public void signUp(String email, String password) {
-        this.userRemoteDataSource.signUp(email, password);
+    public void signUp(String email, String password, String name, String surname) {
+        this.userRemoteDataSource.signUp(email, password, name, surname);
     }
 
     @Override
@@ -105,7 +110,7 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     }
 
     @Override
-    public User getLoggedUser() {
+    public Person getLoggedUser() {
         return this.userRemoteDataSource.getLoggedUser();
     }
 

@@ -12,7 +12,7 @@ public abstract class Result {
     }
 
     public boolean isSuccess() {
-        return this instanceof UserResponseSuccess || this instanceof TripSuccess || this instanceof PasswordResetSuccess;
+        return this instanceof PersonResponseSuccess || this instanceof TripSuccess || this instanceof PasswordResetSuccess;
     }
 
     /**
@@ -51,15 +51,15 @@ public abstract class Result {
      * Class that represents a successful action during the interaction
      * with a Web Service or a local database. (USER)
      */
-    public static final class UserResponseSuccess extends Result {
-        private final User user;
+    public static final class PersonResponseSuccess extends Result {
+        private final Person person;
 
-        public UserResponseSuccess(User user) {
-            this.user = user;
+        public PersonResponseSuccess(Person person) {
+            this.person = person;
         }
 
-        public User getData() {
-            return user;
+        public Person getData() {
+            return person;
         }
     }
 

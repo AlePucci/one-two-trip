@@ -94,7 +94,7 @@ public class ServiceLocator {
         IUserRepository userRepository = getUserRepository(application);
         String idToken;
         if (userRepository.getLoggedUser() != null) {
-            idToken = userRepository.getLoggedUser().getIdToken();
+            idToken = userRepository.getLoggedUser().getId();
         } else {
             return null;
         }

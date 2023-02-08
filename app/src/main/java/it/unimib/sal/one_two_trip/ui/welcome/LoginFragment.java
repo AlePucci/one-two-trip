@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import it.unimib.sal.one_two_trip.R;
+import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.User;
 import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
@@ -118,8 +120,8 @@ public class LoginFragment extends Fragment {
                                         getViewLifecycleOwner(),
                                         authenticationResult -> {
                                             if (authenticationResult.isSuccess()) {
-                                                User user = ((Result.UserResponseSuccess) authenticationResult).getData();
-                                                saveLoginData(user.getEmail(), null, user.getIdToken());
+                                                Person person = ((Result.PersonResponseSuccess) authenticationResult).getData();
+                                                saveLoginData(person.getEmail_address(), null, person.getId());
                                                 this.userViewModel.setAuthenticationError(false);
                                                 startActivity(new Intent(activity, HomeActivity.class));
                                                 activity.finish();
@@ -238,11 +240,11 @@ public class LoginFragment extends Fragment {
                 String finalEmail = email;
                 String finalPassword = password;
 
-                this.userViewModel.getUserMutableLiveData(email, password, true).observe(
+                this.userViewModel.getUserMutableLiveData(email, password).observe(
                         getViewLifecycleOwner(), result -> {
                             if (result.isSuccess()) {
-                                User user = ((Result.UserResponseSuccess) result).getData();
-                                saveLoginData(finalEmail, finalPassword, user.getIdToken());
+                                Person person = ((Result.PersonResponseSuccess) result).getData();
+                                saveLoginData(finalEmail, finalPassword, person.getId());
                                 this.userViewModel.setAuthenticationError(false);
                                 startActivity(new Intent(activity, HomeActivity.class));
                                 activity.finish();
@@ -257,7 +259,7 @@ public class LoginFragment extends Fragment {
                             this.loginButton.setIcon(null);
                         });
             } else {
-                this.userViewModel.getUser(email, password, true);
+                this.userViewModel.getUser(email, password);
             }
         } else {
             Snackbar.make(activity.findViewById(android.R.id.content),
