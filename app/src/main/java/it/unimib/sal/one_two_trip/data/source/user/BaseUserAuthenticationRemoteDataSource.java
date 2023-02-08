@@ -1,9 +1,11 @@
 package it.unimib.sal.one_two_trip.data.source.user;
 
 import it.unimib.sal.one_two_trip.data.database.model.Person;
-import it.unimib.sal.one_two_trip.data.database.model.User;
 import it.unimib.sal.one_two_trip.data.repository.user.UserResponseCallback;
 
+/**
+ * Base class to perform User Authentication from remote source.
+ */
 public abstract class BaseUserAuthenticationRemoteDataSource {
 
     protected UserResponseCallback userResponseCallback;

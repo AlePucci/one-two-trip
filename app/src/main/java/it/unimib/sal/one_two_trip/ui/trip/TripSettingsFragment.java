@@ -318,7 +318,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                 LAST_LOGO_UPDATE + "_" + this.tripId, String.valueOf(lastUpdate));
         Bitmap bitmap = BitmapFactory.decodeFile(this.imagePath);
         if (bitmap == null) {
-            tripLogo.setImageBitmap(BitmapFactory.decodeResource(getResources(),
+            tripLogo.setImageBitmap(BitmapFactory.decodeResource(requireActivity().getResources(),
                     R.drawable.default_trip_image));
         } else {
             tripLogo.setImageBitmap(bitmap);

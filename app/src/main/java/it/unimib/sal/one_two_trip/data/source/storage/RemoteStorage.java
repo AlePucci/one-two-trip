@@ -1,7 +1,6 @@
 package it.unimib.sal.one_two_trip.data.source.storage;
 
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_TRIPS_COLLECTION;
-import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_USER_COLLECTION;
 import static it.unimib.sal.one_two_trip.util.Constants.TRIP_LOGO_NAME;
 
 import android.app.Application;
@@ -36,10 +35,8 @@ public class RemoteStorage extends BaseRemoteStorage {
      */
     public void uploadTripLogo(@NonNull Bitmap bitmap, String tripId) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference().child(FIREBASE_USER_COLLECTION)
-                .child("1")
-                .child(FIREBASE_TRIPS_COLLECTION)
-                .child(String.valueOf(tripId)).child(TRIP_LOGO_NAME);
+        StorageReference storageReference = storage.getReference().child(FIREBASE_TRIPS_COLLECTION)
+                .child(TRIP_LOGO_NAME);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
@@ -49,8 +46,7 @@ public class RemoteStorage extends BaseRemoteStorage {
                 .addOnSuccessListener(taskSnapshot -> {
                     if (taskSnapshot.getTask().isSuccessful()) {
                         // TODO USER IDs
-                        File localFile = new File(application.getFilesDir(), 1 + "-"
-                                + tripId + "-" + TRIP_LOGO_NAME);
+                        File localFile = new File(application.getFilesDir(), tripId + "-" + TRIP_LOGO_NAME);
 
                         storageReference.getFile(localFile).addOnSuccessListener(taskSnapshot1 ->
                         {
@@ -73,11 +69,9 @@ public class RemoteStorage extends BaseRemoteStorage {
     @Override
     public void downloadTripLogo(String tripId) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference().child(FIREBASE_USER_COLLECTION)
-                .child("1")
-                .child(FIREBASE_TRIPS_COLLECTION)
-                .child(String.valueOf(tripId)).child(TRIP_LOGO_NAME);
-        File localFile = new File(application.getFilesDir(), 1 + "-" + tripId + "-" + TRIP_LOGO_NAME);
+        StorageReference storageReference = storage.getReference().child(FIREBASE_TRIPS_COLLECTION)
+                .child(TRIP_LOGO_NAME);
+        File localFile = new File(application.getFilesDir(), tripId + "-" + TRIP_LOGO_NAME);
 
         storageReference.getFile(localFile).addOnSuccessListener(taskSnapshot ->
                 callback.onDownloadSuccess()).addOnFailureListener(exception ->
@@ -92,12 +86,9 @@ public class RemoteStorage extends BaseRemoteStorage {
     @Override
     public void tripLogoExists(String tripId) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference().child(FIREBASE_USER_COLLECTION)
-                .child("1")
-                .child(FIREBASE_TRIPS_COLLECTION)
-                .child(String.valueOf(tripId)).child(TRIP_LOGO_NAME);
+        StorageReference storageReference = storage.getReference().child(FIREBASE_TRIPS_COLLECTION)
+                .child(TRIP_LOGO_NAME);
 
-        // TODO USER IDs
         storageReference.getMetadata().addOnSuccessListener(storageMetadata -> {
             long lastUpdate = storageMetadata.getUpdatedTimeMillis();
             callback.onExistsResponse(lastUpdate);
@@ -113,10 +104,8 @@ public class RemoteStorage extends BaseRemoteStorage {
     @Override
     public void deleteTripLogo(String tripId) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference().child(FIREBASE_USER_COLLECTION)
-                .child("1")
-                .child(FIREBASE_TRIPS_COLLECTION)
-                .child(String.valueOf(tripId)).child(TRIP_LOGO_NAME);
+        StorageReference storageReference = storage.getReference().child(FIREBASE_TRIPS_COLLECTION)
+                .child(TRIP_LOGO_NAME);
 
         storageReference.delete();
     }

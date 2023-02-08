@@ -4,11 +4,13 @@ import androidx.lifecycle.MutableLiveData;
 
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
-import it.unimib.sal.one_two_trip.data.database.model.User;
 import it.unimib.sal.one_two_trip.data.source.trips.BaseTripsLocalDataSource;
 import it.unimib.sal.one_two_trip.data.source.user.BaseUserAuthenticationRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.user.BaseUserDataRemoteDataSource;
 
+/**
+ * Repository class to get the Person objects from local or from a remote source.
+ */
 public class UserRepository implements IUserRepository, UserResponseCallback {
 
     private final BaseUserAuthenticationRemoteDataSource userRemoteDataSource;
@@ -36,7 +38,8 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     }
 
     @Override
-    public MutableLiveData<Result> getUser(String email, String password, String name, String surname) {
+    public MutableLiveData<Result> getUser(String email, String password, String name,
+                                           String surname) {
         signUp(email, password, name, surname);
         return this.userMutableLiveData;
     }

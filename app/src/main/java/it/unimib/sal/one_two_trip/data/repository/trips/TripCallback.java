@@ -1,14 +1,13 @@
-package it.unimib.sal.one_two_trip.data.source.trips;
+package it.unimib.sal.one_two_trip.data.repository.trips;
 
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.data.database.model.response.TripsApiResponse;
-import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 
 /**
  * Interface to send data from data sources to Repositories
- * that implement{@link ITripsRepository ITripsRepository} interface.
+ * that implement {@link ITripsRepository ITripsRepository} interface.
  */
 public interface TripCallback {
 

@@ -5,8 +5,6 @@ import static it.unimib.sal.one_two_trip.util.Constants.UNEXPECTED_ERROR;
 import static it.unimib.sal.one_two_trip.util.Constants.USER_COLLISION_ERROR;
 import static it.unimib.sal.one_two_trip.util.Constants.WEAK_PASSWORD_ERROR;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.AuthCredential;
@@ -21,12 +19,15 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 
-
+/**
+ * Class to perform User Authentication using Firebase Authentication.
+ */
 public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRemoteDataSource {
 
     private final FirebaseAuth firebaseAuth;
 
     public UserAuthenticationRemoteDataSource() {
+        super();
         this.firebaseAuth = FirebaseAuth.getInstance();
     }
 
@@ -40,8 +41,13 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
             person.setId(firebaseUser.getUid());
             person.setEmail_address(firebaseUser.getEmail());
             if (firebaseUser.getDisplayName() != null) {
-                person.setName(firebaseUser.getDisplayName().trim().split(" ")[0]);
-                person.setSurname(firebaseUser.getDisplayName().trim().split(" ")[1]);
+                String fullName = firebaseUser.getDisplayName().trim();
+                if (fullName.split(" ").length > 1) {
+                    person.setName(fullName.split(" ")[0]);
+                    person.setSurname(fullName.split(" ")[1]);
+                } else {
+                    person.setName(fullName);
+                }
             }
             return person;
         }
@@ -61,7 +67,6 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
 
         this.firebaseAuth.addAuthStateListener(authStateListener);
         this.firebaseAuth.signOut();
-
     }
 
     @Override
@@ -77,7 +82,7 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
                     person.setSurname(surname);
                     person.setProfile_picture("");
                     firebaseUser.updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(name + " " + surname).build());
-                    this.userResponseCallback.onSuccessFromAuthentication(person);
+                    userResponseCallback.onSuccessFromAuthentication(person);
                 } else {
                     userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
                 }
@@ -97,10 +102,15 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
                     Person person = new Person();
                     person.setId(firebaseUser.getUid());
                     person.setEmail_address(email);
-                    //TODO FIX THIS
+                    person.setProfile_picture("");
                     if (firebaseUser.getDisplayName() != null) {
-                        person.setName(firebaseUser.getDisplayName().trim().split(" ")[0]);
-                        person.setSurname(firebaseUser.getDisplayName().trim().split(" ")[1]);
+                        String fullName = firebaseUser.getDisplayName().trim();
+                        if (fullName.split(" ").length > 1) {
+                            person.setName(fullName.split(" ")[0]);
+                            person.setSurname(fullName.split(" ")[1]);
+                        } else {
+                            person.setName(fullName);
+                        }
                     }
                     userResponseCallback.onSuccessFromAuthentication(person);
                 } else {
@@ -124,9 +134,15 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
                         Person person = new Person();
                         person.setId(firebaseUser.getUid());
                         person.setEmail_address(firebaseUser.getEmail());
+                        person.setProfile_picture("");
                         if (firebaseUser.getDisplayName() != null) {
-                            person.setName(firebaseUser.getDisplayName().trim().split(" ")[0]);
-                            person.setSurname(firebaseUser.getDisplayName().trim().split(" ")[1]);
+                            String fullName = firebaseUser.getDisplayName().trim();
+                            if (fullName.split(" ").length > 1) {
+                                person.setName(fullName.split(" ")[0]);
+                                person.setSurname(fullName.split(" ")[1]);
+                            } else {
+                                person.setName(fullName);
+                            }
                         }
                         userResponseCallback.onSuccessFromAuthentication(person);
                     } else {
@@ -162,7 +178,6 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
         } else if (exception instanceof FirebaseAuthUserCollisionException) {
             return USER_COLLISION_ERROR;
         }
-        Log.d("ERROR", exception.getMessage());
         return UNEXPECTED_ERROR;
     }
 }

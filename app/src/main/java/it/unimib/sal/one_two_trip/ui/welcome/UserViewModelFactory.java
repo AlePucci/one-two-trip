@@ -9,13 +9,14 @@ import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 
 /**
  * Custom ViewModelProvider to be able to have a custom constructor
- * for the UserViewModel class.
+ * for the {@link UserViewModel} class.
  */
 public class UserViewModelFactory implements ViewModelProvider.Factory {
 
     private final IUserRepository userRepository;
 
     public UserViewModelFactory(IUserRepository userRepository) {
+        super();
         this.userRepository = userRepository;
     }
 

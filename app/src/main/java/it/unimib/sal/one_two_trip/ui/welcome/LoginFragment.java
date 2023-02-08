@@ -45,14 +45,14 @@ import java.security.GeneralSecurityException;
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
-import it.unimib.sal.one_two_trip.data.database.model.User;
 import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 import it.unimib.sal.one_two_trip.ui.main.HomeActivity;
 import it.unimib.sal.one_two_trip.util.DataEncryptionUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Fragment that allows the user to login.
+ * It is used by the {@link WelcomeActivity}.
  */
 public class LoginFragment extends Fragment {
 
@@ -64,6 +64,7 @@ public class LoginFragment extends Fragment {
     private TextInputEditText emailEditText;
     private TextInputEditText passwordEditText;
     private MaterialButton loginButton;
+    private MaterialButton googleLoginButton;
     private IndeterminateDrawable<CircularProgressIndicatorSpec> progressIndicatorDrawable;
 
 
@@ -89,6 +90,10 @@ public class LoginFragment extends Fragment {
         }
 
         this.dataEncryptionUtil = new DataEncryptionUtil(application);
+
+        CircularProgressIndicatorSpec spec = new CircularProgressIndicatorSpec(activity, null, 0,
+                com.google.android.material.R.style.Widget_Material3_CircularProgressIndicator_ExtraSmall);
+        this.progressIndicatorDrawable = IndeterminateDrawable.createCircularDrawable(activity, spec);
 
         // LOGIN
         this.oneTapClient = Identity.getSignInClient(activity);
@@ -126,6 +131,8 @@ public class LoginFragment extends Fragment {
                                                 startActivity(new Intent(activity, HomeActivity.class));
                                                 activity.finish();
                                             } else {
+                                                Log.d("AAAAAAA", ((Result.Error) authenticationResult)
+                                                        .getMessage());
                                                 this.userViewModel.setAuthenticationError(true);
                                                 Snackbar.make(activity.findViewById(android.R.id.content),
                                                         getErrorMessage(((Result.Error) authenticationResult)
@@ -164,14 +171,10 @@ public class LoginFragment extends Fragment {
 
         MaterialButton signupButton = view.findViewById(R.id.buttonRegister);
         MaterialButton forgotPasswordButton = view.findViewById(R.id.buttonForgotPassword);
-        MaterialButton googleLoginButton = view.findViewById(R.id.buttonGoogleLogin);
+        this.googleLoginButton = view.findViewById(R.id.buttonGoogleLogin);
         this.loginButton = view.findViewById(R.id.buttonLogin);
         this.emailEditText = view.findViewById(R.id.email_login);
         this.passwordEditText = view.findViewById(R.id.password_login);
-
-        CircularProgressIndicatorSpec spec = new CircularProgressIndicatorSpec(activity, null, 0,
-                com.google.android.material.R.style.Widget_Material3_CircularProgressIndicator_ExtraSmall);
-        this.progressIndicatorDrawable = IndeterminateDrawable.createCircularDrawable(activity, spec);
 
         this.passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -191,24 +194,24 @@ public class LoginFragment extends Fragment {
                 Navigation.findNavController(view)
                         .navigate(R.id.action_loginFragment_to_forgotPasswordFragment));
 
-        googleLoginButton.setOnClickListener(v -> {
-            googleLoginButton.setEnabled(false);
-            googleLoginButton.setIcon(progressIndicatorDrawable);
+        this.googleLoginButton.setOnClickListener(v -> {
+            this.googleLoginButton.setEnabled(false);
+            this.googleLoginButton.setIcon(this.progressIndicatorDrawable);
 
             this.oneTapClient.beginSignIn(this.signInRequest)
                     .addOnSuccessListener(activity, result -> {
                         IntentSenderRequest intentSenderRequest =
                                 new IntentSenderRequest.Builder(result.getPendingIntent()).build();
                         this.activityResultLauncher.launch(intentSenderRequest);
-                        googleLoginButton.setEnabled(true);
-                        googleLoginButton.setIcon(null);
+                        this.googleLoginButton.setEnabled(true);
+                        this.googleLoginButton.setIcon(null);
                     })
                     .addOnFailureListener(activity, e -> {
                         Snackbar.make(view,
                                 activity.getString(R.string.unexpected_error),
                                 Snackbar.LENGTH_SHORT).show();
-                        googleLoginButton.setEnabled(true);
-                        googleLoginButton.setIcon(null);
+                        this.googleLoginButton.setEnabled(true);
+                        this.googleLoginButton.setIcon(null);
                     });
         });
     }
@@ -217,6 +220,10 @@ public class LoginFragment extends Fragment {
     public void onResume() {
         super.onResume();
         this.userViewModel.setAuthenticationError(false);
+        this.loginButton.setEnabled(true);
+        this.loginButton.setIcon(null);
+        this.googleLoginButton.setEnabled(true);
+        this.googleLoginButton.setIcon(null);
     }
 
     private void onLoginClick() {

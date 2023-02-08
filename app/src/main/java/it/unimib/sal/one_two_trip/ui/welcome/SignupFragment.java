@@ -37,13 +37,15 @@ import java.security.GeneralSecurityException;
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
-import it.unimib.sal.one_two_trip.data.database.model.User;
 import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 import it.unimib.sal.one_two_trip.ui.main.HomeActivity;
 import it.unimib.sal.one_two_trip.util.DataEncryptionUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 
-
+/**
+ * Fragment that allows the user to register to the application.
+ * It is used by the {@link WelcomeActivity}.
+ */
 public class SignupFragment extends Fragment {
 
     private DataEncryptionUtil dataEncryptionUtil;
@@ -128,10 +130,10 @@ public class SignupFragment extends Fragment {
         String password = "";
         String confirm_password = "";
 
-        if(this.name_edit_text.getText()  != null){
+        if (this.name_edit_text.getText() != null) {
             name = this.name_edit_text.getText().toString().trim();
         }
-        if(this.surname_edit_text.getText() != null){
+        if (this.surname_edit_text.getText() != null) {
             surname = this.surname_edit_text.getText().toString().trim();
         }
         if (this.email_edit_text.getText() != null) {

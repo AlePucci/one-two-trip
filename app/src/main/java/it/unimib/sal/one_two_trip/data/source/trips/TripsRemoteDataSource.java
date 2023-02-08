@@ -7,9 +7,8 @@ import static it.unimib.sal.one_two_trip.util.Constants.STATUS_OK;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.annotation.Nullable;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -29,29 +28,24 @@ import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.data.database.model.response.TripsApiResponse;
-import it.unimib.sal.one_two_trip.util.DataEncryptionUtil;
 
 /**
- * Class to get Trips from a remote source using Firebase Realtime Database.
+ * Class to get Trips from a remote source using Firebase Cloud Firestore
  */
 public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
 
     private final CollectionReference tripsCollectionReference;
-    private final String idToken;
 
     public TripsRemoteDataSource(String idToken) {
         super();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         this.tripsCollectionReference = db.collection(FIREBASE_TRIPS_COLLECTION);
 
-        this.idToken = idToken;
-
-
         this.addTripListener();
     }
 
     /**
-     * Add a listener to all the trips of the user in Firebase Realtime Database.
+     * Add a listener to all the trips the users has joined in, using Firebase Cloud Firestore.
      */
     private void addTripListener() {
         final CompletableFuture<Boolean>[] myFuture = new CompletableFuture[]{new CompletableFuture<>()};
@@ -72,9 +66,7 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
                     trip.setTripOwner(ds.get("tripOwner").toString());
                     trip.setCompleted((boolean) ds.get("completed"));
                     trip.setTitle(ds.get("title").toString());
-                    Log.d("AAAAAAAAAAAAAAAAAAAAAAA", trip.getTitle());
                     trip.setDescription(ds.get("description").toString());
-                    Log.d("TripsRemoteDataSource", "removed " + (boolean) ds.get("participant.2.removed") + "");
                     trip.setParticipating(!(boolean) ds.get("participant.2.removed"));
                     CollectionReference a = FirebaseFirestore.getInstance().collection(FIREBASE_TRIPS_COLLECTION).document(trip.getId()).collection("activity");
                     a.addSnapshotListener((value1, error1) -> {
@@ -171,7 +163,6 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
                     trip.setCompleted((boolean) ds.get("completed"));
                     trip.setTitle(Objects.requireNonNull(ds.get("title")).toString());
                     trip.setDescription(Objects.requireNonNull(ds.get("description")).toString());
-                    Log.d("TripsRemoteDataSource", "removed " + (boolean) ds.get("participant.2.removed") + "");
                     trip.setParticipating(!(boolean) ds.get("participant.2.removed"));
                     CollectionReference a = FirebaseFirestore.getInstance().collection(FIREBASE_TRIPS_COLLECTION).document(trip.getId()).collection("activity");
                     a.get().addOnCompleteListener(
@@ -241,7 +232,8 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
         });
     }
 
-    private CompletableFuture<Boolean> queryDatabaseAsync(Trip trip, DocumentSnapshot ds) {
+    @Nullable
+    private CompletableFuture<Boolean> queryDatabaseAsync(Trip trip, @NonNull DocumentSnapshot ds) {
 
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 

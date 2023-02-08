@@ -33,7 +33,7 @@ public abstract class Result {
 
     /**
      * Class that represents a successful action during the interaction
-     * with a Web Service or a local database. (TRIP)
+     * with a Web Service or a local database. (USER PASSWORD RESET SUCCESS)
      */
     public static final class PasswordResetSuccess extends Result {
         private final boolean success;

@@ -110,6 +110,12 @@ public class ServiceLocator {
                 sharedPreferencesUtil);
     }
 
+    /**
+     * Returns an instance of IUserRepository.
+     *
+     * @param application application context
+     * @return An instance of IUserRepository.
+     */
     public IUserRepository getUserRepository(Application application) {
         SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
 

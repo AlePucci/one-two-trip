@@ -17,7 +17,6 @@ import it.unimib.sal.one_two_trip.data.database.model.response.TripsApiResponse;
 import it.unimib.sal.one_two_trip.data.database.model.response.TripsResponse;
 import it.unimib.sal.one_two_trip.data.source.trips.BaseTripsLocalDataSource;
 import it.unimib.sal.one_two_trip.data.source.trips.BaseTripsRemoteDataSource;
-import it.unimib.sal.one_two_trip.data.source.trips.TripCallback;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 /**

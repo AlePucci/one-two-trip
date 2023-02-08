@@ -7,6 +7,9 @@ import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 
+/**
+ * ViewModel to manage the list of Person objects.
+ */
 public class UserViewModel extends ViewModel {
 
     private final IUserRepository userRepository;
@@ -14,6 +17,7 @@ public class UserViewModel extends ViewModel {
     private boolean authenticationError;
 
     public UserViewModel(IUserRepository userRepository) {
+        super();
         this.userRepository = userRepository;
         this.authenticationError = false;
     }
@@ -84,8 +88,6 @@ public class UserViewModel extends ViewModel {
     }
 
     public MutableLiveData<Result> resetPassword(String email) {
-        MutableLiveData<Result> passwordResetMutableLiveData = this.userRepository.resetPassword(email);
-
-        return passwordResetMutableLiveData;
+        return this.userRepository.resetPassword(email);
     }
 }

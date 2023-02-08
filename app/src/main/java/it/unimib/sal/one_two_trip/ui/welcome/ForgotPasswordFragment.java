@@ -27,6 +27,10 @@ import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 
+/**
+ * Fragment that allows the user to reset the password of the account.
+ * It is used by the {@link WelcomeActivity}.
+ */
 public class ForgotPasswordFragment extends Fragment {
 
     private UserViewModel userViewModel;
