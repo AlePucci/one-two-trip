@@ -11,7 +11,7 @@ import java.util.Objects;
  * This class represents a person/user.
  */
 @Entity
-public class Person {
+public class  Person {
     @PrimaryKey(autoGenerate = true)
     private long id;
     private String name;
