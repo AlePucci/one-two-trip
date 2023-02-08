@@ -37,7 +37,8 @@ import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.ui.trip.TripActivity;
 
 /**
- * Utility class called when an alarm is triggered. It shows a notification to the user.
+ * Utility class called when an alarm is triggered.
+ * Used to show a notification for a trip or an activity to the user.
  */
 public class AlarmReceiver extends BroadcastReceiver {
     @Override

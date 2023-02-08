@@ -36,7 +36,6 @@ public class TripsRepository implements ITripsRepository, TripCallback {
         this.tripsRemoteDataSource = tripsRemoteDataSource;
         this.tripsLocalDataSource = tripsLocalDataSource;
         this.sharedPreferencesUtil = sharedPreferencesUtil;
-
         this.tripsRemoteDataSource.setTripCallback(this);
         this.tripsLocalDataSource.setTripCallback(this);
     }
@@ -45,7 +44,7 @@ public class TripsRepository implements ITripsRepository, TripCallback {
      * Fetch the trips from the local source if the last update is less than FRESH_TIMEOUT.
      *
      * @param lastUpdate the last update time
-     * @return the list of trips
+     * @return the list of trips as a MutableLiveData
      */
     @Override
     public MutableLiveData<Result> fetchTrips(long lastUpdate) {
@@ -62,7 +61,7 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     /**
      * Refresh the trips from the remote source.
      *
-     * @return the list of trips
+     * @return the list of trips as a MutableLiveData
      */
     @Override
     public MutableLiveData<Result> refreshTrips() {
@@ -80,6 +79,13 @@ public class TripsRepository implements ITripsRepository, TripCallback {
         this.tripsRemoteDataSource.updateTrip(trip, tripId);
     }
 
+    /**
+     * Updates the activity
+     *
+     * @param trip       The activity to update
+     * @param tripId     the id of the trip to which the activity belongs
+     * @param activityId the id of the activity
+     */
     @Override
     public void updateActivity(HashMap<String, Object> trip, String tripId, String activityId) {
         this.tripsRemoteDataSource.updateActivity(trip, tripId, activityId);
@@ -96,6 +102,12 @@ public class TripsRepository implements ITripsRepository, TripCallback {
         this.tripsLocalDataSource.deleteTrip(trip);
     }
 
+    /**
+     * Deletes an activity.
+     *
+     * @param activity the activity to be deleted
+     * @param trip     the trip to which the activity belongs
+     */
     @Override
     public void deleteActivity(Activity activity, Trip trip) {
         this.tripsRemoteDataSource.deleteActivity(activity, trip);
@@ -111,6 +123,12 @@ public class TripsRepository implements ITripsRepository, TripCallback {
         this.tripsRemoteDataSource.insertTrip(trip);
     }
 
+    /**
+     * Inserts a new activity.
+     *
+     * @param activity the activity to be inserted
+     * @param trip     the trip in which the activity should be inserted
+     */
     @Override
     public void insertActivity(Activity activity, Trip trip) {
         this.tripsRemoteDataSource.insertActivity(activity, trip);

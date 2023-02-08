@@ -133,8 +133,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
             this.tripId = getArguments().getString(SELECTED_TRIP_ID);
         }
 
-        //TODO FIX USER ID
-        this.imagePath = application.getFilesDir() + "/1-" + tripId + "-" + TRIP_LOGO_NAME;
+        this.imagePath = application.getFilesDir() + "/" + tripId + "-" + TRIP_LOGO_NAME;
         this.tripLogo = view.findViewById(R.id.trip_logo);
 
         ActivityResultLauncher<Intent> photoPickerLauncher = registerForActivityResult(
@@ -197,7 +196,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
 
                         String descriptionMessage = input.getText().toString().trim();
                         if (!descriptionMessage.equals(oldDescription)) {
-                            HashMap <String, Object> map = new HashMap <>();
+                            HashMap<String, Object> map = new HashMap<>();
                             this.trip.setDescription(descriptionMessage);
                             map.put("description", descriptionMessage);
                             this.viewModel.updateTrip(map, tripId);
@@ -274,9 +273,10 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                         } else {
                             description.setText(getString(R.string.trip_add_description));
                         }
-                        LinearLayoutManager linearLayoutManager =
-                                new LinearLayoutManager(this.application);
-                        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+                        RecyclerView.LayoutManager linearLayoutManager =
+                                new LinearLayoutManager(this.application, LinearLayoutManager.VERTICAL,
+                                        false);
 
                         SettingsParticipantRecyclerViewAdapter adapter =
                                 new SettingsParticipantRecyclerViewAdapter(
@@ -420,7 +420,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                     (dialog, which) -> {
                         String newTitle = input.getText().toString().trim();
                         if (!newTitle.isEmpty() && !newTitle.equals(oldTitle)) {
-                            HashMap <String, Object> map = new HashMap <>();
+                            HashMap<String, Object> map = new HashMap<>();
                             this.trip.setTitle(newTitle);
                             map.put("title", newTitle);
                             this.viewModel.updateTrip(map, tripId);

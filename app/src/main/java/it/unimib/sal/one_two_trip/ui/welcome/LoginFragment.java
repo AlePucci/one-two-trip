@@ -67,7 +67,6 @@ public class LoginFragment extends Fragment {
     private MaterialButton googleLoginButton;
     private IndeterminateDrawable<CircularProgressIndicatorSpec> progressIndicatorDrawable;
 
-
     public LoginFragment() {
     }
 
@@ -103,7 +102,7 @@ public class LoginFragment extends Fragment {
                         .build())
                 .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                         .setSupported(true)
-                        .setServerClientId(getString(R.string.WEB_SERVER_ID))
+                        .setServerClientId(getString(R.string.default_web_client_id))
                         .setFilterByAuthorizedAccounts(false)
                         .build())
                 .setAutoSelectEnabled(true)
@@ -257,6 +256,7 @@ public class LoginFragment extends Fragment {
                                 activity.finish();
                                 return;
                             } else {
+                                Log.d("LoginFragment", "onLoginClick: " + ((Result.Error) result).getMessage());
                                 this.userViewModel.setAuthenticationError(true);
                                 Snackbar.make(activity.findViewById(android.R.id.content),
                                         getErrorMessage(((Result.Error) result).getMessage()),

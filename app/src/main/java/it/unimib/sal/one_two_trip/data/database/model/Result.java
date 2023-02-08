@@ -12,7 +12,9 @@ public abstract class Result {
     }
 
     public boolean isSuccess() {
-        return this instanceof PersonResponseSuccess || this instanceof TripSuccess || this instanceof PasswordResetSuccess;
+        return this instanceof PersonResponseSuccess
+                || this instanceof TripSuccess
+                || this instanceof PasswordResetSuccess;
     }
 
     /**
@@ -20,6 +22,7 @@ public abstract class Result {
      * with a Web Service or a local database. (TRIP)
      */
     public static final class TripSuccess extends Result {
+
         private final TripsResponse response;
 
         public TripSuccess(TripsResponse response) {
@@ -36,6 +39,7 @@ public abstract class Result {
      * with a Web Service or a local database. (USER PASSWORD RESET SUCCESS)
      */
     public static final class PasswordResetSuccess extends Result {
+
         private final boolean success;
 
         public PasswordResetSuccess(boolean success) {
@@ -52,6 +56,7 @@ public abstract class Result {
      * with a Web Service or a local database. (USER)
      */
     public static final class PersonResponseSuccess extends Result {
+
         private final Person person;
 
         public PersonResponseSuccess(Person person) {
@@ -62,7 +67,6 @@ public abstract class Result {
             return person;
         }
     }
-
 
     /**
      * Class that represents an error occurred during the interaction

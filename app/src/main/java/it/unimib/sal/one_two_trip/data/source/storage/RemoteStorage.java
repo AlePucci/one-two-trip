@@ -36,7 +36,7 @@ public class RemoteStorage extends BaseRemoteStorage {
     public void uploadTripLogo(@NonNull Bitmap bitmap, String tripId) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference().child(FIREBASE_TRIPS_COLLECTION)
-                .child(TRIP_LOGO_NAME);
+                .child(tripId).child(TRIP_LOGO_NAME);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
@@ -45,17 +45,17 @@ public class RemoteStorage extends BaseRemoteStorage {
         uploadTask.addOnFailureListener(exception -> callback.onUploadFailure(exception))
                 .addOnSuccessListener(taskSnapshot -> {
                     if (taskSnapshot.getTask().isSuccessful()) {
-                        // TODO USER IDs
-                        File localFile = new File(application.getFilesDir(), tripId + "-" + TRIP_LOGO_NAME);
+                        String fileName = tripId + "-" + TRIP_LOGO_NAME;
+                        File localFile = new File(application.getFilesDir(), fileName);
 
-                        storageReference.getFile(localFile).addOnSuccessListener(taskSnapshot1 ->
-                        {
-                            long lastUpdate = -1;
-                            if (taskSnapshot.getMetadata() != null) {
-                                lastUpdate = taskSnapshot.getMetadata().getUpdatedTimeMillis();
-                            }
-                            callback.onUploadSuccess(lastUpdate);
-                        }).addOnFailureListener(exception ->
+                        storageReference.getFile(localFile).addOnSuccessListener(
+                                taskSnapshot1 -> {
+                                    long lastUpdate = -1;
+                                    if (taskSnapshot.getMetadata() != null) {
+                                        lastUpdate = taskSnapshot.getMetadata().getUpdatedTimeMillis();
+                                    }
+                                    callback.onUploadSuccess(lastUpdate);
+                                }).addOnFailureListener(exception ->
                                 callback.onUploadFailure(exception));
                     }
                 });
@@ -70,8 +70,9 @@ public class RemoteStorage extends BaseRemoteStorage {
     public void downloadTripLogo(String tripId) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference().child(FIREBASE_TRIPS_COLLECTION)
-                .child(TRIP_LOGO_NAME);
-        File localFile = new File(application.getFilesDir(), tripId + "-" + TRIP_LOGO_NAME);
+                .child(tripId).child(TRIP_LOGO_NAME);
+        String fileName = tripId + "-" + TRIP_LOGO_NAME;
+        File localFile = new File(application.getFilesDir(), fileName);
 
         storageReference.getFile(localFile).addOnSuccessListener(taskSnapshot ->
                 callback.onDownloadSuccess()).addOnFailureListener(exception ->
@@ -87,7 +88,7 @@ public class RemoteStorage extends BaseRemoteStorage {
     public void tripLogoExists(String tripId) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference().child(FIREBASE_TRIPS_COLLECTION)
-                .child(TRIP_LOGO_NAME);
+                .child(tripId).child(TRIP_LOGO_NAME);
 
         storageReference.getMetadata().addOnSuccessListener(storageMetadata -> {
             long lastUpdate = storageMetadata.getUpdatedTimeMillis();
@@ -105,7 +106,7 @@ public class RemoteStorage extends BaseRemoteStorage {
     public void deleteTripLogo(String tripId) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference().child(FIREBASE_TRIPS_COLLECTION)
-                .child(TRIP_LOGO_NAME);
+                .child(tripId).child(TRIP_LOGO_NAME);
 
         storageReference.delete();
     }

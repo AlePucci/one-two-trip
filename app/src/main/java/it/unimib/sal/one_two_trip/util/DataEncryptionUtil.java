@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 
 /**
- * Utility class to read and write encrpted data using SharedPreferences API.
+ * Utility class to read and write encrypted data using SharedPreferences API.
  * Doc can be read <a href="https://developer.android.com/training/data-storage/shared-preferences">here.</a>
  */
 public class DataEncryptionUtil {

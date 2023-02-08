@@ -165,21 +165,20 @@ public class HomeActivity extends AppCompatActivity {
                 alert.setView(container);
                 alert.setPositiveButton(getString(R.string.trip_new_positive),
                         (dialog, which) -> {
-                            String title = input.getText().toString().trim();
-                            if (!title.isEmpty()) {
-                                Trip trip = new Trip();
-                                trip.setId(UUID.randomUUID().toString());
-                                trip.setTitle(title);
-                                trip.setTripOwner("1");
-                                ArrayList<Person> people = new ArrayList<>();
-                                Person person = new Person();
-                                person.setId("2");
-                                person.setName("John");
-                                person.setSurname("Doe");
-                                people.add(person);
-                                trip.getParticipant().setPersonList(people);
-                                //TODO: set trip owner & add them to the trip
-                                finalViewModel.insertTrip(trip);
+                            if (finalUserViewModel != null && finalUserViewModel.getLoggedUser() != null) {
+                                Person user = finalUserViewModel.getLoggedUser();
+                                String title = input.getText().toString().trim();
+                                if (!title.isEmpty()) {
+                                    Trip trip = new Trip();
+                                    trip.setId(UUID.randomUUID().toString());
+                                    trip.setTitle(title);
+                                    trip.setTripOwner(user.getId());
+
+                                    ArrayList<Person> participants = new ArrayList<>();
+                                    participants.add(user);
+                                    trip.getParticipant().setPersonList(participants);
+                                    finalViewModel.insertTrip(trip);
+                                }
                             }
                         });
                 alert.setNegativeButton(getString(R.string.trip_new_negative), null);

@@ -221,7 +221,6 @@ public class PastTripsFragment extends Fragment {
 
                         // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
                         if (fetchedTrips == null || fetchedTrips.isEmpty()) {
-                            int previousSize = this.pastTrips.size();
                             this.pastTrips.clear();
                             noTripsText.setText(R.string.no_trips_added);
                             noTripsText.setVisibility(View.VISIBLE);
@@ -234,7 +233,6 @@ public class PastTripsFragment extends Fragment {
                             pastTrips.removeIf(trip -> trip != null && !trip.isCompleted());
 
                             // IF THERE ARE NO PAST TRIPS, SHOW THE NO PAST TRIPS IMAGE TEXT
-                            int previousSize = this.pastTrips.size();
                             this.pastTrips.clear();
                             if (pastTrips.isEmpty()) {
 

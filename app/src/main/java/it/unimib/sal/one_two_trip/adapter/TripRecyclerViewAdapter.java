@@ -66,6 +66,12 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
         return this.activities.size();
     }
 
+    /**
+     * Method to add a list of activities to the adapter, clearing the previous ones and
+     * notifying the RecyclerView that the data has changed.
+     *
+     * @param activities the list of activities to add.
+     */
     public void addData(List<Activity> activities) {
         this.activities.clear();
         this.activities.addAll(activities);

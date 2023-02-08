@@ -225,7 +225,6 @@ public class ComingTripsFragment extends Fragment {
 
                         // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
                         if (fetchedTrips == null || fetchedTrips.isEmpty()) {
-                            int previousSize = this.comingTrips.size();
                             this.comingTrips.clear();
                             noTripsText.setText(R.string.no_trips_added);
                             noTripsText.setVisibility(View.VISIBLE);
@@ -256,7 +255,6 @@ public class ComingTripsFragment extends Fragment {
 
 
                             // IF THERE ARE NO COMING TRIPS, SHOW THE NO COMING TRIPS IMAGE TEXT
-                            int previousSize = this.comingTrips.size();
                             this.comingTrips.clear();
                             if (comingTrips.isEmpty()) {
                                 noTripsText.setText(R.string.no_past_trips);

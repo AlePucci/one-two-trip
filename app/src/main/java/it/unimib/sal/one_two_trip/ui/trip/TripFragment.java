@@ -202,7 +202,7 @@ public class TripFragment extends Fragment implements MenuProvider {
 
         //RecyclerView
         RecyclerView recyclerView = view.findViewById(R.id.trip_recyclerview);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(activity);
+        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(activity);
         recyclerView.setLayoutManager(linearLayoutManager);
 
         if (moveToActivity) {
@@ -266,8 +266,6 @@ public class TripFragment extends Fragment implements MenuProvider {
                         if (!this.trip.isParticipating()) {
                             requireActivity().finish();
                         }
-
-                        // todo check if saved
 
                         if (this.trip.getActivity() != null
                                 && this.trip.getActivity().getActivityList() != null

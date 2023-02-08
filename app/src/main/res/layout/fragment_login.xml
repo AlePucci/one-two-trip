@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/one_two_trip_vector" />
+        app:srcCompat="@drawable/one_two_trip_logo_welcome" />
 
     <TextView
         android:id="@+id/login_textview"

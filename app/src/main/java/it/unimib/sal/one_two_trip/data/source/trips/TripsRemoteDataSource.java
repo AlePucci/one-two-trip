@@ -9,6 +9,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -48,7 +49,11 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
      * Add a listener to all the trips the users has joined in, using Firebase Cloud Firestore.
      */
     private void addTripListener() {
+        Log.d("TripsRemoteDataSource", "addTripListener called");
         final CompletableFuture<Boolean>[] myFuture = new CompletableFuture[]{new CompletableFuture<>()};
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
+        String idToken = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         com.google.firebase.firestore.EventListener<QuerySnapshot> tripListener = (value, error) -> {
             if (error == null && value != null) {
@@ -67,8 +72,9 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
                     trip.setCompleted((boolean) ds.get("completed"));
                     trip.setTitle(ds.get("title").toString());
                     trip.setDescription(ds.get("description").toString());
-                    trip.setParticipating(!(boolean) ds.get("participant.2.removed"));
-                    CollectionReference a = FirebaseFirestore.getInstance().collection(FIREBASE_TRIPS_COLLECTION).document(trip.getId()).collection("activity");
+                    trip.setParticipating(!(boolean) ds.get("participant." + idToken + ".removed"));
+                    CollectionReference a = FirebaseFirestore.getInstance().collection(FIREBASE_TRIPS_COLLECTION)
+                            .document(trip.getId()).collection("activity");
                     a.addSnapshotListener((value1, error1) -> {
                         if (error1 == null) {
                             getTrips();
@@ -136,7 +142,7 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
                 }
             }
         };
-        this.tripsCollectionReference.whereNotEqualTo("participant.2", null).addSnapshotListener(tripListener);
+        this.tripsCollectionReference.whereNotEqualTo("participant." + idToken, null).addSnapshotListener(tripListener);
     }
 
     /**
@@ -146,90 +152,95 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
     public void getTrips() {
         final CompletableFuture<Boolean>[] myFuture = new CompletableFuture[]{new CompletableFuture<>()};
 
-        this.tripsCollectionReference.whereNotEqualTo("participant.2", null).get().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                tripCallback.onFailureFromRemote(task.getException());
-            } else {
-                List<Trip> tripList = new ArrayList<>();
-                if (task.getResult().isEmpty()) {
-                    tripCallback.onSuccessFromRemote(new TripsApiResponse(STATUS_OK,
-                            tripList.size(), tripList), System.currentTimeMillis());
-                    return;
-                }
-                for (QueryDocumentSnapshot ds : task.getResult()) {
-                    Trip trip = new Trip();
-                    trip.setId(Objects.requireNonNull(ds.get("id")).toString());
-                    trip.setTripOwner(Objects.requireNonNull(ds.get("tripOwner")).toString());
-                    trip.setCompleted((boolean) ds.get("completed"));
-                    trip.setTitle(Objects.requireNonNull(ds.get("title")).toString());
-                    trip.setDescription(Objects.requireNonNull(ds.get("description")).toString());
-                    trip.setParticipating(!(boolean) ds.get("participant.2.removed"));
-                    CollectionReference a = FirebaseFirestore.getInstance().collection(FIREBASE_TRIPS_COLLECTION).document(trip.getId()).collection("activity");
-                    a.get().addOnCompleteListener(
-                            task1 -> {
-                                if (task1.isSuccessful()) {
-                                    List<DocumentSnapshot> docs = task1.getResult().getDocuments();
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
+        String idToken = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        this.tripsCollectionReference.whereNotEqualTo("participant." + idToken, null)
+                .get().addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        tripCallback.onFailureFromRemote(task.getException());
+                    } else {
+                        List<Trip> tripList = new ArrayList<>();
+                        if (task.getResult().isEmpty()) {
+                            tripCallback.onSuccessFromRemote(new TripsApiResponse(STATUS_OK,
+                                    tripList.size(), tripList), System.currentTimeMillis());
+                            return;
+                        }
+                        for (QueryDocumentSnapshot ds : task.getResult()) {
+                            Trip trip = new Trip();
+                            trip.setId(Objects.requireNonNull(ds.get("id")).toString());
+                            trip.setTripOwner(Objects.requireNonNull(ds.get("tripOwner")).toString());
+                            trip.setCompleted((boolean) ds.get("completed"));
+                            trip.setTitle(Objects.requireNonNull(ds.get("title")).toString());
+                            trip.setDescription(Objects.requireNonNull(ds.get("description")).toString());
+                            trip.setParticipating(!(boolean) ds.get("participant." + idToken + ".removed"));
+                            CollectionReference a = FirebaseFirestore.getInstance().collection(FIREBASE_TRIPS_COLLECTION)
+                                    .document(trip.getId()).collection("activity");
+                            a.get().addOnCompleteListener(
+                                    task1 -> {
+                                        if (task1.isSuccessful()) {
+                                            List<DocumentSnapshot> docs = task1.getResult().getDocuments();
 
 
-                                    if (myFuture[0] != null) {
-                                        myFuture[0].cancel(true);
-                                        myFuture[0] = null;
-                                    }
-                                    myFuture[0] = queryDatabaseAsync(trip, ds);
-
-                                    if (myFuture[0] != null) {
-                                        myFuture[0].thenAccept(isSuccess -> {
-
-                                            for (DocumentSnapshot doc : docs) {
-                                                Activity activity = new Activity();
-                                                activity.setId(doc.get("id").toString());
-                                                activity.setCompleted((boolean) doc.get("completed"));
-                                                activity.setTitle(doc.get("title").toString());
-                                                activity.setDescription(doc.get("description").toString());
-                                                activity.setEveryoneParticipate((boolean) doc.get("everyoneParticipate"));
-                                                activity.setLatitude(Double.parseDouble(doc.get("latitude").toString()));
-                                                activity.setEndLatitude(Double.parseDouble(doc.get("endLatitude").toString()));
-                                                activity.setLongitude(Double.parseDouble(doc.get("longitude").toString()));
-                                                activity.setEndLongitude(Double.parseDouble(doc.get("endLongitude").toString()));
-                                                activity.setStart_date((long) doc.get("start_date"));
-                                                activity.setEnd_date((long) doc.get("end_date"));
-                                                activity.setLocation(doc.get("location").toString());
-                                                activity.setEnd_location(doc.get("endLocation").toString());
-                                                activity.setTrip_id(doc.get("trip_id").toString());
-                                                activity.setType(doc.get("type").toString());
-
-                                                // PARTECIPANTI ATTIVITA'
-                                                List<Person> personList = new ArrayList<>();
-                                                for (DocumentReference person : (List<DocumentReference>) doc.get("participant")) {
-                                                    for (Person p : trip.getParticipant().getPersonList()) {
-                                                        Log.d("TripsRemoteDataSource", "id: " + person.getId());
-                                                        Log.d("TripsRemoteDataSource", p.getId());
-                                                        Log.d("TripsRemoteDataSource", person.getId());
-                                                        if (p.getId().equals(person.getId())) {
-                                                            personList.add(p);
-                                                        }
-                                                    }
-                                                }
-
-                                                activity.getParticipant().setPersonList(personList);
-                                                Log.d("TripsRemoteDataSource", "activity: " + activity.getParticipant().getPersonList());
-
-                                                trip.getActivity().getActivityList().add(activity);
-                                                Log.d("TripsRemoteDataSource", "activity: " + activity);
+                                            if (myFuture[0] != null) {
+                                                myFuture[0].cancel(true);
+                                                myFuture[0] = null;
                                             }
+                                            myFuture[0] = queryDatabaseAsync(trip, ds);
 
-                                            tripList.add(trip);
-                                            tripCallback.onSuccessFromRemote(new TripsApiResponse(STATUS_OK,
-                                                    tripList.size(), tripList), System.currentTimeMillis());
-                                        });
-                                    }
-                                } else {
-                                    tripCallback.onFailureFromRemote(task1.getException());
-                                }
-                            });
-                }
-            }
-        });
+                                            if (myFuture[0] != null) {
+                                                myFuture[0].thenAccept(isSuccess -> {
+
+                                                    for (DocumentSnapshot doc : docs) {
+                                                        Activity activity = new Activity();
+                                                        activity.setId(doc.get("id").toString());
+                                                        activity.setCompleted((boolean) doc.get("completed"));
+                                                        activity.setTitle(doc.get("title").toString());
+                                                        activity.setDescription(doc.get("description").toString());
+                                                        activity.setEveryoneParticipate((boolean) doc.get("everyoneParticipate"));
+                                                        activity.setLatitude(Double.parseDouble(doc.get("latitude").toString()));
+                                                        activity.setEndLatitude(Double.parseDouble(doc.get("endLatitude").toString()));
+                                                        activity.setLongitude(Double.parseDouble(doc.get("longitude").toString()));
+                                                        activity.setEndLongitude(Double.parseDouble(doc.get("endLongitude").toString()));
+                                                        activity.setStart_date((long) doc.get("start_date"));
+                                                        activity.setEnd_date((long) doc.get("end_date"));
+                                                        activity.setLocation(doc.get("location").toString());
+                                                        activity.setEnd_location(doc.get("endLocation").toString());
+                                                        activity.setTrip_id(doc.get("trip_id").toString());
+                                                        activity.setType(doc.get("type").toString());
+
+                                                        // PARTECIPANTI ATTIVITA'
+                                                        List<Person> personList = new ArrayList<>();
+                                                        for (DocumentReference person : (List<DocumentReference>) doc.get("participant")) {
+                                                            for (Person p : trip.getParticipant().getPersonList()) {
+                                                                Log.d("TripsRemoteDataSource", "id: " + person.getId());
+                                                                Log.d("TripsRemoteDataSource", p.getId());
+                                                                Log.d("TripsRemoteDataSource", person.getId());
+                                                                if (p.getId().equals(person.getId())) {
+                                                                    personList.add(p);
+                                                                }
+                                                            }
+                                                        }
+
+                                                        activity.getParticipant().setPersonList(personList);
+                                                        Log.d("TripsRemoteDataSource", "activity: " + activity.getParticipant().getPersonList());
+
+                                                        trip.getActivity().getActivityList().add(activity);
+                                                        Log.d("TripsRemoteDataSource", "activity: " + activity);
+                                                    }
+
+                                                    tripList.add(trip);
+                                                    tripCallback.onSuccessFromRemote(new TripsApiResponse(STATUS_OK,
+                                                            tripList.size(), tripList), System.currentTimeMillis());
+                                                });
+                                            }
+                                        } else {
+                                            tripCallback.onFailureFromRemote(task1.getException());
+                                        }
+                                    });
+                        }
+                    }
+                });
     }
 
     @Nullable
@@ -287,7 +298,7 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
     }
 
     @Override
-    public void insertActivity(Activity activity, Trip trip) {
+    public void insertActivity(@NonNull Activity activity, Trip trip) {
         HashMap<String, Object> activityMap = new HashMap<>();
         activityMap.put("id", activity.getId());
         activityMap.put("title", activity.getTitle());
@@ -352,7 +363,7 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
     }
 
     @Override
-    public void deleteActivity(Activity activity, Trip trip) {
+    public void deleteActivity(@NonNull Activity activity, @NonNull Trip trip) {
         this.tripsCollectionReference.document(trip.getId()).collection("activity").document(activity.getId()).delete();
     }
 }
