@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -126,12 +127,14 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         UserViewModel finalUserViewModel = userViewModel;
+        TripsViewModel finalViewModel = viewModel;
         drawerNav.getMenu().findItem(R.id.logout).setOnMenuItemClickListener(item -> {
             if (finalUserViewModel != null) {
                 finalUserViewModel.logout();
                 Intent intent = new Intent(HomeActivity.this, WelcomeActivity.class);
                 startActivity(intent);
                 finish();
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
             }
             return false;
         });
@@ -146,7 +149,6 @@ public class HomeActivity extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.fab);
 
-        TripsViewModel finalViewModel = viewModel;
         fab.setOnClickListener(view -> {
             if (finalViewModel != null) {
                 androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(

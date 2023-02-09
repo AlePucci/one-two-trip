@@ -4,6 +4,8 @@ import static it.unimib.sal.one_two_trip.util.Constants.FRESH_TIMEOUT;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -142,6 +144,11 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     }
 
     @Override
+    public void onSuccessFromRemote(Trip trip) {
+        this.tripsLocalDataSource.insertTrip(trip);
+    }
+
+    @Override
     public void onFailureFromRemote(@NonNull Exception exception) {
         Result.Error resultError = new Result.Error(exception.getMessage());
         this.allTripsMutableLiveData.postValue(resultError);
@@ -149,6 +156,7 @@ public class TripsRepository implements ITripsRepository, TripCallback {
 
     @Override
     public void onSuccessFromLocal(List<Trip> tripList) {
+        Log.d("TripsRepository", "onSuccessFromLocal: " + tripList);
         Result.TripSuccess result = new Result.TripSuccess(new TripsResponse(tripList));
         this.allTripsMutableLiveData.postValue(result);
     }

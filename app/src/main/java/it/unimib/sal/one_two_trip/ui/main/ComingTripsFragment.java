@@ -104,13 +104,13 @@ public class ComingTripsFragment extends Fragment {
 
         androidx.fragment.app.FragmentActivity activity = requireActivity();
         RecyclerView comingTripsView = view.findViewById(R.id.coming_trips_view);
-        TextView noTripsText = view.findViewById(R.id.no_trips_text);
-        ImageView noTripsImage = view.findViewById(R.id.no_trips_image);
-        ProgressBar progressBar = view.findViewById(R.id.progress_bar);
+        TextView noTripsText = view.findViewById(R.id.no_trips_text_comingtrips);
+        ImageView noTripsImage = view.findViewById(R.id.no_trips_image_comingtrips);
+        ProgressBar progressBar = view.findViewById(R.id.progress_bar_comingtrips);
         BottomNavigationView bottomNavigationView = activity
                 .findViewById(R.id.bottom_navigation);
         FloatingActionButton fab = activity.findViewById(R.id.fab);
-        this.swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        this.swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout_comingtrips);
 
         bottomNavigationView.setVisibility(View.VISIBLE);
         fab.setVisibility(View.VISIBLE);
@@ -217,12 +217,14 @@ public class ComingTripsFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
+        if (this.tripsViewModel == null) return;
+
         this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(
                 getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> fetchedTrips = ((Result.TripSuccess) result).getData().getTripList();
-
+                        Log.d(TAG, "onViewCreated: " + fetchedTrips);
                         // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
                         if (fetchedTrips == null || fetchedTrips.isEmpty()) {
                             this.comingTrips.clear();
@@ -231,11 +233,10 @@ public class ComingTripsFragment extends Fragment {
                             noTripsImage.setVisibility(View.VISIBLE);
                         } else {
                             List<Trip> comingTrips = new ArrayList<>(fetchedTrips);
-                            Log.d("ComingTripsFragment", "onViewCreated: " + comingTrips.size());
-
                             // FILTERS THE TRIPS THAT ARE NOT COMPLETED (COMING TRIPS)
                             comingTrips.removeIf(trip -> trip != null && trip.isCompleted());
 
+                            // NOTIFICATION SCHEDULING
                             for (Trip trip : comingTrips) {
                                 if (trip == null) {
                                     continue;

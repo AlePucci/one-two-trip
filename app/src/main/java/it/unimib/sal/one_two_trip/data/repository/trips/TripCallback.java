@@ -13,6 +13,8 @@ public interface TripCallback {
 
     void onSuccessFromRemote(TripsApiResponse tripsApiResponse, long lastUpdate);
 
+    void onSuccessFromRemote(Trip trip);
+
     void onFailureFromRemote(Exception exception);
 
     void onSuccessFromLocal(List<Trip> tripList);

@@ -73,11 +73,7 @@ public class Trip {
         this.completed = completed;
         this.isParticipating = isParticipating;
 
-        if (this.activity != null && this.activity.getActivityList() != null
-                && !this.activity.getActivityList().isEmpty()) {
-            this.activity.getActivityList().sort(Comparator.comparing(Activity::getStart_date));
-            this.start_date = this.activity.getActivityList().get(0).getStart_date();
-        }
+        this.checkStartDate();
     }
 
     @NonNull
@@ -119,6 +115,10 @@ public class Trip {
 
     public void setActivity(ActivityListHolder activity) {
         this.activity = activity;
+        checkStartDate();
+    }
+
+    public void checkStartDate() {
         if (this.activity != null && this.activity.getActivityList() != null
                 && !this.activity.getActivityList().isEmpty()
                 && this.activity.getActivityList().get(0) != null) {
@@ -187,17 +187,12 @@ public class Trip {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trip trip = (Trip) o;
-        return completed == trip.completed && start_date == trip.start_date
-                && isParticipating == trip.isParticipating && id.equals(trip.id)
-                && Objects.equals(tripOwner, trip.tripOwner) && Objects.equals(title, trip.title)
-                && Objects.equals(description, trip.description) && Objects.equals(activity, trip.activity)
-                && Objects.equals(participant, trip.participant);
+        return completed == trip.completed && start_date == trip.start_date && isParticipating == trip.isParticipating && id.equals(trip.id) && Objects.equals(tripOwner, trip.tripOwner) && Objects.equals(title, trip.title) && Objects.equals(description, trip.description) && Objects.equals(activity, trip.activity) && Objects.equals(participant, trip.participant);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tripOwner, title, description, activity, participant, completed,
-                start_date, isParticipating);
+        return Objects.hash(id, tripOwner, title, description, activity, participant, completed, start_date, isParticipating);
     }
 
     @NonNull

@@ -102,13 +102,13 @@ public class PastTripsFragment extends Fragment {
 
         androidx.fragment.app.FragmentActivity activity = requireActivity();
         RecyclerView pastTripsView = view.findViewById(R.id.past_trips_view);
-        TextView noTripsText = view.findViewById(R.id.no_trips_text);
-        ImageView noTripsImage = view.findViewById(R.id.no_trips_image);
-        ProgressBar progressBar = view.findViewById(R.id.progress_bar);
+        TextView noTripsText = view.findViewById(R.id.no_trips_text_pasttrips);
+        ImageView noTripsImage = view.findViewById(R.id.no_trips_image_pasttrips);
+        ProgressBar progressBar = view.findViewById(R.id.progress_bar_pasttrips);
         BottomNavigationView bottomNavigationView = activity
                 .findViewById(R.id.bottom_navigation);
         FloatingActionButton fab = activity.findViewById(R.id.fab);
-        this.swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        this.swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout_pasttrips);
 
         bottomNavigationView.setVisibility(View.VISIBLE);
         fab.setVisibility(View.VISIBLE);
@@ -213,6 +213,8 @@ public class PastTripsFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
+        if (this.tripsViewModel == null) return;
+
         this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(
                 getViewLifecycleOwner(),
                 result -> {
@@ -235,7 +237,6 @@ public class PastTripsFragment extends Fragment {
                             // IF THERE ARE NO PAST TRIPS, SHOW THE NO PAST TRIPS IMAGE TEXT
                             this.pastTrips.clear();
                             if (pastTrips.isEmpty()) {
-
                                 noTripsText.setText(R.string.no_past_trips);
                                 noTripsText.setVisibility(View.VISIBLE);
                                 noTripsImage.setVisibility(View.VISIBLE);
@@ -245,7 +246,6 @@ public class PastTripsFragment extends Fragment {
 
                                 pastTrips.sort(Comparator.comparing(Trip::getStart_date).reversed());
                                 this.pastTrips.addAll(pastTrips);
-
                             }
                         }
                         this.tripsRecyclerViewAdapter.notifyDataSetChanged();

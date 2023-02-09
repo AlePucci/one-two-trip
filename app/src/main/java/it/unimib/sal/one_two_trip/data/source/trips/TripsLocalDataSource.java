@@ -5,8 +5,11 @@ import static it.unimib.sal.one_two_trip.util.Constants.ENCRYPTED_SHARED_PREFERE
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.data.database.ITripsDAO;
@@ -66,27 +69,74 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
     @Override
     public void insertTrips(List<Trip> tripList) {
         TripsRoomDatabase.databaseWriteExecutor.execute(() -> {
-            List<Trip> allTrips = this.tripsDAO.getAll();
-
-            if (tripList != null) {
-//                for (Trip trip : tripList) {
+            List<Trip> allTrips = new ArrayList<>(this.tripsDAO.getAll());
+            List<Trip> temp = new ArrayList<>(tripList);
+            Log.d("TripsLocalDataSource", "insertTrips: " + temp);
+            if (temp != null) {
+//                for (Trip trip : temp) {
 //                    if (!trip.isParticipating()) {
 //                        // or is deleted TODO
 //                        this.tripsDAO.delete(trip);
+//                        return;
 //                    }
 //                }
-                for (Trip trip : allTrips) {
-                    if (tripList.contains(trip)) {
-                        tripList.set(tripList.indexOf(trip), trip);
+
+                for (Trip trip : temp) {
+                    if (allTrips.contains(trip)) {
+                        allTrips.set(allTrips.indexOf(trip), trip);
+                    }
+                    else{
+                        allTrips.add(trip);
                     }
                 }
+                Log.d("TripsLocalDataSource", "allTrips: " + allTrips);
 
-                this.tripsDAO.insertTripList(tripList);
+                this.tripsDAO.insertTripList(allTrips);
 
                 this.sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME,
                         LAST_UPDATE, String.valueOf(System.currentTimeMillis()));
 
-                tripCallback.onSuccessFromLocal(tripList);
+                tripCallback.onSuccessFromLocal(allTrips);
+            }
+        });
+    }
+
+    @Override
+    public void insertTrip(Trip trip) {
+        TripsRoomDatabase.databaseWriteExecutor.execute(() -> {
+            Log.d("TripsLocalDataSource", "insertTrip");
+            List<Trip> allTrips = new ArrayList<>(this.tripsDAO.getAll());
+
+            if (trip != null) {
+                if (!trip.isParticipating()) {
+                    // or is deleted TODO
+                    this.tripsDAO.delete(trip);
+                    tripCallback.onSuccessFromLocal(allTrips);
+                    return;
+                }
+
+                boolean found = false;
+                for (Trip t : allTrips) {
+                    if (t.getId().equals(trip.getId())) {
+                        Log.d("TripsLocalDataSource", "id: " + trip.getId() + " all trips: " + allTrips.toString());
+                        allTrips.set(allTrips.indexOf(t), trip);
+                        this.tripsDAO.updateTrip(trip);
+                        Log.d("TripsLocalDataSource", "found in db: " + trip.getTitle());
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    Log.d("TripsLocalDataSource", "not found in db: " + trip.getTitle());
+                    this.tripsDAO.insertTrip(trip);
+                    allTrips.add(trip);
+                }
+
+                this.sharedPreferencesUtil.writeStringData(SHARED_PREFERENCES_FILE_NAME,
+                        LAST_UPDATE, String.valueOf(System.currentTimeMillis()));
+                Log.d("TripsLocalDataSource", allTrips.toString());
+                tripCallback.onSuccessFromLocal(allTrips);
             }
         });
     }
@@ -112,7 +162,8 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
 
                     if (tripsCount == tripsDeleted) {
                         sharedPreferencesUtil.deleteAll(SHARED_PREFERENCES_FILE_NAME);
-                        dataEncryptionUtil.deleteAll(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME, ENCRYPTED_DATA_FILE_NAME);
+                        dataEncryptionUtil.deleteAll(ENCRYPTED_SHARED_PREFERENCES_FILE_NAME,
+                                ENCRYPTED_DATA_FILE_NAME);
                     }
                 }
         );
