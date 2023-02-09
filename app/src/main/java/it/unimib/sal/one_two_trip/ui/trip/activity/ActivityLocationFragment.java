@@ -2,7 +2,11 @@ package it.unimib.sal.one_two_trip.ui.trip.activity;
 
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.ZOOM_TO_ACTIVITY;
+import static it.unimib.sal.one_two_trip.util.Constants.ZOOM_TO_END_LOCATION;
 
 import android.app.Application;
 import android.content.Intent;
@@ -21,6 +25,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -103,6 +108,27 @@ public class ActivityLocationFragment extends Fragment {
             startActivity(intent);
         });
 
+        MaterialButton locButton1 = view.findViewById(R.id.activity_where_locate1);
+        locButton1.setOnClickListener(view12 -> {
+            Bundle bundle = new Bundle();
+            bundle.putString(SELECTED_TRIP_ID, tripId);
+            bundle.putString(SELECTED_ACTIVITY_ID, activityId);
+            bundle.putBoolean(ZOOM_TO_ACTIVITY, true);
+
+            ((ActivityFragment) getParentFragment().getParentFragment()).navigate(bundle);
+        });
+
+        MaterialButton locButton2 = view.findViewById(R.id.activity_where_locate2);
+        locButton2.setOnClickListener(view12 -> {
+            Bundle bundle = new Bundle();
+            bundle.putString(SELECTED_TRIP_ID, tripId);
+            bundle.putString(SELECTED_ACTIVITY_ID, activityId);
+            bundle.putBoolean(ZOOM_TO_ACTIVITY, true);
+            bundle.putBoolean(ZOOM_TO_END_LOCATION, true);
+
+            ((ActivityFragment) getParentFragment().getParentFragment()).navigate(bundle);
+        });
+
         MaterialButton editButton = view.findViewById(R.id.activity_where_edit);
         editButton.setOnClickListener(view1 ->
                 Navigation.findNavController(view1).navigate
@@ -146,18 +172,17 @@ public class ActivityLocationFragment extends Fragment {
                         loc1.setText(this.activity.getLocation());
 
                         TextView loc2 = view.findViewById(R.id.activity_where2);
-                        MaterialButton locate2 = view.findViewById(R.id.activity_where_locate2);
                         ImageView arrow = view.findViewById(R.id.activity_where_arrow);
 
                         if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                             loc2.setText(activity.getEnd_location());
                             loc2.setVisibility(View.VISIBLE);
-                            locate2.setVisibility(View.VISIBLE);
+                            locButton2.setVisibility(View.VISIBLE);
                             navButton2.setVisibility(View.VISIBLE);
                             arrow.setVisibility(View.VISIBLE);
                         } else {
                             loc2.setVisibility(View.GONE);
-                            locate2.setVisibility(View.GONE);
+                            locButton2.setVisibility(View.GONE);
                             navButton2.setVisibility(View.GONE);
                             arrow.setVisibility(View.GONE);
                         }

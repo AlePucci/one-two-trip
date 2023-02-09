@@ -8,10 +8,15 @@ import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAM
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.ZOOM_TO_ACTIVITY;
+import static it.unimib.sal.one_two_trip.util.Constants.ZOOM_TO_END_LOCATION;
 import static it.unimib.sal.one_two_trip.util.Utility.not;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Application;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -27,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -44,6 +50,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -58,10 +65,17 @@ import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.text.DateFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.TripRecyclerViewAdapter;
@@ -74,6 +88,7 @@ import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
+import it.unimib.sal.one_two_trip.util.Utility;
 
 /**
  * Fragment that shows the details of a trip in terms of list of activities and an interactive map.
@@ -157,11 +172,6 @@ public class TripFragment extends Fragment implements MenuProvider {
         mapView.setMultiTouchControls(true);
         mapView.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
 
-        mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this.requireContext()),
-                mapView);
-        mLocationOverlay.enableMyLocation();
-        mapView.getOverlays().add(mLocationOverlay);
-
         //Ask for permissions
         /**/
 
@@ -233,11 +243,139 @@ public class TripFragment extends Fragment implements MenuProvider {
 
                     @Override
                     public void onDragClick(int position) {
-                        //TODO: drag activity
-                        view.findViewById(R.id.item_activity_dragbutton)
-                                .performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                        Snackbar.make(view, "Drag " + activityList.get(position).getTitle(),
-                                Snackbar.LENGTH_SHORT).show();
+                        DateFormat df = SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+
+                        androidx.appcompat.app.AlertDialog.Builder alertB = new androidx.appcompat.app.AlertDialog.Builder(
+                                requireContext());
+
+                        View dialogView = getLayoutInflater().inflate(R.layout.fragment_activity_date_edit, null);
+                        alertB.setView(dialogView);
+
+                        androidx.appcompat.app.AlertDialog alert = alertB.create();
+
+                        MaterialButton dateb1 = dialogView.findViewById(R.id.activity_when1_edit);
+                        MaterialButton dateb2 = dialogView.findViewById(R.id.activity_when2_edit);
+                        MaterialButton editButton = dialogView.findViewById(R.id.activity_when_confirm);
+                        ImageView arrow = dialogView.findViewById(R.id.activity_when_arrow_edit);
+
+                        Activity activity = activityList.get(position);
+
+                        dateb1.setHint(df.format(activity.getStart_date()));
+                        if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
+                            dateb2.setHint(df.format(activity.getEnd_date()));
+                            dateb2.setVisibility(View.VISIBLE);
+                            arrow.setVisibility(View.VISIBLE);
+                        } else {
+                            dateb2.setVisibility(View.GONE);
+                            arrow.setVisibility(View.GONE);
+                        }
+
+                        dateb1.setOnClickListener(view12 -> {
+                            final Calendar c = Calendar.getInstance();
+
+                            if (activity.getStart_date() != 0) {
+                                c.setTime(new Date(activity.getStart_date()));
+                            }
+
+                            new DatePickerDialog(requireContext(), (datePicker, i, i1, i2) ->
+                                    new TimePickerDialog(requireContext(), (timePicker, j, j1) -> {
+                                        Calendar calendar = Calendar.getInstance();
+                                        calendar.set(i, i1, i2, j, j1);
+                                        dateb1.setText(df.format(new Date(calendar.getTimeInMillis())));
+                                    }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show(),
+                                    c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE)).show();
+                        });
+
+                        dateb2.setOnClickListener(view12 -> {
+                            final Calendar c = Calendar.getInstance();
+
+                            if (activity.getEnd_date() != 0) {
+                                c.setTime(new Date(activity.getEnd_date()));
+                            }
+
+                            new DatePickerDialog(requireContext(), (datePicker, i, i1, i2) ->
+                                    new TimePickerDialog(requireContext(), (timePicker, j, j1) -> {
+                                        Calendar calendar = Calendar.getInstance();
+                                        calendar.set(i, i1, i2, j, j1);
+                                        dateb2.setText(df.format(new Date(calendar.getTimeInMillis())));
+                                    }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show(),
+                                    c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DATE)).show();
+                        });
+
+                        editButton.setOnClickListener(view1 -> {
+                            HashMap<String, Object> map = new HashMap<>();
+
+                            long date1;
+                            long date2;
+
+                            if (dateb1.getText().toString().trim().isEmpty()) {
+                                date1 = activity.getStart_date();
+                            } else {
+                                Date temp = df.parse(dateb1.getText().toString().trim(),
+                                        new ParsePosition(0));
+                                if (temp != null) {
+                                    date1 = temp.getTime();
+                                } else {
+                                    date1 = 0;
+                                }
+                            }
+
+                            if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
+                                if (dateb2.getText().toString().trim().isEmpty()) {
+                                    date2 = activity.getEnd_date();
+                                } else {
+                                    Date temp2 = df.parse(dateb2.getText().toString().trim(),
+                                            new ParsePosition(0));
+                                    if (temp2 != null) {
+                                        date2 = temp2.getTime();
+                                    } else {
+                                        date2 = 0;
+                                    }
+                                }
+                            } else {
+                                date2 = 0;
+                            }
+
+                            if (date1 == 0) {
+                                dateb1.setError(getString(R.string.unexpected_error));
+                                return;
+                            }
+
+                            if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
+                                if (date2 == 0) {
+                                    dateb2.setError(getString(R.string.unexpected_error));
+                                    return;
+                                }
+
+                                if (date1 > date2) {
+                                    dateb2.setError(getString(R.string.activity_field_error));
+                                    return;
+                                }
+
+                                if (date1 != activity.getStart_date()){
+                                    activity.setStart_date(date1);
+                                    map.put("start_date", date1);
+
+                                }
+
+                                if ( date2 != activity.getEnd_date()) {
+                                    activity.setEnd_date(date2);
+                                    map.put("end_date", date2);
+                                }
+                            } else if (date1 != activity.getStart_date()) {
+                                activity.setStart_date(date1);
+                                map.put("start_date", date1);
+                            }
+
+                            if (!map.isEmpty()) {
+                                viewModel.updateActivity(map, tripId, activity.getId());
+                                Utility.onActivityCreate(trip, activity, application);
+                            }
+                            alert.dismiss();
+                        });
+
+                        alert.show();
+
                     }
                 });
 
@@ -262,7 +400,9 @@ public class TripFragment extends Fragment implements MenuProvider {
                                 break;
                             }
                         }
-                        Log.d("AAA", "trip: " + this.trip.isParticipating());
+
+                        if(trip == null) return;
+
                         if (!this.trip.isParticipating()) {
                             requireActivity().finish();
                         }
@@ -324,6 +464,59 @@ public class TripFragment extends Fragment implements MenuProvider {
         Log.d("AAA", "called map setup");
         this.mapView.getOverlays().clear();
 
+        //Position
+        mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this.requireContext()),
+                mapView);
+        mLocationOverlay.enableMyLocation();
+        mapView.getOverlays().add(mLocationOverlay);
+
+        //Move to location
+        IMapController mapController = this.mapView.getController();
+        mapController.setZoom(9.5);
+
+        GeoPoint startPoint = new GeoPoint(0.0, 0.0);
+
+        String selectedId = null;
+        boolean endSelected = false;
+
+        if(getArguments() != null && getArguments().getBoolean(ZOOM_TO_ACTIVITY)) {
+            getArguments().remove(ZOOM_TO_ACTIVITY);
+
+            selectedId = getArguments().getString(SELECTED_ACTIVITY_ID);
+
+            Activity activity = null;
+            for(Activity a : trip.getActivity().getActivityList()) {
+                if(a.getId().equals(selectedId)) {
+                    activity = a;
+                    break;
+                }
+            }
+
+            if(activity != null) {
+                endSelected = getArguments().getBoolean(ZOOM_TO_END_LOCATION);
+
+                if(endSelected) {
+                    startPoint = new GeoPoint(activity.getEndLatitude(), activity.getEndLongitude());
+                } else {
+                    startPoint = new GeoPoint(activity.getLatitude(), activity.getLongitude());
+                }
+            }
+        } else {
+            if (this.trip.getActivity() != null && this.trip.getActivity().getActivityList() != null &&
+                    !this.trip.getActivity().getActivityList().isEmpty()) {
+                List<Activity> activityList = new ArrayList<>(this.trip.getActivity().getActivityList());
+                activityList.sort(Comparator.comparing(Activity::getStart_date));
+                Activity startActivity = activityList.stream()
+                        .filter(not(Activity::isCompleted)).findFirst().orElse(null);
+
+                if (startActivity == null) {
+                    startActivity = activityList.get(0);
+                }
+
+                startPoint = new GeoPoint(startActivity.getLatitude(), startActivity.getLongitude());
+            }
+        }
+
         //Markers
         List<GeoPoint> points = new ArrayList<>();
         List<Marker> markers = new ArrayList<>();
@@ -346,6 +539,10 @@ public class TripFragment extends Fragment implements MenuProvider {
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                 markers.add(marker);
 
+                if(a.getId().equals(selectedId) && !endSelected) {
+                    marker.showInfoWindow();
+                }
+
                 if (a.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                     Marker endMarker = new Marker(this.mapView);
                     GeoPoint endPoint = new GeoPoint(a.getEndLatitude(), a.getEndLongitude());
@@ -356,6 +553,10 @@ public class TripFragment extends Fragment implements MenuProvider {
                     endMarker.setPosition(endPoint);
                     endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                     markers.add(endMarker);
+
+                    if(a.getId().equals(selectedId) && endSelected) {
+                        endMarker.showInfoWindow();
+                    }
                 }
             }
         }
@@ -368,25 +569,6 @@ public class TripFragment extends Fragment implements MenuProvider {
         //TODO: order the markers so that they don't overlap
         this.mapView.getOverlays().addAll(markers);
 
-        //Move to location
-        IMapController mapController = this.mapView.getController();
-        mapController.setZoom(9.5);
-
-        GeoPoint startPoint = new GeoPoint(0.0, 0.0);
-
-        if (this.trip.getActivity() != null && this.trip.getActivity().getActivityList() != null &&
-                !this.trip.getActivity().getActivityList().isEmpty()) {
-            List<Activity> activityList = new ArrayList<>(this.trip.getActivity().getActivityList());
-            activityList.sort(Comparator.comparing(Activity::getStart_date));
-            Activity startActivity = activityList.stream()
-                    .filter(not(Activity::isCompleted)).findFirst().orElse(null);
-
-            if (startActivity == null) {
-                startActivity = activityList.get(0);
-            }
-
-            startPoint = new GeoPoint(startActivity.getLatitude(), startActivity.getLongitude());
-        }
         mapController.setCenter(startPoint);
     }
 
