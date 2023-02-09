@@ -92,6 +92,8 @@ public class Constants {
     public static final String SELECTED_TRIP_NAME = "tripName";
     public static final String SELECTED_ACTIVITY_ID = "activityId";
     public static final String MOVE_TO_ACTIVITY = "moveToActivity";
+    public static final String ZOOM_TO_ACTIVITY = "zoomToActivity";
+    public static final String ZOOM_TO_END_LOCATION = "zoomToEndLocation";
     public static final String ACTIVITY_TITLE = "activityTitle";
 
     // NOTIFICATIONS

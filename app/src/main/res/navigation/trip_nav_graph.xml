@@ -33,6 +33,14 @@
         <action
             android:id="@+id/action_tripFragment_to_activityNewFragment"
             app:destination="@id/activityNewFragment" />
+        <argument
+            android:name="zoomToActivity"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="zoomToEndLocation"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/activityFragment"

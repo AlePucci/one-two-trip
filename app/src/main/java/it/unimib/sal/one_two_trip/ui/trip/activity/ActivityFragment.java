@@ -233,4 +233,8 @@ public class ActivityFragment extends Fragment implements MenuProvider {
 
         return false;
     }
+
+    public void navigate(Bundle bundle) {
+        Navigation.findNavController(requireView()).navigate(R.id.action_activityFragment_to_tripFragment, bundle);
+    }
 }
