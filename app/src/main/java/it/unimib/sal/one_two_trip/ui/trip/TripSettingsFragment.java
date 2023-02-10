@@ -210,7 +210,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
         if (bitmap != null) {
             this.tripLogo.setImageBitmap(bitmap);
         } else {
-            this.tripLogo.setImageBitmap(BitmapFactory.decodeResource(getResources(),
+            this.tripLogo.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(),
                     R.drawable.default_trip_image));
         }
         this.remoteStorage.tripLogoExists(tripId);
@@ -228,6 +228,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
 
+                        this.trip = null;
+
                         for (Trip mTrip : trips) {
                             if (mTrip.getId().equals(tripId)) {
                                 this.trip = mTrip;
@@ -235,7 +237,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                             }
                         }
 
-                        if (this.trip == null) {
+                        if (this.trip == null || !this.trip.isParticipating() || this.trip.isDeleted()) {
+                            requireActivity().finish();
                             return;
                         }
 
@@ -333,7 +336,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
             Bitmap bitmap = BitmapFactory.decodeFile(this.imagePath);
             if (bitmap == null) {
                 this.tripLogo.setImageBitmap(
-                        BitmapFactory.decodeResource(getResources(), R.drawable.default_trip_image));
+                        BitmapFactory.decodeResource(requireActivity().getResources(),
+                                R.drawable.default_trip_image));
             } else {
                 this.tripLogo.setImageBitmap(bitmap);
             }
@@ -382,7 +386,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                 Bitmap bitmap = BitmapFactory.decodeFile(this.imagePath);
                 if (bitmap == null) {
                     this.tripLogo.setImageBitmap(
-                            BitmapFactory.decodeResource(getResources(),
+                            BitmapFactory.decodeResource(requireActivity().getResources(),
                                     R.drawable.default_trip_image));
                 } else {
                     this.tripLogo.setImageBitmap(bitmap);

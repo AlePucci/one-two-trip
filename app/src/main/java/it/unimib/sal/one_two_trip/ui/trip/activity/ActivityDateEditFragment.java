@@ -1,15 +1,16 @@
 package it.unimib.sal.one_two_trip.ui.trip.activity;
 
+import static it.unimib.sal.one_two_trip.util.Constants.ENDDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.STARTDATE;
 
 import android.app.Application;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,10 +34,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -155,7 +156,7 @@ public class ActivityDateEditFragment extends Fragment {
 
             if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                 if (dateb2.getText().toString().trim().isEmpty()) {
-                    date2 = activity.getEnd_date();
+                    date2 = this.activity.getEnd_date();
                 } else {
                     Date temp2 = df.parse(dateb2.getText().toString().trim(),
                             new ParsePosition(0));
@@ -185,27 +186,24 @@ public class ActivityDateEditFragment extends Fragment {
                     return;
                 }
 
-                if (date1 != this.activity.getStart_date()){
+                if (date1 != this.activity.getStart_date()) {
                     this.activity.setStart_date(date1);
-                    map.put("start_date", date1);
-
+                    map.put(STARTDATE, date1);
                 }
 
-                if ( date2 != this.activity.getEnd_date()) {
+                if (date2 != this.activity.getEnd_date()) {
                     this.activity.setEnd_date(date2);
-                    map.put("end_date", date2);
+                    map.put(ENDDATE, date2);
                 }
             } else if (date1 != activity.getStart_date()) {
                 this.activity.setStart_date(date1);
-                map.put("start_date", date1);
+                map.put(STARTDATE, date1);
             }
 
             if (!map.isEmpty()) {
-                Log.d("ActivityDateEditFrag", "map: " + map);
                 this.viewModel.updateActivity(map, tripId, activityId);
                 Utility.onActivityCreate(this.trip, this.activity, this.application);
             }
-            Log.d("ActivityDateEditFrag", "map: " + map);
 
             Navigation.findNavController(view1).navigate(
                     R.id.action_activityDateEditFragment_to_activityDateFragment);
@@ -225,6 +223,8 @@ public class ActivityDateEditFragment extends Fragment {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
 
+                        this.trip = null;
+
                         for (Trip mTrip : trips) {
                             if (mTrip.getId().equals(tripId)) {
                                 this.trip = mTrip;
@@ -232,11 +232,17 @@ public class ActivityDateEditFragment extends Fragment {
                             }
                         }
 
-                        if (this.trip == null || this.trip.getActivity() == null
+                        if (this.trip == null || !this.trip.isParticipating() || this.trip.isDeleted()) {
+                            requireActivity().finish();
+                            return;
+                        }
+
+                        if (this.trip.getActivity() == null
                                 || this.trip.getActivity().getActivityList() == null) {
                             return;
                         }
 
+                        this.activity = null;
 
                         for (Activity mActivity : this.trip.getActivity().getActivityList()) {
                             if (mActivity.getId().equals(activityId)) {
@@ -245,12 +251,15 @@ public class ActivityDateEditFragment extends Fragment {
                             }
                         }
 
-                        if (this.activity == null) return;
+                        if (this.activity == null) {
+                            requireActivity().finish();
+                            return;
+                        }
 
-                        dateb1.setHint(df.format(activity.getStart_date()));
+                        dateb1.setHint(df.format(this.activity.getStart_date()));
 
                         if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
-                            dateb2.setHint(df.format(activity.getEnd_date()));
+                            dateb2.setHint(df.format(this.activity.getEnd_date()));
                             dateb2.setVisibility(View.VISIBLE);
                             arrow.setVisibility(View.VISIBLE);
                         } else {

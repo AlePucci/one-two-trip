@@ -50,6 +50,16 @@ public class PhotoWorker extends Worker implements PhotoCallback {
         this.photoRemoteDataSource.setPhotoCallback(this);
     }
 
+    /**
+     * Internal method used to write some text on a bitmap.
+     *
+     * @param bmp        the bitmap to write on
+     * @param text       the text to write
+     * @param textSize   the text size
+     * @param textItalic true if the text should be italic, false otherwise
+     * @param x          the x coordinate of the text
+     * @param y          the y coordinate of the text
+     */
     private void drawTextOnBitmap(Bitmap bmp, String text, float textSize, boolean textItalic,
                                   float x, float y) {
         Canvas canvas = new Canvas(bmp);
@@ -76,6 +86,13 @@ public class PhotoWorker extends Worker implements PhotoCallback {
         canvas.drawText(text, x, y, paintText);
     }
 
+    /**
+     * Internal method used to write the app logo on a bitmap.
+     * Has the correct size and position.
+     *
+     * @param bmp  the bitmap to write on
+     * @param text the text to write
+     */
     private void drawLogoOnBitmap(@NonNull Bitmap bmp, String text) {
         float textSize = (float) (bmp.getWidth() * 0.04);
         float x = (float) (0.7 * bmp.getWidth());
@@ -83,6 +100,13 @@ public class PhotoWorker extends Worker implements PhotoCallback {
         this.drawTextOnBitmap(bmp, text, textSize, true, x, y);
     }
 
+    /**
+     * Internal method used to write the location on a bitmap.
+     * Has the correct size and position.
+     *
+     * @param bmp  the bitmap to write on
+     * @param text the text to write
+     */
     private void drawLocationOnBitmap(@NonNull Bitmap bmp, String text) {
         float textSize = (float) (bmp.getWidth() * 0.05);
         float x = (float) (0.1 * bmp.getWidth());
@@ -90,6 +114,12 @@ public class PhotoWorker extends Worker implements PhotoCallback {
         this.drawTextOnBitmap(bmp, text, textSize, false, x, y);
     }
 
+    /**
+     * Internal method used to get local image URI.
+     *
+     * @param inImage the bitmap to get the URI from
+     * @return the URI of the image
+     */
     private Uri getImageUri(Bitmap inImage) {
         if (inImage == null) return null;
 
@@ -105,6 +135,13 @@ public class PhotoWorker extends Worker implements PhotoCallback {
         return Uri.parse(path);
     }
 
+    /**
+     * Method used to generate a shareable image.
+     *
+     * @param location    the location of the image
+     * @param isCompleted true if the trip is completed, false otherwise
+     * @return true if the image is generated, false otherwise
+     */
     @NonNull
     private Boolean generateSharePhoto(String location, Boolean isCompleted) {
         // PRELIMINARY CHECKS

@@ -22,8 +22,6 @@ public abstract class BaseTripsLocalDataSource {
 
     public abstract void insertTrips(List<Trip> tripList);
 
-    public abstract void insertTrip(Trip trip);
-
     public abstract void deleteTrip(Trip trip);
 
     public abstract void deleteAllTrips();

@@ -18,8 +18,8 @@ import it.unimib.sal.one_two_trip.data.source.user.BaseUserAuthenticationRemoteD
 import it.unimib.sal.one_two_trip.data.source.user.BaseUserDataRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.user.UserAuthenticationRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.user.UserDataRemoteDataSource;
-import it.unimib.sal.one_two_trip.service.GeocodingApiService;
-import it.unimib.sal.one_two_trip.service.PictureApiService;
+import it.unimib.sal.one_two_trip.data.service.GeocodingApiService;
+import it.unimib.sal.one_two_trip.data.service.PictureApiService;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -91,18 +91,10 @@ public class ServiceLocator {
         BaseTripsRemoteDataSource tripsRemoteDataSource;
         BaseTripsLocalDataSource tripsLocalDataSource;
 
-        IUserRepository userRepository = getUserRepository(application);
-        String idToken;
-        if (userRepository.getLoggedUser() != null) {
-            idToken = userRepository.getLoggedUser().getId();
-        } else {
-            return null;
-        }
-
         SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
         DataEncryptionUtil dataEncryptionUtil = new DataEncryptionUtil(application);
 
-        tripsRemoteDataSource = new TripsRemoteDataSource(idToken);
+        tripsRemoteDataSource = new TripsRemoteDataSource();
         tripsLocalDataSource = new TripsLocalDataSource(getTripsDAO(application),
                 sharedPreferencesUtil, dataEncryptionUtil);
 

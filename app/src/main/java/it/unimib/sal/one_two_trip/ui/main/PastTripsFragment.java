@@ -223,7 +223,10 @@ public class PastTripsFragment extends Fragment {
 
                         // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
                         if (fetchedTrips == null || fetchedTrips.isEmpty()) {
+                            int previousSize = this.pastTrips.size() + 1;
                             this.pastTrips.clear();
+                            this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
+                                    previousSize);
                             noTripsText.setText(R.string.no_trips_added);
                             noTripsText.setVisibility(View.VISIBLE);
                             noTripsImage.setVisibility(View.VISIBLE);
@@ -235,21 +238,25 @@ public class PastTripsFragment extends Fragment {
                             pastTrips.removeIf(trip -> trip != null && !trip.isCompleted());
 
                             // IF THERE ARE NO PAST TRIPS, SHOW THE NO PAST TRIPS IMAGE TEXT
+                            int previousSize = this.pastTrips.size() + 1;
                             this.pastTrips.clear();
                             if (pastTrips.isEmpty()) {
+                                this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
+                                        previousSize);
                                 noTripsText.setText(R.string.no_past_trips);
                                 noTripsText.setVisibility(View.VISIBLE);
                                 noTripsImage.setVisibility(View.VISIBLE);
+
                             } else {
                                 noTripsText.setVisibility(View.GONE);
                                 noTripsImage.setVisibility(View.GONE);
 
                                 pastTrips.sort(Comparator.comparing(Trip::getStart_date).reversed());
                                 this.pastTrips.addAll(pastTrips);
+                                this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
+                                        previousSize);
                             }
                         }
-                        this.tripsRecyclerViewAdapter.notifyDataSetChanged();
-
                     } else {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)

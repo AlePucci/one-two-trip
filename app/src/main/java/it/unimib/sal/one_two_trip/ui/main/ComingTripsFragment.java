@@ -12,7 +12,6 @@ import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -224,15 +223,19 @@ public class ComingTripsFragment extends Fragment {
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> fetchedTrips = ((Result.TripSuccess) result).getData().getTripList();
-                        Log.d(TAG, "onViewCreated: " + fetchedTrips);
+
                         // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
                         if (fetchedTrips == null || fetchedTrips.isEmpty()) {
+                            int previousSize = this.comingTrips.size() + 1;
                             this.comingTrips.clear();
+                            this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
+                                    previousSize);
                             noTripsText.setText(R.string.no_trips_added);
                             noTripsText.setVisibility(View.VISIBLE);
                             noTripsImage.setVisibility(View.VISIBLE);
                         } else {
                             List<Trip> comingTrips = new ArrayList<>(fetchedTrips);
+
                             // FILTERS THE TRIPS THAT ARE NOT COMPLETED (COMING TRIPS)
                             comingTrips.removeIf(trip -> trip != null && trip.isCompleted());
 
@@ -256,23 +259,25 @@ public class ComingTripsFragment extends Fragment {
 
 
                             // IF THERE ARE NO COMING TRIPS, SHOW THE NO COMING TRIPS IMAGE TEXT
+                            int previousSize = this.comingTrips.size() + 1;
                             this.comingTrips.clear();
                             if (comingTrips.isEmpty()) {
-                                noTripsText.setText(R.string.no_past_trips);
+                                this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
+                                        previousSize);
+                                noTripsText.setText(R.string.no_coming_trips);
                                 noTripsText.setVisibility(View.VISIBLE);
                                 noTripsImage.setVisibility(View.VISIBLE);
-
                             } else {
                                 noTripsText.setVisibility(View.GONE);
                                 noTripsImage.setVisibility(View.GONE);
 
                                 comingTrips.sort(Comparator.comparing(Trip::getStart_date));
-                                this.comingTrips.addAll(comingTrips);
 
+                                this.comingTrips.addAll(comingTrips);
+                                this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
+                                        previousSize);
                             }
                         }
-                        this.tripsRecyclerViewAdapter.notifyDataSetChanged();
-
                     } else {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)

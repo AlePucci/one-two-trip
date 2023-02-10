@@ -1,6 +1,12 @@
 package it.unimib.sal.one_two_trip.ui.trip.activity;
 
+import static it.unimib.sal.one_two_trip.util.Constants.ENDLATITUDE;
+import static it.unimib.sal.one_two_trip.util.Constants.ENDLOCATION;
+import static it.unimib.sal.one_two_trip.util.Constants.ENDLONGITUDE;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.LATITUDE;
+import static it.unimib.sal.one_two_trip.util.Constants.LOCATION;
+import static it.unimib.sal.one_two_trip.util.Constants.LONGITUDE;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
@@ -27,17 +33,17 @@ import java.util.HashMap;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
-import it.unimib.sal.one_two_trip.util.geocoding.GeocodingUtility;
-import it.unimib.sal.one_two_trip.util.geocoding.GeocodingUtilityCallback;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
+import it.unimib.sal.one_two_trip.util.geocoding.GeocodingUtility;
+import it.unimib.sal.one_two_trip.util.geocoding.GeocodingUtilityCallback;
 
 /**
  * Fragment that enables the user to edit the location(s) of an activity.
@@ -108,21 +114,19 @@ public class ActivityLocationEditFragment extends Fragment {
                 public void onGeocodingSuccess(String lat, String lon) {
                     activity.setEndLatitude(Double.parseDouble(lat));
                     activity.setEndLongitude(Double.parseDouble(lon));
-                    map.put("end_latitude", Double.parseDouble(lat));
-                    map.put("end_longitude", Double.parseDouble(lon));
+                    map.put(ENDLATITUDE, Double.parseDouble(lat));
+                    map.put(ENDLONGITUDE, Double.parseDouble(lon));
 
                     viewModel.updateActivity(map, tripId, activityId);
                 }
 
                 @Override
                 public void onGeocodingFailure(Exception exception) {
-                    //TODO string must be in strings.xml
-                    Snackbar.make(view, exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
-                    activity.setLatitude(0);
-                    activity.setLongitude(0);
+                    activity.setEndLatitude(0);
+                    activity.setEndLongitude(0);
 
-                    map.put("latitude", 0);
-                    map.put("longitude", 0);
+                    map.put(ENDLATITUDE, 0);
+                    map.put(ENDLONGITUDE, 0);
                     viewModel.updateActivity(map, tripId, activityId);
                 }
             });
@@ -134,23 +138,22 @@ public class ActivityLocationEditFragment extends Fragment {
                 public void onGeocodingSuccess(String lat, String lon) {
                     activity.setLatitude(Double.parseDouble(lat));
                     activity.setLongitude(Double.parseDouble(lon));
-                    map.put("latitude", Double.parseDouble(lat));
-                    map.put("longitude", Double.parseDouble(lon));
+                    map.put(LATITUDE, Double.parseDouble(lat));
+                    map.put(LONGITUDE, Double.parseDouble(lon));
 
                     if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                         endUtility.search(activity.getEnd_location(), 1);
                     } else {
-                       viewModel.updateActivity(map, tripId, activityId);
+                        viewModel.updateActivity(map, tripId, activityId);
                     }
                 }
 
                 @Override
                 public void onGeocodingFailure(Exception exception) {
-                    Snackbar.make(view, exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
-                    map.put("latitude", 0);
-                    map.put("longitude", 0);
                     activity.setLatitude(0);
                     activity.setLongitude(0);
+                    map.put(LATITUDE, 0);
+                    map.put(LONGITUDE, 0);
                     viewModel.updateActivity(map, tripId, activityId);
                 }
             });
@@ -166,7 +169,7 @@ public class ActivityLocationEditFragment extends Fragment {
             boolean valid = false;
 
             if (location1 == null) {
-                loc1.setError(getResources().getString(R.string.activity_field_error));
+                loc1.setError(getString(R.string.activity_field_error));
                 return;
             }
 
@@ -178,13 +181,13 @@ public class ActivityLocationEditFragment extends Fragment {
             if (!this.activity.getLocation().equalsIgnoreCase(location1)) {
                 this.activity.setLocation(location1);
 
-                map.put("location", location1);
+                map.put(LOCATION, location1);
                 valid = true;
             }
 
             if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                 if (location2 == null) {
-                    loc2.setError(getResources().getString(R.string.activity_field_error));
+                    loc2.setError(getString(R.string.activity_field_error));
                     return;
                 }
 
@@ -194,7 +197,7 @@ public class ActivityLocationEditFragment extends Fragment {
 
                 if (!this.activity.getEnd_location().equalsIgnoreCase(location2)) {
                     this.activity.setEnd_location(location2);
-                    map.put("end_location", location2);
+                    map.put(ENDLOCATION, location2);
                     valid = true;
                 }
             }
@@ -219,6 +222,8 @@ public class ActivityLocationEditFragment extends Fragment {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
 
+                        this.trip = null;
+
                         for (Trip mTrip : trips) {
                             if (mTrip.getId().equals(tripId)) {
                                 this.trip = mTrip;
@@ -226,10 +231,17 @@ public class ActivityLocationEditFragment extends Fragment {
                             }
                         }
 
-                        if (this.trip == null || this.trip.getActivity() == null
+                        if (this.trip == null || !this.trip.isParticipating() || this.trip.isDeleted()) {
+                            requireActivity().finish();
+                            return;
+                        }
+
+                        if (this.trip.getActivity() == null
                                 || this.trip.getActivity().getActivityList() == null) {
                             return;
                         }
+
+                        this.activity = null;
 
                         for (Activity mActivity : this.trip.getActivity().getActivityList()) {
                             if (mActivity.getId().equals(activityId)) {
@@ -238,7 +250,10 @@ public class ActivityLocationEditFragment extends Fragment {
                             }
                         }
 
-                        if (this.activity == null) return;
+                        if (this.activity == null) {
+                            requireActivity().finish();
+                            return;
+                        }
 
                         String location1 = this.activity.getLocation();
                         loc1.setHint(location1);

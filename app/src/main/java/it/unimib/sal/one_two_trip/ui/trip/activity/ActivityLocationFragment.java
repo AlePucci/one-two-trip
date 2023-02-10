@@ -25,16 +25,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -154,10 +153,17 @@ public class ActivityLocationFragment extends Fragment {
                             }
                         }
 
-                        if (trip == null || trip.getActivity() == null
+                        if (trip == null || !trip.isParticipating() || trip.isDeleted()) {
+                            requireActivity().finish();
+                            return;
+                        }
+
+                        if (trip.getActivity() == null
                                 || trip.getActivity().getActivityList() == null) {
                             return;
                         }
+
+                        this.activity = null;
 
                         for (Activity mActivity : trip.getActivity().getActivityList()) {
                             if (mActivity.getId().equals(activityId)) {
@@ -166,7 +172,10 @@ public class ActivityLocationFragment extends Fragment {
                             }
                         }
 
-                        if (this.activity == null) return;
+                        if (this.activity == null) {
+                            requireActivity().finish();
+                            return;
+                        }
 
                         TextView loc1 = view.findViewById(R.id.activity_where1);
                         loc1.setText(this.activity.getLocation());
@@ -175,7 +184,7 @@ public class ActivityLocationFragment extends Fragment {
                         ImageView arrow = view.findViewById(R.id.activity_where_arrow);
 
                         if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
-                            loc2.setText(activity.getEnd_location());
+                            loc2.setText(this.activity.getEnd_location());
                             loc2.setVisibility(View.VISIBLE);
                             locButton2.setVisibility(View.VISIBLE);
                             navButton2.setVisibility(View.VISIBLE);

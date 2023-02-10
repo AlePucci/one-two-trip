@@ -149,7 +149,6 @@ public class SignupFragment extends Fragment {
         if (isNameOk() && isEmailOk() && isPasswordOk()) {
             if (password.equals(confirm_password)) {
                 if (!this.userViewModel.isAuthenticationError()) {
-                    Log.d("AAAAAAA", "NO ERROR: " + email + " " + password);
                     String finalEmail = email;
                     String finalPassword = password;
                     this.userViewModel.getUserMutableLiveData(email, password, name, surname).observe(

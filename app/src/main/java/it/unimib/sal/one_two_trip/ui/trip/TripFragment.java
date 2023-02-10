@@ -13,7 +13,6 @@ import static it.unimib.sal.one_two_trip.util.Constants.ZOOM_TO_END_LOCATION;
 import static it.unimib.sal.one_two_trip.util.Utility.not;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.Application;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -23,7 +22,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.Log;
-import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -75,7 +73,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.TripRecyclerViewAdapter;
@@ -352,13 +349,13 @@ public class TripFragment extends Fragment implements MenuProvider {
                                     return;
                                 }
 
-                                if (date1 != activity.getStart_date()){
+                                if (date1 != activity.getStart_date()) {
                                     activity.setStart_date(date1);
                                     map.put("start_date", date1);
 
                                 }
 
-                                if ( date2 != activity.getEnd_date()) {
+                                if (date2 != activity.getEnd_date()) {
                                     activity.setEnd_date(date2);
                                     map.put("end_date", date2);
                                 }
@@ -394,6 +391,8 @@ public class TripFragment extends Fragment implements MenuProvider {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
 
+                        this.trip = null;
+
                         for (Trip trip : trips) {
                             if (trip.getId().equals(tripId)) {
                                 this.trip = trip;
@@ -401,10 +400,9 @@ public class TripFragment extends Fragment implements MenuProvider {
                             }
                         }
 
-                        if(trip == null) return;
-
-                        if (!this.trip.isParticipating()) {
+                        if (this.trip == null || !this.trip.isParticipating() || this.trip.isDeleted()) {
                             requireActivity().finish();
+                            return;
                         }
 
                         if (this.trip.getActivity() != null
@@ -412,10 +410,10 @@ public class TripFragment extends Fragment implements MenuProvider {
                                 && !this.trip.getActivity().getActivityList().isEmpty()) {
                             List<Activity> activityList = this.trip.getActivity().getActivityList();
                             activityList.sort(Comparator.comparing(Activity::getStart_date));
-                            adapter.addData(activityList);
+                            this.adapter.addData(activityList);
                         }
 
-                        toolbar.setTitle(trip.getTitle());
+                        toolbar.setTitle(this.trip.getTitle());
                         progressBar.setVisibility(View.GONE);
 
                         Log.d("AAA", "observe");
@@ -472,30 +470,30 @@ public class TripFragment extends Fragment implements MenuProvider {
 
         //Move to location
         IMapController mapController = this.mapView.getController();
-        mapController.setZoom(9.5);
+        mapController.setZoom(12.5);
 
         GeoPoint startPoint = new GeoPoint(0.0, 0.0);
 
         String selectedId = null;
         boolean endSelected = false;
 
-        if(getArguments() != null && getArguments().getBoolean(ZOOM_TO_ACTIVITY)) {
+        if (getArguments() != null && getArguments().getBoolean(ZOOM_TO_ACTIVITY)) {
             getArguments().remove(ZOOM_TO_ACTIVITY);
 
             selectedId = getArguments().getString(SELECTED_ACTIVITY_ID);
 
             Activity activity = null;
-            for(Activity a : trip.getActivity().getActivityList()) {
-                if(a.getId().equals(selectedId)) {
+            for (Activity a : trip.getActivity().getActivityList()) {
+                if (a.getId().equals(selectedId)) {
                     activity = a;
                     break;
                 }
             }
 
-            if(activity != null) {
+            if (activity != null) {
                 endSelected = getArguments().getBoolean(ZOOM_TO_END_LOCATION);
 
-                if(endSelected) {
+                if (endSelected) {
                     startPoint = new GeoPoint(activity.getEndLatitude(), activity.getEndLongitude());
                 } else {
                     startPoint = new GeoPoint(activity.getLatitude(), activity.getLongitude());
@@ -539,7 +537,7 @@ public class TripFragment extends Fragment implements MenuProvider {
                 marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                 markers.add(marker);
 
-                if(a.getId().equals(selectedId) && !endSelected) {
+                if (a.getId().equals(selectedId) && !endSelected) {
                     marker.showInfoWindow();
                 }
 
@@ -554,7 +552,7 @@ public class TripFragment extends Fragment implements MenuProvider {
                     endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                     markers.add(endMarker);
 
-                    if(a.getId().equals(selectedId) && endSelected) {
+                    if (a.getId().equals(selectedId) && endSelected) {
                         endMarker.showInfoWindow();
                     }
                 }

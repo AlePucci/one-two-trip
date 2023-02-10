@@ -49,6 +49,9 @@ public class Trip {
     @ColumnInfo(name = "isParticipating")
     private boolean isParticipating;
 
+    @ColumnInfo(name = "isDeleted")
+    private boolean isDeleted;
+
     public Trip() {
         tripOwner = "";
         title = "";
@@ -58,12 +61,13 @@ public class Trip {
         completed = false;
         id = "";
         isParticipating = false;
+        isDeleted = false;
     }
 
     @Ignore
     public Trip(@NonNull String id, String tripOwner, String title, String description,
                 ActivityListHolder activity, PersonListHolder participant, boolean completed,
-                boolean isParticipating) {
+                boolean isParticipating, boolean isDeleted) {
         this.id = id;
         this.tripOwner = tripOwner;
         this.title = title;
@@ -72,6 +76,7 @@ public class Trip {
         this.participant = participant;
         this.completed = completed;
         this.isParticipating = isParticipating;
+        this.isDeleted = isDeleted;
 
         this.checkStartDate();
     }
@@ -182,17 +187,30 @@ public class Trip {
         this.isParticipating = isParticipating;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.isDeleted = deleted;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trip trip = (Trip) o;
-        return completed == trip.completed && start_date == trip.start_date && isParticipating == trip.isParticipating && id.equals(trip.id) && Objects.equals(tripOwner, trip.tripOwner) && Objects.equals(title, trip.title) && Objects.equals(description, trip.description) && Objects.equals(activity, trip.activity) && Objects.equals(participant, trip.participant);
+        return completed == trip.completed && start_date == trip.start_date
+                && isParticipating == trip.isParticipating && isDeleted == trip.isDeleted
+                && id.equals(trip.id) && Objects.equals(tripOwner, trip.tripOwner)
+                && Objects.equals(title, trip.title) && Objects.equals(description, trip.description)
+                && Objects.equals(activity, trip.activity) && Objects.equals(participant, trip.participant);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tripOwner, title, description, activity, participant, completed, start_date, isParticipating);
+        return Objects.hash(id, tripOwner, title, description, activity, participant, completed,
+                start_date, isParticipating, isDeleted);
     }
 
     @NonNull

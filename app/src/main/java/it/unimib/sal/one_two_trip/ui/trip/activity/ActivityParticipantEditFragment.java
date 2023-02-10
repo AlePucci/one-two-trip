@@ -1,13 +1,14 @@
 package it.unimib.sal.one_two_trip.ui.trip.activity;
 
+import static it.unimib.sal.one_two_trip.util.Constants.EVERYONEPARTICIPATE;
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_USER_COLLECTION;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.PARTICIPANT;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,8 +105,6 @@ public class ActivityParticipantEditFragment extends Fragment {
         MaterialButton confirm = view.findViewById(R.id.activity_participant_confirm);
 
         confirm.setOnClickListener(view1 -> {
-            Log.d("personList", personList.toString());
-            Log.d("participantList", activity.getParticipant().getPersonList().toString());
             List<Person> newParticipants = new ArrayList<>(this.personList);
             newParticipants.removeAll(this.activity.getParticipant().getPersonList());
 
@@ -119,23 +118,21 @@ public class ActivityParticipantEditFragment extends Fragment {
                         == this.trip.getParticipant().getPersonList().size());
                 this.viewModel.updateActivity(new HashMap<String, Object>() {
                     {
-                        put("everyoneParticipate", activity.isEveryoneParticipate());
+                        put(EVERYONEPARTICIPATE, activity.isEveryoneParticipate());
                     }
                 }, tripId, activityId);
             }
 
             HashMap<String, Object> map = new HashMap<>();
-            Log.d("newParticipants", newParticipants.toString());
-            Log.d("removedParticipants", removedParticipants.toString());
             for (Person person : newParticipants) {
                 DocumentReference ds = FirebaseFirestore.getInstance().collection(FIREBASE_USER_COLLECTION).document(person.getId());
-                map.put("participant", FieldValue.arrayUnion(ds));
+                map.put(PARTICIPANT, FieldValue.arrayUnion(ds));
                 this.viewModel.updateActivity(map, tripId, activityId);
             }
 
             for (Person person : removedParticipants) {
                 DocumentReference ds = FirebaseFirestore.getInstance().collection(FIREBASE_USER_COLLECTION).document(person.getId());
-                map.put("participant", FieldValue.arrayRemove(ds));
+                map.put(PARTICIPANT, FieldValue.arrayRemove(ds));
                 this.viewModel.updateActivity(map, tripId, activityId);
             }
 
@@ -156,6 +153,8 @@ public class ActivityParticipantEditFragment extends Fragment {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
 
+                        this.trip = null;
+
                         for (Trip mTrip : trips) {
                             if (mTrip.getId().equals(tripId)) {
                                 this.trip = mTrip;
@@ -163,10 +162,17 @@ public class ActivityParticipantEditFragment extends Fragment {
                             }
                         }
 
-                        if (this.trip == null || this.trip.getActivity() == null
+                        if (this.trip == null || !this.trip.isParticipating() || this.trip.isDeleted()) {
+                            requireActivity().finish();
+                            return;
+                        }
+
+                        if (this.trip.getActivity() == null
                                 || this.trip.getActivity().getActivityList() == null) {
                             return;
                         }
+
+                        this.activity = null;
 
                         for (Activity mActivity : this.trip.getActivity().getActivityList()) {
                             if (mActivity.getId().equals(activityId)) {
@@ -175,9 +181,15 @@ public class ActivityParticipantEditFragment extends Fragment {
                             }
                         }
 
-                        if (this.activity == null || this.activity.getParticipant() == null
-                                || this.activity.getParticipant().getPersonList() == null)
+                        if (this.activity == null) {
+                            requireActivity().finish();
                             return;
+                        }
+
+                        if (this.activity.getParticipant() == null
+                                || this.activity.getParticipant().getPersonList() == null) {
+                            return;
+                        }
 
                         this.personList = new ArrayList<>(this.activity.getParticipant().getPersonList());
 

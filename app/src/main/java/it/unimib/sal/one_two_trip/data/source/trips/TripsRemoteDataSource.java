@@ -1,13 +1,36 @@
 package it.unimib.sal.one_two_trip.data.source.trips;
 
+import static it.unimib.sal.one_two_trip.util.Constants.ACTIVITY;
+import static it.unimib.sal.one_two_trip.util.Constants.COMPLETED;
+import static it.unimib.sal.one_two_trip.util.Constants.DELETED;
+import static it.unimib.sal.one_two_trip.util.Constants.DESCRIPTION;
+import static it.unimib.sal.one_two_trip.util.Constants.ENDDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.ENDLATITUDE;
+import static it.unimib.sal.one_two_trip.util.Constants.ENDLOCATION;
+import static it.unimib.sal.one_two_trip.util.Constants.ENDLONGITUDE;
+import static it.unimib.sal.one_two_trip.util.Constants.EVERYONEPARTICIPATE;
+import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_QUERY_PARTICIPANT;
+import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_QUERY_REMOVED;
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_TRIPS_COLLECTION;
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_USER_COLLECTION;
+import static it.unimib.sal.one_two_trip.util.Constants.ID;
+import static it.unimib.sal.one_two_trip.util.Constants.LATITUDE;
+import static it.unimib.sal.one_two_trip.util.Constants.LOCATION;
+import static it.unimib.sal.one_two_trip.util.Constants.LONGITUDE;
+import static it.unimib.sal.one_two_trip.util.Constants.PARTICIPANT;
+import static it.unimib.sal.one_two_trip.util.Constants.REFERENCE;
+import static it.unimib.sal.one_two_trip.util.Constants.REMOVED;
+import static it.unimib.sal.one_two_trip.util.Constants.STARTDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.STATUS_OK;
-
-import android.util.Log;
+import static it.unimib.sal.one_two_trip.util.Constants.TITLE;
+import static it.unimib.sal.one_two_trip.util.Constants.TRIPID;
+import static it.unimib.sal.one_two_trip.util.Constants.TRIPOWNER;
+import static it.unimib.sal.one_two_trip.util.Constants.TYPE;
+import static it.unimib.sal.one_two_trip.util.Constants.UNEXPECTED_ERROR;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,8 +45,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
@@ -37,24 +60,25 @@ import it.unimib.sal.one_two_trip.data.database.model.response.TripsApiResponse;
 public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
 
     private final CollectionReference tripsCollectionReference;
+    private final CollectionReference usersCollectionReference;
 
-    public TripsRemoteDataSource(String idToken) {
+    public TripsRemoteDataSource() {
         super();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         this.tripsCollectionReference = db.collection(FIREBASE_TRIPS_COLLECTION);
+        this.usersCollectionReference = db.collection(FIREBASE_USER_COLLECTION);
 
-//        this.addTripListener();
+        this.addTripListener();
     }
 
     /**
      * Add a listener to all the trips the users has joined in, using Firebase Cloud Firestore.
      */
     private void addTripListener() {
-        Log.d("TripsRemoteDataSource", "addTripListener called");
-        final CompletableFuture<Boolean>[] myFuture = new CompletableFuture[]{new CompletableFuture<>()};
-
         if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
         String idToken = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        final String tripsQuery = FIREBASE_QUERY_PARTICIPANT + idToken;
 
         com.google.firebase.firestore.EventListener<QuerySnapshot> tripListener = (value, error) -> {
             if (error == null && value != null) {
@@ -63,327 +87,261 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
                 if (value.isEmpty()) {
                     tripCallback.onSuccessFromRemote(new TripsApiResponse(STATUS_OK,
                             tripList.size(), tripList), System.currentTimeMillis());
-                    return;
-                }
+                } else {
+                    for (QueryDocumentSnapshot tripSnapshot : value) {
+                        String tripId = Objects.requireNonNull(tripSnapshot.get(ID, String.class));
+                        CollectionReference activityCollection = this.tripsCollectionReference
+                                .document(tripId).collection(ACTIVITY);
 
-                for (QueryDocumentSnapshot ds : value) {
-                    Trip trip = new Trip();
-                    trip.setId(ds.get("id").toString());
-                    trip.setTripOwner(ds.get("tripOwner").toString());
-                    trip.setCompleted((boolean) ds.get("completed"));
-                    trip.setTitle(ds.get("title").toString());
-                    trip.setDescription(ds.get("description").toString());
-                    trip.setParticipating(!(boolean) ds.get("participant." + idToken + ".removed"));
-                    CollectionReference a = FirebaseFirestore.getInstance().collection(FIREBASE_TRIPS_COLLECTION)
-                            .document(trip.getId()).collection("activity");
-                    a.addSnapshotListener((value1, error1) -> {
-
-                        if (error1 == null) {
-                            getTrips();
-                        }
-                    });
-                    a.get().addOnCompleteListener(
-                            task -> {
-                                if (task.isSuccessful()) {
-                                    List<DocumentSnapshot> docs = task.getResult().getDocuments();
-                                    if (myFuture[0] != null) {
-                                        myFuture[0].cancel(true);
-                                        myFuture[0] = null;
-                                    }
-//                                    myFuture[0] = queryDatabaseAsync(trip, ds);
-
-                                    myFuture[0].thenAccept(isSuccess -> {
-                                        for (DocumentSnapshot doc : docs) {
-                                            Activity activity = new Activity();
-                                            activity.setId(doc.get("id").toString());
-                                            activity.setCompleted((boolean) doc.get("completed"));
-                                            activity.setTitle(doc.get("title").toString());
-                                            activity.setDescription(doc.get("description").toString());
-                                            activity.setEveryoneParticipate((boolean) doc.get("everyoneParticipate"));
-                                            activity.setLatitude(Double.parseDouble(doc.get("latitude").toString()));
-                                            activity.setEndLatitude(Double.parseDouble(doc.get("endLatitude").toString()));
-                                            activity.setLongitude(Double.parseDouble(doc.get("longitude").toString()));
-                                            activity.setEndLongitude(Double.parseDouble(doc.get("endLongitude").toString()));
-                                            activity.setStart_date((long) doc.get("start_date"));
-                                            activity.setEnd_date((long) doc.get("end_date"));
-                                            activity.setLocation(doc.get("location").toString());
-                                            activity.setEnd_location(doc.get("endLocation").toString());
-                                            activity.setTrip_id(doc.get("trip_id").toString());
-                                            activity.setType(doc.get("type").toString());
-
-                                            // PARTECIPANTI ATTIVITA'
-                                            List<Person> personList = new ArrayList<>();
-                                            for (DocumentReference person : (List<DocumentReference>) doc.get("participant")) {
-                                                for (Person p : trip.getParticipant().getPersonList()) {
-                                                    Log.d("TripsRemoteDataSource", "id: " + person.getId());
-                                                    Log.d("TripsRemoteDataSource", p.getId());
-                                                    Log.d("TripsRemoteDataSource", person.getId());
-                                                    if (p.getId().equals(person.getId())) {
-                                                        personList.add(p);
-                                                    }
-                                                }
-                                            }
-
-                                            activity.getParticipant().setPersonList(personList);
-                                            Log.d("TripsRemoteDataSource", "activity: " + activity.getParticipant().getPersonList());
-
-                                            trip.getActivity().getActivityList().add(activity);
-                                            Log.d("TripsRemoteDataSource", "activity: " + activity);
-                                        }
-                                        tripList.add(trip);
-                                        tripCallback.onSuccessFromRemote(new TripsApiResponse(STATUS_OK,
-                                                tripList.size(), tripList), System.currentTimeMillis());
-
-                                    });
-                                } else {
-                                    tripCallback.onFailureFromRemote(task.getException());
-                                }
-                            }
-                    );
+                        getTrips();
+                        activityCollection.addSnapshotListener((value1, error1) -> getTrips());
+                    }
                 }
             }
         };
-        this.tripsCollectionReference.whereNotEqualTo("participant." + idToken, null).addSnapshotListener(tripListener);
+        this.tripsCollectionReference.whereNotEqualTo(tripsQuery, null).addSnapshotListener(tripListener);
     }
 
     /**
-     * Get all trips from Firebase Realtime Database.
+     * Get all trips from Firebase Cloud Firestore
      */
     @Override
     public void getTrips() {
-        AtomicInteger status = new AtomicInteger(0);
-        Log.d("TripsRemoteDataSource", "getTrips()");
+        AtomicInteger status = new AtomicInteger(-1);
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
-        String idToken = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final String idToken = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        this.tripsCollectionReference.whereNotEqualTo("participant." + idToken, null)
-                .get().addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) {
-                        Log.d("TripsRemoteDataSource", "Error getting documents");
-                        tripCallback.onFailureFromRemote(new Exception(""));
-                    } else {
-                        int size = task.getResult().size();
-             ArrayList<Trip> tripList = new ArrayList<>();
-                        if (size == 0) {
-                            tripCallback.onSuccessFromRemote(null);
-                            return;
-                        }
+        final String tripsQuery = FIREBASE_QUERY_PARTICIPANT + idToken;
+        final String tripParticipantQuery = FIREBASE_QUERY_PARTICIPANT + idToken + FIREBASE_QUERY_REMOVED;
 
-                        for (QueryDocumentSnapshot tripSnapshot : task.getResult()) {
-                            Trip trip = new Trip();
-                            trip.setId(Objects.requireNonNull(tripSnapshot.get("id")).toString());
-                            trip.setTripOwner(Objects.requireNonNull(tripSnapshot.get("tripOwner")).toString());
-                            trip.setCompleted((boolean) tripSnapshot.get("completed"));
-                            trip.setTitle(Objects.requireNonNull(tripSnapshot.get("title")).toString());
-                            trip.setDescription(Objects.requireNonNull(tripSnapshot.get("description")).toString());
-                            trip.setParticipating(!(boolean) tripSnapshot.get("participant." + idToken + ".removed"));
+        OnCompleteListener<QuerySnapshot> tripsDownload = (task -> {
+            if (!task.isSuccessful()) {
+                tripCallback.onFailureFromRemote(new Exception(UNEXPECTED_ERROR));
+            } else {
+                int size = task.getResult().size();
+                ArrayList<Trip> tripList = new ArrayList<>();
 
-                            CollectionReference activityCollection = FirebaseFirestore.getInstance().collection(FIREBASE_TRIPS_COLLECTION)
-                                    .document(trip.getId()).collection("activity");
+                if (size == 0) {
+                    tripCallback.onSuccessFromRemote(new TripsApiResponse(STATUS_OK,
+                            tripList.size(), tripList), System.currentTimeMillis());
+                    return;
+                }
 
-                            activityCollection.get().addOnCompleteListener(
-                                    task1 -> {
-                                        if (task1.isSuccessful()) {
-                                            HashMap<String, HashMap<String, Object>> map = new HashMap<>(((HashMap<String, HashMap<String, Object>>) tripSnapshot.get("participant")));
-                                            ArrayList<Task<DocumentSnapshot>> tripParticipantSnapshot = new ArrayList<>();
+                for (QueryDocumentSnapshot tripSnapshot : task.getResult()) {
+                    Trip trip = new Trip();
 
-                                            for (String key : map.keySet()) {
-                                                DocumentReference ref = (DocumentReference) map.get(key).get("reference");
-                                                Task<DocumentSnapshot> newTask = ref.get();
-                                                tripParticipantSnapshot.add(newTask);
+                    trip.setId(Objects.requireNonNull(tripSnapshot.get(ID, String.class)));
+                    trip.setTripOwner(tripSnapshot.get(TRIPOWNER, String.class));
+                    trip.setCompleted(Boolean.TRUE.equals(tripSnapshot.get(COMPLETED, Boolean.class)));
+                    trip.setTitle(tripSnapshot.get(TITLE, String.class));
+                    trip.setDescription(tripSnapshot.get(DESCRIPTION, String.class));
+                    trip.setParticipating(!Boolean.TRUE.equals(tripSnapshot.get(tripParticipantQuery, Boolean.class)));
+                    trip.setDeleted(Boolean.TRUE.equals(tripSnapshot.get(DELETED, Boolean.class)));
+
+                    CollectionReference activityCollection = this.tripsCollectionReference
+                            .document(trip.getId()).collection(ACTIVITY);
+
+                    activityCollection.get().addOnCompleteListener(
+                            task1 -> {
+                                if (task1.isSuccessful()) {
+                                    // GOT ALL OF THE ACTIVITIES
+                                    Map<String, HashMap<String, Object>> map = new HashMap<>(((HashMap<String, HashMap<String, Object>>) Objects.requireNonNull(tripSnapshot.get(PARTICIPANT))));
+                                    List<Task<DocumentSnapshot>> tripParticipantSnapshot = new ArrayList<>();
+
+                                    for (String key : map.keySet()) {
+                                        if (map.get(key) != null) {
+                                            DocumentReference ref = (DocumentReference) Objects.requireNonNull(map.get(key)).get(REFERENCE);
+                                            Task<DocumentSnapshot> newTask = Objects.requireNonNull(ref).get();
+                                            tripParticipantSnapshot.add(newTask);
+                                        }
+                                    }
+
+                                    List<DocumentSnapshot> activitySnapshotList = task1.getResult().getDocuments();
+
+                                    Tasks.whenAllSuccess(tripParticipantSnapshot).addOnCompleteListener(task2 -> {
+                                        if (task2.isSuccessful()) {
+                                            // GOT ALL OF THE TRIPS PARTICIPANTS
+                                            List<Object> list = task2.getResult();
+                                            for (Object obj : list) {
+                                                DocumentSnapshot doc = (DocumentSnapshot) obj;
+                                                Person person = doc.toObject(Person.class);
+                                                trip.getParticipant().getPersonList().add(person);
                                             }
 
-                                            List<DocumentSnapshot> activitySnapshotList = task1.getResult().getDocuments();
+                                            for (DocumentSnapshot activitySnapshot : activitySnapshotList) {
+                                                Activity activity = new Activity();
+                                                activity.setId(Objects.requireNonNull(activitySnapshot.get(ID, String.class)));
+                                                activity.setCompleted(Boolean.TRUE.equals(activitySnapshot.get(COMPLETED, Boolean.class)));
+                                                activity.setTitle(activitySnapshot.get(TITLE, String.class));
+                                                activity.setDescription(activitySnapshot.get(DESCRIPTION, String.class));
+                                                activity.setEveryoneParticipate(Boolean.TRUE.equals(activitySnapshot.get(EVERYONEPARTICIPATE, Boolean.class)));
+                                                activity.setLatitude(Objects.requireNonNull(activitySnapshot.get(LATITUDE, Double.class)));
+                                                activity.setLongitude(Objects.requireNonNull(activitySnapshot.get(LONGITUDE, Double.class)));
+                                                activity.setEndLatitude(Objects.requireNonNull(activitySnapshot.get(ENDLATITUDE, Double.class)));
+                                                activity.setEndLongitude(Objects.requireNonNull(activitySnapshot.get(ENDLONGITUDE, Double.class)));
+                                                activity.setStart_date(Objects.requireNonNull(activitySnapshot.get(STARTDATE, Long.class)));
+                                                activity.setEnd_date(Objects.requireNonNull(activitySnapshot.get(ENDDATE, Long.class)));
+                                                activity.setLocation(activitySnapshot.get(LOCATION, String.class));
+                                                activity.setEnd_location(activitySnapshot.get(ENDLOCATION, String.class));
+                                                activity.setTrip_id(activitySnapshot.get(TRIPID, String.class));
+                                                activity.setType(activitySnapshot.get(TYPE, String.class));
 
-                                            Tasks.whenAllSuccess(tripParticipantSnapshot).addOnCompleteListener(task2 -> {
-                                                // GOT ALL OF THE TRIPS PARTICIPANTS
-                                                if (task2.isSuccessful()) {
-                                                    List<Object> list = task2.getResult();
-                                                    for (Object obj : list) {
-                                                        DocumentSnapshot doc = (DocumentSnapshot) obj;
-                                                        Person person = doc.toObject(Person.class);
-                                                        trip.getParticipant().getPersonList().add(person);
-                                                    }
+                                                // ACTIVITY PARTICIPANTS
+                                                List<Person> personList = new ArrayList<>();
 
-                                                    for (DocumentSnapshot activitySnapshot : activitySnapshotList) {
-                                                        Activity activity = new Activity();
-                                                        activity.setId(activitySnapshot.get("id").toString());
-                                                        activity.setCompleted((boolean) activitySnapshot.get("completed"));
-                                                        activity.setTitle(activitySnapshot.get("title").toString());
-                                                        activity.setDescription(activitySnapshot.get("description").toString());
-                                                        activity.setEveryoneParticipate((boolean) activitySnapshot.get("everyoneParticipate"));
-                                                        activity.setLatitude(Double.parseDouble(activitySnapshot.get("latitude").toString()));
-                                                        activity.setEndLatitude(Double.parseDouble(activitySnapshot.get("endLatitude").toString()));
-                                                        activity.setLongitude(Double.parseDouble(activitySnapshot.get("longitude").toString()));
-                                                        activity.setEndLongitude(Double.parseDouble(activitySnapshot.get("endLongitude").toString()));
-                                                        activity.setStart_date((long) activitySnapshot.get("start_date"));
-                                                        activity.setEnd_date((long) activitySnapshot.get("end_date"));
-                                                        activity.setLocation(activitySnapshot.get("location").toString());
-                                                        activity.setEnd_location(activitySnapshot.get("endLocation").toString());
-                                                        activity.setTrip_id(activitySnapshot.get("trip_id").toString());
-                                                        activity.setType(activitySnapshot.get("type").toString());
+                                                List<Object> participantList = (List<Object>) activitySnapshot.get(PARTICIPANT);
 
-                                                        // PARTECIPANTI ATTIVITA'
-                                                        List<Person> personList = new ArrayList<>();
-                                                        for (DocumentReference person : (List<DocumentReference>) activitySnapshot.get("participant")) {
-                                                            for (Person p : trip.getParticipant().getPersonList()) {
-                                                                if (p.getId().equals(person.getId())) {
-                                                                    personList.add(p);
-                                                                }
+                                                if (participantList != null) {
+                                                    for (Object object : participantList) {
+                                                        DocumentReference person = (DocumentReference) object;
+                                                        for (Person p : trip.getParticipant().getPersonList()) {
+                                                            if (p != null && p.getId().equals(person.getId())) {
+                                                                personList.add(p);
+                                                                break;
                                                             }
                                                         }
-                                                        activity.getParticipant().setPersonList(personList);
-
-                                                        trip.getActivity().getActivityList().add(activity);
                                                     }
-
-                                                    trip.getActivity().getActivityList().sort(Comparator.comparing(Activity::getStart_date));
-                                                    trip.getParticipant().getPersonList().sort(Comparator.comparing(Person::getName));
-                                                    trip.checkStartDate();
-                                                    tripList.add(trip);
-                                                    Log.d("AAAAAAAAAAAAAAAAAAAAAAAAAAAaa", "saved trip " + trip);
-
-                                                    if (tripList.size() > status.get()) {
-                                                        Log.d("AAAAAAAAAAAAAAAAAAAAAAAAAAAaa", "ciao");
-                                                        tripCallback.onSuccessFromRemote(new TripsApiResponse(STATUS_OK,
-                                                                tripList.size(), tripList), System.currentTimeMillis());
-                                                        status.set(tripList.size());
-                                                    }
-                                                } else {
-                                                    tripCallback.onFailureFromRemote(task1.getException());
+                                                    activity.getParticipant().setPersonList(personList);
                                                 }
 
-                                            });
+                                                trip.getActivity().getActivityList().add(activity);
+                                            }
+
+                                            trip.getActivity().getActivityList().sort(Comparator.comparing(Activity::getStart_date));
+                                            trip.getParticipant().getPersonList().sort(Comparator.comparing(Person::getName));
+                                            trip.checkStartDate();
+                                            tripList.add(trip);
+
+                                            if (tripList.size() >= status.get()) {
+                                                status.set(tripList.size());
+                                                tripCallback.onSuccessFromRemote(new TripsApiResponse(STATUS_OK,
+                                                        tripList.size(), tripList), System.currentTimeMillis());
+                                            }
+                                        } else {
+                                            tripCallback.onFailureFromRemote(task2.getException());
                                         }
                                     });
-                        }
-                    }
-                });
+                                } else {
+                                    tripCallback.onFailureFromRemote(task1.getException());
+                                }
+                            });
+                }
+            }
+        });
+        this.tripsCollectionReference.whereNotEqualTo(tripsQuery, null).get().addOnCompleteListener(tripsDownload);
     }
 
-//    @Nullable
-//    private CompletableFuture<Boolean> queryDatabaseAsync(Trip trip, @NonNull DocumentSnapshot ds) {
-//
-//        CompletableFuture<Boolean> future = new CompletableFuture<>();
-//
-//        // if at least one fails then flag will switch
-//        AtomicBoolean isSuccess = new AtomicBoolean(true);
-//
-//        if (ds.get("participant") == null) return null;
-//
-//        HashMap<String, HashMap<String, Object>> map = new HashMap<>(((HashMap<String, HashMap<String, Object>>) ds.get("participant")));
-//        int n = map.size();
-//        AtomicInteger stack = new AtomicInteger(n);
-//
-//        for (String key : map.keySet()) {
-//            DocumentReference ref = (DocumentReference) map.get(key).get("reference");
-//            ref.get().addOnCompleteListener(task1 -> {
-//                if (!task1.isSuccessful()) {
-//                    tripCallback.onFailureFromRemote(task1.getException());
-//                } else {
-//                    DocumentSnapshot ds1 = task1.getResult();
-//                    Person p = ds1.toObject(Person.class);
-//
-//                    if (p != null) {
-//                        trip.getParticipant().getPersonList().add(p);
-//                    }
-//                    Log.d("Trip", trip.getParticipant().getPersonList().toString() + " " + trip.getTitle());
-//                }
-//
-//                // finish if last
-//                if (stack.decrementAndGet() < 1) {
-//                    future.complete(isSuccess.get());
-//                    Log.d("BBBBBBBBBBBBBBB", "finish FUTURE " + trip.getTitle());
-//                }
-//            });
-//        }
-//
-//
-//        return future;
-//    }
-
     /**
-     * Update a trip in Firebase Realtime Database.
+     * Update a trip in Firebase Cloud Firestore.
+     *
+     * @param trip   map of the trip to update. The key is the field to update and the value is the new value.
+     * @param tripId id of the trip to update
      */
     @Override
     public void updateTrip(@NonNull HashMap<String, Object> trip, @NonNull String tripId) {
         this.tripsCollectionReference.document(tripId).update(trip);
     }
 
+    /**
+     * Update an activity in Firebase Cloud Firestore.
+     *
+     * @param activity   map of the activity to update. The key is the field to update and the value
+     *                   is the new value.
+     * @param tripId     id of the trip in which the activity is contained
+     * @param activityId id of the activity to update
+     */
     @Override
     public void updateActivity(HashMap<String, Object> activity, String tripId, String
             activityId) {
-        this.tripsCollectionReference.document(tripId).collection("activity").document(activityId).update(activity);
-    }
-
-    @Override
-    public void insertActivity(@NonNull Activity activity, Trip trip) {
-        HashMap<String, Object> activityMap = new HashMap<>();
-        activityMap.put("id", activity.getId());
-        activityMap.put("title", activity.getTitle());
-        activityMap.put("description", activity.getDescription());
-        activityMap.put("start_date", activity.getStart_date());
-        activityMap.put("end_date", activity.getEnd_date());
-        activityMap.put("location", activity.getLocation());
-        activityMap.put("endLocation", activity.getEnd_location());
-        activityMap.put("latitude", activity.getLatitude());
-        activityMap.put("endLatitude", activity.getEndLatitude());
-        activityMap.put("longitude", activity.getLongitude());
-        activityMap.put("endLongitude", activity.getEndLongitude());
-        activityMap.put("type", activity.getType());
-        activityMap.put("trip_id", activity.getTrip_id());
-        activityMap.put("everyoneParticipate", activity.isEveryoneParticipate());
-        activityMap.put("completed", activity.isCompleted());
-
-        ArrayList<DocumentReference> drs = new ArrayList<>();
-        for (Person p : activity.getParticipant().getPersonList()) {
-            drs.add(FirebaseFirestore.getInstance().collection(FIREBASE_USER_COLLECTION).document(p.getId()));
-        }
-        activityMap.put("participant", drs);
-
-        this.tripsCollectionReference.document(trip.getId()).collection("activity").document(activity.getId()).set(activityMap);
+        this.tripsCollectionReference.document(tripId).collection(ACTIVITY).document(activityId).update(activity);
     }
 
     /**
-     * Insert a trip in Firebase Realtime Database.
+     * Insert an activity in a trip in Firebase Cloud Firestore.
+     *
+     * @param activity the activity to insert
+     * @param trip     the trip in which the activity will be inserted
+     */
+    @Override
+    public void insertActivity(@NonNull Activity activity, Trip trip) {
+        HashMap<String, Object> activityMap = new HashMap<>();
+        String activityId = activity.getId();
+        activityMap.put(ID, activityId);
+        activityMap.put(TITLE, activity.getTitle());
+        activityMap.put(DESCRIPTION, activity.getDescription());
+        activityMap.put(STARTDATE, activity.getStart_date());
+        activityMap.put(ENDDATE, activity.getEnd_date());
+        activityMap.put(LOCATION, activity.getLocation());
+        activityMap.put(ENDLOCATION, activity.getEnd_location());
+        activityMap.put(LATITUDE, activity.getLatitude());
+        activityMap.put(ENDLATITUDE, activity.getEndLatitude());
+        activityMap.put(LONGITUDE, activity.getLongitude());
+        activityMap.put(ENDLONGITUDE, activity.getEndLongitude());
+        activityMap.put(TYPE, activity.getType());
+        activityMap.put(TRIPID, activity.getTrip_id());
+        activityMap.put(EVERYONEPARTICIPATE, activity.isEveryoneParticipate());
+        activityMap.put(COMPLETED, activity.isCompleted());
+
+        List<DocumentReference> drs = new ArrayList<>();
+        for (Person p : activity.getParticipant().getPersonList()) {
+            drs.add(this.usersCollectionReference.document(p.getId()));
+        }
+        activityMap.put(PARTICIPANT, drs);
+
+        this.tripsCollectionReference.document(trip.getId()).collection(ACTIVITY).document(activityId).set(activityMap);
+    }
+
+    /**
+     * Insert a trip in Firebase Cloud Firestore.
+     *
+     * @param trip the trip to insert
      */
     @Override
     public void insertTrip(@NonNull Trip trip) {
         HashMap<String, Object> tripMap = new HashMap<>();
-        tripMap.put("id", trip.getId());
-        tripMap.put("title", trip.getTitle());
-        tripMap.put("description", trip.getDescription());
-        tripMap.put("start_date", trip.getStart_date());
-        tripMap.put("tripOwner", trip.getTripOwner());
-        tripMap.put("completed", trip.isCompleted());
+        String tripId = trip.getId();
+        tripMap.put(ID, tripId);
+        tripMap.put(TITLE, trip.getTitle());
+        tripMap.put(DESCRIPTION, trip.getDescription());
+        tripMap.put(STARTDATE, trip.getStart_date());
+        tripMap.put(TRIPOWNER, trip.getTripOwner());
+        tripMap.put(COMPLETED, trip.isCompleted());
+        tripMap.put(DELETED, false);
 
-        HashMap<String, HashMap<String, Object>> participantMap = new HashMap<>();
+        Map<String, Map<String, Object>> participantMap = new HashMap<>();
         for (Person p : trip.getParticipant().getPersonList()) {
-            HashMap<String, Object> participant = new HashMap<>();
-            participant.put("reference", FirebaseFirestore.getInstance().collection(FIREBASE_USER_COLLECTION).document(p.getId()));
-            participant.put("removed", false);
-            participantMap.put(p.getId(), participant);
+            if (p != null) {
+                String pId = p.getId();
+                Map<String, Object> participant = new HashMap<>();
+                participant.put(REFERENCE, this.usersCollectionReference.document(pId));
+                participant.put(REMOVED, false);
+                participantMap.put(pId, participant);
+            }
         }
-        tripMap.put("participant", participantMap);
+        tripMap.put(PARTICIPANT, participantMap);
 
-        this.tripsCollectionReference.document(trip.getId()).set(tripMap);
+        this.tripsCollectionReference.document(tripId).set(tripMap);
     }
 
     /**
-     * Delete a trip in Firebase Realtime Database.
+     * Delete a trip in Firebase Cloud Firestore.
+     *
+     * @param trip trip to delete
      */
     @Override
     public void deleteTrip(@NonNull Trip trip) {
-        this.tripsCollectionReference.document(trip.getId()).delete();
-
-        for (Activity activity : trip.getActivity().getActivityList()) {
-            this.tripsCollectionReference.document(trip.getId()).collection("activity").document(activity.getId()).delete();
-        }
+        this.tripsCollectionReference.document(trip.getId()).update(DELETED, true);
     }
 
+    /**
+     * Delete an activity of a trip in Firebase Cloud Firestore.
+     *
+     * @param activity activity to delete
+     * @param trip     trip of the activity
+     */
     @Override
     public void deleteActivity(@NonNull Activity activity, @NonNull Trip trip) {
-        this.tripsCollectionReference.document(trip.getId()).collection("activity").document(activity.getId()).delete();
+        this.tripsCollectionReference.document(trip.getId()).collection(ACTIVITY).document(activity.getId()).delete();
     }
 }

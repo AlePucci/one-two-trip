@@ -105,7 +105,6 @@ public class ActivityNewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         if (getArguments() == null) {
             return;
         }
@@ -127,9 +126,8 @@ public class ActivityNewFragment extends Fragment {
 
             @Override
             public void onGeocodingFailure(Exception exception) {
-                //Snackbar.make(requireView(), exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
-                activity.setLatitude(0);
-                activity.setLongitude(0);
+                activity.setEndLatitude(0);
+                activity.setEndLongitude(0);
                 onNewActivityCreated();
             }
         });
@@ -150,7 +148,6 @@ public class ActivityNewFragment extends Fragment {
 
             @Override
             public void onGeocodingFailure(Exception exception) {
-                //Snackbar.make(requireView(), exception.getMessage() != null ? exception.getMessage() : "Could not locate activity", Snackbar.LENGTH_SHORT).show();
                 activity.setLatitude(0);
                 activity.setLongitude(0);
                 onNewActivityCreated();
@@ -250,11 +247,6 @@ public class ActivityNewFragment extends Fragment {
                 return;
             }
 
-            if (getArguments() == null) {
-                return;
-            }
-
-
             String location = where1.getEditText().getText().toString().trim();
 
             Date parsed = df.parse(when1.getText().toString(), new ParsePosition(0));
@@ -301,16 +293,23 @@ public class ActivityNewFragment extends Fragment {
                 String location2 = where2.getEditText().getText().toString().trim();
 
                 parsed = df.parse(when2.getText().toString(), new ParsePosition(0));
+
                 if (parsed == null) {
                     when2.setError(getString(R.string.unexpected_error));
                     return;
                 } else {
                     where2.setErrorEnabled(false);
                 }
-                date = parsed.getTime();
+
+                long date2 = parsed.getTime();
+
+                if (date > date2) {
+                    when2.setError(getString(R.string.activity_field_error));
+                    return;
+                }
 
                 this.activity.setEnd_location(location2);
-                this.activity.setEnd_date(date);
+                this.activity.setEnd_date(date2);
             } else {
                 this.activity.setType(STATIC_ACTIVITY_TYPE_NAME);
             }
@@ -319,8 +318,6 @@ public class ActivityNewFragment extends Fragment {
                 utility.search(location, 1);
 
                 this.trip.getActivity().getActivityList().add(this.activity);
-
-
             }
         });
 
@@ -335,6 +332,8 @@ public class ActivityNewFragment extends Fragment {
             if (result.isSuccess()) {
                 List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
 
+                this.trip = null;
+
                 for (Trip trip : trips) {
                     if (trip.getId().equals(tripId)) {
                         this.trip = trip;
@@ -342,7 +341,12 @@ public class ActivityNewFragment extends Fragment {
                     }
                 }
 
-                if (this.trip == null || this.trip.getParticipant() == null
+                if (this.trip == null || !this.trip.isParticipating() || this.trip.isDeleted()) {
+                    requireActivity().finish();
+                    return;
+                }
+
+                if (this.trip.getParticipant() == null
                         || this.trip.getParticipant().getPersonList() == null) {
                     return;
                 }
@@ -399,7 +403,5 @@ public class ActivityNewFragment extends Fragment {
         this.viewModel.insertActivity(this.activity, this.trip);
         Utility.onActivityCreate(this.trip, this.activity, this.application);
         this.requireActivity().runOnUiThread(() -> requireActivity().onBackPressed());
-
-
     }
 }

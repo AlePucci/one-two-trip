@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.data.database.model.response.GeocodingApiResponse;
-import it.unimib.sal.one_two_trip.service.GeocodingApiService;
+import it.unimib.sal.one_two_trip.data.service.GeocodingApiService;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import retrofit2.Call;
 import retrofit2.Response;

@@ -130,8 +130,6 @@ public class LoginFragment extends Fragment {
                                                 startActivity(new Intent(activity, HomeActivity.class));
                                                 activity.finish();
                                             } else {
-                                                Log.d("AAAAAAA", ((Result.Error) authenticationResult)
-                                                        .getMessage());
                                                 this.userViewModel.setAuthenticationError(true);
                                                 Snackbar.make(activity.findViewById(android.R.id.content),
                                                         getErrorMessage(((Result.Error) authenticationResult)
@@ -256,7 +254,6 @@ public class LoginFragment extends Fragment {
                                 activity.finish();
                                 return;
                             } else {
-                                Log.d("LoginFragment", "onLoginClick: " + ((Result.Error) result).getMessage());
                                 this.userViewModel.setAuthenticationError(true);
                                 Snackbar.make(activity.findViewById(android.R.id.content),
                                         getErrorMessage(((Result.Error) result).getMessage()),

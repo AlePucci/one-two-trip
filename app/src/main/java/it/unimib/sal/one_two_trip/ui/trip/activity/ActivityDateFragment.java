@@ -28,10 +28,10 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -95,7 +95,7 @@ public class ActivityDateFragment extends Fragment {
                     .putExtra(CalendarContract.Events.EVENT_LOCATION, activity.getLocation())
                     .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, activity.getStart_date());
 
-            if (activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
+            if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
                 intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, activity.getEnd_date());
             }
 
@@ -129,10 +129,17 @@ public class ActivityDateFragment extends Fragment {
                             }
                         }
 
-                        if (trip == null || trip.getActivity() == null
+                        if (trip == null || !trip.isParticipating() || trip.isDeleted()) {
+                            requireActivity().finish();
+                            return;
+                        }
+
+                        if (trip.getActivity() == null
                                 || trip.getActivity().getActivityList() == null) {
                             return;
                         }
+
+                        this.activity = null;
 
                         for (Activity mActivity : trip.getActivity().getActivityList()) {
                             if (mActivity.getId().equals(activityId)) {
@@ -141,7 +148,10 @@ public class ActivityDateFragment extends Fragment {
                             }
                         }
 
-                        if (this.activity == null) return;
+                        if (this.activity == null) {
+                            requireActivity().finish();
+                            return;
+                        }
 
                         TextView date1 = view.findViewById(R.id.activity_when1);
                         DateFormat df = SimpleDateFormat.getInstance();
