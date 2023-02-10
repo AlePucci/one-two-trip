@@ -41,4 +41,18 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {
                     }
                 });
     }
+
+    public void getUserData(@NonNull String idToken){
+        this.usersReference.document(idToken).get().addOnCompleteListener(
+                task -> {
+                    if(task.isSuccessful()){
+                        Person p = task.getResult().toObject(Person.class);
+                        userResponseCallback.onSuccessFromRemoteDatabase(p);
+                    }
+                    else {
+                        userResponseCallback.onFailureFromRemoteDatabase(task.getException().toString());
+                    }
+                }
+        );
+    }
 }
