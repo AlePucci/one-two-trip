@@ -135,12 +135,14 @@ public class LoginFragment extends Fragment {
                                                                 .getMessage()),
                                                         Snackbar.LENGTH_SHORT).show();
                                             }
+                                            this.googleLoginButton.setEnabled(true);
                                         });
                             }
                         } catch (ApiException e) {
                             Snackbar.make(activity.findViewById(android.R.id.content),
                                     activity.getString(R.string.unexpected_error),
                                     Snackbar.LENGTH_SHORT).show();
+                            this.googleLoginButton.setEnabled(true);
                         }
                     }
                 });
@@ -192,22 +194,18 @@ public class LoginFragment extends Fragment {
 
         this.googleLoginButton.setOnClickListener(v -> {
             this.googleLoginButton.setEnabled(false);
-            this.googleLoginButton.setIcon(this.progressIndicatorDrawable);
 
             this.oneTapClient.beginSignIn(this.signInRequest)
                     .addOnSuccessListener(activity, result -> {
                         IntentSenderRequest intentSenderRequest =
                                 new IntentSenderRequest.Builder(result.getPendingIntent()).build();
                         this.activityResultLauncher.launch(intentSenderRequest);
-                        this.googleLoginButton.setEnabled(true);
-                        this.googleLoginButton.setIcon(null);
                     })
                     .addOnFailureListener(activity, e -> {
                         Snackbar.make(view,
                                 activity.getString(R.string.unexpected_error),
                                 Snackbar.LENGTH_SHORT).show();
                         this.googleLoginButton.setEnabled(true);
-                        this.googleLoginButton.setIcon(null);
                     });
         });
     }
@@ -219,7 +217,6 @@ public class LoginFragment extends Fragment {
         this.loginButton.setEnabled(true);
         this.loginButton.setIcon(null);
         this.googleLoginButton.setEnabled(true);
-        this.googleLoginButton.setIcon(null);
     }
 
     /**
@@ -288,7 +285,7 @@ public class LoginFragment extends Fragment {
         String password = this.passwordEditText.getText().toString().trim();
 
         if (password.isEmpty()) {
-            this.passwordEditText.setError(getString(R.string.error_password_empty));
+            this.passwordEditText.setError(getString(R.string.error_password_empty), null);
             return false;
         } else {
             this.passwordEditText.setError(null);

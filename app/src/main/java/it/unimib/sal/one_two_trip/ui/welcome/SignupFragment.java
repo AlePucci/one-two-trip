@@ -177,8 +177,8 @@ public class SignupFragment extends Fragment {
             } else {
                 Snackbar.make(activity.findViewById(android.R.id.content),
                         R.string.check_login_data_message, Snackbar.LENGTH_SHORT).show();
-                this.password_edit_text.setError(getString(R.string.error_password_dont_match));
-                this.confirm_password_edit_text.setError(getString(R.string.error_password_dont_match));
+                this.password_edit_text.setError(getString(R.string.error_password_dont_match), null);
+                this.confirm_password_edit_text.setError(getString(R.string.error_password_dont_match), null);
                 this.buttonRegistration.setEnabled(true);
                 this.buttonRegistration.setIcon(null);
             }
@@ -271,7 +271,7 @@ public class SignupFragment extends Fragment {
 
         if (password.isEmpty() || password.length() < MINIMUM_PASSWORD_LENGTH) {
             this.password_edit_text.setError(String.format(getString(R.string.error_password_too_weak),
-                    MINIMUM_PASSWORD_LENGTH));
+                    MINIMUM_PASSWORD_LENGTH), null);
             return false;
         } else {
             this.password_edit_text.setError(null);

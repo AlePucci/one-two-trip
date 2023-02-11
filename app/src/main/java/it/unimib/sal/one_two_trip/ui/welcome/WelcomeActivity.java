@@ -25,10 +25,12 @@ public class WelcomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_welcome);
 
         getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.black));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.yellow_800));
     }
 
     @Override
     public boolean dispatchTouchEvent(@NonNull MotionEvent event) {
+        // Used to hide the keyboard when the user clicks outside an EditText
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             View v = getCurrentFocus();
             if (v instanceof EditText) {
