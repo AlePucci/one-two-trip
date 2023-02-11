@@ -73,7 +73,6 @@ public class ForgotPasswordFragment extends Fragment {
         this.resetButton = view.findViewById(R.id.reset_password_button);
         this.emailEditText = view.findViewById(R.id.email_forgot_pass);
 
-
         CircularProgressIndicatorSpec spec = new CircularProgressIndicatorSpec(activity, null, 0,
                 com.google.android.material.R.style.Widget_Material3_CircularProgressIndicator_ExtraSmall);
         this.progressIndicatorDrawable = IndeterminateDrawable.createCircularDrawable(activity, spec);
