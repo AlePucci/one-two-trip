@@ -150,10 +150,14 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
                                     List<Task<DocumentSnapshot>> tripParticipantSnapshot = new ArrayList<>();
 
                                     for (String key : map.keySet()) {
-                                        if (map.get(key) != null) {
+                                        if (map.get(key) != null && Objects.requireNonNull(map.get(key)).get(REFERENCE) != null
+                                                && Objects.requireNonNull(map.get(key)).get(REMOVED) != null
+                                                && !Boolean.TRUE.equals(Objects.requireNonNull(map.get(key)).get(REMOVED))) {
                                             DocumentReference ref = (DocumentReference) Objects.requireNonNull(map.get(key)).get(REFERENCE);
-                                            Task<DocumentSnapshot> newTask = Objects.requireNonNull(ref).get();
-                                            tripParticipantSnapshot.add(newTask);
+                                            if (ref != null) {
+                                                Task<DocumentSnapshot> newTask = ref.get();
+                                                tripParticipantSnapshot.add(newTask);
+                                            }
                                         }
                                     }
 
@@ -165,8 +169,13 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
                                             List<Object> list = task2.getResult();
                                             for (Object obj : list) {
                                                 DocumentSnapshot doc = (DocumentSnapshot) obj;
-                                                Person person = doc.toObject(Person.class);
-                                                trip.getParticipant().getPersonList().add(person);
+                                                if (doc != null) {
+                                                    Person person = doc.toObject(Person.class);
+
+                                                    if (person != null) {
+                                                        trip.getParticipant().getPersonList().add(person);
+                                                    }
+                                                }
                                             }
 
                                             for (DocumentSnapshot activitySnapshot : activitySnapshotList) {
@@ -189,14 +198,13 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
 
                                                 // ACTIVITY PARTICIPANTS
                                                 List<Person> personList = new ArrayList<>();
-
                                                 List<Object> participantList = (List<Object>) activitySnapshot.get(PARTICIPANT);
 
                                                 if (participantList != null) {
                                                     for (Object object : participantList) {
                                                         DocumentReference person = (DocumentReference) object;
                                                         for (Person p : trip.getParticipant().getPersonList()) {
-                                                            if (p != null && p.getId().equals(person.getId())) {
+                                                            if (p != null && person != null && p.getId().equals(person.getId())) {
                                                                 personList.add(p);
                                                                 break;
                                                             }
