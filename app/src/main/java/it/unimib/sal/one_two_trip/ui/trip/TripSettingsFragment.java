@@ -199,6 +199,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
 
                         String descriptionMessage = input.getText().toString().trim();
                         if (!descriptionMessage.equals(oldDescription)) {
+                            input.setText(descriptionMessage);
                             HashMap<String, Object> map = new HashMap<>();
                             this.trip.setDescription(descriptionMessage);
                             map.put(DESCRIPTION, descriptionMessage);
