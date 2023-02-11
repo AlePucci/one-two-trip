@@ -314,6 +314,8 @@ public class ActivityNewFragment extends Fragment {
                 this.activity.setType(STATIC_ACTIVITY_TYPE_NAME);
             }
 
+            this.activity.checkCompleted();
+
             if (this.trip != null) {
                 utility.search(location, 1);
 

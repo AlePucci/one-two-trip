@@ -138,5 +138,9 @@ public class Constants {
     public static final String PARTICIPANT = "participant";
     public static final String REMOVED = "removed";
 
+    // NAVIGATION
+    public static final String GOOGLE_NAVIGATION = "google.navigation:q=";
+
+    // OTHER
     public static final int MINUTE_IN_MILLIS = 60000;
 }

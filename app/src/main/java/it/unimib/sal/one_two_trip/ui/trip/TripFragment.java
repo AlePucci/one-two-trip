@@ -2,12 +2,14 @@ package it.unimib.sal.one_two_trip.ui.trip;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static it.unimib.sal.one_two_trip.util.Constants.ACTIVITY_TITLE;
+import static it.unimib.sal.one_two_trip.util.Constants.ENDDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVE_TO_ACTIVITY;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.STARTDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.ZOOM_TO_ACTIVITY;
 import static it.unimib.sal.one_two_trip.util.Constants.ZOOM_TO_END_LOCATION;
 import static it.unimib.sal.one_two_trip.util.Utility.not;
@@ -115,9 +117,10 @@ public class TripFragment extends Fragment implements MenuProvider {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Configuration.getInstance().load(getContext(), PreferenceManager.getDefaultSharedPreferences(getContext()));
-
         androidx.fragment.app.FragmentActivity activity = requireActivity();
+        Configuration.getInstance().load(activity.getApplicationContext(),
+                PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext()));
+
         this.application = activity.getApplication();
         this.sharedPreferencesUtil = new SharedPreferencesUtil(this.application);
         ITripsRepository tripsRepository = ServiceLocator.getInstance()
@@ -151,7 +154,6 @@ public class TripFragment extends Fragment implements MenuProvider {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Log.d("AAA", "onViewCreated");
         if (getArguments() == null) {
             return;
         }
@@ -351,17 +353,16 @@ public class TripFragment extends Fragment implements MenuProvider {
 
                                 if (date1 != activity.getStart_date()) {
                                     activity.setStart_date(date1);
-                                    map.put("start_date", date1);
-
+                                    map.put(STARTDATE, date1);
                                 }
 
                                 if (date2 != activity.getEnd_date()) {
                                     activity.setEnd_date(date2);
-                                    map.put("end_date", date2);
+                                    map.put(ENDDATE, date2);
                                 }
                             } else if (date1 != activity.getStart_date()) {
                                 activity.setStart_date(date1);
-                                map.put("start_date", date1);
+                                map.put(STARTDATE, date1);
                             }
 
                             if (!map.isEmpty()) {
@@ -416,7 +417,6 @@ public class TripFragment extends Fragment implements MenuProvider {
                         toolbar.setTitle(this.trip.getTitle());
                         progressBar.setVisibility(View.GONE);
 
-                        Log.d("AAA", "observe");
                         if (isAdded())
                             mapSetup();
                     } else {
@@ -459,7 +459,6 @@ public class TripFragment extends Fragment implements MenuProvider {
      * Method to setup the map
      */
     private void mapSetup() {
-        Log.d("AAA", "called map setup");
         this.mapView.getOverlays().clear();
 
         //Position

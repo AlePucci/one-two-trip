@@ -1,5 +1,6 @@
 package it.unimib.sal.one_two_trip.ui.trip.activity;
 
+import static it.unimib.sal.one_two_trip.util.Constants.GOOGLE_NAVIGATION;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
@@ -91,8 +92,7 @@ public class ActivityLocationFragment extends Fragment {
 
         MaterialButton navButton1 = view.findViewById(R.id.activity_where_navigation1);
         navButton1.setOnClickListener(view12 -> {
-            //TODO string must be in strings.xml
-            Uri query = Uri.parse("google.navigation:q=" + activity.getLatitude() + ","
+            Uri query = Uri.parse(GOOGLE_NAVIGATION + activity.getLatitude() + ","
                     + activity.getLongitude());
             Intent intent = new Intent(Intent.ACTION_VIEW, query);
             startActivity(intent);
@@ -100,8 +100,7 @@ public class ActivityLocationFragment extends Fragment {
 
         MaterialButton navButton2 = view.findViewById(R.id.activity_where_navigation2);
         navButton2.setOnClickListener(view12 -> {
-            //TODO string must be in strings.xml
-            Uri query = Uri.parse("google.navigation:q=" + activity.getEndLatitude() + ","
+            Uri query = Uri.parse(GOOGLE_NAVIGATION + activity.getEndLatitude() + ","
                     + activity.getEndLongitude());
             Intent intent = new Intent(Intent.ACTION_VIEW, query);
             startActivity(intent);

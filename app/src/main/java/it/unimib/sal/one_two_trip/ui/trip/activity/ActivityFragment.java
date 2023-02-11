@@ -5,6 +5,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.MOVE_TO_ACTIVITY;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.TITLE;
 
 import android.app.Application;
 import android.content.Context;
@@ -208,7 +209,7 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                             this.activity.setTitle(newTitle);
                             this.toolbar.setTitle(this.activity.getTitle());
                             HashMap<String, Object> map = new HashMap<>();
-                            map.put("title", newTitle);
+                            map.put(TITLE, newTitle);
                             this.viewModel.updateActivity(map, tripId, activityId);
                         }
                     });

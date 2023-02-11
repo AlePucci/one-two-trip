@@ -1,5 +1,6 @@
 package it.unimib.sal.one_two_trip.ui.trip.activity;
 
+import static it.unimib.sal.one_two_trip.util.Constants.COMPLETED;
 import static it.unimib.sal.one_two_trip.util.Constants.ENDDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
@@ -194,10 +195,12 @@ public class ActivityDateEditFragment extends Fragment {
                 if (date2 != this.activity.getEnd_date()) {
                     this.activity.setEnd_date(date2);
                     map.put(ENDDATE, date2);
+                    map.put(COMPLETED, this.activity.isCompleted());
                 }
             } else if (date1 != activity.getStart_date()) {
                 this.activity.setStart_date(date1);
                 map.put(STARTDATE, date1);
+                map.put(COMPLETED, this.activity.isCompleted());
             }
 
             if (!map.isEmpty()) {

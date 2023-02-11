@@ -1,10 +1,12 @@
 package it.unimib.sal.one_two_trip.ui.trip;
 
+import static it.unimib.sal.one_two_trip.util.Constants.DESCRIPTION;
 import static it.unimib.sal.one_two_trip.util.Constants.IMAGE_MIME;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_LOGO_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.TITLE;
 import static it.unimib.sal.one_two_trip.util.Constants.TRIP_LOGO_NAME;
 
 import android.app.Activity;
@@ -81,6 +83,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
     private ProgressBar progressBar;
+    private MaterialToolbar toolbar;
 
     public TripSettingsFragment() {
     }
@@ -125,7 +128,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
         this.progressBar = view.findViewById(R.id.trip_settings_progress_bar);
 
         androidx.fragment.app.FragmentActivity activity = requireActivity();
-        MaterialToolbar toolbar = activity.findViewById(R.id.trip_toolbar);
+        this.toolbar = activity.findViewById(R.id.trip_toolbar);
         ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(),
                 Lifecycle.State.RESUMED);
 
@@ -198,7 +201,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                         if (!descriptionMessage.equals(oldDescription)) {
                             HashMap<String, Object> map = new HashMap<>();
                             this.trip.setDescription(descriptionMessage);
-                            map.put("description", descriptionMessage);
+                            map.put(DESCRIPTION, descriptionMessage);
                             this.viewModel.updateTrip(map, tripId);
                         }
                     });
@@ -426,7 +429,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                         if (!newTitle.isEmpty() && !newTitle.equals(oldTitle)) {
                             HashMap<String, Object> map = new HashMap<>();
                             this.trip.setTitle(newTitle);
-                            map.put("title", newTitle);
+                            this.toolbar.setTitle(newTitle);
+                            map.put(TITLE, newTitle);
                             this.viewModel.updateTrip(map, tripId);
                         }
                     });
