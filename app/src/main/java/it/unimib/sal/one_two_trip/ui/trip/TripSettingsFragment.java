@@ -2,10 +2,12 @@ package it.unimib.sal.one_two_trip.ui.trip;
 
 import static it.unimib.sal.one_two_trip.util.Constants.DESCRIPTION;
 import static it.unimib.sal.one_two_trip.util.Constants.IMAGE_MIME;
+import static it.unimib.sal.one_two_trip.util.Constants.JOIN_BASE_URL;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_LOGO_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.TEXT_TYPE;
 import static it.unimib.sal.one_two_trip.util.Constants.TITLE;
 import static it.unimib.sal.one_two_trip.util.Constants.TRIP_LOGO_NAME;
 
@@ -170,9 +172,15 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
 
         });
 
-        //TODO ADD PARTICIPANT
-        addParticipant.setOnClickListener(v -> Snackbar.make(view,
-                "Add participant", Snackbar.LENGTH_SHORT).show());
+        addParticipant.setOnClickListener(v -> {
+            String joinURL = JOIN_BASE_URL + tripId;
+            String joinMessage = getString(R.string.trip_join_share_message) + " " + joinURL;
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType(TEXT_TYPE);
+            intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_url));
+            intent.putExtra(Intent.EXTRA_TEXT, joinMessage);
+            startActivity(Intent.createChooser(intent, getString(R.string.share_url)));
+        });
 
         descriptionCardview.setOnClickListener(v -> {
             androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(

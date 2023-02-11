@@ -104,6 +104,10 @@ public class Constants {
     // TRIP LOGO
     public static final String LAST_LOGO_UPDATE = "lastLogoUpdate";
 
+    // TRIP INVITE
+    public static final String JOIN_BASE_URL = "http://app.onetwotrip/invite?tripId=";
+    public static final String TEXT_TYPE = "text/plain";
+
     // USER COLOR
     public static final String USER_COLOR = "userColor";
 

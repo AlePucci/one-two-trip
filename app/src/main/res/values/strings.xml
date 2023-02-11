@@ -72,6 +72,12 @@
     <string name="trip_new_hint">Name</string>
     <string name="trip_new_positive">Confirm</string>
     <string name="trip_new_negative">@android:string/cancel</string>
+    <string name="trip_join_title">Join trip</string>
+    <string name="trip_join_message">Would you like to join this trip?</string>
+    <string name="trip_join_confirmation_positive">Join</string>
+    <string name="trip_join_confirmation_negative">@android:string/cancel</string>
+    <string name="trip_join_share_message">Join my new trip in 1, 2, Trip! by clicking this link:</string>
+    <string name="share_url">Share the URL</string>
 
     <!-- trip settings -->
     <string name="trip_logo_upload_failure">Something went wrong during uploading! Please try again</string>
