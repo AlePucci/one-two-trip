@@ -71,88 +71,98 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
 
     @Override
     public void signUp(String email, String password, String name, String surname) {
-        this.firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                FirebaseUser firebaseUser = this.firebaseAuth.getCurrentUser();
-                if (firebaseUser != null) {
-                    Person person = new Person();
-                    person.setEmail_address(email);
-                    person.setId(firebaseUser.getUid());
-                    person.setName(name);
-                    person.setSurname(surname);
-                    person.setProfile_picture("");
-                    firebaseUser.updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(name + " " + surname).build());
-                    userResponseCallback.onSuccessFromAuthentication(person);
-                } else {
-                    userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
-                }
-            } else {
-                userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
-            }
-        });
+        this.firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(
+                task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser firebaseUser = this.firebaseAuth.getCurrentUser();
+                        if (firebaseUser != null) {
+                            Person person = new Person();
+                            person.setEmail_address(email);
+                            person.setId(firebaseUser.getUid());
+                            person.setName(name);
+                            person.setSurname(surname);
+                            person.setProfile_picture("");
+                            firebaseUser.updateProfile(new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(name + " " + surname).build());
+                            userResponseCallback.onSuccessFromAuthentication(person);
+                        } else {
+                            userResponseCallback.onFailureFromAuthentication(
+                                    getErrorMessage(task.getException()));
+                        }
+                    } else {
+                        userResponseCallback.onFailureFromAuthentication(
+                                getErrorMessage(task.getException()));
+                    }
+                });
 
     }
 
     @Override
     public void signIn(String email, String password) {
-        this.firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                FirebaseUser firebaseUser = this.firebaseAuth.getCurrentUser();
-                if (firebaseUser != null) {
-                    Person person = new Person();
-                    person.setId(firebaseUser.getUid());
-                    person.setEmail_address(email);
-                    person.setProfile_picture("");
-                    if (firebaseUser.getDisplayName() != null) {
-                        String fullName = firebaseUser.getDisplayName().trim();
-                        if (fullName.split(" ").length > 1) {
-                            person.setName(fullName.split(" ")[0]);
-                            person.setSurname(fullName.split(" ")[1]);
+        this.firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(
+                task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser firebaseUser = this.firebaseAuth.getCurrentUser();
+                        if (firebaseUser != null) {
+                            Person person = new Person();
+                            person.setId(firebaseUser.getUid());
+                            person.setEmail_address(email);
+                            person.setProfile_picture("");
+                            if (firebaseUser.getDisplayName() != null) {
+                                String fullName = firebaseUser.getDisplayName().trim();
+                                if (fullName.split(" ").length > 1) {
+                                    person.setName(fullName.split(" ")[0]);
+                                    person.setSurname(fullName.split(" ")[1]);
+                                } else {
+                                    person.setName(fullName);
+                                }
+                            }
+                            userResponseCallback.onSuccessFromAuthentication(person);
                         } else {
-                            person.setName(fullName);
+                            userResponseCallback.onFailureFromAuthentication(
+                                    getErrorMessage(task.getException()));
                         }
+                    } else {
+                        userResponseCallback.onFailureFromRemoteDatabase(
+                                getErrorMessage(task.getException()));
                     }
-                    userResponseCallback.onSuccessFromAuthentication(person);
-                } else {
-                    userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
-                }
-            } else {
-                userResponseCallback.onFailureFromRemoteDatabase(getErrorMessage(task.getException()));
-            }
-        });
+                });
 
     }
 
     @Override
     public void signInWithGoogle(String idToken) {
         if (idToken != null) {
-            AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
-            this.firebaseAuth.signInWithCredential(firebaseCredential).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    FirebaseUser firebaseUser = this.firebaseAuth.getCurrentUser();
-                    if (firebaseUser != null) {
-                        Person person = new Person();
-                        person.setId(firebaseUser.getUid());
-                        person.setEmail_address(firebaseUser.getEmail());
-                        person.setProfile_picture("");
-                        if (firebaseUser.getDisplayName() != null) {
-                            String fullName = firebaseUser.getDisplayName().trim();
-                            if (fullName.split(" ").length > 1) {
-                                person.setName(fullName.split(" ")[0]);
-                                person.setSurname(fullName.split(" ")[1]);
+            AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken,
+                    null);
+            this.firebaseAuth.signInWithCredential(firebaseCredential).addOnCompleteListener(
+                    task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser firebaseUser = this.firebaseAuth.getCurrentUser();
+                            if (firebaseUser != null) {
+                                Person person = new Person();
+                                person.setId(firebaseUser.getUid());
+                                person.setEmail_address(firebaseUser.getEmail());
+                                person.setProfile_picture("");
+                                if (firebaseUser.getDisplayName() != null) {
+                                    String fullName = firebaseUser.getDisplayName().trim();
+                                    if (fullName.split(" ").length > 1) {
+                                        person.setName(fullName.split(" ")[0]);
+                                        person.setSurname(fullName.split(" ")[1]);
+                                    } else {
+                                        person.setName(fullName);
+                                    }
+                                }
+                                userResponseCallback.onSuccessFromAuthentication(person);
                             } else {
-                                person.setName(fullName);
+                                userResponseCallback.onFailureFromAuthentication(
+                                        getErrorMessage(task.getException()));
                             }
+                        } else {
+                            userResponseCallback.onFailureFromAuthentication(
+                                    getErrorMessage(task.getException()));
                         }
-                        userResponseCallback.onSuccessFromAuthentication(person);
-                    } else {
-                        userResponseCallback.onFailureFromAuthentication(
-                                getErrorMessage(task.getException()));
-                    }
-                } else {
-                    userResponseCallback.onFailureFromAuthentication(getErrorMessage(task.getException()));
-                }
-            });
+                    });
         }
     }
 
@@ -161,7 +171,8 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
         this.firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(
                 task -> {
                     if (!task.isSuccessful()) {
-                        userResponseCallback.onFailureFromPasswordReset(getErrorMessage(task.getException()));
+                        userResponseCallback.onFailureFromPasswordReset(
+                                getErrorMessage(task.getException()));
                     } else {
                         userResponseCallback.onSuccessFromPasswordReset();
                     }

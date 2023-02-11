@@ -34,13 +34,19 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {
                             userResponseCallback.onSuccessFromRemoteDatabase(person);
                         } else {
                             usersReference.document(idToken).set(person)
-                                    .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(person))
-                                    .addOnFailureListener(e -> userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage()));
+                                    .addOnSuccessListener(aVoid ->
+                                            userResponseCallback.onSuccessFromRemoteDatabase(person))
+                                    .addOnFailureListener(e ->
+                                            userResponseCallback.onFailureFromRemoteDatabase(
+                                                    e.getLocalizedMessage()));
                         }
                     } else {
                         usersReference.document(idToken).set(person)
-                                .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(person))
-                                .addOnFailureListener(e -> userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage()));
+                                .addOnSuccessListener(aVoid ->
+                                        userResponseCallback.onSuccessFromRemoteDatabase(person))
+                                .addOnFailureListener(e ->
+                                        userResponseCallback.onFailureFromRemoteDatabase(
+                                                e.getLocalizedMessage()));
                     }
                 });
     }

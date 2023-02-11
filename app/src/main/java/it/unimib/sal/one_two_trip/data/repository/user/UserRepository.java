@@ -31,12 +31,28 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
         this.userDataRemoteDataSource.setUserResponseCallback(this);
     }
 
+    /**
+     * Method to sign in a user.
+     *
+     * @param email    email of the user
+     * @param password password of the user
+     * @return a {@link MutableLiveData MutableLiveData} object that contains a {@link Result Result} object.
+     */
     @Override
     public MutableLiveData<Result> getUser(String email, String password) {
         signIn(email, password);
         return this.userMutableLiveData;
     }
 
+    /**
+     * Method to sign up a user.
+     *
+     * @param email    email of the user
+     * @param password password of the user
+     * @param name     name of the user
+     * @param surname  surname of the user
+     * @return a {@link MutableLiveData MutableLiveData} object that contains a {@link Result Result} object.
+     */
     @Override
     public MutableLiveData<Result> getUser(String email, String password, String name,
                                            String surname) {
@@ -44,16 +60,83 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
         return this.userMutableLiveData;
     }
 
+    /**
+     * Method to sign up/sign in a user using Google One-Tap Sign-In.
+     *
+     * @param idToken idToken of the user (provided by Google)
+     * @return a {@link MutableLiveData MutableLiveData} object that contains a {@link Result Result} object.
+     */
     @Override
     public MutableLiveData<Result> getGoogleUser(String idToken) {
         signInWithGoogle(idToken);
         return this.userMutableLiveData;
     }
 
+    /**
+     * Method to reset the password of a user.
+     *
+     * @param email email of the user to reset the password
+     * @return a {@link MutableLiveData MutableLiveData} object that contains a {@link Result Result} object.
+     */
     @Override
     public MutableLiveData<Result> resetPassword(String email) {
         this.userRemoteDataSource.resetPassword(email);
         return this.passwordResetMutableLiveData;
+    }
+
+    /**
+     * Method to logout a user.
+     *
+     * @return a {@link MutableLiveData MutableLiveData} object that contains a {@link Result Result} object.
+     */
+    @Override
+    public MutableLiveData<Result> logout() {
+        this.userRemoteDataSource.logout();
+        return this.userMutableLiveData;
+    }
+
+    /**
+     * Method to get the logged user.
+     *
+     * @return a {@link Person Person} object that represents the logged user.
+     */
+    @Override
+    public Person getLoggedUser() {
+        return this.userRemoteDataSource.getLoggedUser();
+    }
+
+    /**
+     * Method to sign up a user.
+     *
+     * @param email    email of the user
+     * @param password password of the user
+     * @param name     name of the user
+     * @param surname  surname of the user
+     */
+    @Override
+    public void signUp(String email, String password, String name, String surname) {
+        this.userRemoteDataSource.signUp(email, password, name, surname);
+    }
+
+    /**
+     * Method to sign in a user.
+     *
+     * @param email    email of the user
+     * @param password password of the user
+     */
+    @Override
+    public void signIn(String email, String password) {
+        this.userRemoteDataSource.signIn(email, password);
+    }
+
+    /**
+     * Method to sign in a user using Google One-Tap Sign-In.
+     *
+     * @param token idToken of the user (provided by Google)
+     */
+    @Override
+    public void signInWithGoogle(String token) {
+        this.userRemoteDataSource.signInWithGoogle(token);
     }
 
     @Override
@@ -95,31 +178,5 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     @Override
     public void onSuccessLogout() {
         this.tripsLocalDataSource.deleteAllTrips();
-    }
-
-    @Override
-    public void signUp(String email, String password, String name, String surname) {
-        this.userRemoteDataSource.signUp(email, password, name, surname);
-    }
-
-    @Override
-    public void signIn(String email, String password) {
-        this.userRemoteDataSource.signIn(email, password);
-    }
-
-    @Override
-    public void signInWithGoogle(String token) {
-        this.userRemoteDataSource.signInWithGoogle(token);
-    }
-
-    @Override
-    public Person getLoggedUser() {
-        return this.userRemoteDataSource.getLoggedUser();
-    }
-
-    @Override
-    public MutableLiveData<Result> logout() {
-        this.userRemoteDataSource.logout();
-        return this.userMutableLiveData;
     }
 }

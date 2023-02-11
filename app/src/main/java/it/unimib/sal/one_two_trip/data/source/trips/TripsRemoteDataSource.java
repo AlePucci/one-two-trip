@@ -99,7 +99,8 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
                 }
             }
         };
-        this.tripsCollectionReference.whereNotEqualTo(tripsQuery, null).addSnapshotListener(tripListener);
+        this.tripsCollectionReference.whereNotEqualTo(tripsQuery, null)
+                .addSnapshotListener(tripListener);
     }
 
     /**
@@ -237,7 +238,8 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
                 }
             }
         });
-        this.tripsCollectionReference.whereNotEqualTo(tripsQuery, null).get().addOnCompleteListener(tripsDownload);
+        this.tripsCollectionReference.whereNotEqualTo(tripsQuery, null).get()
+                .addOnCompleteListener(tripsDownload);
     }
 
     /**
@@ -262,7 +264,8 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
     @Override
     public void updateActivity(HashMap<String, Object> activity, String tripId, String
             activityId) {
-        this.tripsCollectionReference.document(tripId).collection(ACTIVITY).document(activityId).update(activity);
+        this.tripsCollectionReference.document(tripId).collection(ACTIVITY)
+                .document(activityId).update(activity);
     }
 
     /**
@@ -297,7 +300,8 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
         }
         activityMap.put(PARTICIPANT, drs);
 
-        this.tripsCollectionReference.document(trip.getId()).collection(ACTIVITY).document(activityId).set(activityMap);
+        this.tripsCollectionReference.document(trip.getId()).collection(ACTIVITY)
+                .document(activityId).set(activityMap);
     }
 
     /**
@@ -350,6 +354,7 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
      */
     @Override
     public void deleteActivity(@NonNull Activity activity, @NonNull Trip trip) {
-        this.tripsCollectionReference.document(trip.getId()).collection(ACTIVITY).document(activity.getId()).delete();
+        this.tripsCollectionReference.document(trip.getId()).collection(ACTIVITY)
+                .document(activity.getId()).delete();
     }
 }

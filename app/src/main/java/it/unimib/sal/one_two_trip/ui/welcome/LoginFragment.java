@@ -11,7 +11,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -223,6 +222,9 @@ public class LoginFragment extends Fragment {
         this.googleLoginButton.setIcon(null);
     }
 
+    /**
+     * Method to login the user
+     */
     private void onLoginClick() {
         FragmentActivity activity = requireActivity();
 
@@ -273,6 +275,11 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    /**
+     * Method to check if the password is valid
+     *
+     * @return true if the password is valid, false otherwise
+     */
     private boolean isPasswordOk() {
         if (this.passwordEditText.getText() == null) {
             return false;
@@ -283,6 +290,11 @@ public class LoginFragment extends Fragment {
         return !password.isEmpty();
     }
 
+    /**
+     * Method to check if the email is valid
+     *
+     * @return true if the email is valid, false otherwise
+     */
     private boolean isEmailOk() {
         if (this.emailEditText.getText() == null) {
             return false;
@@ -293,6 +305,12 @@ public class LoginFragment extends Fragment {
         return !email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+    /**
+     * Returns the error message to show to the user.
+     *
+     * @param errorType the error message returned by the server.
+     * @return the error message localized to show to the user.
+     */
     @NonNull
     private String getErrorMessage(@NonNull String errorType) {
         if (INVALID_CREDENTIALS_ERROR.equals(errorType)) {
@@ -301,6 +319,13 @@ public class LoginFragment extends Fragment {
         return getString(R.string.unexpected_error);
     }
 
+    /**
+     * Method to save the login data in the shared preferences
+     *
+     * @param email    the email of the user
+     * @param password the password of the user
+     * @param idToken  the id token of the user
+     */
     private void saveLoginData(String email, String password, String idToken) {
         try {
             this.dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(

@@ -357,7 +357,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
     @Override
     public void onDownloadFailure(Exception exception) {
         this.progressBar.setVisibility(View.GONE);
-        Snackbar.make(requireView(), R.string.trip_logo_download_failure, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(requireView(), R.string.trip_logo_download_failure,
+                Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -451,7 +452,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
 
                         if (this.trip != null && this.trip.getActivity() != null
                                 && this.trip.getActivity().getActivityList() != null) {
-                            for (it.unimib.sal.one_two_trip.data.database.model.Activity activity : this.trip.getActivity().getActivityList()) {
+                            for (it.unimib.sal.one_two_trip.data.database.model.Activity activity
+                                    : this.trip.getActivity().getActivityList()) {
                                 Utility.deleteNotifications(activity, this.application, this.tripId);
                             }
                         }

@@ -175,6 +175,7 @@ public class HomeActivity extends AppCompatActivity {
                                     trip.setId(UUID.randomUUID().toString());
                                     trip.setTitle(title);
                                     trip.setTripOwner(user.getId());
+                                    trip.setParticipating(true);
 
                                     ArrayList<Person> participants = new ArrayList<>();
                                     participants.add(user);

@@ -89,6 +89,9 @@ public class ForgotPasswordFragment extends Fragment {
         this.resetButton.setOnClickListener(v -> onResetPassword());
     }
 
+    /**
+     * Method to reset the password of the account.
+     */
     private void onResetPassword() {
         FragmentActivity activity = requireActivity();
         this.resetButton.setEnabled(false);
@@ -104,7 +107,8 @@ public class ForgotPasswordFragment extends Fragment {
             this.userViewModel.resetPassword(email).observe(getViewLifecycleOwner(), result -> {
                 if (result != null) {
                     if (result.isSuccess()) {
-                        Snackbar.make(activity.findViewById(android.R.id.content), getString(R.string.reset_password_mail_sent), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(activity.findViewById(android.R.id.content),
+                                getString(R.string.reset_password_mail_sent), Snackbar.LENGTH_SHORT).show();
                     } else {
                         Snackbar.make(activity.findViewById(android.R.id.content),
                                 getErrorMessage(((Result.Error) result).getMessage()), Snackbar.LENGTH_SHORT).show();
@@ -121,6 +125,11 @@ public class ForgotPasswordFragment extends Fragment {
         }
     }
 
+    /**
+     * Checks if the email is valid.
+     *
+     * @return true if the email is valid, false otherwise.
+     */
     private boolean isEmailOk() {
         if (this.emailEditText.getText() == null) {
             return false;
@@ -137,11 +146,16 @@ public class ForgotPasswordFragment extends Fragment {
         }
     }
 
+    /**
+     * Returns the error message to show to the user.
+     *
+     * @param message the error message returned by the server.
+     * @return the error message localized to show to the user.
+     */
     private String getErrorMessage(@NonNull String message) {
         if (INVALID_CREDENTIALS_ERROR.equals(message)) {
             return requireActivity().getString(R.string.error_user_doesnt_exists);
         }
         return requireActivity().getString(R.string.unexpected_error);
     }
-
 }

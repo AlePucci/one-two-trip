@@ -330,70 +330,71 @@ public class ActivityNewFragment extends Fragment {
                     LAST_UPDATE);
         }
 
-        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
+        this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(getViewLifecycleOwner(),
+                result -> {
+                    if (result.isSuccess()) {
+                        List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
 
-                this.trip = null;
+                        this.trip = null;
 
-                for (Trip trip : trips) {
-                    if (trip.getId().equals(tripId)) {
-                        this.trip = trip;
-                        break;
+                        for (Trip trip : trips) {
+                            if (trip.getId().equals(tripId)) {
+                                this.trip = trip;
+                                break;
+                            }
+                        }
+
+                        if (this.trip == null || !this.trip.isParticipating() || this.trip.isDeleted()) {
+                            requireActivity().finish();
+                            return;
+                        }
+
+                        if (this.trip.getParticipant() == null
+                                || this.trip.getParticipant().getPersonList() == null) {
+                            return;
+                        }
+
+                        this.personList = new ArrayList<>(trip.getParticipant().getPersonList());
+                        this.notParticipating = new ArrayList<>();
+
+                        this.participantAdapter = new ParticipantRecyclerViewAdapter(
+                                this.personList,
+                                this.application,
+                                position -> {
+                                    Person p = this.personList.remove(position);
+                                    this.notParticipating.add(p);
+                                    int size = this.notParticipating.size();
+                                    this.notParticipantAdapter.notifyItemRangeInserted(size - 1,
+                                            size);
+                                    this.participantAdapter.notifyItemRemoved(position);
+                                });
+
+                        this.notParticipantAdapter = new ParticipantRecyclerViewAdapter(
+                                this.notParticipating,
+                                this.application,
+                                position -> {
+                                    Person p = this.notParticipating.remove(position);
+                                    this.personList.add(p);
+                                    int size = this.personList.size();
+                                    this.participantAdapter.notifyItemRangeInserted(size - 1,
+                                            size);
+                                    this.notParticipantAdapter.notifyItemRemoved(position);
+                                });
+
+                        participatingRV.setLayoutManager(new LinearLayoutManager(context,
+                                LinearLayoutManager.HORIZONTAL, false));
+                        notParticipatingRV.setLayoutManager(new LinearLayoutManager(context,
+                                LinearLayoutManager.HORIZONTAL, false));
+
+                        participatingRV.setAdapter(participantAdapter);
+                        notParticipatingRV.setAdapter(notParticipantAdapter);
+
+                    } else {
+                        ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
+                        Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
+                                .getMessage()), Snackbar.LENGTH_SHORT).show();
                     }
-                }
-
-                if (this.trip == null || !this.trip.isParticipating() || this.trip.isDeleted()) {
-                    requireActivity().finish();
-                    return;
-                }
-
-                if (this.trip.getParticipant() == null
-                        || this.trip.getParticipant().getPersonList() == null) {
-                    return;
-                }
-
-                this.personList = new ArrayList<>(trip.getParticipant().getPersonList());
-                this.notParticipating = new ArrayList<>();
-
-                this.participantAdapter = new ParticipantRecyclerViewAdapter(
-                        this.personList,
-                        this.application,
-                        position -> {
-                            Person p = this.personList.remove(position);
-                            this.notParticipating.add(p);
-                            int size = this.notParticipating.size();
-                            this.notParticipantAdapter.notifyItemRangeInserted(size - 1,
-                                    size);
-                            this.participantAdapter.notifyItemRemoved(position);
-                        });
-
-                this.notParticipantAdapter = new ParticipantRecyclerViewAdapter(
-                        this.notParticipating,
-                        this.application,
-                        position -> {
-                            Person p = this.notParticipating.remove(position);
-                            this.personList.add(p);
-                            int size = this.personList.size();
-                            this.participantAdapter.notifyItemRangeInserted(size - 1,
-                                    size);
-                            this.notParticipantAdapter.notifyItemRemoved(position);
-                        });
-
-                participatingRV.setLayoutManager(new LinearLayoutManager(context,
-                        LinearLayoutManager.HORIZONTAL, false));
-                notParticipatingRV.setLayoutManager(new LinearLayoutManager(context,
-                        LinearLayoutManager.HORIZONTAL, false));
-
-                participatingRV.setAdapter(participantAdapter);
-                notParticipatingRV.setAdapter(notParticipantAdapter);
-
-            } else {
-                ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
-                Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
-                        .getMessage()), Snackbar.LENGTH_SHORT).show();
-            }
-        });
+                });
 
     }
 

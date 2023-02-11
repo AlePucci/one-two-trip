@@ -108,7 +108,8 @@ public class ActivityParticipantEditFragment extends Fragment {
             List<Person> newParticipants = new ArrayList<>(this.personList);
             newParticipants.removeAll(this.activity.getParticipant().getPersonList());
 
-            List<Person> removedParticipants = new ArrayList<>(this.activity.getParticipant().getPersonList());
+            List<Person> removedParticipants = new ArrayList<>(this.activity.getParticipant()
+                    .getPersonList());
             removedParticipants.removeAll(this.personList);
 
             this.activity.getParticipant().setPersonList(this.personList);
@@ -125,13 +126,15 @@ public class ActivityParticipantEditFragment extends Fragment {
 
             HashMap<String, Object> map = new HashMap<>();
             for (Person person : newParticipants) {
-                DocumentReference ds = FirebaseFirestore.getInstance().collection(FIREBASE_USER_COLLECTION).document(person.getId());
+                DocumentReference ds = FirebaseFirestore.getInstance()
+                        .collection(FIREBASE_USER_COLLECTION).document(person.getId());
                 map.put(PARTICIPANT, FieldValue.arrayUnion(ds));
                 this.viewModel.updateActivity(map, tripId, activityId);
             }
 
             for (Person person : removedParticipants) {
-                DocumentReference ds = FirebaseFirestore.getInstance().collection(FIREBASE_USER_COLLECTION).document(person.getId());
+                DocumentReference ds = FirebaseFirestore.getInstance()
+                        .collection(FIREBASE_USER_COLLECTION).document(person.getId());
                 map.put(PARTICIPANT, FieldValue.arrayRemove(ds));
                 this.viewModel.updateActivity(map, tripId, activityId);
             }
@@ -193,7 +196,8 @@ public class ActivityParticipantEditFragment extends Fragment {
 
                         this.personList = new ArrayList<>(this.activity.getParticipant().getPersonList());
 
-                        if (this.trip.getParticipant() == null || this.trip.getParticipant().getPersonList() == null) {
+                        if (this.trip.getParticipant() == null
+                                || this.trip.getParticipant().getPersonList() == null) {
                             return;
                         }
 
