@@ -287,7 +287,13 @@ public class LoginFragment extends Fragment {
 
         String password = this.passwordEditText.getText().toString().trim();
 
-        return !password.isEmpty();
+        if (password.isEmpty()) {
+            this.passwordEditText.setError(getString(R.string.error_password_empty));
+            return false;
+        } else {
+            this.passwordEditText.setError(null);
+            return true;
+        }
     }
 
     /**
@@ -302,7 +308,13 @@ public class LoginFragment extends Fragment {
 
         String email = this.emailEditText.getText().toString().trim();
 
-        return !email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            this.emailEditText.setError(null);
+            return true;
+        } else {
+            this.emailEditText.setError(getString(R.string.error_email_not_valid));
+            return false;
+        }
     }
 
     /**

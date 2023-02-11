@@ -205,6 +205,7 @@
     <string name="no_shareable_activities_2">There are no static activities to share here!</string>
     <string name="share_trip_error">Something went wrong! Please try again</string>
     <string name="error_user_doesnt_exists">User doesn\'t exists!</string>
+    <string name="error_password_empty">Password is empty!</string>
 
     <!-- end -->
 </resources>

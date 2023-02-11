@@ -89,7 +89,7 @@ public class ActivityDescriptionEditFragment extends Fragment {
 
         editButton.setOnClickListener(view1 -> {
             if (description.getText() != null
-                    && !description.getText().toString().equalsIgnoreCase(
+                    && !description.getText().toString().trim().equalsIgnoreCase(
                     activity.getDescription())) {
                 this.activity.setDescription(description.getText().toString().trim());
                 HashMap<String, Object> map = new HashMap<>();

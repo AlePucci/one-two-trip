@@ -226,8 +226,12 @@ public class SignupFragment extends Fragment {
             this.surname_edit_text.setError(null);
             return true;
         } else {
-            this.name_edit_text.setError(getString(R.string.error_empty_name));
-            this.surname_edit_text.setError(getString(R.string.error_empty_surname));
+            if (name.isEmpty()) {
+                this.name_edit_text.setError(getString(R.string.error_empty_name));
+            }
+            if (surname.isEmpty()) {
+                this.surname_edit_text.setError(getString(R.string.error_empty_surname));
+            }
             return false;
         }
     }
