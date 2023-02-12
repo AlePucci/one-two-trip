@@ -209,12 +209,14 @@ public class ActivityParticipantEditFragment extends Fragment {
                                 this.personList,
                                 this.application,
                                 position -> {
-                                    Person p = this.personList.remove(position);
-                                    this.notParticipating.add(p);
-                                    int size = this.notParticipating.size();
-                                    this.notParticipantAdapter.notifyItemRangeInserted(size - 1,
-                                            size);
-                                    this.participantAdapter.notifyItemRemoved(position);
+                                    if (position >= 0 && position < this.personList.size()) {
+                                        Person p = this.personList.remove(position);
+                                        this.notParticipating.add(p);
+                                        int size = this.notParticipating.size();
+                                        this.notParticipantAdapter.notifyItemRangeInserted(size - 1,
+                                                size);
+                                        this.participantAdapter.notifyItemRemoved(position);
+                                    }
                                 });
 
                         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context,
@@ -227,12 +229,14 @@ public class ActivityParticipantEditFragment extends Fragment {
                                 this.notParticipating,
                                 this.application,
                                 position -> {
-                                    Person p = this.notParticipating.remove(position);
-                                    this.personList.add(p);
-                                    int size = this.personList.size();
-                                    this.participantAdapter.notifyItemRangeInserted(size - 1,
-                                            size);
-                                    this.notParticipantAdapter.notifyItemRemoved(position);
+                                    if (position >= 0 && position < this.notParticipating.size()) {
+                                        Person p = this.notParticipating.remove(position);
+                                        this.personList.add(p);
+                                        int size = this.personList.size();
+                                        this.participantAdapter.notifyItemRangeInserted(size - 1,
+                                                size);
+                                        this.notParticipantAdapter.notifyItemRemoved(position);
+                                    }
                                 });
 
                         RecyclerView.LayoutManager layoutManager2 = new LinearLayoutManager(context,

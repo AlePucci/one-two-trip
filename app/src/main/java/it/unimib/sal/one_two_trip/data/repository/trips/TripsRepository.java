@@ -72,7 +72,9 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     /**
      * Update the trip in the remote source.
      *
-     * @param trip the trip to update
+     * @param trip   the trip to update as a map.
+     *               The key is the field to update and the value is the new value.
+     * @param tripId the id of the trip to update
      */
     @Override
     public void updateTrip(HashMap<String, Object> trip, String tripId) {
@@ -82,13 +84,14 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     /**
      * Updates the activity
      *
-     * @param trip       The activity to update
+     * @param activity   the activity to update as a map.
+     *                   The key is the field to update and the value is the new value.
      * @param tripId     the id of the trip to which the activity belongs
-     * @param activityId the id of the activity
+     * @param activityId the id of the activity to update
      */
     @Override
-    public void updateActivity(HashMap<String, Object> trip, String tripId, String activityId) {
-        this.tripsRemoteDataSource.updateActivity(trip, tripId, activityId);
+    public void updateActivity(HashMap<String, Object> activity, String tripId, String activityId) {
+        this.tripsRemoteDataSource.updateActivity(activity, tripId, activityId);
     }
 
     /**

@@ -122,6 +122,7 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                // TODO OPEN ACCOUNT PAGE
                 return false;
             }
         });
@@ -134,6 +135,7 @@ public class HomeActivity extends AppCompatActivity {
                 Intent intent = new Intent(HomeActivity.this, WelcomeActivity.class);
                 startActivity(intent);
                 finish();
+                // RESET THEME
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
             }
             return false;

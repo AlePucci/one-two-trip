@@ -177,6 +177,10 @@
     <string name="trip_join_confirmation_negative">@android:string/cancel</string>
     <string name="trip_join_share_message">Unisciti al mio nuovo viaggio su 1, 2, Trip! usando questo link:</string>
     <string name="share_url">Condividi l\'URL</string>
+    <string name="trip_delete_participant">Rimuovi partecipante</string>
+    <string name="trip_delete_participant_message">Sei sicuro di voler rimuovere questo partecipante dal viaggio?</string>
+    <string name="trip_delete_participant_positive">Rimuovi</string>
+    <string name="trip_delete_participant_negative">@android:string/cancel</string>
 
     <!-- end -->
 </resources>

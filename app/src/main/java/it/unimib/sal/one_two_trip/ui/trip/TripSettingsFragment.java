@@ -5,6 +5,8 @@ import static it.unimib.sal.one_two_trip.util.Constants.IMAGE_MIME;
 import static it.unimib.sal.one_two_trip.util.Constants.JOIN_BASE_URL;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_LOGO_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.PARTICIPANT;
+import static it.unimib.sal.one_two_trip.util.Constants.REMOVED;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.TEXT_TYPE;
@@ -138,7 +140,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
             this.tripId = getArguments().getString(SELECTED_TRIP_ID);
         }
 
-        this.imagePath = application.getFilesDir() + "/" + tripId + "-" + TRIP_LOGO_NAME;
+        this.imagePath = this.application.getFilesDir() + "/" + tripId + "-" + TRIP_LOGO_NAME;
         this.tripLogo = view.findViewById(R.id.trip_logo);
 
         ActivityResultLauncher<Intent> photoPickerLauncher = registerForActivityResult(
@@ -249,7 +251,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                             }
                         }
 
-                        if (this.trip == null || !this.trip.isParticipating() || this.trip.isDeleted()) {
+                        if (this.trip == null || !this.trip.isParticipating()
+                                || this.trip.isDeleted()) {
                             requireActivity().finish();
                             return;
                         }
@@ -290,8 +293,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                         }
 
                         RecyclerView.LayoutManager linearLayoutManager =
-                                new LinearLayoutManager(this.application, LinearLayoutManager.VERTICAL,
-                                        false);
+                                new LinearLayoutManager(this.application,
+                                        LinearLayoutManager.VERTICAL, false);
 
                         SettingsParticipantRecyclerViewAdapter adapter =
                                 new SettingsParticipantRecyclerViewAdapter(
@@ -299,7 +302,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                                         this.application,
                                         new SettingsParticipantRecyclerViewAdapter.OnItemClickListener() {
                                             @Override
-                                            public void onClick(int position) {
+                                            public void onClick(String userId) {
                                                 // TODO open participant profile
                                                 Snackbar.make(view,
                                                         "Open participant profile",
@@ -307,18 +310,34 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                                             }
 
                                             @Override
-                                            public void onRemoveClick(int position) {
-                                                // TODO remove participant
-                                                Snackbar.make(view,
-                                                        "Remove participant",
-                                                        Snackbar.LENGTH_SHORT).show();
+                                            public void onRemoveClick(String userId) {
+                                                androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
+                                                        activity, R.style.Widget_App_CustomAlertDialog);
+                                                alert.setTitle(getString(R.string.trip_delete_participant));
+                                                alert.setMessage(getString(R.string.trip_delete_participant_message));
+                                                alert.setPositiveButton(getString(R.string.trip_delete_participant_positive),
+                                                        (dialog, which) -> {
+                                                            if (viewModel != null) {
+                                                                HashMap<String, Object> map = new HashMap<>();
+
+                                                                map.put(PARTICIPANT + "." + userId
+                                                                        + "." + REMOVED, true);
+
+                                                                viewModel.updateTrip(map, tripId);
+                                                            }
+                                                        });
+                                                alert.setNegativeButton(
+                                                        getString(R.string.trip_delete_participant_negative),
+                                                        null);
+                                                alert.show();
                                             }
                                         });
+
                         recyclerView.setLayoutManager(linearLayoutManager);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setNestedScrollingEnabled(false);
 
-                        toolbar.setTitle(this.trip.getTitle());
+                        this.toolbar.setTitle(this.trip.getTitle());
                     } else {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)

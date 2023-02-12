@@ -10,6 +10,8 @@ import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.repository.trips.TripsRepository;
 import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 import it.unimib.sal.one_two_trip.data.repository.user.UserRepository;
+import it.unimib.sal.one_two_trip.data.service.GeocodingApiService;
+import it.unimib.sal.one_two_trip.data.service.PictureApiService;
 import it.unimib.sal.one_two_trip.data.source.trips.BaseTripsLocalDataSource;
 import it.unimib.sal.one_two_trip.data.source.trips.BaseTripsRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.trips.TripsLocalDataSource;
@@ -18,8 +20,6 @@ import it.unimib.sal.one_two_trip.data.source.user.BaseUserAuthenticationRemoteD
 import it.unimib.sal.one_two_trip.data.source.user.BaseUserDataRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.user.UserAuthenticationRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.user.UserDataRemoteDataSource;
-import it.unimib.sal.one_two_trip.data.service.GeocodingApiService;
-import it.unimib.sal.one_two_trip.data.service.PictureApiService;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -125,5 +125,3 @@ public class ServiceLocator {
                 tripsLocalDataSource);
     }
 }
-
-

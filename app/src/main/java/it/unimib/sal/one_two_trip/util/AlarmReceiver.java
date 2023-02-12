@@ -193,7 +193,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
                 == PackageManager.PERMISSION_GRANTED) {
-            // TODO: call permission request in the onboarding activity and check it when turning
+            // TODO : call permission request in the onboarding activity and check it when turning
             // on notifications
             notificationManager.notify(notificationId, builder.build());
         }

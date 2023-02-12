@@ -198,8 +198,8 @@ public class ActivityNewFragment extends Fragment {
                 }
             }
 
-            new DatePickerDialog(requireContext(), (datePicker, i, i1, i2) ->
-                    new TimePickerDialog(requireContext(), (timePicker, j, j1) -> {
+            new DatePickerDialog(context, (datePicker, i, i1, i2) ->
+                    new TimePickerDialog(context, (timePicker, j, j1) -> {
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(i, i1, i2, j, j1);
                         when1.setText(df.format(new Date(calendar.getTimeInMillis())));
@@ -218,8 +218,8 @@ public class ActivityNewFragment extends Fragment {
                 }
             }
 
-            new DatePickerDialog(requireContext(), (datePicker, i, i1, i2) ->
-                    new TimePickerDialog(requireContext(), (timePicker, j, j1) -> {
+            new DatePickerDialog(context, (datePicker, i, i1, i2) ->
+                    new TimePickerDialog(context, (timePicker, j, j1) -> {
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(i, i1, i2, j, j1);
                         when2.setText(df.format(new Date(calendar.getTimeInMillis())));
@@ -361,24 +361,28 @@ public class ActivityNewFragment extends Fragment {
                                 this.personList,
                                 this.application,
                                 position -> {
-                                    Person p = this.personList.remove(position);
-                                    this.notParticipating.add(p);
-                                    int size = this.notParticipating.size();
-                                    this.notParticipantAdapter.notifyItemRangeInserted(size - 1,
-                                            size);
-                                    this.participantAdapter.notifyItemRemoved(position);
+                                    if (position >= 0 && position < this.personList.size()) {
+                                        Person p = this.personList.remove(position);
+                                        this.notParticipating.add(p);
+                                        int size = this.notParticipating.size();
+                                        this.notParticipantAdapter.notifyItemRangeInserted(size - 1,
+                                                size);
+                                        this.participantAdapter.notifyItemRemoved(position);
+                                    }
                                 });
 
                         this.notParticipantAdapter = new ParticipantRecyclerViewAdapter(
                                 this.notParticipating,
                                 this.application,
                                 position -> {
-                                    Person p = this.notParticipating.remove(position);
-                                    this.personList.add(p);
-                                    int size = this.personList.size();
-                                    this.participantAdapter.notifyItemRangeInserted(size - 1,
-                                            size);
-                                    this.notParticipantAdapter.notifyItemRemoved(position);
+                                    if (position >= 0 && position < this.notParticipating.size()) {
+                                        Person p = this.notParticipating.remove(position);
+                                        this.personList.add(p);
+                                        int size = this.personList.size();
+                                        this.participantAdapter.notifyItemRangeInserted(size - 1,
+                                                size);
+                                        this.notParticipantAdapter.notifyItemRemoved(position);
+                                    }
                                 });
 
                         participatingRV.setLayoutManager(new LinearLayoutManager(context,

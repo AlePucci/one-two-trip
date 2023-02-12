@@ -181,6 +181,7 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
 
                                             for (DocumentSnapshot activitySnapshot : activitySnapshotList) {
                                                 Activity activity = new Activity();
+                                                // ACTIVITY OBJECT CREATION
                                                 activity.setId(Objects.requireNonNull(activitySnapshot.get(ID, String.class)));
                                                 activity.setCompleted(Boolean.TRUE.equals(activitySnapshot.get(COMPLETED, Boolean.class)));
                                                 activity.setTitle(activitySnapshot.get(TITLE, String.class));
@@ -277,6 +278,8 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
     @Override
     public void insertActivity(@NonNull Activity activity, Trip trip) {
         HashMap<String, Object> activityMap = new HashMap<>();
+
+        // ACTIVITY OBJECT TO MAP
         String activityId = activity.getId();
         activityMap.put(ID, activityId);
         activityMap.put(TITLE, activity.getTitle());
@@ -312,6 +315,7 @@ public class TripsRemoteDataSource extends BaseTripsRemoteDataSource {
     @Override
     public void insertTrip(@NonNull Trip trip) {
         HashMap<String, Object> tripMap = new HashMap<>();
+        // TRIP OBJECT TO MAP
         String tripId = trip.getId();
         tripMap.put(ID, tripId);
         tripMap.put(TITLE, trip.getTitle());

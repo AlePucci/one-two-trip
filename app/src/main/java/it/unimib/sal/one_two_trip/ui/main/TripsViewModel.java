@@ -58,7 +58,9 @@ public class TripsViewModel extends ViewModel {
     /**
      * Updates the trip. For example an activity is added or trip title changed.
      *
-     * @param trip The trip to be updated.
+     * @param trip   The trip to update as a map.
+     *               The key is the field to update and the value is the new value.
+     * @param tripId the id of the trip to update
      */
     public void updateTrip(HashMap<String, Object> trip, String tripId) {
         this.tripsRepository.updateTrip(trip, tripId);
@@ -67,12 +69,13 @@ public class TripsViewModel extends ViewModel {
     /**
      * Updates the activity
      *
-     * @param trip       The activity to update
+     * @param activity   The activity to update as a map.
+     *                   The key is the field to update and the value is the new value.
      * @param tripId     the id of the trip to which the activity belongs
-     * @param activityId the id of the activity
+     * @param activityId the id of the activity to update
      */
-    public void updateActivity(HashMap<String, Object> trip, String tripId, String activityId) {
-        this.tripsRepository.updateActivity(trip, tripId, activityId);
+    public void updateActivity(HashMap<String, Object> activity, String tripId, String activityId) {
+        this.tripsRepository.updateActivity(activity, tripId, activityId);
     }
 
     /**

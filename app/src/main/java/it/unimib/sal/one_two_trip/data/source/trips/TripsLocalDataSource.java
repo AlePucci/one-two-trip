@@ -93,6 +93,7 @@ public class TripsLocalDataSource extends BaseTripsLocalDataSource {
                     allTrips.add(trip);
                 }
             }
+
             List<Trip> toInsert = new ArrayList<>(allTrips);
             this.tripsDAO.insertTripList(toInsert);
             tripCallback.onSuccessFromLocal(allTrips);

@@ -78,6 +78,10 @@
     <string name="trip_join_confirmation_negative">@android:string/cancel</string>
     <string name="trip_join_share_message">Join my new trip in 1, 2, Trip! by clicking this link:</string>
     <string name="share_url">Share the URL</string>
+    <string name="trip_delete_participant">Delete participant</string>
+    <string name="trip_delete_participant_message">Are you sure you want to delete this participant from the trip?</string>
+    <string name="trip_delete_participant_positive">Delete</string>
+    <string name="trip_delete_participant_negative">@android:string/cancel</string>
 
     <!-- trip settings -->
     <string name="trip_logo_upload_failure">Something went wrong during uploading! Please try again</string>
