@@ -3,7 +3,7 @@
     <!-- app -->
     <string name="app_name" translatable="false">1, 2, Trip!</string>
     <string name="app_description">Your favorite app for creating and managing group trips</string>
-    <string name="app_version" translatable="false">1.0.0</string>
+    <string name="app_version" translatable="false">1.1.0</string>
 
     <!-- login -->
     <string name="logo">Application logo</string>
