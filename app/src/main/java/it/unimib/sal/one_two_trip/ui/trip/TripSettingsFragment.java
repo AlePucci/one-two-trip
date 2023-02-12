@@ -61,10 +61,13 @@ import it.unimib.sal.one_two_trip.adapter.SettingsParticipantRecyclerViewAdapter
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 import it.unimib.sal.one_two_trip.data.source.storage.RemoteStorage;
 import it.unimib.sal.one_two_trip.data.source.storage.RemoteStorageCallback;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
+import it.unimib.sal.one_two_trip.ui.welcome.UserViewModel;
+import it.unimib.sal.one_two_trip.ui.welcome.UserViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
@@ -236,6 +239,21 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                     LAST_UPDATE);
         }
 
+        UserViewModel userViewModel = null;
+        IUserRepository userRepository = ServiceLocator.getInstance().
+                getUserRepository(application);
+        if (userRepository != null) {
+            userViewModel = new ViewModelProvider(
+                    activity,
+                    new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        } else {
+            Snackbar.make(activity.findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
+
+        if (userViewModel == null || userViewModel.getLoggedUser() == null) return;
+
+        UserViewModel finalUserViewModel = userViewModel;
         this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(
                 getViewLifecycleOwner(),
                 result -> {
@@ -313,9 +331,22 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                                             public void onRemoveClick(String userId) {
                                                 androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
                                                         activity, R.style.Widget_App_CustomAlertDialog);
-                                                alert.setTitle(getString(R.string.trip_delete_participant));
-                                                alert.setMessage(getString(R.string.trip_delete_participant_message));
-                                                alert.setPositiveButton(getString(R.string.trip_delete_participant_positive),
+
+                                                String positive;
+                                                String negative;
+                                                if (userId.equals(finalUserViewModel.getLoggedUser().getId())) {
+                                                    alert.setTitle(getString(R.string.trip_leave));
+                                                    alert.setMessage(getString(R.string.trip_leave_message));
+                                                    positive = getString(R.string.trip_leave_positive);
+                                                    negative = getString(R.string.trip_leave_negative);
+                                                } else {
+                                                    alert.setTitle(getString(R.string.trip_delete_participant));
+                                                    alert.setMessage(getString(R.string.trip_delete_participant_message));
+                                                    positive = getString(R.string.trip_delete_participant_positive);
+                                                    negative = getString(R.string.trip_delete_participant_negative);
+                                                }
+
+                                                alert.setPositiveButton(positive,
                                                         (dialog, which) -> {
                                                             if (viewModel != null) {
                                                                 HashMap<String, Object> map = new HashMap<>();
@@ -327,7 +358,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                                                             }
                                                         });
                                                 alert.setNegativeButton(
-                                                        getString(R.string.trip_delete_participant_negative),
+                                                        negative,
                                                         null);
                                                 alert.show();
                                             }

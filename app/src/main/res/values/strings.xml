@@ -72,16 +72,6 @@
     <string name="trip_new_hint">Name</string>
     <string name="trip_new_positive">Confirm</string>
     <string name="trip_new_negative">@android:string/cancel</string>
-    <string name="trip_join_title">Join trip</string>
-    <string name="trip_join_message">Would you like to join this trip?</string>
-    <string name="trip_join_confirmation_positive">Join</string>
-    <string name="trip_join_confirmation_negative">@android:string/cancel</string>
-    <string name="trip_join_share_message">Join my new trip in 1, 2, Trip! by clicking this link:</string>
-    <string name="share_url">Share the URL</string>
-    <string name="trip_delete_participant">Delete participant</string>
-    <string name="trip_delete_participant_message">Are you sure you want to delete this participant from the trip?</string>
-    <string name="trip_delete_participant_positive">Delete</string>
-    <string name="trip_delete_participant_negative">@android:string/cancel</string>
 
     <!-- trip settings -->
     <string name="trip_logo_upload_failure">Something went wrong during uploading! Please try again</string>
@@ -95,6 +85,20 @@
     <string name="trip_participants_list">Participants:</string>
     <string name="add_participants">Add participants</string>
     <string name="remove_participant">Remove participant</string>
+    <string name="trip_join_title">Join trip</string>
+    <string name="trip_join_message">Would you like to join this trip?</string>
+    <string name="trip_join_confirmation_positive">Join</string>
+    <string name="trip_join_confirmation_negative">@android:string/cancel</string>
+    <string name="trip_join_share_message">Join my new trip in 1, 2, Trip! by clicking this link:</string>
+    <string name="share_url">Share the URL</string>
+    <string name="trip_delete_participant">Delete participant</string>
+    <string name="trip_delete_participant_message">Are you sure you want to delete this participant from the trip?</string>
+    <string name="trip_delete_participant_positive">Delete</string>
+    <string name="trip_delete_participant_negative">@android:string/cancel</string>
+    <string name="trip_leave">Leave trip</string>
+    <string name="trip_leave_message">Are you sure you want to leave this trip?</string>
+    <string name="trip_leave_positive">Leave</string>
+    <string name="trip_leave_negative">@android:string/cancel</string>
 
     <!-- activity -->
     <string name="activity_where_title">Where</string>

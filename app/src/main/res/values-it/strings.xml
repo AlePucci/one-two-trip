@@ -181,6 +181,10 @@
     <string name="trip_delete_participant_message">Sei sicuro di voler rimuovere questo partecipante dal viaggio?</string>
     <string name="trip_delete_participant_positive">Rimuovi</string>
     <string name="trip_delete_participant_negative">@android:string/cancel</string>
+    <string name="trip_leave">Esci dal viaggio</string>
+    <string name="trip_leave_message">Sei sicuro di voler uscire dal viaggio?</string>
+    <string name="trip_leave_positive">Esci</string>
+    <string name="trip_leave_negative">@android:string/cancel</string>
 
     <!-- end -->
 </resources>
