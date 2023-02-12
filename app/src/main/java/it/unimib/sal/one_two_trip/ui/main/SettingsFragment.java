@@ -1,25 +1,29 @@
 package it.unimib.sal.one_two_trip.ui.main;
 
+import static it.unimib.sal.one_two_trip.util.Constants.DARK_THEME;
 import static it.unimib.sal.one_two_trip.util.Constants.HALF_HOUR;
+import static it.unimib.sal.one_two_trip.util.Constants.LIGHT_THEME;
 import static it.unimib.sal.one_two_trip.util.Constants.ONE_DAY;
 import static it.unimib.sal.one_two_trip.util.Constants.ONE_HOUR;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_ACTIVITY_NOTIFICATIONS;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_NOTIFICATIONS_ON;
+import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_THEME;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_TRIP_NOTIFICATIONS;
+import static it.unimib.sal.one_two_trip.util.Constants.SYSTEM_THEME;
 import static it.unimib.sal.one_two_trip.util.Constants.TWELVE_HOURS;
 import static it.unimib.sal.one_two_trip.util.Constants.TWO_DAYS;
 import static it.unimib.sal.one_two_trip.util.Constants.TWO_HOURS;
 
+import android.app.Application;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -36,35 +40,33 @@ import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link SettingsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment that shows the settings of the app, such as notifications and theme.
+ * It is used by the {@link HomeActivity}.
  */
 public class SettingsFragment extends Fragment {
 
     private static final String TAG = SettingsFragment.class.getSimpleName();
 
     private MaterialCardView notifications_cardview;
-    private TextView notifications_disabled;
     private SwitchMaterial notifications_switch;
-    private ToggleButton twelve_hours_trip;
-    private ToggleButton one_day_trip;
-    private ToggleButton two_days_trip;
-    private ToggleButton half_hour_activity;
-    private ToggleButton one_hour_activity;
-    private ToggleButton two_hours_activity;
+    private MaterialButton twelve_hours_trip;
+    private MaterialButton one_day_trip;
+    private MaterialButton two_days_trip;
+    private MaterialButton half_hour_activity;
+    private MaterialButton one_hour_activity;
+    private MaterialButton two_hours_activity;
+    private MaterialButton theme_system;
+    private MaterialButton theme_light;
+    private MaterialButton theme_dark;
+    private Application application;
 
     public SettingsFragment() {
-    }
-
-    @NonNull
-    public static SettingsFragment newInstance() {
-        return new SettingsFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.application = requireActivity().getApplication();
     }
 
     @Override
@@ -77,21 +79,42 @@ public class SettingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        BottomNavigationView bottomNavigationView = requireActivity()
+        androidx.fragment.app.FragmentActivity activity = requireActivity();
+        BottomNavigationView bottomNavigationView = activity
                 .findViewById(R.id.bottom_navigation);
-        FloatingActionButton fab = requireActivity().findViewById(R.id.fab);
+        FloatingActionButton fab = activity.findViewById(R.id.fab);
         bottomNavigationView.setVisibility(View.GONE);
         fab.setVisibility(View.GONE);
 
         this.notifications_switch = view.findViewById(R.id.notifications_switch);
         this.notifications_cardview = view.findViewById(R.id.notifications_cardview);
-        this.notifications_disabled = view.findViewById(R.id.notifications_disabled);
         this.twelve_hours_trip = view.findViewById(R.id.trip_twelve_hours);
         this.one_day_trip = view.findViewById(R.id.trip_one_day);
         this.two_days_trip = view.findViewById(R.id.trip_two_days);
         this.half_hour_activity = view.findViewById(R.id.activity_half_hour);
         this.one_hour_activity = view.findViewById(R.id.activity_one_hour);
         this.two_hours_activity = view.findViewById(R.id.activity_two_hours);
+        this.theme_system = view.findViewById(R.id.system_theme);
+        this.theme_light = view.findViewById(R.id.light_theme);
+        this.theme_dark = view.findViewById(R.id.dark_theme);
+
+        this.theme_system.setOnClickListener(v -> {
+            this.theme_system.setChecked(true);
+            this.theme_light.setChecked(false);
+            this.theme_dark.setChecked(false);
+        });
+
+        this.theme_light.setOnClickListener(v -> {
+            this.theme_light.setChecked(true);
+            this.theme_system.setChecked(false);
+            this.theme_dark.setChecked(false);
+        });
+
+        this.theme_dark.setOnClickListener(v -> {
+            this.theme_dark.setChecked(true);
+            this.theme_system.setChecked(false);
+            this.theme_light.setChecked(false);
+        });
         MaterialButton save_button = view.findViewById(R.id.save_settings_button);
 
         this.restoreSettings();
@@ -102,14 +125,27 @@ public class SettingsFragment extends Fragment {
         save_button.setOnClickListener(this::saveSettings);
     }
 
-    private void toggleNotificationsList(boolean isVisible) {
-        this.notifications_cardview.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        this.notifications_disabled.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.restoreSettings();
     }
 
+    /**
+     * Hides or shows the notifications settings cardview.
+     *
+     * @param isVisible true if the cardview must be visible, false otherwise.
+     */
+    private void toggleNotificationsList(boolean isVisible) {
+        this.notifications_cardview.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    /**
+     * Saves the settings of the user in the shared preferences.
+     */
     private void saveSettings(View v) {
         SharedPreferencesUtil sharedPreferencesUtil
-                = new SharedPreferencesUtil(requireActivity().getApplication());
+                = new SharedPreferencesUtil(this.application);
         boolean notifications = this.notifications_switch.isChecked();
 
         if (notifications) {
@@ -146,6 +182,30 @@ public class SettingsFragment extends Fragment {
                     SHARED_PREFERENCES_ACTIVITY_NOTIFICATIONS, activity_notifications);
         }
 
+        // THEME SWITCH
+        if (this.theme_system.isChecked()) {
+            theme_dark.setChecked(false);
+            theme_light.setChecked(false);
+            sharedPreferencesUtil.writeStringData(
+                    SHARED_PREFERENCES_FILE_NAME, SHARED_PREFERENCES_THEME,
+                    SYSTEM_THEME);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        } else if (this.theme_dark.isChecked()) {
+            theme_system.setChecked(false);
+            theme_light.setChecked(false);
+            sharedPreferencesUtil.writeStringData(
+                    SHARED_PREFERENCES_FILE_NAME, SHARED_PREFERENCES_THEME,
+                    DARK_THEME);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else if (this.theme_light.isChecked()) {
+            theme_system.setChecked(false);
+            theme_dark.setChecked(false);
+            sharedPreferencesUtil.writeStringData(
+                    SHARED_PREFERENCES_FILE_NAME, SHARED_PREFERENCES_THEME,
+                    LIGHT_THEME);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
         sharedPreferencesUtil.writeStringData(
                 SHARED_PREFERENCES_FILE_NAME, SHARED_PREFERENCES_NOTIFICATIONS_ON,
                 String.valueOf(notifications));
@@ -153,9 +213,12 @@ public class SettingsFragment extends Fragment {
         Snackbar.make(v, getString(R.string.settings_saved), Snackbar.LENGTH_SHORT).show();
     }
 
+    /**
+     * Restores the settings of the user from the shared preferences.
+     */
     private void restoreSettings() {
         SharedPreferencesUtil sharedPreferencesUtil
-                = new SharedPreferencesUtil(requireActivity().getApplication());
+                = new SharedPreferencesUtil(this.application);
 
         boolean notifications = Boolean.parseBoolean(
                 sharedPreferencesUtil.readStringData(
@@ -194,6 +257,29 @@ public class SettingsFragment extends Fragment {
             }
         } else {
             this.toggleNotificationsList(false);
+            this.twelve_hours_trip.setChecked(false);
+            this.one_day_trip.setChecked(false);
+            this.two_days_trip.setChecked(false);
+            this.half_hour_activity.setChecked(false);
+            this.one_hour_activity.setChecked(false);
+            this.two_hours_activity.setChecked(false);
+        }
+
+        String theme = sharedPreferencesUtil.readStringData(
+                SHARED_PREFERENCES_FILE_NAME, SHARED_PREFERENCES_THEME);
+
+        if (theme == null || theme.isEmpty() || theme.equals(SYSTEM_THEME)) {
+            this.theme_system.setChecked(true);
+            this.theme_dark.setChecked(false);
+            this.theme_light.setChecked(false);
+        } else if (theme.equals(LIGHT_THEME)) {
+            this.theme_light.setChecked(true);
+            this.theme_dark.setChecked(false);
+            this.theme_system.setChecked(false);
+        } else if (theme.equals(DARK_THEME)) {
+            this.theme_dark.setChecked(true);
+            this.theme_system.setChecked(false);
+            this.theme_light.setChecked(false);
         }
     }
 }

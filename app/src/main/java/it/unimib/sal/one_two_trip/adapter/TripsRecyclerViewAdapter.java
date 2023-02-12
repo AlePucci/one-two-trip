@@ -11,20 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.model.Activity;
-import it.unimib.sal.one_two_trip.model.Trip;
-import it.unimib.sal.one_two_trip.util.Utility;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
 
 /**
  * Custom adapter that extends RecyclerView.Adapter to show an ArrayList of Trips
- * with a RecyclerView.
+ * with a RecyclerView (in the HomeFragment)
  */
 public class TripsRecyclerViewAdapter
         extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -40,12 +37,19 @@ public class TripsRecyclerViewAdapter
     public TripsRecyclerViewAdapter(List<Trip> tripList, Application application,
                                     boolean tripsCompleted,
                                     OnItemClickListener onItemClickListener) {
+        super();
         this.tripList = tripList;
         this.onItemClickListener = onItemClickListener;
         this.application = application;
         this.tripsCompleted = tripsCompleted;
     }
 
+    /**
+     * Check if the item at the given position is the header.
+     *
+     * @param position the position of the item
+     * @return true if the item is the header, false otherwise
+     */
     private boolean isHeader(int position) {
         return position == 0;
     }
@@ -75,7 +79,10 @@ public class TripsRecyclerViewAdapter
         if (holder instanceof HeaderViewHolder) {
             ((HeaderViewHolder) holder).bind(this.tripList.size(), this.tripsCompleted);
         } else {
-            ((TripViewHolder) holder).bind(this.tripList.get(position - 1));
+            Trip trip = this.tripList.get(position - 1);
+            if (trip == null) return;
+
+            ((TripViewHolder) holder).bind(trip);
         }
     }
 
@@ -92,15 +99,20 @@ public class TripsRecyclerViewAdapter
      * a RecyclerView item.
      */
     public interface OnItemClickListener {
+
         void onTripShare(Trip trip);
 
         void onTripClick(Trip trip);
 
         void onButtonClick(Trip trip);
+
+        void onAttachmentsClick(Trip trip, Activity activity);
+
+        void onActivityClick(Trip trip, Activity activity);
     }
 
     /**
-     * Custom ViewHolder to bind data to the RecyclerView items.
+     * Custom ViewHolder to bind data to the RecyclerView items (trips).
      */
     public class TripViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -131,30 +143,26 @@ public class TripsRecyclerViewAdapter
                 List<Activity> activityList = new ArrayList<>(trip.getActivity().getActivityList());
 
                 if (!trip.isCompleted()) {
-                    for (Iterator<Activity> i = activityList.iterator(); i.hasNext(); ) {
-                        it.unimib.sal.one_two_trip.model.Activity activity = i.next();
-                        if (activity == null || activity.isCompleted()) {
-                            i.remove();
-                        }
-                    }
+                    activityList.removeIf(activity -> activity == null || activity.isCompleted());
                 }
+
                 ActivitiesRecyclerViewAdapter activitiesRecyclerViewAdapter =
-                        new ActivitiesRecyclerViewAdapter(activityList,
+                        new ActivitiesRecyclerViewAdapter(
+                                activityList,
                                 new ActivitiesRecyclerViewAdapter.OnItemClickListener() {
                                     @Override
                                     public void onAttachmentsClick(Activity activity) {
-                                        Snackbar.make(itemView, activity.getAttachment().toString(),
-                                                Snackbar.LENGTH_SHORT).show();
+                                        onItemClickListener.onAttachmentsClick(trip, activity);
+
                                     }
 
                                     @Override
                                     public void onActivityClick(Activity activity) {
-                                        Snackbar.make(itemView, activity.getTitle(),
-                                                Snackbar.LENGTH_SHORT).show();
+                                        onItemClickListener.onActivityClick(trip, activity);
                                     }
                                 });
 
-                this.activityView.setLayoutManager(layoutManager);
+                this.activityView.setLayoutManager(this.layoutManager);
                 this.activityView.setAdapter(activitiesRecyclerViewAdapter);
             }
 
@@ -177,14 +185,14 @@ public class TripsRecyclerViewAdapter
                 onItemClickListener.onTripShare(tripList.get(getAdapterPosition() - 1));
             } else if (v.getId() == R.id.more_button) {
                 onItemClickListener.onButtonClick(tripList.get(getAdapterPosition() - 1));
-            } else {
+            } else if (v.getId() == R.id.trip_card_view) {
                 onItemClickListener.onTripClick(tripList.get(getAdapterPosition() - 1));
             }
         }
     }
 
     /**
-     * Custom ViewHolder to bind data to the RecyclerView items (moving activities).
+     * Custom ViewHolder to bind data to the RecyclerView items (header).
      */
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
 

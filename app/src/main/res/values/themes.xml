@@ -10,18 +10,13 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
 
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-        <!-- Customize your theme here. -->
+        <item name="drawerArrowStyle">@style/Widget.App.DrawerArrowStyle</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="Widget.App.CardView" parent="Widget.Material3.CardView.Elevated">
         <item name="cardBackgroundColor">@color/cardview_light_background</item>
-    </style>
-
-    <style name="Widget.App.ShareButton" parent="Widget.Material3.Button.IconButton">
-        <item name="iconTint">?attr/colorOnSurface</item>
     </style>
 
     <style name="Widget.App.TripTimeAppearance" parent="">
@@ -29,13 +24,6 @@
         <item name="fontFamily">sans-serif-light</item>
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:textStyle">normal</item>
-    </style>
-
-    <style name="Widget.App.TripLocationAppearance" parent="">
-        <item name="android:textColor">?attr/colorOnSurface</item>
-        <item name="fontFamily">sans-serif-light</item>
-        <item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="Widget.App.ToolbarTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
@@ -54,9 +42,22 @@
 
     </style>
 
-    <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+    <style name="Widget.App.DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
         <item name="color">@android:color/black</item>
+    </style>
+
+    <style name="Widget.App.RoundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">15dp</item>
+    </style>
+
+    <style name="Widget.App.MaterialButton" parent="Widget.Material3.Button.IconButton.Filled">
+        <item name="backgroundTint">@drawable/settings_button</item>
+    </style>
+
+    <style name="Widget.App.CustomAlertDialog" parent="Theme.Material3.DayNight.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/dialog_background</item>
     </style>
 
 </resources>

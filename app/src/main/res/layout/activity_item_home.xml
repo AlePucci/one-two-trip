@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth="wrap_content"
-        tools:text="@string/activity_date" />
+        tools:text="@string/activity_when_title" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/activity_internal_layout"

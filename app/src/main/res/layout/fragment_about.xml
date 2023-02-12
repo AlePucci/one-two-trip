@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scroll_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ui.main.AboutFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/about_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".ui.main.AboutFragment">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/app_name"
@@ -158,9 +158,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:autoLink="email"
+            android:contentDescription="@string/contact_email_description"
             android:gravity="center"
             android:minHeight="48dp"
-            android:contentDescription="@string/contact_email_description"
             android:text="@string/app_email"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"

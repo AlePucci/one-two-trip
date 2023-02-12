@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_where_card"
+    style="@style/Widget.Material3.CardView.Elevated"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".ui.trip.activity.ActivityLocationFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/activity_where_constraint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp">
+
+        <ImageView
+            android:id="@+id/activity_where_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/activity_where_description"
+            android:src="@drawable/ic_baseline_pin_drop_24"
+            app:layout_constraintBottom_toBottomOf="@+id/activity_where_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/activity_where_title"
+            style="@style/MaterialAlertDialog.Material3.Title.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/activity_where_title"
+            app:layout_constraintStart_toEndOf="@+id/activity_where_icon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/activity_where1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_where_title"
+            tools:text="Milano" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/activity_where_locate1"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/activity_locate_button"
+            app:icon="@drawable/ic_baseline_my_location_24"
+            app:layout_constraintBottom_toBottomOf="@+id/activity_where1"
+            app:layout_constraintEnd_toStartOf="@+id/activity_where_navigation1"
+            app:layout_constraintTop_toTopOf="@+id/activity_where1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/activity_where_navigation1"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/activity_navigate_button"
+            app:icon="@drawable/ic_baseline_navigation_24"
+            app:layout_constraintBottom_toBottomOf="@+id/activity_where1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/activity_where1" />
+
+        <ImageView
+            android:id="@+id/activity_where_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:contentDescription="@string/activity_where_arrow_description"
+            android:src="@drawable/ic_baseline_arrow_downward_24"
+            app:layout_constraintEnd_toStartOf="@+id/activity_where_locate1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_where1" />
+
+        <TextView
+            android:id="@+id/activity_where2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_where_arrow"
+            tools:text="Parigi" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/activity_where_locate2"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/activity_locate_button"
+            app:icon="@drawable/ic_baseline_my_location_24"
+            app:layout_constraintBottom_toBottomOf="@+id/activity_where2"
+            app:layout_constraintEnd_toStartOf="@+id/activity_where_navigation2"
+            app:layout_constraintTop_toTopOf="@+id/activity_where2" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/activity_where_navigation2"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/activity_navigate_button"
+            app:icon="@drawable/ic_baseline_navigation_24"
+            app:layout_constraintBottom_toBottomOf="@+id/activity_where2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/activity_where2" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/activity_where_edit"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/activity_edit_button"
+            app:icon="@drawable/ic_baseline_edit_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_where_navigation2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

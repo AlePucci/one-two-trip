@@ -8,9 +8,11 @@
     tools:context="ui.main.PastTripsFragment">
 
     <LinearLayout
-        android:id="@+id/no_trips_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/no_trips_layout_pasttrips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,42 +21,31 @@
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
-            android:id="@+id/no_trips_image"
+            android:id="@+id/no_trips_image_pasttrips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="100dp"
             android:layout_marginBottom="10dp"
             android:adjustViewBounds="true"
             android:alpha="0.95"
             android:contentDescription="@string/no_trips_description"
+            android:gravity="center"
             android:maxWidth="500dp"
             android:maxHeight="500dp"
             android:src="@drawable/no_trips"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/no_trips_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintWidth="wrap_content" />
+            android:visibility="gone" />
 
         <TextView
-            android:id="@+id/no_trips_text"
+            android:id="@+id/no_trips_text_pasttrips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:gravity="center"
+            android:textAlignment="center"
             android:textSize="20sp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth="wrap_content" />
+            android:visibility="gone" />
     </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
+        android:id="@+id/swipe_refresh_layout_pasttrips"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
@@ -71,7 +62,7 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <ProgressBar
-        android:id="@+id/progress_bar"
+        android:id="@+id/progress_bar_pasttrips"
         style="?attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

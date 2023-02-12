@@ -1,15 +1,22 @@
 package it.unimib.sal.one_two_trip.ui.main;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -17,9 +24,22 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 import it.unimib.sal.one_two_trip.R;
+import it.unimib.sal.one_two_trip.data.database.model.Person;
+import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
+import it.unimib.sal.one_two_trip.ui.welcome.UserViewModel;
+import it.unimib.sal.one_two_trip.ui.welcome.UserViewModelFactory;
+import it.unimib.sal.one_two_trip.ui.welcome.WelcomeActivity;
+import it.unimib.sal.one_two_trip.util.ServiceLocator;
 
 /**
  * The main activity of the app that a user sees after logging in.
@@ -39,6 +59,28 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        ITripsRepository tripsRepository = ServiceLocator.getInstance()
+                .getTripsRepository(getApplication());
+        TripsViewModel viewModel = null;
+        if (tripsRepository != null) {
+            viewModel = new ViewModelProvider(this,
+                    new TripsViewModelFactory(tripsRepository)).get(TripsViewModel.class);
+        } else {
+            Snackbar.make(findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
+
+        IUserRepository userRepository = ServiceLocator.getInstance()
+                .getUserRepository(getApplication());
+        UserViewModel userViewModel = null;
+        if (userRepository != null) {
+            userViewModel = new ViewModelProvider(this,
+                    new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        } else {
+            Snackbar.make(findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
 
         MaterialToolbar toolbar = findViewById(R.id.top_appbar);
         setSupportActionBar(toolbar);
@@ -80,12 +122,22 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                // TODO OPEN ACCOUNT PAGE
                 return false;
             }
         });
 
+        UserViewModel finalUserViewModel = userViewModel;
+        TripsViewModel finalViewModel = viewModel;
         drawerNav.getMenu().findItem(R.id.logout).setOnMenuItemClickListener(item -> {
-            /* TO DO: LOGOUT */
+            if (finalUserViewModel != null) {
+                finalUserViewModel.logout();
+                Intent intent = new Intent(HomeActivity.this, WelcomeActivity.class);
+                startActivity(intent);
+                finish();
+                // RESET THEME
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+            }
             return false;
         });
 
@@ -94,6 +146,48 @@ public class HomeActivity extends AppCompatActivity {
                 -> {
             if (navDestination.getId() == R.id.fragment_past_trips) {
                 drawerNav.getMenu().getItem(0).setChecked(true);
+            }
+        });
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+
+        fab.setOnClickListener(view -> {
+            if (finalViewModel != null) {
+                androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
+                        this, R.style.Widget_App_CustomAlertDialog);
+                EditText input = new EditText(this);
+                FrameLayout container = new FrameLayout(this);
+                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.setMargins(50, 0, 50, 0);
+                container.addView(input);
+                input.setLayoutParams(params);
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                alert.setTitle(getString(R.string.trip_new_title));
+                alert.setMessage(getString(R.string.trip_new_descr));
+                alert.setView(container);
+                alert.setPositiveButton(getString(R.string.trip_new_positive),
+                        (dialog, which) -> {
+                            if (finalUserViewModel != null && finalUserViewModel.getLoggedUser() != null) {
+                                Person user = finalUserViewModel.getLoggedUser();
+                                String title = input.getText().toString().trim();
+                                if (!title.isEmpty()) {
+                                    Trip trip = new Trip();
+                                    trip.setId(UUID.randomUUID().toString());
+                                    trip.setTitle(title);
+                                    trip.setTripOwner(user.getId());
+                                    trip.setParticipating(true);
+
+                                    ArrayList<Person> participants = new ArrayList<>();
+                                    participants.add(user);
+                                    trip.getParticipant().setPersonList(participants);
+                                    finalViewModel.insertTrip(trip);
+                                }
+                            }
+                        });
+                alert.setNegativeButton(getString(R.string.trip_new_negative), null);
+                alert.show();
             }
         });
     }
@@ -112,6 +206,4 @@ public class HomeActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
-
 }

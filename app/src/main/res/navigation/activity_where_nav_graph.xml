@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_where_nav_graph"
+    app:startDestination="@id/activityLocationFragment">
+
+    <fragment
+        android:id="@+id/activityLocationFragment"
+        android:name="it.unimib.sal.one_two_trip.ui.trip.activity.ActivityLocationFragment"
+        android:label="fragment_activity_location"
+        tools:layout="@layout/fragment_activity_location">
+        <action
+            android:id="@+id/action_activityLocationFragment_to_activityLocationEditFragment"
+            app:destination="@id/activityLocationEditFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/activity_where_nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/activityLocationEditFragment"
+        android:name="it.unimib.sal.one_two_trip.ui.trip.activity.ActivityLocationEditFragment"
+        android:label="fragment_activity_location_edit"
+        tools:layout="@layout/fragment_activity_location_edit">
+        <action
+            android:id="@+id/action_activityLocationEditFragment_to_activityLocationFragment"
+            app:destination="@id/activityLocationFragment"
+            app:popUpTo="@id/activity_where_nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>

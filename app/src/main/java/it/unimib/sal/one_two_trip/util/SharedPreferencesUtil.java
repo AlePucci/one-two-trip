@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * Utility class to read and write data using SharedPreferences API.
- * Doc can be read here: https://developer.android.com/training/data-storage/shared-preferences
+ * Doc can be read <a href="https://developer.android.com/training/data-storage/shared-preferences">here.</a>
  */
 public class SharedPreferencesUtil {
 
@@ -26,7 +26,7 @@ public class SharedPreferencesUtil {
      * @param value                     The value to write associated with the key.
      */
     public void writeStringData(String sharedPreferencesFileName, String key, String value) {
-        SharedPreferences sharedPref = application.getSharedPreferences(sharedPreferencesFileName,
+        SharedPreferences sharedPref = this.application.getSharedPreferences(sharedPreferencesFileName,
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(key, value);
@@ -41,7 +41,7 @@ public class SharedPreferencesUtil {
      * @param value                     The value to write associated with the key.
      */
     public void writeStringSetData(String sharedPreferencesFileName, String key, Set<String> value) {
-        SharedPreferences sharedPref = application.getSharedPreferences(sharedPreferencesFileName,
+        SharedPreferences sharedPref = this.application.getSharedPreferences(sharedPreferencesFileName,
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putStringSet(key, value);
@@ -57,7 +57,7 @@ public class SharedPreferencesUtil {
      * @return The String value associated with the key passed as argument.
      */
     public String readStringData(String sharedPreferencesFileName, String key) {
-        SharedPreferences sharedPref = application.getSharedPreferences(sharedPreferencesFileName,
+        SharedPreferences sharedPref = this.application.getSharedPreferences(sharedPreferencesFileName,
                 Context.MODE_PRIVATE);
         return sharedPref.getString(key, null);
     }
@@ -71,8 +71,21 @@ public class SharedPreferencesUtil {
      * @return The set of String values associated with the key passed as argument.
      */
     public Set<String> readStringSetData(String sharedPreferencesFileName, String key) {
-        SharedPreferences sharedPref = application.getSharedPreferences(sharedPreferencesFileName,
+        SharedPreferences sharedPref = this.application.getSharedPreferences(sharedPreferencesFileName,
                 Context.MODE_PRIVATE);
         return sharedPref.getStringSet(key, null);
+    }
+
+    /**
+     * Deletes data saved in files created with SharedPreferences API.
+     *
+     * @param sharedPreferencesFileName The file name where the information is saved.
+     */
+    public void deleteAll(String sharedPreferencesFileName) {
+        SharedPreferences sharedPref = this.application.getSharedPreferences(sharedPreferencesFileName,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.clear();
+        editor.apply();
     }
 }

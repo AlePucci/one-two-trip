@@ -9,6 +9,10 @@ import androidx.annotation.NonNull;
 
 import it.unimib.sal.one_two_trip.R;
 
+/**
+ * Utility class to get the proper message to be show
+ * to the user when an error occurs.
+ */
 public class ErrorMessagesUtil {
 
     private final Application application;

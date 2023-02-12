@@ -3,9 +3,30 @@
     <!-- app -->
     <string name="app_name" translatable="false">1, 2, Trip!</string>
     <string name="app_description">Your favorite app for creating and managing group trips</string>
-    <string name="app_version" translatable="false">1.0.0</string>
+    <string name="app_version" translatable="false">1.1.0</string>
+
+    <!-- login -->
+    <string name="logo">Application logo</string>
+    <string name="sign_up">Sign up</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="login">Login</string>
+    <string name="email">E-mail</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="not_registered_yet">Not registered yet?</string>
+    <string name="or">OR</string>
+    <string name="google_login">Login with Google</string>
+    <string name="register">Register</string>
+    <string name="reset_password">Reset password</string>
+    <string name="forgot_password_text">Enter the email address associated with your account and we will send you a link to reset your password.</string>
+    <string name="check_login_data_message">Field(s) not valid!</string>
+    <string name="reset_password_mail_sent">Password reset e-mail has been sent!</string>
 
     <!-- home -->
+    <string name="trip_map_description">Map of the trip</string>
+    <string name="trip_fab_label">Add Activity</string>
     <string name="coming_trips">Coming trips</string>
     <string name="past_trips">Past trips</string>
     <string name="new_trip_fab_text">New Trip</string>
@@ -33,11 +54,94 @@
     <string name="share_trip_text_past">See the fantastic places I visited! I have planned the entire trip using the 1, 2, Trip app. Download it now!</string>
     <string name="share_trip_using">Share this trip using…</string>
 
-    <!-- dev names -->
-    <string name="developer_pucci" translatable="false">Alessandro Pucci (869177)</string>
-    <string name="developer_ruiz" translatable="false">Matias Aldo Ruiz (869139)</string>
-    <string name="developer_disaro" translatable="false">Alessio Disarò (866247)</string>
-    <string name="developer_saad" translatable="false">Ebraam Saad (856096)</string>
+    <!-- trip -->
+    <string name="trip_delete_confirmation">Are you sure you want to delete this trip? This action is irreversible.</string>
+    <string name="trip_delete_confirmation_title">Delete trip</string>
+    <string name="trip_delete_confirmation_positive">Delete</string>
+    <string name="trip_delete_confirmation_negative">@android:string/cancel</string>
+    <string name="trip_title_change">New name:</string>
+    <string name="trip_title_change_title">Change trip name</string>
+    <string name="trip_title_change_positive">Change</string>
+    <string name="trip_title_change_negative">@android:string/cancel</string>
+    <string name="trip_description_change">Description:</string>
+    <string name="trip_description_title">Change trip description</string>
+    <string name="trip_description_positive">Change</string>
+    <string name="trip_description_negative">@android:string/cancel</string>
+    <string name="trip_new_title">Create new trip</string>
+    <string name="trip_new_descr">New trip name:</string>
+    <string name="trip_new_hint">Name</string>
+    <string name="trip_new_positive">Confirm</string>
+    <string name="trip_new_negative">@android:string/cancel</string>
+
+    <!-- trip settings -->
+    <string name="trip_logo_upload_failure">Something went wrong during uploading! Please try again</string>
+    <string name="trip_logo_download_failure">Something went wrong during downloading! Please try again</string>
+    <string name="trip_logo_pick_photo">Pick a photo for your trip</string>
+    <string name="trip_participants_plural" tools:ignore="PluralsCandidate">%1$d participants</string>
+    <string name="trip_participants_singular">1 participant</string>
+    <string name="trip_activities_plural" tools:ignore="PluralsCandidate">%1$d activities added</string>
+    <string name="trip_activities_singular">1 activity added</string>
+    <string name="trip_add_description">Add description…</string>
+    <string name="trip_participants_list">Participants:</string>
+    <string name="add_participants">Add participants</string>
+    <string name="remove_participant">Remove participant</string>
+    <string name="trip_join_title">Join trip</string>
+    <string name="trip_join_message">Would you like to join this trip?</string>
+    <string name="trip_join_confirmation_positive">Join</string>
+    <string name="trip_join_confirmation_negative">@android:string/cancel</string>
+    <string name="trip_join_share_message">Join my new trip in 1, 2, Trip! by clicking this link:</string>
+    <string name="share_url">Share the URL</string>
+    <string name="trip_delete_participant">Delete participant</string>
+    <string name="trip_delete_participant_message">Are you sure you want to delete this participant from the trip?</string>
+    <string name="trip_delete_participant_positive">Delete</string>
+    <string name="trip_delete_participant_negative">@android:string/cancel</string>
+    <string name="trip_leave">Leave trip</string>
+    <string name="trip_leave_message">Are you sure you want to leave this trip?</string>
+    <string name="trip_leave_positive">Leave</string>
+    <string name="trip_leave_negative">@android:string/cancel</string>
+
+    <!-- activity -->
+    <string name="activity_where_title">Where</string>
+    <string name="activity_when_title">When</string>
+    <string name="activity_field_error">Field value is not valid.</string>
+    <string name="activity_descr_title">Description</string>
+    <string name="activity_participant_title">Participants</string>
+    <string name="activity_not_participants">Not participating</string>
+    <string name="activity_delete_confirmation">Are you sure you want to delete this activity? This action is irreversible.</string>
+    <string name="activity_delete_confirmation_title">Delete activity</string>
+    <string name="activity_delete_confirmation_positive">Delete</string>
+    <string name="activity_delete_confirmation_negative">@android:string/cancel</string>
+    <string name="activity_title_change">New name:</string>
+    <string name="activity_title_change_title">Change activity name</string>
+    <string name="activity_title_change_positive">Change</string>
+    <string name="activity_title_change_negative">@android:string/cancel</string>
+    <string name="activity_new_title">Create new activity</string>
+    <string name="activity_new_title_descr">Name:</string>
+    <string name="activity_new_title_hint">Name</string>
+    <string name="activity_new_confirmation_positive">Confirm</string>
+    <string name="activity_new_confirmation_negative">@android:string/cancel</string>
+    <string name="activity_new_moving">Is this a journey? (i.e. flight)</string>
+    <string name="activity_new_when_description">Choose the date or dates for the activity</string>
+    <string name="activity_new_where_description">Choose the location or locations of the activity</string>
+    <string name="activity_new_participant_description">Pick the participants of the activity</string>
+    <string name="activity_new_when_arrow_description">Second date:</string>
+    <string name="activity_new_where_arrow_description">Second location:</string>
+    <string name="activity_new_descr_description">Write the description of the activity</string>
+    <string name="activity_when_description">Edit the date or dates for the activity</string>
+    <string name="activity_where_description">Edit the location or locations of the activity</string>
+    <string name="activity_participant_description">Edit the participants of the activity</string>
+    <string name="activity_when_arrow_description">Second date:</string>
+    <string name="activity_where_arrow_description">Second location:</string>
+    <string name="activity_descr_description">Edit the description of the activity</string>
+    <string name="activity_drag_button">Drag</string>
+    <string name="participant_item_description">Participant</string>
+    <string name="activity_edit_button">Edit</string>
+    <string name="activity_confirm_button">Confirm</string>
+    <string name="activity_locate_button">Locate on the map</string>
+    <string name="activity_navigate_button">Navigate</string>
+    <string name="activity_add_to_calendar_button">Add to calendar</string>
+    <string name="activity_departure">departure</string>
+    <string name="activity_arrival">arrival</string>
 
     <!-- about -->
     <string name="made_by">Made with 💛 by:</string>
@@ -48,6 +152,12 @@
     <string name="version">Version:</string>
     <string name="github" translatable="false">Github</string>
     <string name="contact_email_description">Contact us at this email address</string>
+
+    <!-- dev names -->
+    <string name="developer_pucci" translatable="false">Alessandro Pucci (869177)</string>
+    <string name="developer_ruiz" translatable="false">Matias Aldo Ruiz (869139)</string>
+    <string name="developer_disaro" translatable="false">Alessio Disarò (866247)</string>
+    <string name="developer_saad" translatable="false">Ebraam Saad (856096)</string>
 
     <!-- settings -->
     <string name="settings_title">Settings</string>
@@ -61,18 +171,15 @@
     <string name="twelve_hours">12h</string>
     <string name="one_day">1d</string>
     <string name="two_days">2d</string>
-    <string name="half_hour_extended">30 minutes</string>
-    <string name="one_hour_extended">1 hour</string>
-    <string name="two_hours_extended">2 hours</string>
-    <string name="three_hours_extended">3 hours</string>
-    <string name="twelve_hours_extended">12 hours</string>
-    <string name="one_day_extended">1 day</string>
-    <string name="two_days_extended">2 days</string>
     <string name="settings_saved">Settings saved successfully</string>
     <string name="save">Save</string>
     <string name="notifications_disabled">Notifications are disabled</string>
     <string name="notifications_description">Notifications switch</string>
     <string name="settings_save_description">Save settings</string>
+    <string name="theme">Theme:</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light" translatable="false">☀</string>
+    <string name="theme_dark" translatable="false">🌙</string>
 
     <!-- menu -->
     <string name="menu_home">Home</string>
@@ -80,19 +187,39 @@
     <string name="menu_about">About</string>
     <string name="menu_logout">Logout</string>
     <string name="menu_account">Account</string>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_rename">Rename</string>
 
-    <!-- notification -->
+    <!-- notification text-->
     <string name="notification_text_trip">Hey, your trip to %1$s is coming in less than %2$s!</string>
     <string name="notification_text_activity">Hey, %1$s is coming in less than %2$s!</string>
+    <string name="half_hour_extended">30 minutes</string>
+    <string name="one_hour_extended">1 hour</string>
+    <string name="two_hours_extended">2 hours</string>
+    <string name="three_hours_extended">3 hours</string>
+    <string name="twelve_hours_extended">12 hours</string>
+    <string name="one_day_extended">1 day</string>
+    <string name="two_days_extended">2 days</string>
 
     <!-- errors -->
     <string name="api_key_error">API key not valid or maximum number of requests reached</string>
-    <string name="unexpected_error">Unexpected error</string>
+    <string name="unexpected_error">Unexpected error. Please retry later.</string>
     <string name="error_json_parsing">Error! Please try again</string>
     <string name="error_retrieving_trips">Error while retrieving trips.</string>
     <string name="no_internet_error">Error! You have no connection at the moment. Please retry later.</string>
+    <string name="error_no_google_account_found_message">No Google account found!</string>
+    <string name="error_password_too_weak">Password is too weak! It should be at least %1$d characters long!</string>
+    <string name="error_email_not_valid">E-mail is not valid!</string>
+    <string name="error_password_dont_match">Passwords don\'t match!</string>
+    <string name="error_empty_name">Name is empty!</string>
+    <string name="error_empty_surname">Surname is empty!</string>
+    <string name="error_user_collision_message">The e-mail address is already in use!</string>
+    <string name="error_login_user_or_password_message">E-mail or password is incorrect!</string>
     <string name="no_shareable_activities">There are no activities to share here!</string>
+    <string name="no_shareable_activities_2">There are no static activities to share here!</string>
     <string name="share_trip_error">Something went wrong! Please try again</string>
+    <string name="error_user_doesnt_exists">User doesn\'t exists!</string>
+    <string name="error_password_empty">Password is empty!</string>
 
     <!-- end -->
 </resources>

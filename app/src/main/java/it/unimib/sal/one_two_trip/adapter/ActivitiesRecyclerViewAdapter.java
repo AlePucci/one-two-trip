@@ -17,16 +17,16 @@ import java.text.DateFormat;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.model.Activity;
+import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.util.Utility;
 
 /**
  * Custom adapter that extends RecyclerView.Adapter to show an ArrayList of Activities
- * with a RecyclerView.
+ * with a RecyclerView (in the HomeFragment)
  */
 public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int ACTIVITY = 0;
+    private static final int STATIC_ACTIVITY = 0;
     private static final int MOVING_ACTIVITY = 1;
 
     private final List<Activity> activityList;
@@ -34,6 +34,7 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
     public ActivitiesRecyclerViewAdapter(List<Activity> activityList,
                                          OnItemClickListener onItemClickListener) {
+        super();
         this.activityList = activityList;
         this.onItemClickListener = onItemClickListener;
     }
@@ -46,7 +47,7 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                 .equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
             return MOVING_ACTIVITY;
         }
-        return ACTIVITY;
+        return STATIC_ACTIVITY;
     }
 
     @NonNull
@@ -105,13 +106,14 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
      * a RecyclerView item.
      */
     public interface OnItemClickListener {
+
         void onAttachmentsClick(Activity activity);
 
         void onActivityClick(Activity activity);
     }
 
     /**
-     * Custom ViewHolder to bind data to the RecyclerView items (activities).
+     * Custom ViewHolder to bind data to the RecyclerView items (static activities).
      */
     public class ActivityViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
@@ -136,21 +138,23 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
 
         public void bind(@NonNull Activity activity, int position) {
             this.activityName.setText(activity.getTitle());
+
+            long start_date = activity.getStart_date();
             this.activityStartTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT)
-                    .format(activity.getStart_date()));
+                    .format(start_date));
 
             if (isActivityFirstOfTheDay(position)) {
                 this.activityDate.setText(DateFormat.getDateInstance(DateFormat.LONG)
-                        .format(activity.getStart_date()));
+                        .format(start_date));
                 this.activityDate.setVisibility(View.VISIBLE);
             } else {
                 this.activityDate.setVisibility(View.GONE);
             }
 
-            if (activity.getParticipant() == null
+            if (activity.isEveryoneParticipate() ||
+                    activity.getParticipant() == null
                     || activity.getParticipant().getPersonList() == null
-                    || activity.getParticipant().getPersonList().isEmpty()
-                    || activity.isEveryoneParticipate()) {
+                    || activity.getParticipant().getPersonList().isEmpty()) {
                 this.participants.setVisibility(View.GONE);
             } else {
                 this.participants.setText(
@@ -171,7 +175,6 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             if (v.getId() == R.id.attachments) {
                 onItemClickListener.onAttachmentsClick(activityList.get(getAdapterPosition()));
             } else {
-                //click on the activity itself
                 onItemClickListener.onActivityClick(activityList.get(getAdapterPosition()));
             }
         }
@@ -211,16 +214,26 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             this.participants.setVisibility(View.GONE);
 
             this.activityName.setText(activity.getTitle());
+
+            long start_date = activity.getStart_date();
+            long end_date = activity.getEnd_date();
             this.activityStartTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT)
-                    .format(activity.getStart_date()));
+                    .format(start_date));
             this.activityStartLocation.setText(activity.getLocation());
-            this.activityEndTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT)
-                    .format(activity.getEnd_date()));
+
+            if ((end_date - start_date) < 86400000) {
+                this.activityEndTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT)
+                        .format(end_date));
+            } else {
+                String longActivity = DateFormat.getTimeInstance(DateFormat.SHORT)
+                        .format(end_date) + "*";
+                this.activityEndTime.setText(longActivity);
+            }
             this.activityEndLocation.setText(activity.getEnd_location());
 
             if (isActivityFirstOfTheDay(position)) {
                 this.activityDate.setText(DateFormat.getDateInstance(DateFormat.LONG)
-                        .format(activity.getStart_date()));
+                        .format(start_date));
                 this.activityDate.setVisibility(View.VISIBLE);
             } else {
                 this.activityDate.setVisibility(View.GONE);
@@ -238,7 +251,6 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             if (v.getId() == R.id.attachments) {
                 onItemClickListener.onAttachmentsClick(activityList.get(getAdapterPosition()));
             } else {
-                //click on the activity itself
                 onItemClickListener.onActivityClick(activityList.get(getAdapterPosition()));
             }
         }
