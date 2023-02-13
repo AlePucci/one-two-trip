@@ -95,6 +95,9 @@ public class SignupFragment extends Fragment {
 
         FragmentActivity activity = requireActivity();
 
+        MaterialButton backButton = view.findViewById(R.id.signup_back_button);
+        backButton.setOnClickListener(v -> activity.onBackPressed());
+
         this.name_edit_text = view.findViewById(R.id.name_textedit);
         this.surname_edit_text = view.findViewById(R.id.surname_textedit);
         this.email_edit_text = view.findViewById(R.id.email_edittext);

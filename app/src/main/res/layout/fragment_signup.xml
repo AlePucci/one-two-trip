@@ -12,6 +12,16 @@
         android:layout_height="wrap_content"
         tools:context=".ui.welcome.SignupFragment">
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/signup_back_button"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_baseline_arrow_back_24"
+            app:iconTint="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/logo"
             android:layout_width="wrap_content"
@@ -45,6 +55,9 @@
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusTopStart="8dp"
             app:boxStrokeColor="@color/black"
+            app:endIconDrawable="@drawable/ic_baseline_cancel_24"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/black"
             app:hintTextColor="@color/black"
             app:layout_constraintEnd_toStartOf="@id/surname_input_layout"
             app:layout_constraintStart_toEndOf="@id/guidelineLog_start"
@@ -78,6 +91,9 @@
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusTopStart="8dp"
             app:boxStrokeColor="@color/black"
+            app:endIconDrawable="@drawable/ic_baseline_cancel_24"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/black"
             app:hintTextColor="@color/black"
             app:layout_constraintEnd_toStartOf="@id/guidelineLog_end"
             app:layout_constraintStart_toEndOf="@id/name_input_layout"
