@@ -9,8 +9,10 @@ import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -38,6 +40,22 @@ public class TripInviteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_invite);
+
+        int mode = this.getResources().getConfiguration().uiMode
+                & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
+
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (mode == android.content.res.Configuration.UI_MODE_NIGHT_YES) {
+            getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.gray_700));
+
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
+        } else {
+            getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.white));
+
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.white));
+        }
 
         IUserRepository userRepository = ServiceLocator.getInstance()
                 .getUserRepository(getApplication());
