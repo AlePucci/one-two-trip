@@ -8,7 +8,7 @@ import it.unimib.sal.one_two_trip.data.database.model.Trip;
 
 /**
  * This class represents the response of the API call to get the list of trips from
- * our Firebase Realtime Database.
+ * our Firebase Cloud Firestore.
  */
 public class TripsApiResponse extends TripsResponse {
 

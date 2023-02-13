@@ -18,6 +18,7 @@ import it.unimib.sal.one_two_trip.data.database.model.Trip;
  */
 @Dao
 public interface ITripsDAO {
+
     @Query("SELECT * FROM trip")
     List<Trip> getAll();
 
@@ -43,7 +44,7 @@ public interface ITripsDAO {
     void delete(Trip trip);
 
     @Query("DELETE FROM trip")
-    void deleteAll();
+    int deleteAll();
 
     @Delete
     void deleteAllWithoutQuery(Trip... trips);

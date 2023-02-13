@@ -1,5 +1,6 @@
 package it.unimib.sal.one_two_trip.ui.main;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -59,10 +60,12 @@ public class AboutFragment extends Fragment {
         TextView dev3 = view.findViewById(R.id.dev_3);
         TextView dev4 = view.findViewById(R.id.dev_4);
 
-        dev1.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
-        dev2.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
-        dev3.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
-        dev4.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_in));
+        Context context = getContext();
+
+        dev1.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in));
+        dev2.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in));
+        dev3.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in));
+        dev4.startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in));
 
         contribute.setOnClickListener(v -> {
             Intent intent = new Intent();

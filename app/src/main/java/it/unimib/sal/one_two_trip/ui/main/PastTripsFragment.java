@@ -102,13 +102,13 @@ public class PastTripsFragment extends Fragment {
 
         androidx.fragment.app.FragmentActivity activity = requireActivity();
         RecyclerView pastTripsView = view.findViewById(R.id.past_trips_view);
-        TextView noTripsText = view.findViewById(R.id.no_trips_text);
-        ImageView noTripsImage = view.findViewById(R.id.no_trips_image);
-        ProgressBar progressBar = view.findViewById(R.id.progress_bar);
+        TextView noTripsText = view.findViewById(R.id.no_trips_text_pasttrips);
+        ImageView noTripsImage = view.findViewById(R.id.no_trips_image_pasttrips);
+        ProgressBar progressBar = view.findViewById(R.id.progress_bar_pasttrips);
         BottomNavigationView bottomNavigationView = activity
                 .findViewById(R.id.bottom_navigation);
         FloatingActionButton fab = activity.findViewById(R.id.fab);
-        this.swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        this.swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout_pasttrips);
 
         bottomNavigationView.setVisibility(View.VISIBLE);
         fab.setVisibility(View.VISIBLE);
@@ -213,6 +213,8 @@ public class PastTripsFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
+        if (this.tripsViewModel == null) return;
+
         this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(
                 getViewLifecycleOwner(),
                 result -> {
@@ -221,7 +223,7 @@ public class PastTripsFragment extends Fragment {
 
                         // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
                         if (fetchedTrips == null || fetchedTrips.isEmpty()) {
-                            int previousSize = this.pastTrips.size();
+                            int previousSize = this.pastTrips.size() + 1;
                             this.pastTrips.clear();
                             this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
                                     previousSize);
@@ -236,7 +238,7 @@ public class PastTripsFragment extends Fragment {
                             pastTrips.removeIf(trip -> trip != null && !trip.isCompleted());
 
                             // IF THERE ARE NO PAST TRIPS, SHOW THE NO PAST TRIPS IMAGE TEXT
-                            int previousSize = this.pastTrips.size();
+                            int previousSize = this.pastTrips.size() + 1;
                             this.pastTrips.clear();
                             if (pastTrips.isEmpty()) {
                                 this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
@@ -244,6 +246,7 @@ public class PastTripsFragment extends Fragment {
                                 noTripsText.setText(R.string.no_past_trips);
                                 noTripsText.setVisibility(View.VISIBLE);
                                 noTripsImage.setVisibility(View.VISIBLE);
+
                             } else {
                                 noTripsText.setVisibility(View.GONE);
                                 noTripsImage.setVisibility(View.GONE);
@@ -251,11 +254,9 @@ public class PastTripsFragment extends Fragment {
                                 pastTrips.sort(Comparator.comparing(Trip::getStart_date).reversed());
                                 this.pastTrips.addAll(pastTrips);
                                 this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
-                                        previousSize + 1);
+                                        previousSize);
                             }
                         }
-
-
                     } else {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)

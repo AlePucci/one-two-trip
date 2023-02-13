@@ -1,10 +1,16 @@
 package it.unimib.sal.one_two_trip.ui.trip;
 
+import static it.unimib.sal.one_two_trip.util.Constants.DESCRIPTION;
 import static it.unimib.sal.one_two_trip.util.Constants.IMAGE_MIME;
+import static it.unimib.sal.one_two_trip.util.Constants.JOIN_BASE_URL;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_LOGO_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.PARTICIPANT;
+import static it.unimib.sal.one_two_trip.util.Constants.REMOVED;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.TEXT_TYPE;
+import static it.unimib.sal.one_two_trip.util.Constants.TITLE;
 import static it.unimib.sal.one_two_trip.util.Constants.TRIP_LOGO_NAME;
 
 import android.app.Activity;
@@ -55,10 +61,13 @@ import it.unimib.sal.one_two_trip.adapter.SettingsParticipantRecyclerViewAdapter
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
 import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
+import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 import it.unimib.sal.one_two_trip.data.source.storage.RemoteStorage;
 import it.unimib.sal.one_two_trip.data.source.storage.RemoteStorageCallback;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
+import it.unimib.sal.one_two_trip.ui.welcome.UserViewModel;
+import it.unimib.sal.one_two_trip.ui.welcome.UserViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
@@ -81,6 +90,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
     private TripsViewModel viewModel;
     private SharedPreferencesUtil sharedPreferencesUtil;
     private ProgressBar progressBar;
+    private MaterialToolbar toolbar;
 
     public TripSettingsFragment() {
     }
@@ -125,7 +135,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
         this.progressBar = view.findViewById(R.id.trip_settings_progress_bar);
 
         androidx.fragment.app.FragmentActivity activity = requireActivity();
-        MaterialToolbar toolbar = activity.findViewById(R.id.trip_toolbar);
+        this.toolbar = activity.findViewById(R.id.trip_toolbar);
         ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(),
                 Lifecycle.State.RESUMED);
 
@@ -133,8 +143,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
             this.tripId = getArguments().getString(SELECTED_TRIP_ID);
         }
 
-        //TODO FIX USER ID
-        this.imagePath = application.getFilesDir() + "/1-" + tripId + "-" + TRIP_LOGO_NAME;
+        this.imagePath = this.application.getFilesDir() + "/" + tripId + "-" + TRIP_LOGO_NAME;
         this.tripLogo = view.findViewById(R.id.trip_logo);
 
         ActivityResultLauncher<Intent> photoPickerLauncher = registerForActivityResult(
@@ -168,9 +177,15 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
 
         });
 
-        //TODO ADD PARTICIPANT
-        addParticipant.setOnClickListener(v -> Snackbar.make(view,
-                "Add participant", Snackbar.LENGTH_SHORT).show());
+        addParticipant.setOnClickListener(v -> {
+            String joinURL = JOIN_BASE_URL + tripId;
+            String joinMessage = getString(R.string.trip_join_share_message) + " " + joinURL;
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType(TEXT_TYPE);
+            intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_url));
+            intent.putExtra(Intent.EXTRA_TEXT, joinMessage);
+            startActivity(Intent.createChooser(intent, getString(R.string.share_url)));
+        });
 
         descriptionCardview.setOnClickListener(v -> {
             androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
@@ -197,9 +212,10 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
 
                         String descriptionMessage = input.getText().toString().trim();
                         if (!descriptionMessage.equals(oldDescription)) {
-                            HashMap <String, Object> map = new HashMap <>();
+                            input.setText(descriptionMessage);
+                            HashMap<String, Object> map = new HashMap<>();
                             this.trip.setDescription(descriptionMessage);
-                            map.put("description", descriptionMessage);
+                            map.put(DESCRIPTION, descriptionMessage);
                             this.viewModel.updateTrip(map, tripId);
                         }
                     });
@@ -211,7 +227,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
         if (bitmap != null) {
             this.tripLogo.setImageBitmap(bitmap);
         } else {
-            this.tripLogo.setImageBitmap(BitmapFactory.decodeResource(getResources(),
+            this.tripLogo.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(),
                     R.drawable.default_trip_image));
         }
         this.remoteStorage.tripLogoExists(tripId);
@@ -223,11 +239,28 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                     LAST_UPDATE);
         }
 
+        UserViewModel userViewModel = null;
+        IUserRepository userRepository = ServiceLocator.getInstance().
+                getUserRepository(application);
+        if (userRepository != null) {
+            userViewModel = new ViewModelProvider(
+                    activity,
+                    new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        } else {
+            Snackbar.make(activity.findViewById(android.R.id.content),
+                    getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+        }
+
+        if (userViewModel == null || userViewModel.getLoggedUser() == null) return;
+
+        UserViewModel finalUserViewModel = userViewModel;
         this.viewModel.getTrips(Long.parseLong(lastUpdate)).observe(
                 getViewLifecycleOwner(),
                 result -> {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
+
+                        this.trip = null;
 
                         for (Trip mTrip : trips) {
                             if (mTrip.getId().equals(tripId)) {
@@ -236,7 +269,9 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                             }
                         }
 
-                        if (this.trip == null) {
+                        if (this.trip == null || !this.trip.isParticipating()
+                                || this.trip.isDeleted()) {
+                            requireActivity().finish();
                             return;
                         }
 
@@ -274,9 +309,10 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                         } else {
                             description.setText(getString(R.string.trip_add_description));
                         }
-                        LinearLayoutManager linearLayoutManager =
-                                new LinearLayoutManager(this.application);
-                        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+                        RecyclerView.LayoutManager linearLayoutManager =
+                                new LinearLayoutManager(this.application,
+                                        LinearLayoutManager.VERTICAL, false);
 
                         SettingsParticipantRecyclerViewAdapter adapter =
                                 new SettingsParticipantRecyclerViewAdapter(
@@ -284,7 +320,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                                         this.application,
                                         new SettingsParticipantRecyclerViewAdapter.OnItemClickListener() {
                                             @Override
-                                            public void onClick(int position) {
+                                            public void onClick(String userId) {
                                                 // TODO open participant profile
                                                 Snackbar.make(view,
                                                         "Open participant profile",
@@ -292,18 +328,47 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                                             }
 
                                             @Override
-                                            public void onRemoveClick(int position) {
-                                                // TODO remove participant
-                                                Snackbar.make(view,
-                                                        "Remove participant",
-                                                        Snackbar.LENGTH_SHORT).show();
+                                            public void onRemoveClick(String userId) {
+                                                androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
+                                                        activity, R.style.Widget_App_CustomAlertDialog);
+
+                                                String positive;
+                                                String negative;
+                                                if (userId.equals(finalUserViewModel.getLoggedUser().getId())) {
+                                                    alert.setTitle(getString(R.string.trip_leave));
+                                                    alert.setMessage(getString(R.string.trip_leave_message));
+                                                    positive = getString(R.string.trip_leave_positive);
+                                                    negative = getString(R.string.trip_leave_negative);
+                                                } else {
+                                                    alert.setTitle(getString(R.string.trip_delete_participant));
+                                                    alert.setMessage(getString(R.string.trip_delete_participant_message));
+                                                    positive = getString(R.string.trip_delete_participant_positive);
+                                                    negative = getString(R.string.trip_delete_participant_negative);
+                                                }
+
+                                                alert.setPositiveButton(positive,
+                                                        (dialog, which) -> {
+                                                            if (viewModel != null) {
+                                                                HashMap<String, Object> map = new HashMap<>();
+
+                                                                map.put(PARTICIPANT + "." + userId
+                                                                        + "." + REMOVED, true);
+
+                                                                viewModel.updateTrip(map, tripId);
+                                                            }
+                                                        });
+                                                alert.setNegativeButton(
+                                                        negative,
+                                                        null);
+                                                alert.show();
                                             }
                                         });
+
                         recyclerView.setLayoutManager(linearLayoutManager);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setNestedScrollingEnabled(false);
 
-                        toolbar.setTitle(this.trip.getTitle());
+                        this.toolbar.setTitle(this.trip.getTitle());
                     } else {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
@@ -318,7 +383,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                 LAST_LOGO_UPDATE + "_" + this.tripId, String.valueOf(lastUpdate));
         Bitmap bitmap = BitmapFactory.decodeFile(this.imagePath);
         if (bitmap == null) {
-            tripLogo.setImageBitmap(BitmapFactory.decodeResource(getResources(),
+            tripLogo.setImageBitmap(BitmapFactory.decodeResource(requireActivity().getResources(),
                     R.drawable.default_trip_image));
         } else {
             tripLogo.setImageBitmap(bitmap);
@@ -333,7 +398,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
             Bitmap bitmap = BitmapFactory.decodeFile(this.imagePath);
             if (bitmap == null) {
                 this.tripLogo.setImageBitmap(
-                        BitmapFactory.decodeResource(getResources(), R.drawable.default_trip_image));
+                        BitmapFactory.decodeResource(requireActivity().getResources(),
+                                R.drawable.default_trip_image));
             } else {
                 this.tripLogo.setImageBitmap(bitmap);
             }
@@ -350,7 +416,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
     @Override
     public void onDownloadFailure(Exception exception) {
         this.progressBar.setVisibility(View.GONE);
-        Snackbar.make(requireView(), R.string.trip_logo_download_failure, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(requireView(), R.string.trip_logo_download_failure,
+                Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -382,7 +449,7 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                 Bitmap bitmap = BitmapFactory.decodeFile(this.imagePath);
                 if (bitmap == null) {
                     this.tripLogo.setImageBitmap(
-                            BitmapFactory.decodeResource(getResources(),
+                            BitmapFactory.decodeResource(requireActivity().getResources(),
                                     R.drawable.default_trip_image));
                 } else {
                     this.tripLogo.setImageBitmap(bitmap);
@@ -420,9 +487,10 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                     (dialog, which) -> {
                         String newTitle = input.getText().toString().trim();
                         if (!newTitle.isEmpty() && !newTitle.equals(oldTitle)) {
-                            HashMap <String, Object> map = new HashMap <>();
+                            HashMap<String, Object> map = new HashMap<>();
                             this.trip.setTitle(newTitle);
-                            map.put("title", newTitle);
+                            this.toolbar.setTitle(newTitle);
+                            map.put(TITLE, newTitle);
                             this.viewModel.updateTrip(map, tripId);
                         }
                     });
@@ -443,7 +511,8 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
 
                         if (this.trip != null && this.trip.getActivity() != null
                                 && this.trip.getActivity().getActivityList() != null) {
-                            for (it.unimib.sal.one_two_trip.data.database.model.Activity activity : this.trip.getActivity().getActivityList()) {
+                            for (it.unimib.sal.one_two_trip.data.database.model.Activity activity
+                                    : this.trip.getActivity().getActivityList()) {
                                 Utility.deleteNotifications(activity, this.application, this.tripId);
                             }
                         }

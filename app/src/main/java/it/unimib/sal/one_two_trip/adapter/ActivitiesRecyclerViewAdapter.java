@@ -221,7 +221,7 @@ public class ActivitiesRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
                     .format(start_date));
             this.activityStartLocation.setText(activity.getLocation());
 
-            if (Utility.compareDate(start_date, end_date)) {
+            if ((end_date - start_date) < 86400000) {
                 this.activityEndTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT)
                         .format(end_date));
             } else {

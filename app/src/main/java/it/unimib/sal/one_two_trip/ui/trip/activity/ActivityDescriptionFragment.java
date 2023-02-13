@@ -22,10 +22,10 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -107,7 +107,12 @@ public class ActivityDescriptionFragment extends Fragment {
                             }
                         }
 
-                        if (trip == null || trip.getActivity() == null
+                        if (trip == null || !trip.isParticipating() || trip.isDeleted()) {
+                            requireActivity().finish();
+                            return;
+                        }
+
+                        if (trip.getActivity() == null
                                 || trip.getActivity().getActivityList() == null) {
                             return;
                         }
@@ -121,10 +126,18 @@ public class ActivityDescriptionFragment extends Fragment {
                             }
                         }
 
-                        if (activity == null) return;
+                        if (activity == null) {
+                            requireActivity().finish();
+                            return;
+                        }
 
                         TextView description = view.findViewById(R.id.activity_descr);
-                        description.setText(activity.getDescription());
+                        if (activity.getDescription() != null
+                                && !activity.getDescription().isEmpty()) {
+                            description.setText(activity.getDescription().trim());
+                        } else {
+                            description.setText(getString(R.string.trip_add_description));
+                        }
                     } else {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)

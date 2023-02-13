@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="coming_trips">Viaggi a breve</string>
     <string name="past_trips">Riscopri</string>
     <string name="new_trip_fab_text">Nuovo Viaggio</string>
@@ -69,27 +70,26 @@
     <string name="twelve_hours_extended">12 ore</string>
     <string name="one_day_extended">1 giorno</string>
     <string name="two_days_extended">2 giorni</string>
+    <string name="accountManagement">Gestione account</string>
+    <string name="editAccount">Modifica info account</string>
+    <string name="deleteAccount">Cancella account</string>
+    <string name="logout">Esci</string>
+    <string name="name_surname">Nome Cognome</string>
+    <string name="editProfileImage">Modifica immagine profilo</string>
+    <string name="editProfileButton">Applica modifiche</string>
     <string name="delete">Elimina</string>
     <string name="rename">Rinomina</string>
     <string name="activity_where_title">Dove</string>
     <string name="activity_when_title">Quando</string>
     <string name="activity_field_error">Il valore del campo non è valido.</string>
-    //da qui le mie
-    <string name="settings">impostazioni</string>
-    <string name="name_surname">Nome Cognome</string>
-    <string name="email">nome.cognome@gmail.com</string>
-    <string name="account">account</string>
-    <string name="notifications">notifiche</string>
-    <string name="info">info</string>
-    <string name="logout">disconnessione</string>
     <string name="activity_descr_title">Descrizione</string>
     <string name="activity_participant_title">Partecipanti</string>
     <string name="activity_not_participants">Non stanno partecipando</string>
-    <string name="trip_delete_confirmation">Sei sicuro di voler eliminare questo viaggio?</string>
+    <string name="trip_delete_confirmation">Sei sicuro di voler eliminare questo viaggio? L\'azione è irreversibile.</string>
     <string name="trip_delete_confirmation_title">Cancellazione viaggio</string>
     <string name="trip_delete_confirmation_positive">Elimina</string>
     <string name="trip_delete_confirmation_negative">@android:string/cancel</string>
-    <string name="activity_delete_confirmation">Sei sicuro di voler eliminare questa attività?</string>
+    <string name="activity_delete_confirmation">Sei sicuro di voler eliminare questa attività? L\'azione è irreversibile.</string>
     <string name="activity_delete_confirmation_title">Cancellazione attività</string>
     <string name="activity_delete_confirmation_positive">Elimina</string>
     <string name="activity_delete_confirmation_negative">@android:string/cancel</string>
@@ -153,5 +153,47 @@
     <string name="no_shareable_activities_2">Non ci sono attività statiche da condividere!</string>
     <string name="activity_departure">partenza</string>
     <string name="activity_arrival">arrivo</string>
+    <string name="logo">Logo dell\'app</string>
+    <string name="sign_up">Registrati</string>
+    <string name="name">Nome</string>
+    <string name="surname">Cognome</string>
+    <string name="login">Accedi</string>
+    <string name="email">E-mail</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Conferma password</string>
+    <string name="forgot_password">Hai dimenticato la password?</string>
+    <string name="or">O</string>
+    <string name="google_login">Accedi con Google</string>
+    <string name="register">Registrati</string>
+    <string name="forgot_password_text">Inserisci l\'e-mail associata con il tuo account e ti invieremo un link per reimpostare la password."</string>
+    <string name="check_login_data_message">Campi non validi!</string>
+    <string name="error_no_google_account_found_message">Nessun account Google trovato!</string>
+    <string name="error_password_too_weak">La password è troppo debole! Dovrebbe contenere almeno %1$d caratteri!</string>
+    <string name="error_user_collision_message">Indirizzo e-mail già in uso!</string>
+    <string name="error_login_user_or_password_message">E-mail o password non validi!</string>
+    <string name="not_registered_yet">Non sei ancora registrato?</string>
+    <string name="error_email_not_valid">L\'e-mail non è valida!</string>
+    <string name="error_password_dont_match">Le password non combaciano!</string>
+    <string name="error_empty_name">Il nome è vuoto!</string>
+    <string name="error_empty_surname">Il cognome è vuoto!</string>
+    <string name="reset_password">Reimposta password</string>
+    <string name="error_user_doesnt_exists">L\'utente non esiste!</string>
+    <string name="reset_password_mail_sent">L\'e-mail di reset della password è stata inviata!</string>
+    <string name="error_password_empty">La password è vuota!</string>
+    <string name="trip_join_title">Unisciti al viaggio</string>
+    <string name="trip_join_message">Vuoi unirti al viaggio?</string>
+    <string name="trip_join_confirmation_positive">Unisciti</string>
+    <string name="trip_join_confirmation_negative">@android:string/cancel</string>
+    <string name="trip_join_share_message">Unisciti al mio nuovo viaggio su 1, 2, Trip! usando questo link:</string>
+    <string name="share_url">Condividi l\'URL</string>
+    <string name="trip_delete_participant">Rimuovi partecipante</string>
+    <string name="trip_delete_participant_message">Sei sicuro di voler rimuovere questo partecipante dal viaggio?</string>
+    <string name="trip_delete_participant_positive">Rimuovi</string>
+    <string name="trip_delete_participant_negative">@android:string/cancel</string>
+    <string name="trip_leave">Esci dal viaggio</string>
+    <string name="trip_leave_message">Sei sicuro di voler uscire dal viaggio?</string>
+    <string name="trip_leave_positive">Esci</string>
+    <string name="trip_leave_negative">@android:string/cancel</string>
+
     <!-- end -->
 </resources>

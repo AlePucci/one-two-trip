@@ -19,7 +19,7 @@ public interface ITripsRepository {
 
     void updateTrip(HashMap<String, Object> trip, String tripId);
 
-    void updateActivity(HashMap<String, Object> trip, String tripId, String activityId);
+    void updateActivity(HashMap<String, Object> activity, String tripId, String activityId);
 
     void deleteTrip(Trip trip);
 

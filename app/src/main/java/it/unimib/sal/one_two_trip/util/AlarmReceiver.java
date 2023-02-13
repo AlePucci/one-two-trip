@@ -37,7 +37,8 @@ import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.ui.trip.TripActivity;
 
 /**
- * Utility class called when an alarm is triggered. It shows a notification to the user.
+ * Utility class called when an alarm is triggered.
+ * Used to show a notification for a trip or an activity to the user.
  */
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
@@ -192,7 +193,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
                 == PackageManager.PERMISSION_GRANTED) {
-            // TODO: call permission request in the onboarding activity and check it when turning
+            // TODO : call permission request in the onboarding activity and check it when turning
             // on notifications
             notificationManager.notify(notificationId, builder.build());
         }

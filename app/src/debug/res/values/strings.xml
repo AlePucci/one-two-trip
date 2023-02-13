@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="trip_title" translatable="false">Title</string>
     <string name="activity_when_title_d" translatable="false">Date</string>
     <string name="activity_name" translatable="false">Name</string>

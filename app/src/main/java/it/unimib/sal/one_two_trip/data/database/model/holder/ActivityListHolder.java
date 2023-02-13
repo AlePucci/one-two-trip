@@ -8,11 +8,12 @@ import java.util.Objects;
 
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
 
+
 /**
  * Class used to store the list of activities in Room database.
  */
 public class ActivityListHolder {
-    
+
     private List<Activity> activityList;
 
     public ActivityListHolder() {
@@ -47,8 +48,6 @@ public class ActivityListHolder {
     @NonNull
     @Override
     public String toString() {
-        return "ActivityListHolder{" +
-                "activityList=" + activityList +
-                '}';
+        return "ActivityListHolder{" + "activityList=" + activityList + '}';
     }
 }

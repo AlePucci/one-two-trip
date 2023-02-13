@@ -27,20 +27,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Onetwotrip"
+        android:usesCleartextTraffic="true"
         tools:targetApi="33">
         <activity
-            android:name=".ui.main.HomeActivity"
-            android:exported="false">
+            android:name=".ui.trip.TripInviteActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
+                <data
+                    android:path="/invite"
+                    android:host="app.onetwotrip"
+                    android:scheme="http" />
+            </intent-filter>
         </activity>
-        <activity android:name=".ui.account.AccountActivity"
+        <activity
+            android:name=".ui.welcome.WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <meta-data
@@ -48,7 +57,22 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".ui.main.HomeActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.trip.TripActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
+        <activity
+            android:name=".ui.account.AccountActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

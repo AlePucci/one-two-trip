@@ -33,6 +33,17 @@
         <action
             android:id="@+id/action_tripFragment_to_activityNewFragment"
             app:destination="@id/activityNewFragment" />
+        <argument
+            android:name="zoomToActivity"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="zoomToEndLocation"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <action
+            android:id="@+id/action_tripFragment_to_externalAccountFragment"
+            app:destination="@id/externalAccountFragment" />
     </fragment>
     <fragment
         android:id="@+id/activityFragment"
@@ -50,6 +61,9 @@
             app:destination="@id/tripFragment"
             app:popUpTo="@id/trip_nav_graph"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_activityFragment_to_externalAccountFragment"
+            app:destination="@id/externalAccountFragment" />
     </fragment>
     <fragment
         android:id="@+id/activityNewFragment"
@@ -71,5 +85,23 @@
         <argument
             android:name="tripId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_tripSettingsFragment_to_externalAccountFragment"
+            app:destination="@id/externalAccountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/externalAccountFragment"
+        android:name="it.unimib.sal.one_two_trip.ui.account.ExternalAccountFragment"
+        android:label="fragment_external_account"
+        tools:layout="@layout/fragment_external_account" >
+        <action
+            android:id="@+id/action_externalAccountFragment_to_activityFragment"
+            app:destination="@id/activityFragment" />
+        <action
+            android:id="@+id/action_externalAccountFragment_to_tripFragment"
+            app:destination="@id/tripFragment" />
+        <action
+            android:id="@+id/action_externalAccountFragment_to_tripSettingsFragment"
+            app:destination="@id/tripSettingsFragment" />
     </fragment>
 </navigation>

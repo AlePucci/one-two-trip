@@ -27,7 +27,7 @@ public class TripsViewModel extends ViewModel {
      * Returns the LiveData object associated with the
      * trip list to the Fragment/Activity.
      *
-     * @param lastUpdate The last update time read from the SharedPreferences.
+     * @param lastUpdate the last update time read from the SharedPreferences.
      * @return the LiveData object associated with the trip list.
      */
     public MutableLiveData<Result> getTrips(long lastUpdate) {
@@ -41,32 +41,41 @@ public class TripsViewModel extends ViewModel {
      * It uses the Repository to download the trip list
      * and to associate it with the LiveData object.
      *
-     * @param lastUpdate The last update time read from the SharedPreferences.
+     * @param lastUpdate the last update time read from the SharedPreferences.
      */
     private void fetchTrips(long lastUpdate) {
         this.tripListLiveData = this.tripsRepository.fetchTrips(lastUpdate);
     }
 
     /**
-     * It uses the Repository to download the trip list
+     * It uses the Repository to force-download the trip list
      * and to associate it with the LiveData object.
      */
     public void refreshTrips() {
         this.tripListLiveData = this.tripsRepository.refreshTrips();
     }
 
-
     /**
      * Updates the trip. For example an activity is added or trip title changed.
      *
-     * @param trip The trip to be updated.
+     * @param trip   The trip to update as a map.
+     *               The key is the field to update and the value is the new value.
+     * @param tripId the id of the trip to update
      */
     public void updateTrip(HashMap<String, Object> trip, String tripId) {
         this.tripsRepository.updateTrip(trip, tripId);
     }
 
-    public void updateActivity(HashMap<String, Object> trip, String tripId, String activityId) {
-        this.tripsRepository.updateActivity(trip, tripId, activityId);
+    /**
+     * Updates the activity
+     *
+     * @param activity   The activity to update as a map.
+     *                   The key is the field to update and the value is the new value.
+     * @param tripId     the id of the trip to which the activity belongs
+     * @param activityId the id of the activity to update
+     */
+    public void updateActivity(HashMap<String, Object> activity, String tripId, String activityId) {
+        this.tripsRepository.updateActivity(activity, tripId, activityId);
     }
 
     /**
@@ -81,16 +90,28 @@ public class TripsViewModel extends ViewModel {
     /**
      * Inserts a new trip.
      *
-     * @param trip The trip to be inserted
+     * @param trip the trip to be inserted
      */
     public void insertTrip(Trip trip) {
         this.tripsRepository.insertTrip(trip);
     }
 
+    /**
+     * Inserts a new activity.
+     *
+     * @param activity the activity to be inserted
+     * @param trip     the trip in which the activity should be inserted
+     */
     public void insertActivity(Activity activity, Trip trip) {
         this.tripsRepository.insertActivity(activity, trip);
     }
 
+    /**
+     * Deletes an activity.
+     *
+     * @param activity the activity to be deleted
+     * @param trip     the trip to which the activity belongs
+     */
     public void deleteActivity(Activity activity, Trip trip) {
         this.tripsRepository.deleteActivity(activity, trip);
     }

@@ -5,6 +5,7 @@ import static it.unimib.sal.one_two_trip.util.Constants.MOVE_TO_ACTIVITY;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.TITLE;
 
 import android.app.Application;
 import android.content.Context;
@@ -115,7 +116,7 @@ public class ActivityFragment extends Fragment implements MenuProvider {
         super.onViewCreated(view, savedInstanceState);
 
         androidx.fragment.app.FragmentActivity activity = requireActivity();
-        toolbar = activity.findViewById(R.id.trip_toolbar);
+        this.toolbar = activity.findViewById(R.id.trip_toolbar);
         ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(),
                 Lifecycle.State.RESUMED);
 
@@ -132,6 +133,8 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
 
+                        this.trip = null;
+
                         for (Trip mTrip : trips) {
                             if (mTrip.getId().equals(this.tripId)) {
                                 this.trip = mTrip;
@@ -139,10 +142,17 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                             }
                         }
 
-                        if (this.trip == null || this.trip.getActivity() == null
+                        if (this.trip == null || !this.trip.isParticipating() || this.trip.isDeleted()) {
+                            requireActivity().finish();
+                            return;
+                        }
+
+                        if (this.trip.getActivity() == null
                                 || this.trip.getActivity().getActivityList() == null) {
                             return;
                         }
+
+                        this.activity = null;
 
                         for (Activity mActivity : this.trip.getActivity().getActivityList()) {
                             if (mActivity.getId().equals(this.activityId)) {
@@ -151,9 +161,12 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                             }
                         }
 
-                        if (this.activity == null) return;
+                        if (this.activity == null) {
+                            requireActivity().finish();
+                            return;
+                        }
 
-                        toolbar.setTitle(this.activity.getTitle());
+                        this.toolbar.setTitle(this.activity.getTitle());
                     } else {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)
@@ -194,9 +207,9 @@ public class ActivityFragment extends Fragment implements MenuProvider {
                         String newTitle = input.getText().toString().trim();
                         if (!newTitle.isEmpty() && !newTitle.equals(oldTitle)) {
                             this.activity.setTitle(newTitle);
-                            toolbar.setTitle(this.activity.getTitle());
+                            this.toolbar.setTitle(this.activity.getTitle());
                             HashMap<String, Object> map = new HashMap<>();
-                            map.put("title", newTitle);
+                            map.put(TITLE, newTitle);
                             this.viewModel.updateActivity(map, tripId, activityId);
                         }
                     });
@@ -232,5 +245,9 @@ public class ActivityFragment extends Fragment implements MenuProvider {
         }
 
         return false;
+    }
+
+    public void navigate(Bundle bundle) {
+        Navigation.findNavController(requireView()).navigate(R.id.action_activityFragment_to_tripFragment, bundle);
     }
 }

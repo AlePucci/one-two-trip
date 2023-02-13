@@ -71,9 +71,9 @@ public class SettingsParticipantRecyclerViewAdapter
      */
     public interface OnItemClickListener {
 
-        void onClick(int position);
+        void onClick(String userId);
 
-        void onRemoveClick(int position);
+        void onRemoveClick(String userId);
     }
 
     /**
@@ -125,9 +125,9 @@ public class SettingsParticipantRecyclerViewAdapter
         @Override
         public void onClick(@NonNull View v) {
             if (v.getId() == R.id.participant_settings_remove) {
-                onItemClickListener.onRemoveClick(getAdapterPosition());
+                onItemClickListener.onRemoveClick(personList.get(getAdapterPosition()).getId());
             } else {
-                onItemClickListener.onClick(getAdapterPosition());
+                onItemClickListener.onClick(personList.get(getAdapterPosition()).getId());
             }
         }
     }

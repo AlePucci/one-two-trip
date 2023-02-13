@@ -3,6 +3,7 @@ package it.unimib.sal.one_two_trip.data.source.trips;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.TripCallback;
 
 /**
  * Base class to get Trips from a local source.
@@ -22,4 +23,6 @@ public abstract class BaseTripsLocalDataSource {
     public abstract void insertTrips(List<Trip> tripList);
 
     public abstract void deleteTrip(Trip trip);
+
+    public abstract void deleteAllTrips();
 }
