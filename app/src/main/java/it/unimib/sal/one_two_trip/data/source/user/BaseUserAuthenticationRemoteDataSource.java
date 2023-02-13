@@ -23,4 +23,10 @@ public abstract class BaseUserAuthenticationRemoteDataSource {
     public abstract void signInWithGoogle(String idToken);
 
     public abstract void resetPassword(String email);
+
+    public abstract void changeEmail(String email);
+
+    public abstract void deleteUser();
+
+    public abstract void updateProfile(Person p);
 }

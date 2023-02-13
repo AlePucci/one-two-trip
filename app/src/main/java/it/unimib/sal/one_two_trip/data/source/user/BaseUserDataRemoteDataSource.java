@@ -14,5 +14,7 @@ public abstract class BaseUserDataRemoteDataSource {
 
     public abstract void saveUserData(Person person);
 
-    public abstract void getUserData(String idToken);
+    public abstract void getUserData(String id);
+
+    public abstract void updateUserData(Person person);
 }

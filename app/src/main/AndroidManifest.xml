@@ -56,6 +56,14 @@
                 android:value="" />
         </activity>
 
+        <activity
+            android:name=".ui.account.AccountActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
         <receiver
             android:name=".util.AlarmReceiver"
             android:exported="false" />

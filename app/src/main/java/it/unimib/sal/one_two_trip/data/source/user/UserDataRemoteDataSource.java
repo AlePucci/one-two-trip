@@ -2,14 +2,19 @@ package it.unimib.sal.one_two_trip.data.source.user;
 
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_USERS_COLLECTION;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.User;
+
 
 public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {
 
@@ -42,8 +47,23 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {
                 });
     }
 
-    public void getUserData(@NonNull String idToken){
-        this.usersReference.document(idToken).get().addOnCompleteListener(
+    @Override
+    public void updateUserData(@NonNull Person person) {
+        String idToken = person.getId();
+        this.usersReference.document(idToken).set(person).addOnCompleteListener(
+                task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("passed here", "ciao");
+                        userResponseCallback.onSuccessFromRemoteDatabase(person);
+                    } else {
+                        Log.d("passed here", "fail");
+                        userResponseCallback.onFailureFromRemoteDatabase(task.getException().toString());
+                    }
+                });
+    }
+
+    public void getUserData(String id){
+        this.usersReference.document(id).get().addOnCompleteListener(
                 task -> {
                     if(task.isSuccessful()){
                         Person p = task.getResult().toObject(Person.class);
@@ -52,7 +72,6 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {
                     else {
                         userResponseCallback.onFailureFromRemoteDatabase(task.getException().toString());
                     }
-                }
-        );
+                });
     }
 }

@@ -206,5 +206,13 @@
     <string name="share_trip_error">Something went wrong! Please try again</string>
     <string name="error_user_doesnt_exists">User doesn\'t exists!</string>
 
+    <!-- account -->
+    <string name="accountManagement">ACCOUNT MANAGEMENT</string>
+    <string name="editAccount">edit account</string>
+    <string name="deleteAccount">delete account</string>
+    <string name="logout">logout</string>
+    <string name="name_surname">Name Surname</string>
+    <string name="editProfileImage">edit profile image</string>
+
     <!-- end -->
 </resources>

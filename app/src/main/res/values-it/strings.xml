@@ -169,5 +169,12 @@
     <string name="reset_password">Reimposta password</string>
     <string name="error_user_doesnt_exists">L\'utente non esiste!</string>
     <string name="reset_password_mail_sent">L\'e-mail di reset della password è stata inviata!</string>
+    <string name="accountManagement">GESTIONE ACCOUNT</string>
+    <string name="editAccount">modifica account</string>
+    <string name="deleteAccount">cancella account</string>
+    <string name="logout">logout</string>
+    <string name="name_surname">Nome Cognome</string>
+    <string name="editProfileImage">modifica immagine profilo</string>
+
     <!-- end -->
 </resources>

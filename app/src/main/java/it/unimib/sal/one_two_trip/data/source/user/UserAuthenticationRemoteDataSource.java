@@ -5,10 +5,12 @@ import static it.unimib.sal.one_two_trip.util.Constants.UNEXPECTED_ERROR;
 import static it.unimib.sal.one_two_trip.util.Constants.USER_COLLISION_ERROR;
 import static it.unimib.sal.one_two_trip.util.Constants.WEAK_PASSWORD_ERROR;
 
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -19,7 +21,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.data.database.model.Person;
+import it.unimib.sal.one_two_trip.ui.welcome.WelcomeActivity;
 
 
 public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRemoteDataSource {
@@ -114,6 +118,19 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
     }
 
     @Override
+    public void updateProfile(Person p){
+        this.firebaseAuth.getCurrentUser()
+                .updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(p.getName() + " " + p.getSurname()).build()).addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        userResponseCallback.onSuccessFromAuthentication(getLoggedUser());
+                    }
+                    else{
+                        userResponseCallback.onFailureFromAuthentication(task.getException().toString());
+                    }
+                });
+    }
+
+    @Override
     public void signInWithGoogle(String idToken) {
         if (idToken != null) {
             AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
@@ -153,6 +170,18 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
         );
     }
 
+    public void changeEmail(String email){
+        this.firebaseAuth.getCurrentUser().updateEmail(email).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.d("ps", "email changed");
+                userResponseCallback.onFailureFromPasswordReset(getErrorMessage(task.getException()));
+            } else {
+                Log.d("ps", "email error");
+                userResponseCallback.onSuccessFromPasswordReset();
+            }
+        });
+    }
+
     private String getErrorMessage(Exception exception) {
         if (exception instanceof FirebaseAuthWeakPasswordException) {
             return WEAK_PASSWORD_ERROR;
@@ -164,5 +193,11 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
         }
         Log.d("ERROR", exception.getMessage());
         return UNEXPECTED_ERROR;
+    }
+
+    public void deleteUser(){
+        this.firebaseAuth.getCurrentUser().delete().addOnCompleteListener(task -> {
+
+        });
     }
 }

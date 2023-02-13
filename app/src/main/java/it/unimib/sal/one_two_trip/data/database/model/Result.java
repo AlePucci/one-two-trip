@@ -12,7 +12,8 @@ public abstract class Result {
     }
 
     public boolean isSuccess() {
-        return this instanceof PersonResponseSuccess || this instanceof TripSuccess || this instanceof PasswordResetSuccess;
+        return this instanceof PersonResponseSuccess || this instanceof TripSuccess || this instanceof PasswordResetSuccess
+                || this instanceof EmailChangeSuccess;
     }
 
     /**
@@ -60,6 +61,23 @@ public abstract class Result {
 
         public Person getData() {
             return person;
+        }
+    }
+
+    /**
+     * Class that represents a successful action during the interaction
+     * with a Web Service or a local database. (USER)
+     */
+    public static final class EmailChangeSuccess extends Result {
+
+        private final boolean success;
+
+        public EmailChangeSuccess(boolean success) {
+            this.success = success;
+        }
+
+        public boolean getData() {
+            return success;
         }
     }
 

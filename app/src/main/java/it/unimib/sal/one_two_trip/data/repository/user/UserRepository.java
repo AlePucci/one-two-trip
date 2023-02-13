@@ -16,6 +16,7 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     private final BaseTripsLocalDataSource tripsLocalDataSource;
     private final MutableLiveData<Result> userMutableLiveData;
     private final MutableLiveData<Result> passwordResetMutableLiveData;
+    private final MutableLiveData<Result> emailChangeMutableLiveData;
 
     public UserRepository(BaseUserAuthenticationRemoteDataSource userRemoteDataSource,
                           BaseUserDataRemoteDataSource userDataRemoteDataSource,
@@ -27,6 +28,7 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
         this.passwordResetMutableLiveData = new MutableLiveData<>();
         this.userRemoteDataSource.setUserResponseCallback(this);
         this.userDataRemoteDataSource.setUserResponseCallback(this);
+        this.emailChangeMutableLiveData = new MutableLiveData<>();
     }
 
     @Override
@@ -38,6 +40,12 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     @Override
     public MutableLiveData<Result> getUser(String email, String password, String name, String surname) {
         signUp(email, password, name, surname);
+        return this.userMutableLiveData;
+    }
+
+    @Override
+    public MutableLiveData<Result> getUser(String id) {
+        userDataRemoteDataSource.getUserData(id);
         return this.userMutableLiveData;
     }
 
@@ -95,6 +103,18 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     }
 
     @Override
+    public void onSuccessFromEmailChange() {
+        Result.EmailChangeSuccess result = new Result.EmailChangeSuccess(true);
+        this.emailChangeMutableLiveData.postValue(result);
+    }
+
+    @Override
+    public void onFailureFromEmailChange(String message) {
+        Result.Error result = new Result.Error(message);
+        this.emailChangeMutableLiveData.postValue(result);
+    }
+
+    @Override
     public void signUp(String email, String password, String name, String surname) {
         this.userRemoteDataSource.signUp(email, password, name, surname);
     }
@@ -110,6 +130,12 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     }
 
     @Override
+    public MutableLiveData<Result> changeEmail(String email) {
+        this.userRemoteDataSource.changeEmail(email);
+        return this.emailChangeMutableLiveData;
+    }
+
+    @Override
     public Person getLoggedUser() {
         return this.userRemoteDataSource.getLoggedUser();
     }
@@ -119,4 +145,17 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
         this.userRemoteDataSource.logout();
         return this.userMutableLiveData;
     }
+
+    public MutableLiveData<Result> updateUserData(Person p){
+        this.userDataRemoteDataSource.updateUserData(p);
+        this.userRemoteDataSource.updateProfile(p);
+        return this.userMutableLiveData;
+    }
+
+    public MutableLiveData<Result> deleteUser(){
+        this.userRemoteDataSource.deleteUser();
+        return this.userMutableLiveData;
+    }
+
+
 }
