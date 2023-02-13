@@ -47,7 +47,7 @@ public class TripActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
         ActionBar actionBar = getSupportActionBar();
 
-        int mode = getResources().getConfiguration().uiMode
+        int mode = this.getResources().getConfiguration().uiMode
                 & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
 
         if (mode == android.content.res.Configuration.UI_MODE_NIGHT_YES) {

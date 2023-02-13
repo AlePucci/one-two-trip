@@ -46,7 +46,11 @@ public class Trip {
     @Ignore
     private long start_date;
 
+    @ColumnInfo(name = "isParticipating")
     private boolean isParticipating;
+
+    @ColumnInfo(name = "isDeleted")
+    private boolean isDeleted;
 
     public Trip() {
         tripOwner = "";
@@ -57,12 +61,13 @@ public class Trip {
         completed = false;
         id = "";
         isParticipating = false;
+        isDeleted = false;
     }
 
     @Ignore
     public Trip(@NonNull String id, String tripOwner, String title, String description,
                 ActivityListHolder activity, PersonListHolder participant, boolean completed,
-                boolean isParticipating) {
+                boolean isParticipating, boolean isDeleted) {
         this.id = id;
         this.tripOwner = tripOwner;
         this.title = title;
@@ -71,20 +76,9 @@ public class Trip {
         this.participant = participant;
         this.completed = completed;
         this.isParticipating = isParticipating;
+        this.isDeleted = isDeleted;
 
-        if (this.activity != null && this.activity.getActivityList() != null
-                && !this.activity.getActivityList().isEmpty()) {
-            this.activity.getActivityList().sort(Comparator.comparing(Activity::getStart_date));
-            this.start_date = this.activity.getActivityList().get(0).getStart_date();
-        }
-    }
-
-    public boolean isParticipating() {
-        return isParticipating;
-    }
-
-    public void setParticipating(boolean isParticipating) {
-        this.isParticipating = isParticipating;
+        this.checkStartDate();
     }
 
     @NonNull
@@ -126,6 +120,10 @@ public class Trip {
 
     public void setActivity(ActivityListHolder activity) {
         this.activity = activity;
+        checkStartDate();
+    }
+
+    public void checkStartDate() {
         if (this.activity != null && this.activity.getActivityList() != null
                 && !this.activity.getActivityList().isEmpty()
                 && this.activity.getActivityList().get(0) != null) {
@@ -181,17 +179,38 @@ public class Trip {
         setCompleted(isThereAtLeastOneActivity);
     }
 
+    public boolean isParticipating() {
+        return isParticipating;
+    }
+
+    public void setParticipating(boolean isParticipating) {
+        this.isParticipating = isParticipating;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.isDeleted = deleted;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trip trip = (Trip) o;
-        return completed == trip.completed && start_date == trip.start_date && isParticipating == trip.isParticipating && id.equals(trip.id) && Objects.equals(tripOwner, trip.tripOwner) && Objects.equals(title, trip.title) && Objects.equals(description, trip.description) && Objects.equals(activity, trip.activity) && Objects.equals(participant, trip.participant);
+        return completed == trip.completed && start_date == trip.start_date
+                && isParticipating == trip.isParticipating && isDeleted == trip.isDeleted
+                && id.equals(trip.id) && Objects.equals(tripOwner, trip.tripOwner)
+                && Objects.equals(title, trip.title) && Objects.equals(description, trip.description)
+                && Objects.equals(activity, trip.activity) && Objects.equals(participant, trip.participant);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tripOwner, title, description, activity, participant, completed, start_date, isParticipating);
+        return Objects.hash(id, tripOwner, title, description, activity, participant, completed,
+                start_date, isParticipating, isDeleted);
     }
 
     @NonNull

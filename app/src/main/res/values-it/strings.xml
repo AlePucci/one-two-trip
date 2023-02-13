@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="coming_trips">Viaggi a breve</string>
     <string name="past_trips">Riscopri</string>
     <string name="new_trip_fab_text">Nuovo Viaggio</string>
@@ -69,17 +70,23 @@
     <string name="twelve_hours_extended">12 ore</string>
     <string name="one_day_extended">1 giorno</string>
     <string name="two_days_extended">2 giorni</string>
+    <string name="accountManagement">GESTIONE ACCOUNT</string>
+    <string name="editAccount">modifica account</string>
+    <string name="deleteAccount">cancella account</string>
+    <string name="logout">logout</string>
+    <string name="name_surname">Nome Cognome</string>
+    <string name="editProfileImage">modifica immagine profilo</string>
     <string name="activity_where_title">Dove</string>
     <string name="activity_when_title">Quando</string>
     <string name="activity_field_error">Il valore del campo non è valido.</string>
     <string name="activity_descr_title">Descrizione</string>
     <string name="activity_participant_title">Partecipanti</string>
     <string name="activity_not_participants">Non stanno partecipando</string>
-    <string name="trip_delete_confirmation">Sei sicuro di voler eliminare questo viaggio?</string>
+    <string name="trip_delete_confirmation">Sei sicuro di voler eliminare questo viaggio? L\'azione è irreversibile.</string>
     <string name="trip_delete_confirmation_title">Cancellazione viaggio</string>
     <string name="trip_delete_confirmation_positive">Elimina</string>
     <string name="trip_delete_confirmation_negative">@android:string/cancel</string>
-    <string name="activity_delete_confirmation">Sei sicuro di voler eliminare questa attività?</string>
+    <string name="activity_delete_confirmation">Sei sicuro di voler eliminare questa attività? L\'azione è irreversibile.</string>
     <string name="activity_delete_confirmation_title">Cancellazione attività</string>
     <string name="activity_delete_confirmation_positive">Elimina</string>
     <string name="activity_delete_confirmation_negative">@android:string/cancel</string>
@@ -169,12 +176,21 @@
     <string name="reset_password">Reimposta password</string>
     <string name="error_user_doesnt_exists">L\'utente non esiste!</string>
     <string name="reset_password_mail_sent">L\'e-mail di reset della password è stata inviata!</string>
-    <string name="accountManagement">GESTIONE ACCOUNT</string>
-    <string name="editAccount">modifica account</string>
-    <string name="deleteAccount">cancella account</string>
-    <string name="logout">logout</string>
-    <string name="name_surname">Nome Cognome</string>
-    <string name="editProfileImage">modifica immagine profilo</string>
+    <string name="error_password_empty">La password è vuota!</string>
+    <string name="trip_join_title">Unisciti al viaggio</string>
+    <string name="trip_join_message">Vuoi unirti al viaggio?</string>
+    <string name="trip_join_confirmation_positive">Unisciti</string>
+    <string name="trip_join_confirmation_negative">@android:string/cancel</string>
+    <string name="trip_join_share_message">Unisciti al mio nuovo viaggio su 1, 2, Trip! usando questo link:</string>
+    <string name="share_url">Condividi l\'URL</string>
+    <string name="trip_delete_participant">Rimuovi partecipante</string>
+    <string name="trip_delete_participant_message">Sei sicuro di voler rimuovere questo partecipante dal viaggio?</string>
+    <string name="trip_delete_participant_positive">Rimuovi</string>
+    <string name="trip_delete_participant_negative">@android:string/cancel</string>
+    <string name="trip_leave">Esci dal viaggio</string>
+    <string name="trip_leave_message">Sei sicuro di voler uscire dal viaggio?</string>
+    <string name="trip_leave_positive">Esci</string>
+    <string name="trip_leave_negative">@android:string/cancel</string>
 
     <!-- end -->
 </resources>

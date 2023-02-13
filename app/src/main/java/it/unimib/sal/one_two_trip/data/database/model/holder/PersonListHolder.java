@@ -47,8 +47,6 @@ public class PersonListHolder {
     @NonNull
     @Override
     public String toString() {
-        return "PersonListHolder{" +
-                "personList=" + personList +
-                '}';
+        return "PersonListHolder{" + "personList=" + personList + '}';
     }
 }

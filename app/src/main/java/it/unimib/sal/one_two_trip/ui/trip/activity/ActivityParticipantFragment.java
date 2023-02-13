@@ -24,11 +24,11 @@ import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.adapter.ParticipantRecyclerViewAdapter;
-import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -109,7 +109,12 @@ public class ActivityParticipantFragment extends Fragment {
                             }
                         }
 
-                        if (trip == null || trip.getActivity() == null
+                        if (trip == null || !trip.isParticipating() || trip.isDeleted()) {
+                            requireActivity().finish();
+                            return;
+                        }
+
+                        if (trip.getActivity() == null
                                 || trip.getActivity().getActivityList() == null) {
                             return;
                         }
@@ -123,7 +128,12 @@ public class ActivityParticipantFragment extends Fragment {
                             }
                         }
 
-                        if (activity == null || activity.getParticipant() == null
+                        if (activity == null) {
+                            requireActivity().finish();
+                            return;
+                        }
+
+                        if (activity.getParticipant() == null
                                 || activity.getParticipant().getPersonList() == null) {
                             return;
                         }

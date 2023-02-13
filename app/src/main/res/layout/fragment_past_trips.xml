@@ -8,10 +8,11 @@
     tools:context="ui.main.PastTripsFragment">
 
     <LinearLayout
-        android:id="@+id/no_trips_layout"
+        android:id="@+id/no_trips_layout_pasttrips"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,7 +21,7 @@
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
-            android:id="@+id/no_trips_image"
+            android:id="@+id/no_trips_image_pasttrips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -34,18 +35,17 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/no_trips_text"
+            android:id="@+id/no_trips_text_pasttrips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="8dp"
+            android:gravity="center"
             android:textAlignment="center"
             android:textSize="20sp"
             android:visibility="gone" />
     </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
+        android:id="@+id/swipe_refresh_layout_pasttrips"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
@@ -62,7 +62,7 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <ProgressBar
-        android:id="@+id/progress_bar"
+        android:id="@+id/progress_bar_pasttrips"
         style="?attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

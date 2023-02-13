@@ -1,5 +1,6 @@
 package it.unimib.sal.one_two_trip.ui.trip.activity;
 
+import static it.unimib.sal.one_two_trip.util.Constants.DESCRIPTION;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
 
@@ -23,10 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -88,11 +89,11 @@ public class ActivityDescriptionEditFragment extends Fragment {
 
         editButton.setOnClickListener(view1 -> {
             if (description.getText() != null
-                    && !description.getText().toString().equalsIgnoreCase(
+                    && !description.getText().toString().trim().equalsIgnoreCase(
                     activity.getDescription())) {
                 this.activity.setDescription(description.getText().toString().trim());
                 HashMap<String, Object> map = new HashMap<>();
-                map.put("description", this.activity.getDescription());
+                map.put(DESCRIPTION, this.activity.getDescription());
                 this.viewModel.updateActivity(map, tripId, activityId);
             }
 
@@ -113,6 +114,8 @@ public class ActivityDescriptionEditFragment extends Fragment {
                     if (result.isSuccess()) {
                         List<Trip> trips = ((Result.TripSuccess) result).getData().getTripList();
 
+                        this.trip = null;
+
                         for (Trip mTrip : trips) {
                             if (mTrip.getId().equals(tripId)) {
                                 this.trip = mTrip;
@@ -120,10 +123,17 @@ public class ActivityDescriptionEditFragment extends Fragment {
                             }
                         }
 
-                        if (this.trip == null || this.trip.getActivity() == null
+                        if (this.trip == null || !this.trip.isParticipating() || this.trip.isDeleted()) {
+                            requireActivity().finish();
+                            return;
+                        }
+
+                        if (this.trip.getActivity() == null
                                 || this.trip.getActivity().getActivityList() == null) {
                             return;
                         }
+
+                        this.activity = null;
 
                         for (Activity mActivity : this.trip.getActivity().getActivityList()) {
                             if (mActivity.getId().equals(activityId)) {
@@ -132,7 +142,10 @@ public class ActivityDescriptionEditFragment extends Fragment {
                             }
                         }
 
-                        if (this.activity == null) return;
+                        if (this.activity == null) {
+                            requireActivity().finish();
+                            return;
+                        }
 
                         description.setText(this.activity.getDescription());
                     } else {

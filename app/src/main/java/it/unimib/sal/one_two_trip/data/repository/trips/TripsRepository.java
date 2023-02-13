@@ -17,7 +17,6 @@ import it.unimib.sal.one_two_trip.data.database.model.response.TripsApiResponse;
 import it.unimib.sal.one_two_trip.data.database.model.response.TripsResponse;
 import it.unimib.sal.one_two_trip.data.source.trips.BaseTripsLocalDataSource;
 import it.unimib.sal.one_two_trip.data.source.trips.BaseTripsRemoteDataSource;
-import it.unimib.sal.one_two_trip.data.source.trips.TripCallback;
 import it.unimib.sal.one_two_trip.util.SharedPreferencesUtil;
 
 /**
@@ -37,7 +36,6 @@ public class TripsRepository implements ITripsRepository, TripCallback {
         this.tripsRemoteDataSource = tripsRemoteDataSource;
         this.tripsLocalDataSource = tripsLocalDataSource;
         this.sharedPreferencesUtil = sharedPreferencesUtil;
-
         this.tripsRemoteDataSource.setTripCallback(this);
         this.tripsLocalDataSource.setTripCallback(this);
     }
@@ -46,7 +44,7 @@ public class TripsRepository implements ITripsRepository, TripCallback {
      * Fetch the trips from the local source if the last update is less than FRESH_TIMEOUT.
      *
      * @param lastUpdate the last update time
-     * @return the list of trips
+     * @return the list of trips as a MutableLiveData
      */
     @Override
     public MutableLiveData<Result> fetchTrips(long lastUpdate) {
@@ -63,7 +61,7 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     /**
      * Refresh the trips from the remote source.
      *
-     * @return the list of trips
+     * @return the list of trips as a MutableLiveData
      */
     @Override
     public MutableLiveData<Result> refreshTrips() {
@@ -74,16 +72,26 @@ public class TripsRepository implements ITripsRepository, TripCallback {
     /**
      * Update the trip in the remote source.
      *
-     * @param trip the trip to update
+     * @param trip   the trip to update as a map.
+     *               The key is the field to update and the value is the new value.
+     * @param tripId the id of the trip to update
      */
     @Override
     public void updateTrip(HashMap<String, Object> trip, String tripId) {
         this.tripsRemoteDataSource.updateTrip(trip, tripId);
     }
 
+    /**
+     * Updates the activity
+     *
+     * @param activity   the activity to update as a map.
+     *                   The key is the field to update and the value is the new value.
+     * @param tripId     the id of the trip to which the activity belongs
+     * @param activityId the id of the activity to update
+     */
     @Override
-    public void updateActivity(HashMap<String, Object> trip, String tripId, String activityId) {
-        this.tripsRemoteDataSource.updateActivity(trip, tripId, activityId);
+    public void updateActivity(HashMap<String, Object> activity, String tripId, String activityId) {
+        this.tripsRemoteDataSource.updateActivity(activity, tripId, activityId);
     }
 
     /**
@@ -97,6 +105,12 @@ public class TripsRepository implements ITripsRepository, TripCallback {
         this.tripsLocalDataSource.deleteTrip(trip);
     }
 
+    /**
+     * Deletes an activity.
+     *
+     * @param activity the activity to be deleted
+     * @param trip     the trip to which the activity belongs
+     */
     @Override
     public void deleteActivity(Activity activity, Trip trip) {
         this.tripsRemoteDataSource.deleteActivity(activity, trip);
@@ -112,6 +126,12 @@ public class TripsRepository implements ITripsRepository, TripCallback {
         this.tripsRemoteDataSource.insertTrip(trip);
     }
 
+    /**
+     * Inserts a new activity.
+     *
+     * @param activity the activity to be inserted
+     * @param trip     the trip in which the activity should be inserted
+     */
     @Override
     public void insertActivity(Activity activity, Trip trip) {
         this.tripsRemoteDataSource.insertActivity(activity, trip);

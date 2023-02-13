@@ -5,7 +5,8 @@
     android:id="@+id/participant_settings_constraint"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp">
+    android:layout_marginBottom="20dp"
+    android:background="?android:selectableItemBackground">
 
     <TextView
         android:id="@+id/participant_settings_image"
@@ -22,15 +23,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="M" />
 
-    <TextView
-        android:id="@+id/participant_settings_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/participant_settings_image"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/participant_settings_remove"
@@ -44,14 +36,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/participant_settings_email"
+    <LinearLayout
+        android:id="@+id/participant_settings_linear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="11sp"
+        android:layout_marginStart="32dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/participant_settings_remove"
-        app:layout_constraintStart_toEndOf="@+id/participant_settings_name"
-        app:layout_constraintTop_toTopOf="parent" />
-    
+        app:layout_constraintStart_toEndOf="@+id/participant_settings_image"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/participant_settings_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/participant_settings_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:textSize="11sp" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

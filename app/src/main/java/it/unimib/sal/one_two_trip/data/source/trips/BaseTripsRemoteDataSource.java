@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.TripCallback;
 
 /**
  * Base class to get Trips from a remote source.

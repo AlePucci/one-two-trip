@@ -12,7 +12,6 @@ import static it.unimib.sal.one_two_trip.util.Constants.WEAK_PASSWORD_ERROR;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,13 +36,15 @@ import java.security.GeneralSecurityException;
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
-import it.unimib.sal.one_two_trip.data.database.model.User;
 import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 import it.unimib.sal.one_two_trip.ui.main.HomeActivity;
 import it.unimib.sal.one_two_trip.util.DataEncryptionUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 
-
+/**
+ * Fragment that allows the user to register to the application.
+ * It is used by the {@link WelcomeActivity}.
+ */
 public class SignupFragment extends Fragment {
 
     private DataEncryptionUtil dataEncryptionUtil;
@@ -116,6 +117,9 @@ public class SignupFragment extends Fragment {
         this.buttonRegistration.setOnClickListener(v -> onRegistrationClick());
     }
 
+    /**
+     * Method to sign up the user.
+     */
     private void onRegistrationClick() {
         FragmentActivity activity = requireActivity();
 
@@ -128,10 +132,10 @@ public class SignupFragment extends Fragment {
         String password = "";
         String confirm_password = "";
 
-        if(this.name_edit_text.getText()  != null){
+        if (this.name_edit_text.getText() != null) {
             name = this.name_edit_text.getText().toString().trim();
         }
-        if(this.surname_edit_text.getText() != null){
+        if (this.surname_edit_text.getText() != null) {
             surname = this.surname_edit_text.getText().toString().trim();
         }
         if (this.email_edit_text.getText() != null) {
@@ -147,7 +151,6 @@ public class SignupFragment extends Fragment {
         if (isNameOk() && isEmailOk() && isPasswordOk()) {
             if (password.equals(confirm_password)) {
                 if (!this.userViewModel.isAuthenticationError()) {
-                    Log.d("AAAAAAA", "NO ERROR: " + email + " " + password);
                     String finalEmail = email;
                     String finalPassword = password;
                     this.userViewModel.getUserMutableLiveData(email, password, name, surname).observe(
@@ -174,8 +177,8 @@ public class SignupFragment extends Fragment {
             } else {
                 Snackbar.make(activity.findViewById(android.R.id.content),
                         R.string.check_login_data_message, Snackbar.LENGTH_SHORT).show();
-                this.password_edit_text.setError(getString(R.string.error_password_dont_match));
-                this.confirm_password_edit_text.setError(getString(R.string.error_password_dont_match));
+                this.password_edit_text.setError(getString(R.string.error_password_dont_match), null);
+                this.confirm_password_edit_text.setError(getString(R.string.error_password_dont_match), null);
                 this.buttonRegistration.setEnabled(true);
                 this.buttonRegistration.setIcon(null);
             }
@@ -187,11 +190,17 @@ public class SignupFragment extends Fragment {
         }
     }
 
-
+    /**
+     * Returns the error message to show to the user.
+     *
+     * @param message the error message returned by the server.
+     * @return the error message localized to show to the user.
+     */
     private String getErrorMessage(@NonNull String message) {
         switch (message) {
             case WEAK_PASSWORD_ERROR:
-                return String.format(requireActivity().getString(R.string.error_password_too_weak), MINIMUM_PASSWORD_LENGTH);
+                return String.format(requireActivity().getString(R.string.error_password_too_weak),
+                        MINIMUM_PASSWORD_LENGTH);
             case USER_COLLISION_ERROR:
                 return requireActivity().getString(R.string.error_user_collision_message);
             default:
@@ -199,6 +208,11 @@ public class SignupFragment extends Fragment {
         }
     }
 
+    /**
+     * Method to check if the names are ok.
+     *
+     * @return true if the names are ok, false otherwise.
+     */
     private boolean isNameOk() {
         if (this.name_edit_text.getText() == null || this.surname_edit_text.getText() == null) {
             return false;
@@ -212,12 +226,21 @@ public class SignupFragment extends Fragment {
             this.surname_edit_text.setError(null);
             return true;
         } else {
-            this.name_edit_text.setError(getString(R.string.error_empty_name));
-            this.surname_edit_text.setError(getString(R.string.error_empty_surname));
+            if (name.isEmpty()) {
+                this.name_edit_text.setError(getString(R.string.error_empty_name));
+            }
+            if (surname.isEmpty()) {
+                this.surname_edit_text.setError(getString(R.string.error_empty_surname));
+            }
             return false;
         }
     }
 
+    /**
+     * Method to check if the email is ok.
+     *
+     * @return true if the email is ok, false otherwise.
+     */
     private boolean isEmailOk() {
         if (this.email_edit_text.getText() == null) {
             return false;
@@ -247,7 +270,8 @@ public class SignupFragment extends Fragment {
         String password = this.password_edit_text.getText().toString().trim();
 
         if (password.isEmpty() || password.length() < MINIMUM_PASSWORD_LENGTH) {
-            this.password_edit_text.setError(String.format(getString(R.string.error_password_too_weak), MINIMUM_PASSWORD_LENGTH));
+            this.password_edit_text.setError(String.format(getString(R.string.error_password_too_weak),
+                    MINIMUM_PASSWORD_LENGTH), null);
             return false;
         } else {
             this.password_edit_text.setError(null);
@@ -255,6 +279,13 @@ public class SignupFragment extends Fragment {
         }
     }
 
+    /**
+     * Method to save the login data in the shared preferences.
+     *
+     * @param email    the email of the user.
+     * @param password the password of the user.
+     * @param idToken  the id token of the user.
+     */
     private void saveLoginData(String email, String password, String idToken) {
         try {
             this.dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(

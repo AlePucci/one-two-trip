@@ -3,7 +3,6 @@ package it.unimib.sal.one_two_trip.ui.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,6 +12,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -34,9 +34,9 @@ import java.util.UUID;
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.ui.account.AccountActivity;
 import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
-import it.unimib.sal.one_two_trip.ui.account.AccountActivity;
 import it.unimib.sal.one_two_trip.ui.welcome.UserViewModel;
 import it.unimib.sal.one_two_trip.ui.welcome.UserViewModelFactory;
 import it.unimib.sal.one_two_trip.ui.welcome.WelcomeActivity;
@@ -132,12 +132,15 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         UserViewModel finalUserViewModel = userViewModel;
+        TripsViewModel finalViewModel = viewModel;
         drawerNav.getMenu().findItem(R.id.logout).setOnMenuItemClickListener(item -> {
             if (finalUserViewModel != null) {
                 finalUserViewModel.logout();
                 Intent intent = new Intent(HomeActivity.this, WelcomeActivity.class);
                 startActivity(intent);
                 finish();
+                // RESET THEME
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
             }
             return false;
         });
@@ -152,7 +155,6 @@ public class HomeActivity extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.fab);
 
-        TripsViewModel finalViewModel = viewModel;
         fab.setOnClickListener(view -> {
             if (finalViewModel != null) {
                 androidx.appcompat.app.AlertDialog.Builder alert = new androidx.appcompat.app.AlertDialog.Builder(
@@ -171,21 +173,21 @@ public class HomeActivity extends AppCompatActivity {
                 alert.setView(container);
                 alert.setPositiveButton(getString(R.string.trip_new_positive),
                         (dialog, which) -> {
-                            String title = input.getText().toString().trim();
-                            if (!title.isEmpty()) {
-                                Trip trip = new Trip();
-                                trip.setId(UUID.randomUUID().toString());
-                                trip.setTitle(title);
-                                trip.setTripOwner("1");
-                                ArrayList<Person> people = new ArrayList<>();
-                                Person person = new Person();
-                                person.setId("2");
-                                person.setName("John");
-                                person.setSurname("Doe");
-                                people.add(person);
-                                trip.getParticipant().setPersonList(people);
-                                //TODO: set trip owner & add them to the trip
-                                finalViewModel.insertTrip(trip);
+                            if (finalUserViewModel != null && finalUserViewModel.getLoggedUser() != null) {
+                                Person user = finalUserViewModel.getLoggedUser();
+                                String title = input.getText().toString().trim();
+                                if (!title.isEmpty()) {
+                                    Trip trip = new Trip();
+                                    trip.setId(UUID.randomUUID().toString());
+                                    trip.setTitle(title);
+                                    trip.setTripOwner(user.getId());
+                                    trip.setParticipating(true);
+
+                                    ArrayList<Person> participants = new ArrayList<>();
+                                    participants.add(user);
+                                    trip.getParticipant().setPersonList(participants);
+                                    finalViewModel.insertTrip(trip);
+                                }
                             }
                         });
                 alert.setNegativeButton(getString(R.string.trip_new_negative), null);
@@ -208,4 +210,6 @@ public class HomeActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+
 }

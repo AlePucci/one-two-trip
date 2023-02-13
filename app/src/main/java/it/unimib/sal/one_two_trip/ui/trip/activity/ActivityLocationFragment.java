@@ -1,8 +1,13 @@
 package it.unimib.sal.one_two_trip.ui.trip.activity;
 
+import static it.unimib.sal.one_two_trip.util.Constants.GOOGLE_NAVIGATION;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
+import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_NAME;
+import static it.unimib.sal.one_two_trip.util.Constants.ZOOM_TO_ACTIVITY;
+import static it.unimib.sal.one_two_trip.util.Constants.ZOOM_TO_END_LOCATION;
 
 import android.app.Application;
 import android.content.Intent;
@@ -26,10 +31,10 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.List;
 
 import it.unimib.sal.one_two_trip.R;
-import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.database.model.Activity;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModel;
 import it.unimib.sal.one_two_trip.ui.main.TripsViewModelFactory;
 import it.unimib.sal.one_two_trip.util.ErrorMessagesUtil;
@@ -87,8 +92,7 @@ public class ActivityLocationFragment extends Fragment {
 
         MaterialButton navButton1 = view.findViewById(R.id.activity_where_navigation1);
         navButton1.setOnClickListener(view12 -> {
-            //TODO string must be in strings.xml
-            Uri query = Uri.parse("google.navigation:q=" + activity.getLatitude() + ","
+            Uri query = Uri.parse(GOOGLE_NAVIGATION + activity.getLatitude() + ","
                     + activity.getLongitude());
             Intent intent = new Intent(Intent.ACTION_VIEW, query);
             startActivity(intent);
@@ -96,11 +100,31 @@ public class ActivityLocationFragment extends Fragment {
 
         MaterialButton navButton2 = view.findViewById(R.id.activity_where_navigation2);
         navButton2.setOnClickListener(view12 -> {
-            //TODO string must be in strings.xml
-            Uri query = Uri.parse("google.navigation:q=" + activity.getEndLatitude() + ","
+            Uri query = Uri.parse(GOOGLE_NAVIGATION + activity.getEndLatitude() + ","
                     + activity.getEndLongitude());
             Intent intent = new Intent(Intent.ACTION_VIEW, query);
             startActivity(intent);
+        });
+
+        MaterialButton locButton1 = view.findViewById(R.id.activity_where_locate1);
+        locButton1.setOnClickListener(view12 -> {
+            Bundle bundle = new Bundle();
+            bundle.putString(SELECTED_TRIP_ID, tripId);
+            bundle.putString(SELECTED_ACTIVITY_ID, activityId);
+            bundle.putBoolean(ZOOM_TO_ACTIVITY, true);
+
+            ((ActivityFragment) getParentFragment().getParentFragment()).navigate(bundle);
+        });
+
+        MaterialButton locButton2 = view.findViewById(R.id.activity_where_locate2);
+        locButton2.setOnClickListener(view12 -> {
+            Bundle bundle = new Bundle();
+            bundle.putString(SELECTED_TRIP_ID, tripId);
+            bundle.putString(SELECTED_ACTIVITY_ID, activityId);
+            bundle.putBoolean(ZOOM_TO_ACTIVITY, true);
+            bundle.putBoolean(ZOOM_TO_END_LOCATION, true);
+
+            ((ActivityFragment) getParentFragment().getParentFragment()).navigate(bundle);
         });
 
         MaterialButton editButton = view.findViewById(R.id.activity_where_edit);
@@ -128,10 +152,17 @@ public class ActivityLocationFragment extends Fragment {
                             }
                         }
 
-                        if (trip == null || trip.getActivity() == null
+                        if (trip == null || !trip.isParticipating() || trip.isDeleted()) {
+                            requireActivity().finish();
+                            return;
+                        }
+
+                        if (trip.getActivity() == null
                                 || trip.getActivity().getActivityList() == null) {
                             return;
                         }
+
+                        this.activity = null;
 
                         for (Activity mActivity : trip.getActivity().getActivityList()) {
                             if (mActivity.getId().equals(activityId)) {
@@ -140,24 +171,26 @@ public class ActivityLocationFragment extends Fragment {
                             }
                         }
 
-                        if (this.activity == null) return;
+                        if (this.activity == null) {
+                            requireActivity().finish();
+                            return;
+                        }
 
                         TextView loc1 = view.findViewById(R.id.activity_where1);
                         loc1.setText(this.activity.getLocation());
 
                         TextView loc2 = view.findViewById(R.id.activity_where2);
-                        MaterialButton locate2 = view.findViewById(R.id.activity_where_locate2);
                         ImageView arrow = view.findViewById(R.id.activity_where_arrow);
 
                         if (this.activity.getType().equalsIgnoreCase(MOVING_ACTIVITY_TYPE_NAME)) {
-                            loc2.setText(activity.getEnd_location());
+                            loc2.setText(this.activity.getEnd_location());
                             loc2.setVisibility(View.VISIBLE);
-                            locate2.setVisibility(View.VISIBLE);
+                            locButton2.setVisibility(View.VISIBLE);
                             navButton2.setVisibility(View.VISIBLE);
                             arrow.setVisibility(View.VISIBLE);
                         } else {
                             loc2.setVisibility(View.GONE);
-                            locate2.setVisibility(View.GONE);
+                            locButton2.setVisibility(View.GONE);
                             navButton2.setVisibility(View.GONE);
                             arrow.setVisibility(View.GONE);
                         }

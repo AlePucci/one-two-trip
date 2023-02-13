@@ -5,7 +5,7 @@
     android:id="@+id/welcome_activity_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/welcome_background"
     tools:context=".ui.welcome.WelcomeActivity">
 
     <androidx.fragment.app.FragmentContainerView

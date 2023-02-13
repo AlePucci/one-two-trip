@@ -11,7 +11,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,14 +44,14 @@ import java.security.GeneralSecurityException;
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
-import it.unimib.sal.one_two_trip.data.database.model.User;
 import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 import it.unimib.sal.one_two_trip.ui.main.HomeActivity;
 import it.unimib.sal.one_two_trip.util.DataEncryptionUtil;
 import it.unimib.sal.one_two_trip.util.ServiceLocator;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Fragment that allows the user to login.
+ * It is used by the {@link WelcomeActivity}.
  */
 public class LoginFragment extends Fragment {
 
@@ -64,8 +63,8 @@ public class LoginFragment extends Fragment {
     private TextInputEditText emailEditText;
     private TextInputEditText passwordEditText;
     private MaterialButton loginButton;
+    private MaterialButton googleLoginButton;
     private IndeterminateDrawable<CircularProgressIndicatorSpec> progressIndicatorDrawable;
-
 
     public LoginFragment() {
     }
@@ -90,6 +89,10 @@ public class LoginFragment extends Fragment {
 
         this.dataEncryptionUtil = new DataEncryptionUtil(application);
 
+        CircularProgressIndicatorSpec spec = new CircularProgressIndicatorSpec(activity, null, 0,
+                com.google.android.material.R.style.Widget_Material3_CircularProgressIndicator_ExtraSmall);
+        this.progressIndicatorDrawable = IndeterminateDrawable.createCircularDrawable(activity, spec);
+
         // LOGIN
         this.oneTapClient = Identity.getSignInClient(activity);
         this.signInRequest = BeginSignInRequest.builder()
@@ -98,7 +101,7 @@ public class LoginFragment extends Fragment {
                         .build())
                 .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                         .setSupported(true)
-                        .setServerClientId(getString(R.string.WEB_SERVER_ID))
+                        .setServerClientId(getString(R.string.default_web_client_id))
                         .setFilterByAuthorizedAccounts(false)
                         .build())
                 .setAutoSelectEnabled(true)
@@ -132,12 +135,14 @@ public class LoginFragment extends Fragment {
                                                                 .getMessage()),
                                                         Snackbar.LENGTH_SHORT).show();
                                             }
+                                            this.googleLoginButton.setEnabled(true);
                                         });
                             }
                         } catch (ApiException e) {
                             Snackbar.make(activity.findViewById(android.R.id.content),
                                     activity.getString(R.string.unexpected_error),
                                     Snackbar.LENGTH_SHORT).show();
+                            this.googleLoginButton.setEnabled(true);
                         }
                     }
                 });
@@ -164,14 +169,10 @@ public class LoginFragment extends Fragment {
 
         MaterialButton signupButton = view.findViewById(R.id.buttonRegister);
         MaterialButton forgotPasswordButton = view.findViewById(R.id.buttonForgotPassword);
-        MaterialButton googleLoginButton = view.findViewById(R.id.buttonGoogleLogin);
+        this.googleLoginButton = view.findViewById(R.id.buttonGoogleLogin);
         this.loginButton = view.findViewById(R.id.buttonLogin);
         this.emailEditText = view.findViewById(R.id.email_login);
         this.passwordEditText = view.findViewById(R.id.password_login);
-
-        CircularProgressIndicatorSpec spec = new CircularProgressIndicatorSpec(activity, null, 0,
-                com.google.android.material.R.style.Widget_Material3_CircularProgressIndicator_ExtraSmall);
-        this.progressIndicatorDrawable = IndeterminateDrawable.createCircularDrawable(activity, spec);
 
         this.passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -191,24 +192,20 @@ public class LoginFragment extends Fragment {
                 Navigation.findNavController(view)
                         .navigate(R.id.action_loginFragment_to_forgotPasswordFragment));
 
-        googleLoginButton.setOnClickListener(v -> {
-            googleLoginButton.setEnabled(false);
-            googleLoginButton.setIcon(progressIndicatorDrawable);
+        this.googleLoginButton.setOnClickListener(v -> {
+            this.googleLoginButton.setEnabled(false);
 
             this.oneTapClient.beginSignIn(this.signInRequest)
                     .addOnSuccessListener(activity, result -> {
                         IntentSenderRequest intentSenderRequest =
                                 new IntentSenderRequest.Builder(result.getPendingIntent()).build();
                         this.activityResultLauncher.launch(intentSenderRequest);
-                        googleLoginButton.setEnabled(true);
-                        googleLoginButton.setIcon(null);
                     })
                     .addOnFailureListener(activity, e -> {
                         Snackbar.make(view,
                                 activity.getString(R.string.unexpected_error),
                                 Snackbar.LENGTH_SHORT).show();
-                        googleLoginButton.setEnabled(true);
-                        googleLoginButton.setIcon(null);
+                        this.googleLoginButton.setEnabled(true);
                     });
         });
     }
@@ -217,8 +214,14 @@ public class LoginFragment extends Fragment {
     public void onResume() {
         super.onResume();
         this.userViewModel.setAuthenticationError(false);
+        this.loginButton.setEnabled(true);
+        this.loginButton.setIcon(null);
+        this.googleLoginButton.setEnabled(true);
     }
 
+    /**
+     * Method to login the user
+     */
     private void onLoginClick() {
         FragmentActivity activity = requireActivity();
 
@@ -269,6 +272,11 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    /**
+     * Method to check if the password is valid
+     *
+     * @return true if the password is valid, false otherwise
+     */
     private boolean isPasswordOk() {
         if (this.passwordEditText.getText() == null) {
             return false;
@@ -276,9 +284,20 @@ public class LoginFragment extends Fragment {
 
         String password = this.passwordEditText.getText().toString().trim();
 
-        return !password.isEmpty();
+        if (password.isEmpty()) {
+            this.passwordEditText.setError(getString(R.string.error_password_empty), null);
+            return false;
+        } else {
+            this.passwordEditText.setError(null);
+            return true;
+        }
     }
 
+    /**
+     * Method to check if the email is valid
+     *
+     * @return true if the email is valid, false otherwise
+     */
     private boolean isEmailOk() {
         if (this.emailEditText.getText() == null) {
             return false;
@@ -286,9 +305,21 @@ public class LoginFragment extends Fragment {
 
         String email = this.emailEditText.getText().toString().trim();
 
-        return !email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            this.emailEditText.setError(null);
+            return true;
+        } else {
+            this.emailEditText.setError(getString(R.string.error_email_not_valid));
+            return false;
+        }
     }
 
+    /**
+     * Returns the error message to show to the user.
+     *
+     * @param errorType the error message returned by the server.
+     * @return the error message localized to show to the user.
+     */
     @NonNull
     private String getErrorMessage(@NonNull String errorType) {
         if (INVALID_CREDENTIALS_ERROR.equals(errorType)) {
@@ -297,6 +328,13 @@ public class LoginFragment extends Fragment {
         return getString(R.string.unexpected_error);
     }
 
+    /**
+     * Method to save the login data in the shared preferences
+     *
+     * @param email    the email of the user
+     * @param password the password of the user
+     * @param idToken  the id token of the user
+     */
     private void saveLoginData(String email, String password, String idToken) {
         try {
             this.dataEncryptionUtil.writeSecretDataWithEncryptedSharedPreferences(

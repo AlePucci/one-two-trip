@@ -12,7 +12,6 @@ import static it.unimib.sal.one_two_trip.util.Constants.SHARED_PREFERENCES_FILE_
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,13 +103,13 @@ public class ComingTripsFragment extends Fragment {
 
         androidx.fragment.app.FragmentActivity activity = requireActivity();
         RecyclerView comingTripsView = view.findViewById(R.id.coming_trips_view);
-        TextView noTripsText = view.findViewById(R.id.no_trips_text);
-        ImageView noTripsImage = view.findViewById(R.id.no_trips_image);
-        ProgressBar progressBar = view.findViewById(R.id.progress_bar);
+        TextView noTripsText = view.findViewById(R.id.no_trips_text_comingtrips);
+        ImageView noTripsImage = view.findViewById(R.id.no_trips_image_comingtrips);
+        ProgressBar progressBar = view.findViewById(R.id.progress_bar_comingtrips);
         BottomNavigationView bottomNavigationView = activity
                 .findViewById(R.id.bottom_navigation);
         FloatingActionButton fab = activity.findViewById(R.id.fab);
-        this.swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
+        this.swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout_comingtrips);
 
         bottomNavigationView.setVisibility(View.VISIBLE);
         fab.setVisibility(View.VISIBLE);
@@ -217,6 +216,8 @@ public class ComingTripsFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
+        if (this.tripsViewModel == null) return;
+
         this.tripsViewModel.getTrips(Long.parseLong(lastUpdate)).observe(
                 getViewLifecycleOwner(),
                 result -> {
@@ -225,18 +226,20 @@ public class ComingTripsFragment extends Fragment {
 
                         // IF THE ARE NO TRIPS, SHOW THE NO TRIPS IMAGE AND TEXT
                         if (fetchedTrips == null || fetchedTrips.isEmpty()) {
-                            int previousSize = this.comingTrips.size();
+                            int previousSize = this.comingTrips.size() + 1;
                             this.comingTrips.clear();
+                            this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
+                                    previousSize);
                             noTripsText.setText(R.string.no_trips_added);
                             noTripsText.setVisibility(View.VISIBLE);
                             noTripsImage.setVisibility(View.VISIBLE);
                         } else {
                             List<Trip> comingTrips = new ArrayList<>(fetchedTrips);
-                            Log.d("ComingTripsFragment", "onViewCreated: " + comingTrips.size());
 
                             // FILTERS THE TRIPS THAT ARE NOT COMPLETED (COMING TRIPS)
                             comingTrips.removeIf(trip -> trip != null && trip.isCompleted());
 
+                            // NOTIFICATION SCHEDULING
                             for (Trip trip : comingTrips) {
                                 if (trip == null) {
                                     continue;
@@ -256,24 +259,25 @@ public class ComingTripsFragment extends Fragment {
 
 
                             // IF THERE ARE NO COMING TRIPS, SHOW THE NO COMING TRIPS IMAGE TEXT
-                            int previousSize = this.comingTrips.size();
+                            int previousSize = this.comingTrips.size() + 1;
                             this.comingTrips.clear();
                             if (comingTrips.isEmpty()) {
-                                noTripsText.setText(R.string.no_past_trips);
+                                this.tripsRecyclerViewAdapter.notifyItemRangeRemoved(0,
+                                        previousSize);
+                                noTripsText.setText(R.string.no_coming_trips);
                                 noTripsText.setVisibility(View.VISIBLE);
                                 noTripsImage.setVisibility(View.VISIBLE);
-
                             } else {
                                 noTripsText.setVisibility(View.GONE);
                                 noTripsImage.setVisibility(View.GONE);
 
                                 comingTrips.sort(Comparator.comparing(Trip::getStart_date));
-                                this.comingTrips.addAll(comingTrips);
 
+                                this.comingTrips.addAll(comingTrips);
+                                this.tripsRecyclerViewAdapter.notifyItemRangeChanged(0,
+                                        previousSize);
                             }
                         }
-                        this.tripsRecyclerViewAdapter.notifyDataSetChanged();
-
                     } else {
                         ErrorMessagesUtil errorMessagesUtil = new ErrorMessagesUtil(this.application);
                         Snackbar.make(view, errorMessagesUtil.getErrorMessage(((Result.Error) result)

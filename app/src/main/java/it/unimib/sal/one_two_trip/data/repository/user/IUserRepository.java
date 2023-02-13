@@ -4,6 +4,10 @@ import androidx.lifecycle.MutableLiveData;
 
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Result;
+
+/**
+ * Interface for Repositories that manage Person objects.
+ */
 import it.unimib.sal.one_two_trip.data.database.model.User;
 
 public interface IUserRepository {

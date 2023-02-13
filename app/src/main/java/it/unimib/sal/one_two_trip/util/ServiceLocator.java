@@ -10,6 +10,8 @@ import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.repository.trips.TripsRepository;
 import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 import it.unimib.sal.one_two_trip.data.repository.user.UserRepository;
+import it.unimib.sal.one_two_trip.data.service.GeocodingApiService;
+import it.unimib.sal.one_two_trip.data.service.PictureApiService;
 import it.unimib.sal.one_two_trip.data.source.trips.BaseTripsLocalDataSource;
 import it.unimib.sal.one_two_trip.data.source.trips.BaseTripsRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.trips.TripsLocalDataSource;
@@ -18,8 +20,6 @@ import it.unimib.sal.one_two_trip.data.source.user.BaseUserAuthenticationRemoteD
 import it.unimib.sal.one_two_trip.data.source.user.BaseUserDataRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.user.UserAuthenticationRemoteDataSource;
 import it.unimib.sal.one_two_trip.data.source.user.UserDataRemoteDataSource;
-import it.unimib.sal.one_two_trip.service.GeocodingApiService;
-import it.unimib.sal.one_two_trip.service.PictureApiService;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -91,18 +91,10 @@ public class ServiceLocator {
         BaseTripsRemoteDataSource tripsRemoteDataSource;
         BaseTripsLocalDataSource tripsLocalDataSource;
 
-        IUserRepository userRepository = getUserRepository(application);
-        String idToken;
-        if (userRepository.getLoggedUser() != null) {
-            idToken = userRepository.getLoggedUser().getId();
-        } else {
-            return null;
-        }
-
         SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
         DataEncryptionUtil dataEncryptionUtil = new DataEncryptionUtil(application);
 
-        tripsRemoteDataSource = new TripsRemoteDataSource(idToken);
+        tripsRemoteDataSource = new TripsRemoteDataSource();
         tripsLocalDataSource = new TripsLocalDataSource(getTripsDAO(application),
                 sharedPreferencesUtil, dataEncryptionUtil);
 
@@ -110,6 +102,12 @@ public class ServiceLocator {
                 sharedPreferencesUtil);
     }
 
+    /**
+     * Returns an instance of IUserRepository.
+     *
+     * @param application application context
+     * @return An instance of IUserRepository.
+     */
     public IUserRepository getUserRepository(Application application) {
         SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil(application);
 
@@ -127,5 +125,3 @@ public class ServiceLocator {
                 tripsLocalDataSource);
     }
 }
-
-

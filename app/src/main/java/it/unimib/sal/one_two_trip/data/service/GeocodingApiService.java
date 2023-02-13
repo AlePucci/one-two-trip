@@ -1,4 +1,4 @@
-package it.unimib.sal.one_two_trip.service;
+package it.unimib.sal.one_two_trip.data.service;
 
 import static it.unimib.sal.one_two_trip.util.Constants.GEOCODING_ENDPOINT;
 import static it.unimib.sal.one_two_trip.util.Constants.GEOCODING_FORMAT;

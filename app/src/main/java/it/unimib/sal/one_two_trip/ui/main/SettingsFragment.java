@@ -125,6 +125,12 @@ public class SettingsFragment extends Fragment {
         save_button.setOnClickListener(this::saveSettings);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.restoreSettings();
+    }
+
     /**
      * Hides or shows the notifications settings cardview.
      *
@@ -251,6 +257,12 @@ public class SettingsFragment extends Fragment {
             }
         } else {
             this.toggleNotificationsList(false);
+            this.twelve_hours_trip.setChecked(false);
+            this.one_day_trip.setChecked(false);
+            this.two_days_trip.setChecked(false);
+            this.half_hour_activity.setChecked(false);
+            this.one_hour_activity.setChecked(false);
+            this.two_hours_activity.setChecked(false);
         }
 
         String theme = sharedPreferencesUtil.readStringData(

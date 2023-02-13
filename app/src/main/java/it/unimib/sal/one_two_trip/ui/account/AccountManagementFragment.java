@@ -92,6 +92,11 @@ public class AccountManagementFragment extends Fragment {
         this.deleteAccountButton = view.findViewById(R.id.deleteAccountButton);
         this.logoutButton = view.findViewById(R.id.logoutButton);
 
+        if(userViewModel.getLoggedUser() == null){
+            activity.finish();
+            return;
+        }
+
         String id = userViewModel.getLoggedUser().getId();
 
         this.userViewModel.getUser(id).observe(getViewLifecycleOwner(), result -> {
@@ -115,11 +120,20 @@ public class AccountManagementFragment extends Fragment {
                         .navigate(R.id.action_accountManagementFragment_to_editAccountFragment));
 
         this.deleteAccountButton.setOnClickListener(v -> {
-            /**userViewModel.deleteUser().observe();**/
+            userViewModel.deleteUser().observe(getViewLifecycleOwner(), result -> {
+                if(result.isSuccess()){
+                    Intent intent = new Intent(activity, WelcomeActivity.class);
+                    startActivity(intent);
+                    activity.finish();
+                    return;
+                }
+                else{
+                    Snackbar.make(view, activity.getString(R.string.unexpected_error), Snackbar.LENGTH_SHORT).show();
+                }
+            });
         });
 
         this.logoutButton.setOnClickListener(v -> {
-            /** qui logout era già fatto**/
             userViewModel.logout().observe(getViewLifecycleOwner(), result -> {
                 if(result.isSuccess()){
                     Intent intent = new Intent(activity, WelcomeActivity.class);
