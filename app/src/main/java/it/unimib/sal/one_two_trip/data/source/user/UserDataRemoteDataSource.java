@@ -66,10 +66,8 @@ public class UserDataRemoteDataSource extends BaseUserDataRemoteDataSource {
         this.usersReference.document(idToken).set(person).addOnCompleteListener(
                 task -> {
                     if (task.isSuccessful()) {
-                        Log.d("passed here", "ciao");
                         userResponseCallback.onSuccessFromRemoteDatabase(person);
                     } else {
-                        Log.d("passed here", "fail");
                         userResponseCallback.onFailureFromRemoteDatabase(task.getException().toString());
                     }
                 });

@@ -35,9 +35,9 @@
         android:id="@+id/editProfileImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/cardview_light_background"
+        android:backgroundTint="@android:color/transparent"
         android:text="@string/editProfileImage"
-        android:textColor="#2196F3"
+        android:textColor="@color/link_blue"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="29dp"
+        android:layout_marginTop="100dp"
         android:layout_marginEnd="32dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -68,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="GianFranco" />
+                android:textColor="@color/black"/>
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -86,7 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="Esposito" />
+                android:textColor="@color/black"/>
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -104,11 +104,11 @@
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:text="gianfranco.esposito@gmail.com" />
+                android:textColor="@color/black"/>
         </com.google.android.material.textfield.TextInputLayout>
 
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/applyChangesButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

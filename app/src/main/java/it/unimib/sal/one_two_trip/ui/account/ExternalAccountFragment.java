@@ -91,7 +91,8 @@ public class ExternalAccountFragment extends Fragment {
         this.userViewModel.getUser(id).observe(getViewLifecycleOwner(), result -> {
             if(result.isSuccess()){
                 Person p = ((Result.PersonResponseSuccess) result).getData();
-                /** to do **/
+                nameSurnameTextView.setText(p.getName() + " " + p.getSurname());
+                emailTextView.setText(p.getEmail_address());
             }
             else{
                 activity.finish();

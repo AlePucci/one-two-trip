@@ -195,10 +195,8 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
     public void changeEmail(String email){
         this.firebaseAuth.getCurrentUser().updateEmail(email).addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
-                Log.d("ps", "email changed");
                 userResponseCallback.onFailureFromPasswordReset(getErrorMessage(task.getException()));
             } else {
-                Log.d("ps", "email error");
                 userResponseCallback.onSuccessFromPasswordReset();
             }
         });

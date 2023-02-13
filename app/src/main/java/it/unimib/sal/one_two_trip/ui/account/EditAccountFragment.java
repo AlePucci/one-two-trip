@@ -53,7 +53,7 @@ public class EditAccountFragment extends Fragment {
 
     private TextInputEditText emailEditText;
 
-    private Button applyChangesButton;
+    private MaterialButton applyChangesButton;
 
     private IndeterminateDrawable<CircularProgressIndicatorSpec> progressIndicatorDrawable;
 
@@ -116,7 +116,7 @@ public class EditAccountFragment extends Fragment {
         this.applyChangesButton.setOnClickListener(v -> {
 
             this.applyChangesButton.setEnabled(false);
-            /**this.applyChangesButton.setIcon(this.progressIndicatorDrawable);**/
+            this.applyChangesButton.setIcon(this.progressIndicatorDrawable);
 
             if(TextUtils.isEmpty(nameEditText.getText().toString())){
                 nameEditText.setError("this field cannot be empty");
@@ -161,7 +161,7 @@ public class EditAccountFragment extends Fragment {
                             Snackbar.LENGTH_SHORT).show();
                 }
                 this.applyChangesButton.setEnabled(true);
-                /**this.applyChangesButton.setIcon(null);**/
+                this.applyChangesButton.setIcon(null);
             });
         });
     }

@@ -119,6 +119,7 @@ public class AccountManagementFragment extends Fragment {
                 Navigation.findNavController(view)
                         .navigate(R.id.action_accountManagementFragment_to_editAccountFragment));
 
+
         this.deleteAccountButton.setOnClickListener(v -> {
             userViewModel.deleteUser().observe(getViewLifecycleOwner(), result -> {
                 if(result.isSuccess()){
@@ -132,6 +133,7 @@ public class AccountManagementFragment extends Fragment {
                 }
             });
         });
+
 
         this.logoutButton.setOnClickListener(v -> {
             userViewModel.logout().observe(getViewLifecycleOwner(), result -> {
