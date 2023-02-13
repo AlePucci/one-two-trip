@@ -1,11 +1,14 @@
 package it.unimib.sal.one_two_trip.ui.trip;
 
+import static android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVE_TO_ACTIVITY;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_ACTIVITY_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_ID;
 import static it.unimib.sal.one_two_trip.util.Constants.SELECTED_TRIP_NAME;
 
 import android.os.Bundle;
+import android.view.View;
+import android.view.WindowManager;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +34,7 @@ public class TripActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip);
 
+
         String tripId = getIntent().getStringExtra(SELECTED_TRIP_ID);
         boolean moveToActivity = getIntent().getBooleanExtra(MOVE_TO_ACTIVITY, false);
         String activityId = "";
@@ -50,9 +54,16 @@ public class TripActivity extends AppCompatActivity {
         int mode = this.getResources().getConfiguration().uiMode
                 & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
 
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         if (mode == android.content.res.Configuration.UI_MODE_NIGHT_YES) {
+            getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.gray_700));
+
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
         } else {
+            getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.white));
+
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.white));
         }
 

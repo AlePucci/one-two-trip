@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "484986298181-hvrmck25qbnpm47ob1b2ctqurbk490bs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.unimib.sal.one_two_trip",
+            "certificate_hash": "7cae9542d54ee7f113b7dad257c4d1f38fcb4cf0"
+          }
+        },
+        {
           "client_id": "484986298181-prnaprc60utdobjkklrnn0c8g6439htq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
