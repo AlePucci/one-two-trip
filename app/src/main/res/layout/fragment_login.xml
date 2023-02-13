@@ -21,7 +21,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/one_two_trip_logo_welcome" />
+            app:srcCompat="@drawable/welcome_logo" />
 
         <TextView
             android:id="@+id/login_textview"
@@ -174,7 +174,6 @@
             android:layout_width="150dp"
             android:layout_height="1dp"
             android:layout_centerVertical="true"
-            android:layout_marginTop="10dp"
             android:background="@color/black"
             app:layout_constraintBottom_toTopOf="@+id/buttonGoogleLogin"
             app:layout_constraintEnd_toStartOf="@+id/guideline_end"
@@ -197,7 +196,6 @@
             android:id="@+id/separator_start"
             android:layout_width="150dp"
             android:layout_height="1dp"
-            android:layout_marginTop="10dp"
             android:background="@color/black"
             app:layout_constraintBottom_toTopOf="@+id/buttonGoogleLogin"
             app:layout_constraintEnd_toStartOf="@+id/textview_or"
