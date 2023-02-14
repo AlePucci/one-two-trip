@@ -1,6 +1,7 @@
 package it.unimib.sal.one_two_trip.ui.trip;
 
 import static it.unimib.sal.one_two_trip.util.Constants.DESCRIPTION;
+import static it.unimib.sal.one_two_trip.util.Constants.ID;
 import static it.unimib.sal.one_two_trip.util.Constants.IMAGE_MIME;
 import static it.unimib.sal.one_two_trip.util.Constants.JOIN_BASE_URL;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_LOGO_UPDATE;
@@ -44,6 +45,7 @@ import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -321,10 +323,10 @@ public class TripSettingsFragment extends Fragment implements RemoteStorageCallb
                                         new SettingsParticipantRecyclerViewAdapter.OnItemClickListener() {
                                             @Override
                                             public void onClick(String userId) {
-                                                // TODO open participant profile
-                                                Snackbar.make(view,
-                                                        "Open participant profile",
-                                                        Snackbar.LENGTH_SHORT).show();
+                                                Bundle bundle = new Bundle();
+                                                bundle.putString(ID, userId);
+                                                Navigation.findNavController(view).navigate(R.id.action_tripSettingsFragment_to_externalAccountFragment,
+                                                        bundle);
                                             }
 
                                             @Override

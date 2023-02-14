@@ -148,6 +148,7 @@
     <string name="name_surname">Name Surname</string>
     <string name="editProfileImage">Edit profile image</string>
     <string name="editProfileButton">Apply changes</string>
+    <string name="profile_pick_photo">Pick a profile image</string>
 
     <!-- about -->
     <string name="made_by">Made with 💛 by:</string>

@@ -185,7 +185,7 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
 
     @Override
     public void updateProfile(@NonNull Person p) {
-        if (this.firebaseAuth.getCurrentUser() == null){
+        if (this.firebaseAuth.getCurrentUser() == null) {
             userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
             return;
         }

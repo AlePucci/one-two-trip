@@ -1,6 +1,8 @@
 package it.unimib.sal.one_two_trip.data.source.storage;
 
 import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_TRIPS_COLLECTION;
+import static it.unimib.sal.one_two_trip.util.Constants.FIREBASE_USER_COLLECTION;
+import static it.unimib.sal.one_two_trip.util.Constants.PROFILE_PICTURE_NAME;
 import static it.unimib.sal.one_two_trip.util.Constants.TRIP_LOGO_NAME;
 
 import android.app.Application;
@@ -62,6 +64,41 @@ public class RemoteStorage extends BaseRemoteStorage {
     }
 
     /**
+     * Upload the profile picture to Firebase Storage.
+     *
+     * @param bitmap  the bitmap to upload
+     * @param idToken the user id token
+     */
+    public void uploadProfilePicture(@NonNull Bitmap bitmap, String idToken) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference().child(FIREBASE_USER_COLLECTION)
+                .child(idToken).child(PROFILE_PICTURE_NAME);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = storageReference.putBytes(data);
+        uploadTask.addOnFailureListener(exception -> callback.onUploadFailure(exception))
+                .addOnSuccessListener(taskSnapshot -> {
+                    if (taskSnapshot.getTask().isSuccessful()) {
+                        String fileName = idToken + "-" + PROFILE_PICTURE_NAME;
+                        File localFile = new File(application.getFilesDir(), fileName);
+
+                        storageReference.getFile(localFile).addOnSuccessListener(
+                                taskSnapshot1 -> {
+                                    long lastUpdate = -1;
+                                    if (taskSnapshot.getMetadata() != null) {
+                                        lastUpdate = taskSnapshot.getMetadata().getUpdatedTimeMillis();
+                                    }
+                                    callback.onUploadSuccess(lastUpdate);
+                                }).addOnFailureListener(exception ->
+                                callback.onUploadFailure(exception));
+                    }
+                });
+    }
+
+
+    /**
      * Download the trip logo from Firebase Storage.
      *
      * @param tripId the trip id
@@ -79,6 +116,25 @@ public class RemoteStorage extends BaseRemoteStorage {
                 callback.onDownloadFailure(exception));
     }
 
+
+    /**
+     * Download the profile picture from Firebase Storage.
+     *
+     * @param idToken the user id token
+     */
+    @Override
+    public void downloadProfilePicture(String idToken) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference().child(FIREBASE_USER_COLLECTION)
+                .child(idToken).child(PROFILE_PICTURE_NAME);
+        String fileName = idToken + "-" + PROFILE_PICTURE_NAME;
+        File localFile = new File(application.getFilesDir(), fileName);
+
+        storageReference.getFile(localFile).addOnSuccessListener(taskSnapshot ->
+                callback.onDownloadSuccess()).addOnFailureListener(exception ->
+                callback.onDownloadFailure(exception));
+    }
+
     /**
      * Check if the trip logo exists in Firebase Storage.
      *
@@ -89,6 +145,24 @@ public class RemoteStorage extends BaseRemoteStorage {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference().child(FIREBASE_TRIPS_COLLECTION)
                 .child(tripId).child(TRIP_LOGO_NAME);
+
+        storageReference.getMetadata().addOnSuccessListener(storageMetadata -> {
+            long lastUpdate = storageMetadata.getUpdatedTimeMillis();
+            callback.onExistsResponse(lastUpdate);
+        }).addOnFailureListener(exception ->
+                callback.onExistsResponse(-1));
+    }
+
+    /**
+     * Check if the trip logo exists in Firebase Storage.
+     *
+     * @param idToken the user id token
+     */
+    @Override
+    public void profilePictureExists(String idToken) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference().child(FIREBASE_USER_COLLECTION)
+                .child(idToken).child(PROFILE_PICTURE_NAME);
 
         storageReference.getMetadata().addOnSuccessListener(storageMetadata -> {
             long lastUpdate = storageMetadata.getUpdatedTimeMillis();

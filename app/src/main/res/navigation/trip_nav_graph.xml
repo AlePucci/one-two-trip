@@ -61,9 +61,6 @@
             app:destination="@id/tripFragment"
             app:popUpTo="@id/trip_nav_graph"
             app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_activityFragment_to_externalAccountFragment"
-            app:destination="@id/externalAccountFragment" />
     </fragment>
     <fragment
         android:id="@+id/activityNewFragment"
@@ -95,13 +92,13 @@
         android:label="fragment_external_account"
         tools:layout="@layout/fragment_external_account" >
         <action
-            android:id="@+id/action_externalAccountFragment_to_activityFragment"
-            app:destination="@id/activityFragment" />
-        <action
             android:id="@+id/action_externalAccountFragment_to_tripFragment"
             app:destination="@id/tripFragment" />
         <action
             android:id="@+id/action_externalAccountFragment_to_tripSettingsFragment"
             app:destination="@id/tripSettingsFragment" />
+        <argument
+            android:name="id"
+            app:argType="string" />
     </fragment>
 </navigation>

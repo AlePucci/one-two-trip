@@ -76,6 +76,7 @@
     <string name="logout">Esci</string>
     <string name="name_surname">Nome Cognome</string>
     <string name="editProfileImage">Modifica immagine profilo</string>
+    <string name="profile_pick_photo">Scegli la foto profilo</string>
     <string name="editProfileButton">Applica modifiche</string>
     <string name="delete">Elimina</string>
     <string name="rename">Rinomina</string>

@@ -3,6 +3,7 @@ package it.unimib.sal.one_two_trip.ui.trip;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static it.unimib.sal.one_two_trip.util.Constants.ACTIVITY_TITLE;
 import static it.unimib.sal.one_two_trip.util.Constants.ENDDATE;
+import static it.unimib.sal.one_two_trip.util.Constants.ID;
 import static it.unimib.sal.one_two_trip.util.Constants.LAST_UPDATE;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVE_TO_ACTIVITY;
 import static it.unimib.sal.one_two_trip.util.Constants.MOVING_ACTIVITY_TYPE_NAME;
@@ -373,6 +374,14 @@ public class TripFragment extends Fragment implements MenuProvider {
 
                         alert.show();
 
+                    }
+
+                    @Override
+                    public void onParticipantClick(String id) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(ID, id);
+                        Navigation.findNavController(view).navigate(R.id.action_tripFragment_to_externalAccountFragment,
+                                bundle);
                     }
                 });
 

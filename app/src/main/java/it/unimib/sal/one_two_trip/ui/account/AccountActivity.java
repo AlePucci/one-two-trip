@@ -13,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import it.unimib.sal.one_two_trip.R;
 
+/**
+ * This activity manages the user account.
+ */
 public class AccountActivity extends AppCompatActivity {
 
     @Override
