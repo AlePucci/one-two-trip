@@ -469,12 +469,6 @@ public class TripFragment extends Fragment implements MenuProvider {
     private void mapSetup() {
         this.mapView.getOverlays().clear();
 
-        //Position
-        mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this.requireContext()),
-                mapView);
-        mLocationOverlay.enableMyLocation();
-        mapView.getOverlays().add(mLocationOverlay);
-
         //Move to location
         IMapController mapController = this.mapView.getController();
         mapController.setZoom(12.5);
@@ -568,6 +562,13 @@ public class TripFragment extends Fragment implements MenuProvider {
         Polyline line = new Polyline();
         line.setPoints(points);
         this.mapView.getOverlayManager().add(line);
+
+        //Position
+        mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this.requireContext()),
+                mapView);
+        mLocationOverlay.enableMyLocation();
+        mapView.getOverlays().add(mLocationOverlay);
+
         this.mapView.invalidate();
 
         //Add the markers after the line so that the line is in background
