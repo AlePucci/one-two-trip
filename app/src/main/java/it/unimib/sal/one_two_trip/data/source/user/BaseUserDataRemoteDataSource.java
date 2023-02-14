@@ -4,7 +4,7 @@ import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.repository.user.UserResponseCallback;
 
 /**
- * Base class to get Person object data from remote source.
+ * Base class to get User data from a remote source.
  */
 public abstract class BaseUserDataRemoteDataSource {
 
@@ -15,4 +15,8 @@ public abstract class BaseUserDataRemoteDataSource {
     }
 
     public abstract void saveUserData(Person person);
+
+    public abstract void getUserData(String id);
+
+    public abstract void updateUserData(Person person);
 }

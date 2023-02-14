@@ -36,6 +36,7 @@ import java.util.UUID;
 import it.unimib.sal.one_two_trip.R;
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.database.model.Trip;
+import it.unimib.sal.one_two_trip.ui.account.AccountActivity;
 import it.unimib.sal.one_two_trip.data.repository.trips.ITripsRepository;
 import it.unimib.sal.one_two_trip.data.repository.user.IUserRepository;
 import it.unimib.sal.one_two_trip.ui.welcome.UserViewModel;
@@ -140,7 +141,10 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                // TODO OPEN ACCOUNT PAGE
+                if(menuItem.getItemId() == R.id.action_account){
+                    Intent intent = new Intent(HomeActivity.this, AccountActivity.class);
+                    startActivity(intent);
+                }
                 return false;
             }
         });

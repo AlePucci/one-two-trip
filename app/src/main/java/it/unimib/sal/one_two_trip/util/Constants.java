@@ -118,6 +118,7 @@ public class Constants {
     public static final String FIREBASE_TRIPS_COLLECTION = "trips";
     public static final String FIREBASE_USER_COLLECTION = "users";
     public static final String TRIP_LOGO_NAME = "logo.jpg";
+    public static final String PROFILE_PICTURE_NAME = "propic.jpg";
     public static final String FIREBASE_QUERY_PARTICIPANT = "participant.";
     public static final String FIREBASE_QUERY_REMOVED = ".removed";
     public static final String ID = "id";

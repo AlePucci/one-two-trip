@@ -145,12 +145,6 @@ public class ActivityParticipantFragment extends Fragment {
                                         personList,
                                         application,
                                         position -> {
-                                            //TODO: goto user page
-                                            Snackbar.make(view, "User "
-                                                            + personList.get(position).getName()
-                                                            + " "
-                                                            + personList.get(position).getSurname(),
-                                                    Snackbar.LENGTH_SHORT).show();
                                         });
 
                         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),

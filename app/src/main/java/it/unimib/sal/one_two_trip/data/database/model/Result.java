@@ -12,9 +12,8 @@ public abstract class Result {
     }
 
     public boolean isSuccess() {
-        return this instanceof PersonResponseSuccess
-                || this instanceof TripSuccess
-                || this instanceof PasswordResetSuccess;
+        return this instanceof PersonResponseSuccess || this instanceof TripSuccess || this instanceof PasswordResetSuccess
+                || this instanceof EmailChangeSuccess;
     }
 
     /**
@@ -22,7 +21,6 @@ public abstract class Result {
      * with a Web Service or a local database. (TRIP)
      */
     public static final class TripSuccess extends Result {
-
         private final TripsResponse response;
 
         public TripSuccess(TripsResponse response) {
@@ -36,10 +34,9 @@ public abstract class Result {
 
     /**
      * Class that represents a successful action during the interaction
-     * with a Web Service or a local database. (USER PASSWORD RESET SUCCESS)
+     * with a Web Service or a local database. (TRIP)
      */
     public static final class PasswordResetSuccess extends Result {
-
         private final boolean success;
 
         public PasswordResetSuccess(boolean success) {
@@ -56,7 +53,6 @@ public abstract class Result {
      * with a Web Service or a local database. (USER)
      */
     public static final class PersonResponseSuccess extends Result {
-
         private final Person person;
 
         public PersonResponseSuccess(Person person) {
@@ -67,6 +63,24 @@ public abstract class Result {
             return person;
         }
     }
+
+    /**
+     * Class that represents a successful action during the interaction
+     * with a Web Service or a local database. (USER)
+     */
+    public static final class EmailChangeSuccess extends Result {
+
+        private final boolean success;
+
+        public EmailChangeSuccess(boolean success) {
+            this.success = success;
+        }
+
+        public boolean getData() {
+            return success;
+        }
+    }
+
 
     /**
      * Class that represents an error occurred during the interaction

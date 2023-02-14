@@ -27,4 +27,8 @@ public interface IUserRepository {
     void signIn(String email, String password);
 
     void signInWithGoogle(String token);
+
+    MutableLiveData<Result> updateUserData(Person p);
+
+    MutableLiveData<Result> getUser(String id);
 }

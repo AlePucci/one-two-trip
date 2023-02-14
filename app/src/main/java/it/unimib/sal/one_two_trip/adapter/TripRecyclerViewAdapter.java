@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
 import java.util.List;
@@ -87,6 +86,8 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
         void onActivityClick(int position);
 
         void onDragClick(int position);
+
+        void onParticipantClick(String id);
     }
 
     /**
@@ -144,15 +145,7 @@ public class TripRecyclerViewAdapter extends RecyclerView.Adapter<TripRecyclerVi
             ParticipantRecyclerViewAdapter adapter = new ParticipantRecyclerViewAdapter(
                     activity.getParticipant().getPersonList(),
                     application,
-                    position -> {
-                        //TODO: goto user page
-                        Snackbar.make(itemView, "User " +
-                                        activity.getParticipant().getPersonList()
-                                                .get(position).getName() + " " +
-                                        activity.getParticipant().getPersonList()
-                                                .get(position).getSurname(),
-                                Snackbar.LENGTH_SHORT).show();
-                    });
+                    position -> onClickListener.onParticipantClick(activity.getParticipant().getPersonList().get(position).getId()));
 
             this.participants.setLayoutManager(this.layoutManager);
             this.participants.setAdapter(adapter);

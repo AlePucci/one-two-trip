@@ -70,6 +70,16 @@
     <string name="twelve_hours_extended">12 ore</string>
     <string name="one_day_extended">1 giorno</string>
     <string name="two_days_extended">2 giorni</string>
+    <string name="accountManagement">Gestione account</string>
+    <string name="editAccount">Modifica info account</string>
+    <string name="deleteAccount">Cancella account</string>
+    <string name="logout">Esci</string>
+    <string name="name_surname">Nome Cognome</string>
+    <string name="editProfileImage">Modifica immagine profilo</string>
+    <string name="profile_pick_photo">Scegli la foto profilo</string>
+    <string name="editProfileButton">Applica modifiche</string>
+    <string name="delete">Elimina</string>
+    <string name="rename">Rinomina</string>
     <string name="activity_where_title">Dove</string>
     <string name="activity_when_title">Quando</string>
     <string name="activity_field_error">Il valore del campo non è valido.</string>

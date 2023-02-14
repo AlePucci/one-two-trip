@@ -15,9 +15,15 @@ public abstract class BaseRemoteStorage {
 
     public abstract void uploadTripLogo(Bitmap bitmap, String tripId);
 
+    public abstract void uploadProfilePicture(Bitmap bitmap, String idToken);
+
     public abstract void downloadTripLogo(String tripId);
 
+    public abstract void downloadProfilePicture(String idToken);
+
     public abstract void tripLogoExists(String tripId);
+
+    public abstract void profilePictureExists(String idToken);
 
     public abstract void deleteTripLogo(String tripId);
 }

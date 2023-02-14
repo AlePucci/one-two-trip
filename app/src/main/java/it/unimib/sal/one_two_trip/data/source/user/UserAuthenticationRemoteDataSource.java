@@ -17,10 +17,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import java.util.Objects;
+
 import it.unimib.sal.one_two_trip.data.database.model.Person;
 
 /**
- * Class to perform User Authentication using Firebase Authentication.
+ * Class to perform the authentication of the user using Firebase Authentication.
  */
 public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRemoteDataSource {
 
@@ -173,11 +175,31 @@ public class UserAuthenticationRemoteDataSource extends BaseUserAuthenticationRe
                     if (!task.isSuccessful()) {
                         userResponseCallback.onFailureFromPasswordReset(
                                 getErrorMessage(task.getException()));
+                        userResponseCallback.onFailureFromPasswordReset(getErrorMessage(task.getException()));
                     } else {
                         userResponseCallback.onSuccessFromPasswordReset();
                     }
                 }
         );
+    }
+
+    @Override
+    public void updateProfile(@NonNull Person p) {
+        if (this.firebaseAuth.getCurrentUser() == null) {
+            userResponseCallback.onFailureFromAuthentication(UNEXPECTED_ERROR);
+            return;
+        }
+
+        this.firebaseAuth.getCurrentUser()
+                .updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(p.getName()
+                        + " " + p.getSurname()).build()).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        userResponseCallback.onSuccessFromAuthentication(getLoggedUser());
+                    } else {
+                        userResponseCallback.onFailureFromAuthentication(Objects.requireNonNull(task.getException())
+                                .getLocalizedMessage());
+                    }
+                });
     }
 
     private String getErrorMessage(Exception exception) {

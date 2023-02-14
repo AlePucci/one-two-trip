@@ -4,7 +4,7 @@ import it.unimib.sal.one_two_trip.data.database.model.Person;
 import it.unimib.sal.one_two_trip.data.repository.user.UserResponseCallback;
 
 /**
- * Base class to perform User Authentication from remote source.
+ * Base class to perform User Authentication.
  */
 public abstract class BaseUserAuthenticationRemoteDataSource {
 
@@ -25,4 +25,6 @@ public abstract class BaseUserAuthenticationRemoteDataSource {
     public abstract void signInWithGoogle(String idToken);
 
     public abstract void resetPassword(String email);
+
+    public abstract void updateProfile(Person p);
 }

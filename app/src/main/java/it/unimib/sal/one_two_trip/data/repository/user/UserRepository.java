@@ -38,6 +38,8 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
      * @param password password of the user
      * @return a {@link MutableLiveData MutableLiveData} object that contains a {@link Result Result} object.
      */
+
+
     @Override
     public MutableLiveData<Result> getUser(String email, String password) {
         signIn(email, password);
@@ -57,6 +59,12 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     public MutableLiveData<Result> getUser(String email, String password, String name,
                                            String surname) {
         signUp(email, password, name, surname);
+        return this.userMutableLiveData;
+    }
+
+    @Override
+    public MutableLiveData<Result> getUser(String id) {
+        userDataRemoteDataSource.getUserData(id);
         return this.userMutableLiveData;
     }
 
@@ -103,6 +111,17 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     @Override
     public Person getLoggedUser() {
         return this.userRemoteDataSource.getLoggedUser();
+    }
+
+    @Override
+    public void onSuccessLogout() {
+        this.tripsLocalDataSource.deleteAllTrips();
+    }
+
+    public MutableLiveData<Result> updateUserData(Person p) {
+        this.userDataRemoteDataSource.updateUserData(p);
+        this.userRemoteDataSource.updateProfile(p);
+        return this.userMutableLiveData;
     }
 
     /**
@@ -173,10 +192,5 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     public void onFailureFromPasswordReset(String message) {
         Result.Error result = new Result.Error(message);
         this.passwordResetMutableLiveData.postValue(result);
-    }
-
-    @Override
-    public void onSuccessLogout() {
-        this.tripsLocalDataSource.deleteAllTrips();
     }
 }

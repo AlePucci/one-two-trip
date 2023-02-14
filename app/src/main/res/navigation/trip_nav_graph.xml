@@ -41,6 +41,9 @@
             android:name="zoomToEndLocation"
             app:argType="boolean"
             android:defaultValue="false" />
+        <action
+            android:id="@+id/action_tripFragment_to_externalAccountFragment"
+            app:destination="@id/externalAccountFragment" />
     </fragment>
     <fragment
         android:id="@+id/activityFragment"
@@ -78,6 +81,24 @@
         tools:layout="@layout/fragment_trip_settings">
         <argument
             android:name="tripId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_tripSettingsFragment_to_externalAccountFragment"
+            app:destination="@id/externalAccountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/externalAccountFragment"
+        android:name="it.unimib.sal.one_two_trip.ui.account.ExternalAccountFragment"
+        android:label="fragment_external_account"
+        tools:layout="@layout/fragment_external_account" >
+        <action
+            android:id="@+id/action_externalAccountFragment_to_tripFragment"
+            app:destination="@id/tripFragment" />
+        <action
+            android:id="@+id/action_externalAccountFragment_to_tripSettingsFragment"
+            app:destination="@id/tripSettingsFragment" />
+        <argument
+            android:name="id"
             app:argType="string" />
     </fragment>
 </navigation>

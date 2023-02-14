@@ -101,9 +101,6 @@
     <string name="trip_leave_negative">@android:string/cancel</string>
 
     <!-- activity -->
-    <string name="activity_where_title">Where</string>
-    <string name="activity_when_title">When</string>
-    <string name="activity_field_error">Field value is not valid.</string>
     <string name="activity_descr_title">Description</string>
     <string name="activity_participant_title">Participants</string>
     <string name="activity_not_participants">Not participating</string>
@@ -142,6 +139,16 @@
     <string name="activity_add_to_calendar_button">Add to calendar</string>
     <string name="activity_departure">departure</string>
     <string name="activity_arrival">arrival</string>
+
+    <!-- account -->
+    <string name="accountManagement">Account management</string>
+    <string name="editAccount">Edit account </string>
+    <string name="deleteAccount">Delete account</string>
+    <string name="logout">Logout</string>
+    <string name="name_surname">Name Surname</string>
+    <string name="editProfileImage">Edit profile image</string>
+    <string name="editProfileButton">Apply changes</string>
+    <string name="profile_pick_photo">Pick a profile image</string>
 
     <!-- about -->
     <string name="made_by">Made with 💛 by:</string>
@@ -203,6 +210,11 @@
 
     <!-- errors -->
     <string name="api_key_error">API key not valid or maximum number of requests reached</string>
+    <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
+    <string name="activity_where_title">Where</string>
+    <string name="activity_when_title">When</string>
+    <string name="activity_field_error">Field value is not valid.</string>
     <string name="unexpected_error">Unexpected error. Please retry later.</string>
     <string name="error_json_parsing">Error! Please try again</string>
     <string name="error_retrieving_trips">Error while retrieving trips.</string>

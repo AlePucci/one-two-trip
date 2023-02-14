@@ -162,6 +162,30 @@ public class UserViewModel extends ViewModel {
     }
 
     /**
+     * Method to update the user data.
+     *
+     * @param p new user data
+     * @return the LiveData object associated with the user data.
+     */
+    public MutableLiveData<Result> updateUserData(Person p) {
+        this.userMutableLiveData = this.userRepository.updateUserData(p);
+
+        return this.userMutableLiveData;
+    }
+
+    /**
+     * Method to get the user data from the repository.
+     *
+     * @param id id of the user
+     * @return the LiveData object associated with the user data.
+     */
+    public MutableLiveData<Result> getUser(String id) {
+        this.userMutableLiveData = this.userRepository.getUser(id);
+
+        return this.userMutableLiveData;
+    }
+
+    /**
      * Method to reset the password of the user.
      *
      * @param email email of the user
