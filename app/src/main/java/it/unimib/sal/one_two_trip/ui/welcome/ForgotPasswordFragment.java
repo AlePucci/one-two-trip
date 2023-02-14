@@ -70,6 +70,9 @@ public class ForgotPasswordFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         FragmentActivity activity = requireActivity();
 
+        MaterialButton backButton = view.findViewById(R.id.forgot_pwd_back_button);
+        backButton.setOnClickListener(v -> activity.onBackPressed());
+
         this.resetButton = view.findViewById(R.id.reset_password_button);
         this.emailEditText = view.findViewById(R.id.email_forgot_pass);
 

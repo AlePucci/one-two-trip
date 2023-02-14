@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -202,6 +203,7 @@ public class LoginFragment extends Fragment {
                         this.activityResultLauncher.launch(intentSenderRequest);
                     })
                     .addOnFailureListener(activity, e -> {
+                        Log.d("ABCDE", e.getMessage());
                         Snackbar.make(view,
                                 activity.getString(R.string.unexpected_error),
                                 Snackbar.LENGTH_SHORT).show();
